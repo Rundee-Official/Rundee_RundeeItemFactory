@@ -1,0 +1,206 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\RundeeItemFactory.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\src\\RundeeItemFactory.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\ItemFoodGenerator.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\src\\ItemFoodGenerator.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\FoodJsonWriter.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\src\\FoodJsonWriter.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\FoodJsonParser.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\src\\FoodJsonParser.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\FoodJsonParser.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\include\\FoodJsonParser.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\OllamaClient.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\src\\OllamaClient.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\OllamaClient.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\include\\OllamaClient.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\FoodJsonWriter.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\include\\FoodJsonWriter.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\ItemFoodGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\include\\ItemFoodGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\ItemFoodData.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{9B969EF5-FB37-4181-AF66-6EAFB61F60F2}|RundeeItemFactory\\RundeeItemFactory.vcxproj|solutionrelative:RundeeItemFactory\\include\\ItemFoodData.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 12,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FoodJsonParser.cpp",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\FoodJsonParser.cpp",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\src\\FoodJsonParser.cpp",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\FoodJsonParser.cpp",
+              "RelativeToolTip": "RundeeItemFactory\\src\\FoodJsonParser.cpp",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-15T06:11:38.814Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FoodJsonParser.h",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\FoodJsonParser.h",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\include\\FoodJsonParser.h",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\FoodJsonParser.h",
+              "RelativeToolTip": "RundeeItemFactory\\include\\FoodJsonParser.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-15T06:11:25.251Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "OllamaClient.cpp",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\OllamaClient.cpp",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\src\\OllamaClient.cpp",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\OllamaClient.cpp",
+              "RelativeToolTip": "RundeeItemFactory\\src\\OllamaClient.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-15T05:53:25.529Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "OllamaClient.h",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\OllamaClient.h",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\include\\OllamaClient.h",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\OllamaClient.h",
+              "RelativeToolTip": "RundeeItemFactory\\include\\OllamaClient.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-15T05:52:53.349Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FoodJsonWriter.cpp",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\FoodJsonWriter.cpp",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\src\\FoodJsonWriter.cpp",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\FoodJsonWriter.cpp",
+              "RelativeToolTip": "RundeeItemFactory\\src\\FoodJsonWriter.cpp",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAsAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-15T05:50:24.996Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "FoodJsonWriter.h",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\FoodJsonWriter.h",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\include\\FoodJsonWriter.h",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\FoodJsonWriter.h",
+              "RelativeToolTip": "RundeeItemFactory\\include\\FoodJsonWriter.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-15T05:49:46.558Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ItemFoodGenerator.cpp",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\ItemFoodGenerator.cpp",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\src\\ItemFoodGenerator.cpp",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\ItemFoodGenerator.cpp",
+              "RelativeToolTip": "RundeeItemFactory\\src\\ItemFoodGenerator.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-15T05:44:52.338Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ItemFoodGenerator.h",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\ItemFoodGenerator.h",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\include\\ItemFoodGenerator.h",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\ItemFoodGenerator.h",
+              "RelativeToolTip": "RundeeItemFactory\\include\\ItemFoodGenerator.h",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAEwAwAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-15T05:44:08.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RundeeItemFactory.cpp",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\RundeeItemFactory.cpp",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\src\\RundeeItemFactory.cpp",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\src\\RundeeItemFactory.cpp",
+              "RelativeToolTip": "RundeeItemFactory\\src\\RundeeItemFactory.cpp",
+              "ViewState": "AgIAALwAAAAAAAAAAAAUwOMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-15T05:40:07.58Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ItemFoodData.h",
+              "DocumentMoniker": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\ItemFoodData.h",
+              "RelativeDocumentMoniker": "RundeeItemFactory\\include\\ItemFoodData.h",
+              "ToolTip": "D:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\RundeeItemFactory\\RundeeItemFactory\\include\\ItemFoodData.h",
+              "RelativeToolTip": "RundeeItemFactory\\include\\ItemFoodData.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-15T05:37:41.954Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

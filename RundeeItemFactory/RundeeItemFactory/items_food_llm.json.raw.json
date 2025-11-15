@@ -1,0 +1,107 @@
+[
+    {
+        "id": "wildberry",
+        "displayName": "Wild Berry",
+        "category": "Food",
+        "rarity": "Common",
+        "maxStack": 10,
+        "hungerRestore": 15,
+        "thirstRestore": 0,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 60,
+        "description": "A handful of wild berries"
+    },
+    {
+        "id": "dandelionroot",
+        "displayName": "Dandelion Root",
+        "category": "Food",
+        "rarity": "Uncommon",
+        "maxStack": 5,
+        "hungerRestore": 10,
+        "thirstRestore": 0,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 30,
+        "description": "A small bundle of edible dandelion roots"
+    },
+    {
+        "id": "insects",
+        "displayName": "Insects",
+        "category": "Food",
+        "rarity": "Common",
+        "maxStack": 20,
+        "hungerRestore": 5,
+        "thirstRestore": 0,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 60,
+        "description": "A handful of crunchy insects"
+    },
+    {
+        "id": "grass",
+        "displayName": "Grass",
+        "category": "Food",
+        "rarity": "Common",
+        "maxStack": 30,
+        "hungerRestore": 10,
+        "thirstRestore": 0,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 60,
+        "description": "A bunch of fresh grass"
+    },
+    {
+        "id": "streamwater",
+        "displayName": "Stream Water",
+        "category": "Drink",
+        "rarity": "Common",
+        "maxStack": 10,
+        "hungerRestore": 0,
+        "thirstRestore": 20,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 60,
+        "description": "Fresh water from a stream"
+    },
+    {
+        "id": "rainwater",
+        "displayName": "Rain Water",
+        "category": "Drink",
+        "rarity": "Uncommon",
+        "maxStack": 5,
+        "hungerRestore": 0,
+        "thirstRestore": 30,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 60,
+        "description": "Collected rainwater"
+    },
+    {
+        "id": "fruit",
+        "displayName": "Fruit",
+        "category": "Food",
+        "rarity": "Uncommon",
+        "maxStack": 5,
+        "hungerRestore": 25,
+        "thirstRestore": 0,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 60,
+        "description": "A small selection of edible fruit"
+    },
+    {
+        "id": "mushroom",
+        "displayName": "Mushroom",
+        "category": "Food",
+        "rarity": "Rare",
+        "maxStack": 1,
+        "hungerRestore": 15,
+        "thirstRestore": 0,
+        "healthRestore": 0,
+        "spoils": true,
+        "spoilTimeMinutes": 30,
+        "description": "A rare and edible mushroom"
+    }
+]
+
