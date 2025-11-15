@@ -9,10 +9,75 @@
 // ===============================
 
 #include "FoodJsonParser.h"
+#include "FoodItemValidator.h"
 #include <iostream>
 
 using nlohmann::json;
 
+// --------------------------------------------------------
+// Helper: 문자열 앞뒤 공백 제거
+// --------------------------------------------------------
+static void TrimString(std::string& str)
+{
+    size_t start = str.find_first_not_of(" \t\r\n");
+    size_t end = str.find_last_not_of(" \t\r\n");
+    if (start == std::string::npos)
+    {
+        str.clear();
+        return;
+    }
+    str = str.substr(start, end - start + 1);
+}
+
+// --------------------------------------------------------
+// Helper: LLM이 뱉은 JSON 배열 문자열을 "살짝 고쳐주는" 함수
+// - 마지막에 쓸데없는 ',' 제거
+// - '[' 개수 > ']' 개수면 부족한 만큼 ']'를 뒤에 붙여줌
+// --------------------------------------------------------
+static std::string CleanJsonArrayText(const std::string& input)
+{
+    std::string s = input;
+
+    // 1) 양쪽 공백 제거
+    TrimString(s);
+    if (s.empty())
+        return s;
+
+    // 2) 마지막에 남아있는 콤마 제거
+    //    예: [...},   \n,  \n  → 끝 콤마 제거
+    {
+        int idx = static_cast<int>(s.size()) - 1;
+        // 뒤에서부터 공백 아닌 문자 찾기
+        while (idx >= 0 && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n'))
+            --idx;
+
+        if (idx >= 0 && s[idx] == ',')
+        {
+            s.erase(static_cast<size_t>(idx), 1);
+        }
+    }
+
+    // 3) 배열 괄호 개수 맞춰주기
+    int bracketBalance = 0;
+    for (char c : s)
+    {
+        if (c == '[') bracketBalance++;
+        else if (c == ']') bracketBalance--;
+    }
+
+    // '[' 가 더 많으면 부족한 ']'를 그만큼 뒤에 붙인다.
+    while (bracketBalance > 0)
+    {
+        s += "\n]";
+        bracketBalance--;
+    }
+
+    return s;
+}
+
+// --------------------------------------------------------
+// Safe getters
+// --------------------------------------------------------
 static int GetIntSafe(const json& j, const char* key, int defaultValue = 0)
 {
     if (!j.contains(key))
@@ -44,19 +109,26 @@ static std::string GetStringSafe(const json& j, const char* key, const std::stri
     return defaultValue;
 }
 
+// --------------------------------------------------------
+// Main parse function
+// --------------------------------------------------------
 bool FoodJsonParser::ParseFromJsonText(const std::string& jsonText,
     std::vector<ItemFoodData>& outItems)
 {
     outItems.clear();
 
+    // 0) 먼저 LLM이 뱉은 문자열을 한 번 정리해준다.
+    std::string cleaned = CleanJsonArrayText(jsonText);
+
     json root;
     try
     {
-        root = json::parse(jsonText);
+        root = json::parse(cleaned);
     }
     catch (const std::exception& e)
     {
-        std::cerr << "[FoodJsonParser] JSON parse error: " << e.what() << "\n";
+        std::cerr << "[FoodJsonParser] JSON parse error even after cleanup: "
+            << e.what() << "\n";
         return false;
     }
 
@@ -82,23 +154,23 @@ bool FoodJsonParser::ParseFromJsonText(const std::string& jsonText,
         item.rarity = GetStringSafe(jItem, "rarity");
 
         item.maxStack = GetIntSafe(jItem, "maxStack", 1);
-
         item.hungerRestore = GetIntSafe(jItem, "hungerRestore", 0);
         item.thirstRestore = GetIntSafe(jItem, "thirstRestore", 0);
         item.healthRestore = GetIntSafe(jItem, "healthRestore", 0);
-
         item.spoils = GetBoolSafe(jItem, "spoils", false);
         item.spoilTimeMinutes = GetIntSafe(jItem, "spoilTimeMinutes", 0);
-
         item.description = GetStringSafe(jItem, "description");
 
-        // 간단 검증: id나 displayName이 비어 있으면 스킵
+        // 최소한의 유효성 체크: id/displayName 없으면 스킵
         if (item.id.empty() || item.displayName.empty())
         {
             std::cerr << "[FoodJsonParser] Skipping item at index " << i
                 << " (missing id/displayName)\n";
             continue;
         }
+
+        // 밸런싱/검증 단계
+        FoodItemValidator::Validate(item);
 
         outItems.push_back(item);
     }

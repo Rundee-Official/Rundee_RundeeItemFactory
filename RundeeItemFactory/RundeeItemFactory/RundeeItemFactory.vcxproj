@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FoodItemValidator.cpp" />
     <ClCompile Include="src\FoodJsonParser.cpp" />
     <ClCompile Include="src\FoodJsonWriter.cpp" />
     <ClCompile Include="src\ItemFoodGenerator.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="src\RundeeItemFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\FoodItemValidator.h" />
     <ClInclude Include="include\FoodJsonParser.h" />
     <ClInclude Include="include\FoodJsonWriter.h" />
     <ClInclude Include="include\ItemFoodData.h" />

@@ -11,6 +11,9 @@ Release/
 x64/
 x86/
 
+# Test Projects
+UnityRundeeItemFactoryTest/
+
 # CMake/VS temp
 [Cc]MakeCache.txt
 [Cc]MakeFiles/

@@ -21,11 +21,19 @@
 
 using nlohmann::json;
 
-// 실행 모드
 enum class RunMode
 {
     Dummy,
     LLM
+};
+
+enum class PresetType
+{
+    Default,
+    Forest,
+    Desert,
+    Coast,
+    City
 };
 
 bool SaveTextFile(const std::string& path, const std::string& text)
@@ -41,18 +49,68 @@ bool SaveTextFile(const std::string& path, const std::string& text)
     return true;
 }
 
-// LLM용 프롬프트 빌더
-std::string BuildFoodJsonPrompt(const FoodGenerateParams& params)
+std::string GetPresetFlavorText(PresetType preset)
+{
+    switch (preset)
+    {
+    case PresetType::Forest:
+        return
+            "World context:\n"
+            "- The setting is a temperate forest with plenty of bushes, mushrooms, and small animals.\n"
+            "- Early-game items should focus on berries, nuts, roots, and simple cooked meals.\n"
+            "- Water sources are streams and rainwater.\n\n";
+
+    case PresetType::Desert:
+        return
+            "World context:\n"
+            "- The setting is a harsh desert with scarce vegetation and limited water.\n"
+            "- Food items should be low in quantity but efficient, like dried meat or cactus fruit.\n"
+            "- Drinks are highly valuable and restore more thirst.\n"
+            "- Emphasize scarcity and survival under heat.\n\n";
+
+    case PresetType::Coast:
+        return
+            "World context:\n"
+            "- The setting is a coastal island with beaches, palm trees, and shallow seawater.\n"
+            "- Food comes from coconuts, fish, shellfish, and tropical fruits.\n"
+            "- Drinks are mainly coconut water or boiled water.\n"
+            "- Slightly higher thirst restoration for drinks.\n\n";
+
+    case PresetType::City:
+        return
+            "World context:\n"
+            "- The setting is an abandoned modern city with convenience stores, vending machines, and supermarkets.\n"
+            "- Most food is processed: canned food, instant noodles, snacks, and energy bars.\n"
+            "- Drinks are bottled water, soft drinks, and energy drinks with higher thirst restoration.\n"
+            "- Many items do not spoil quickly, but some fresh food can still be found.\n\n";
+
+    case PresetType::Default:
+    default:
+        return
+            "World context:\n"
+            "- Generic early-game survival environment with moderate resources.\n"
+            "- Items should feel simple and grounded, not magical or high-tech.\n\n";
+    }
+}
+
+std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset)
 {
     std::string prompt;
-    prompt += "You are a game designer assistant for a survival game.\n\n";
+
+    // 1) 프리셋 환경 설명 먼저
+    prompt += GetPresetFlavorText(preset);
+
+    // 2) 공통 플레이어 스탯
     prompt += "The player has:\n";
     prompt += "- maxHunger = " + std::to_string(params.maxHunger) + "\n";
     prompt += "- maxThirst = " + std::to_string(params.maxThirst) + "\n\n";
 
+    // 3) 작업 설명
     prompt += "Task:\n";
-    prompt += "Generate " + std::to_string(params.count) + " food items for an early-game survival setting.\n\n";
+    prompt += "Generate " + std::to_string(params.count) + " food-related items ";
+    prompt += "for an early-game survival setting.\n\n";
 
+    // 4) 나머지 Rules/Schema/Output 텍스트는 지금 쓰던 것 그대로 붙이기
     prompt += R"(Rules:
 - Use this JSON schema EXACTLY for each item:
 {
@@ -90,8 +148,9 @@ Output:
 int main(int argc, char** argv)
 {
     RunMode mode = RunMode::Dummy;          // 기본값: 더미 모드
+    PresetType preset = PresetType::Default;
     std::string modelName = "llama3";       // 기본 모델 이름
-
+    
     FoodGenerateParams params;
     params.count = 5;
     params.maxHunger = 100;
@@ -119,6 +178,23 @@ int main(int argc, char** argv)
                 std::cout << "[Warning] Unknown mode: " << m
                     << " (use 'dummy' or 'llm')\n";
             }
+        }
+        else if (arg == "--preset" && i + 1 < argc)
+        {
+            std::string p = argv[++i];
+            if (p == "forest")
+                preset = PresetType::Forest;
+            else if (p == "desert")
+                preset = PresetType::Desert;
+            else if (p == "coast")
+                preset = PresetType::Coast;
+            else if (p == "city")
+                preset = PresetType::City;
+            else if (p == "default")
+                preset = PresetType::Default;
+            else
+                std::cout << "[Warning] Unknown preset: " << p
+                << " (use default/forest/desert/coast)\n";
         }
         else if (arg == "--model" && i + 1 < argc)
         {
@@ -150,7 +226,22 @@ int main(int argc, char** argv)
         << (mode == RunMode::LLM ? "LLM" : "Dummy")
         << ", model = " << modelName
         << ", count = " << params.count
-        << ", out = " << params.outputPath << "\n";
+        << ", out = " << params.outputPath
+        << "\n";
+
+    auto presetName = [&]()
+        {
+            switch (preset)
+            {
+            case PresetType::Forest:  return "forest";
+            case PresetType::Desert:  return "desert";
+            case PresetType::Coast:   return "coast";
+            case PresetType::City:    return "city";    // ← 추가
+            default:                  return "default";
+            }
+        };
+
+    std::cout << "[Main] Preset = " << presetName() << "\n";
 
     // ==============================
     // LLM 모드
@@ -159,7 +250,7 @@ int main(int argc, char** argv)
     {
         std::cout << "[Main] Running in LLM mode.\n";
 
-        std::string prompt = BuildFoodJsonPrompt(params);
+        std::string prompt = BuildFoodJsonPrompt(params, preset);
         std::string jsonResponse = OllamaClient::RunSimple(modelName, prompt);
 
         std::cout << "=== Ollama Food JSON Response ===\n";
