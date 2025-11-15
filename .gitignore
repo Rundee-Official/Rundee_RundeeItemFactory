@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+*.VC.db
+*.VC.VC.opendb
+*.user
+*.suo
+
+# Build outputs
+Debug/
+Release/
+x64/
+x86/
+
+# CMake/VS temp
+[Cc]MakeCache.txt
+[Cc]MakeFiles/
