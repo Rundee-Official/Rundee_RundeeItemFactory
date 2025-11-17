@@ -193,6 +193,99 @@ namespace StringUtils
         }
         return out;
     }
+
+    std::string StripAnsiEscapeCodes(const std::string& s)
+    {
+        std::string out;
+        out.reserve(s.size());
+
+        enum class State
+        {
+            Normal,
+            EscSeen,
+            Csi,
+            Osc
+        };
+
+        State state = State::Normal;
+        std::string oscBuffer;
+
+        for (size_t i = 0; i < s.size(); ++i)
+        {
+            unsigned char c = static_cast<unsigned char>(s[i]);
+
+            switch (state)
+            {
+            case State::Normal:
+                if (c == 0x1B) // ESC
+                {
+                    state = State::EscSeen;
+                }
+                else
+                {
+                    out += s[i];
+                }
+                break;
+
+            case State::EscSeen:
+                if (c == '[')
+                {
+                    state = State::Csi;
+                }
+                else if (c == ']')
+                {
+                    state = State::Osc;
+                    oscBuffer.clear();
+                }
+                else
+                {
+                    // Not CSI/OSC, drop this char as part of ESC sequence
+                    state = State::Normal;
+                }
+                break;
+
+            case State::Csi:
+                if (c >= 0x40 && c <= 0x7E)
+                {
+                    state = State::Normal;
+                }
+                // otherwise stay in CSI
+                break;
+
+            case State::Osc:
+                if (c == 0x07) // BEL terminates OSC
+                {
+                    state = State::Normal;
+                }
+                else if (c == 0x1B && i + 1 < s.size() && s[i + 1] == '\\')
+                {
+                    // ESC \ terminates OSC
+                    state = State::Normal;
+                    ++i; // skip '\'
+                }
+                // otherwise keep consuming until terminator
+                break;
+            }
+        }
+
+        return out;
+    }
+
+    std::string RemoveControlCharacters(const std::string& s)
+    {
+        std::string out;
+        out.reserve(s.size());
+
+        for (unsigned char c : s)
+        {
+            if (c >= 32 || c == '\n' || c == '\r' || c == '\t')
+            {
+                out += static_cast<char>(c);
+            }
+        }
+
+        return out;
+    }
 }
 
 

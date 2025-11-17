@@ -18,6 +18,8 @@
 #include "Validators/WeaponComponentItemValidator.h"
 #include "Validators/AmmoItemValidator.h"
 #include <iostream>
+#include <algorithm>
+#include <cctype>
 
 using nlohmann::json;
 
@@ -276,6 +278,7 @@ bool ItemJsonParser::ParseWeaponFromJsonText(const std::string& jsonText, std::v
         item.maxStack = JsonUtils::GetIntSafe(jItem, "maxStack", 1);
         item.description = JsonUtils::GetStringSafe(jItem, "description");
 
+        item.weaponCategory = JsonUtils::GetStringSafe(jItem, "weaponCategory");
         item.weaponType = JsonUtils::GetStringSafe(jItem, "weaponType");
         item.caliber = JsonUtils::GetStringSafe(jItem, "caliber");
         item.minDamage = JsonUtils::GetIntSafe(jItem, "minDamage", 0);
@@ -286,8 +289,13 @@ bool ItemJsonParser::ParseWeaponFromJsonText(const std::string& jsonText, std::v
         item.ergonomics = JsonUtils::GetIntSafe(jItem, "ergonomics", 0);
         item.weight = JsonUtils::GetIntSafe(jItem, "weight", 0);
         item.durability = JsonUtils::GetIntSafe(jItem, "durability", 100);
-        item.magazineCapacity = JsonUtils::GetIntSafe(jItem, "magazineCapacity", 0);
-        item.magazineType = JsonUtils::GetStringSafe(jItem, "magazineType");
+        item.muzzleVelocity = JsonUtils::GetIntSafe(jItem, "muzzleVelocity", 0);
+        item.effectiveRange = JsonUtils::GetIntSafe(jItem, "effectiveRange", 0);
+        item.penetrationPower = JsonUtils::GetIntSafe(jItem, "penetrationPower", 0);
+        item.moddingSlots = JsonUtils::GetIntSafe(jItem, "moddingSlots", 0);
+        item.attackSpeed = JsonUtils::GetIntSafe(jItem, "attackSpeed", 0);
+        item.reach = JsonUtils::GetIntSafe(jItem, "reach", 0);
+        item.staminaCost = JsonUtils::GetIntSafe(jItem, "staminaCost", 0);
 
         // Parse attachment slots
         if (jItem.contains("attachmentSlots") && jItem["attachmentSlots"].is_array())
@@ -311,6 +319,43 @@ bool ItemJsonParser::ParseWeaponFromJsonText(const std::string& jsonText, std::v
                 << " (missing id/displayName)\n";
             continue;
         }
+
+        // Validate weaponCategory
+        if (item.weaponCategory != "Ranged" && item.weaponCategory != "Melee" && item.weaponCategory != "ranged" && item.weaponCategory != "melee")
+        {
+            // Try to infer from weaponType if not set
+            if (item.weaponCategory.empty())
+            {
+                std::string lowerType = item.weaponType;
+                std::transform(lowerType.begin(), lowerType.end(), lowerType.begin(), ::tolower);
+                if (lowerType.find("sword") != std::string::npos || 
+                    lowerType.find("axe") != std::string::npos ||
+                    lowerType.find("knife") != std::string::npos ||
+                    lowerType.find("mace") != std::string::npos ||
+                    lowerType.find("spear") != std::string::npos ||
+                    lowerType.find("club") != std::string::npos ||
+                    lowerType.find("hammer") != std::string::npos ||
+                    lowerType.find("blade") != std::string::npos ||
+                    lowerType.find("melee") != std::string::npos)
+                {
+                    item.weaponCategory = "Melee";
+                }
+                else
+                {
+                    item.weaponCategory = "Ranged";
+                }
+            }
+            else
+            {
+                std::cerr << "[ItemJsonParser] Warning: Invalid weaponCategory \"" << item.weaponCategory 
+                    << "\" for weapon " << item.id << ", defaulting to Ranged\n";
+                item.weaponCategory = "Ranged";
+            }
+        }
+        
+        // Normalize to proper case
+        if (item.weaponCategory == "ranged") item.weaponCategory = "Ranged";
+        if (item.weaponCategory == "melee") item.weaponCategory = "Melee";
 
         if (item.category != "Weapon" && item.category != "weapon" && item.category != "WEAPON")
         {
@@ -373,11 +418,20 @@ bool ItemJsonParser::ParseWeaponComponentFromJsonText(const std::string& jsonTex
         item.description = JsonUtils::GetStringSafe(jItem, "description");
 
         item.componentType = JsonUtils::GetStringSafe(jItem, "componentType");
+        
+        // Magazine-specific fields (only for Magazine type)
+        item.magazineCapacity = JsonUtils::GetIntSafe(jItem, "magazineCapacity", 0);
+        item.caliber = JsonUtils::GetStringSafe(jItem, "caliber");
+        item.magazineType = JsonUtils::GetStringSafe(jItem, "magazineType");
+        
         item.damageModifier = JsonUtils::GetIntSafe(jItem, "damageModifier", 0);
         item.recoilModifier = JsonUtils::GetIntSafe(jItem, "recoilModifier", 0);
         item.ergonomicsModifier = JsonUtils::GetIntSafe(jItem, "ergonomicsModifier", 0);
         item.accuracyModifier = JsonUtils::GetIntSafe(jItem, "accuracyModifier", 0);
         item.weightModifier = JsonUtils::GetIntSafe(jItem, "weightModifier", 0);
+        item.muzzleVelocityModifier = JsonUtils::GetIntSafe(jItem, "muzzleVelocityModifier", 0);
+        item.effectiveRangeModifier = JsonUtils::GetIntSafe(jItem, "effectiveRangeModifier", 0);
+        item.penetrationModifier = JsonUtils::GetIntSafe(jItem, "penetrationModifier", 0);
         item.hasBuiltInRail = JsonUtils::GetBoolSafe(jItem, "hasBuiltInRail", false);
         item.railType = JsonUtils::GetStringSafe(jItem, "railType");
 
@@ -405,6 +459,24 @@ bool ItemJsonParser::ParseWeaponComponentFromJsonText(const std::string& jsonTex
                     subSlot.slotIndex = JsonUtils::GetIntSafe(jSubSlot, "slotIndex", 0);
                     subSlot.hasBuiltInRail = JsonUtils::GetBoolSafe(jSubSlot, "hasBuiltInRail", false);
                     item.subSlots.push_back(subSlot);
+                }
+            }
+        }
+
+        // Parse loaded round segments
+        if (jItem.contains("loadedRounds") && jItem["loadedRounds"].is_array())
+        {
+            for (const auto& jRound : jItem["loadedRounds"])
+            {
+                if (jRound.is_object())
+                {
+                    LoadedRoundSegment segment;
+                    segment.orderIndex = JsonUtils::GetIntSafe(jRound, "orderIndex", 0);
+                    segment.roundCount = JsonUtils::GetIntSafe(jRound, "roundCount", 0);
+                    segment.ammoId = JsonUtils::GetStringSafe(jRound, "ammoId");
+                    segment.ammoDisplayName = JsonUtils::GetStringSafe(jRound, "ammoDisplayName");
+                    segment.ammoNotes = JsonUtils::GetStringSafe(jRound, "ammoNotes");
+                    item.loadedRounds.push_back(segment);
                 }
             }
         }

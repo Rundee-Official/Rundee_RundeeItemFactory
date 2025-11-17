@@ -225,24 +225,51 @@ UnityRundeeItemFactoryTest/
 ```
 
 ### Weapon Component Items
+Magazines can now describe their exact load order. Each entry in `loadedRounds` represents a contiguous block of rounds (top-to-bottom) with a specific ammo ID.
+
 ```json
 {
-  "id": "WeaponComponent_suppressor",
-  "displayName": "Sound Suppressor",
+  "id": "WeaponComponent_mk3_drum",
+  "displayName": "MK3 7.62 Drum",
   "category": "WeaponComponent",
-  "rarity": "Uncommon",
+  "rarity": "Rare",
   "maxStack": 1,
-  "componentType": "Muzzle",
-  "compatibleSlots": ["Muzzle", "Barrel"],
-  "subSlots": [],
-  "damageModifier": -5,
-  "recoilModifier": 10,
-  "ergonomicsModifier": -5,
-  "accuracyModifier": 5,
-  "weightModifier": 200,
+  "componentType": "Magazine",
+  "compatibleSlots": ["Magazine"],
+  "magazineCapacity": 75,
+  "caliber": "7.62mm",
+  "magazineType": "Drum",
+  "loadedRounds": [
+    {
+      "orderIndex": 0,
+      "roundCount": 15,
+      "ammoId": "Ammo_762_AP",
+      "ammoDisplayName": "7.62 AP",
+      "ammoNotes": "Breaching stack"
+    },
+    {
+      "orderIndex": 1,
+      "roundCount": 45,
+      "ammoId": "Ammo_762_Ball",
+      "ammoDisplayName": "7.62 FMJ",
+      "ammoNotes": "General purpose"
+    },
+    {
+      "orderIndex": 2,
+      "roundCount": 15,
+      "ammoId": "Ammo_762_Tracer",
+      "ammoDisplayName": "7.62 Tracer",
+      "ammoNotes": "Low ammo indicator"
+    }
+  ],
+  "damageModifier": 0,
+  "recoilModifier": -5,
+  "ergonomicsModifier": -10,
+  "accuracyModifier": 0,
+  "weightModifier": 500,
   "hasBuiltInRail": false,
   "railType": "",
-  "description": "Reduces weapon noise and recoil."
+  "description": "Heavy drum mag with staged AP/FMJ/Tracer load."
 }
 ```
 

@@ -24,25 +24,42 @@ struct WeaponAttachmentSlot
 
 struct ItemWeaponData : public ItemDataBase
 {
+    // Weapon category
+    std::string weaponCategory;  // "Ranged" or "Melee" - determines if weapon uses ammo
+    
     // Weapon type
-    std::string weaponType;      // "AssaultRifle", "SMG", "Pistol", "SniperRifle", "Shotgun", etc.
-    std::string caliber;         // "9mm", "5.56mm", "7.62mm", "12gauge", etc.
+    std::string weaponType;      // For Ranged: "AssaultRifle", "SMG", "Pistol", "SniperRifle", "Shotgun", "LMG", "DMR"
+                                  // For Melee: "Sword", "Axe", "Knife", "Mace", "Spear", "Club", etc.
+    
+    // Caliber (only for Ranged weapons)
+    std::string caliber;         // "9mm", "5.56mm", "7.62mm", "12gauge", etc. (empty for Melee)
 
     // Combat stats
-    int minDamage = 0;           // Minimum damage per shot
-    int maxDamage = 0;           // Maximum damage per shot
-    int fireRate = 0;            // Rounds per minute
-    int accuracy = 0;            // 0-100, base accuracy
-    int recoil = 0;              // 0-100, lower is better (recoil control)
+    // For Ranged: Base damage (actual damage = base + ammo.damageBonus)
+    // For Melee: Actual damage (no ammo modifier)
+    int minDamage = 0;           // Minimum damage per hit
+    int maxDamage = 0;           // Maximum damage per hit
+    // Ranged weapon stats
+    int fireRate = 0;            // Rounds per minute (Ranged) or Attacks per minute (Melee)
+    int accuracy = 0;            // 0-100, base accuracy (Ranged) or hit chance (Melee)
+    int recoil = 0;              // 0-100, lower is better (recoil control, Ranged only)
     int ergonomics = 0;         // 0-100, higher is better (handling)
     int weight = 0;              // Weight in grams
     int durability = 100;        // 0-100, weapon condition
-
-    // Magazine
-    int magazineCapacity = 0;    // Default magazine capacity
-    std::string magazineType;    // "Standard", "Extended", "Drum", etc.
+    
+    // Advanced stats (Ranged weapons only)
+    int muzzleVelocity = 0;      // Muzzle velocity in m/s (Ranged only, 0 for Melee)
+    int effectiveRange = 0;      // Effective range in meters (Ranged only, 0 for Melee)
+    int penetrationPower = 0;   // 0-100, armor penetration capability (Ranged only)
+    int moddingSlots = 0;        // Number of available modding slots
+    
+    // Melee weapon stats (only for Melee weapons)
+    int attackSpeed = 0;         // Attacks per second (Melee only, alternative to fireRate)
+    int reach = 0;               // Reach in meters (Melee only)
+    int staminaCost = 0;         // Stamina cost per attack (Melee only, 0-100)
 
     // Attachment slots (what can be attached to this weapon)
+    // Note: Magazine is now a separate WeaponComponent, not included here
     std::vector<WeaponAttachmentSlot> attachmentSlots;
 
     // Override base class method

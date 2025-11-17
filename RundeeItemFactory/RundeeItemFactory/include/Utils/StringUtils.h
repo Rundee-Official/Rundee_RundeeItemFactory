@@ -31,6 +31,12 @@ namespace StringUtils
 
     // Normalize whitespace (replace newlines/tabs with spaces)
     std::string NormalizeWhitespace(const std::string& s);
+
+    // Remove ANSI escape/control sequences (e.g., cursor hide/show codes)
+    std::string StripAnsiEscapeCodes(const std::string& s);
+
+    // Remove other non-printable control characters (except whitespace)
+    std::string RemoveControlCharacters(const std::string& s);
 }
 
 

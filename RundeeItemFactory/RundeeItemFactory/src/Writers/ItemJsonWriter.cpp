@@ -408,6 +408,7 @@ bool ItemJsonWriter::WriteWeaponToFile(const std::vector<ItemWeaponData>& items,
         jItem["maxStack"] = item.maxStack;
         jItem["description"] = item.description;
 
+        jItem["weaponCategory"] = item.weaponCategory;
         jItem["weaponType"] = item.weaponType;
         jItem["caliber"] = item.caliber;
         jItem["minDamage"] = item.minDamage;
@@ -418,8 +419,13 @@ bool ItemJsonWriter::WriteWeaponToFile(const std::vector<ItemWeaponData>& items,
         jItem["ergonomics"] = item.ergonomics;
         jItem["weight"] = item.weight;
         jItem["durability"] = item.durability;
-        jItem["magazineCapacity"] = item.magazineCapacity;
-        jItem["magazineType"] = item.magazineType;
+        jItem["muzzleVelocity"] = item.muzzleVelocity;
+        jItem["effectiveRange"] = item.effectiveRange;
+        jItem["penetrationPower"] = item.penetrationPower;
+        jItem["moddingSlots"] = item.moddingSlots;
+        jItem["attackSpeed"] = item.attackSpeed;
+        jItem["reach"] = item.reach;
+        jItem["staminaCost"] = item.staminaCost;
 
         // Write attachment slots
         json jSlots = json::array();
@@ -465,11 +471,35 @@ bool ItemJsonWriter::WriteWeaponComponentToFile(const std::vector<ItemWeaponComp
         jItem["description"] = item.description;
 
         jItem["componentType"] = item.componentType;
+        
+        // Magazine-specific fields (only for Magazine type)
+        if (item.componentType == "Magazine" || item.componentType == "magazine")
+        {
+            jItem["magazineCapacity"] = item.magazineCapacity;
+            jItem["caliber"] = item.caliber;
+            jItem["magazineType"] = item.magazineType;
+            json jRounds = json::array();
+            for (const auto& segment : item.loadedRounds)
+            {
+                json jSegment;
+                jSegment["orderIndex"] = segment.orderIndex;
+                jSegment["roundCount"] = segment.roundCount;
+                jSegment["ammoId"] = segment.ammoId;
+                jSegment["ammoDisplayName"] = segment.ammoDisplayName;
+                jSegment["ammoNotes"] = segment.ammoNotes;
+                jRounds.push_back(jSegment);
+            }
+            jItem["loadedRounds"] = jRounds;
+        }
+        
         jItem["damageModifier"] = item.damageModifier;
         jItem["recoilModifier"] = item.recoilModifier;
         jItem["ergonomicsModifier"] = item.ergonomicsModifier;
         jItem["accuracyModifier"] = item.accuracyModifier;
         jItem["weightModifier"] = item.weightModifier;
+        jItem["muzzleVelocityModifier"] = item.muzzleVelocityModifier;
+        jItem["effectiveRangeModifier"] = item.effectiveRangeModifier;
+        jItem["penetrationModifier"] = item.penetrationModifier;
         jItem["hasBuiltInRail"] = item.hasBuiltInRail;
         jItem["railType"] = item.railType;
 

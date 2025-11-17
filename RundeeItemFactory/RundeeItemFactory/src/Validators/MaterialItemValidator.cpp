@@ -10,6 +10,7 @@
 
 #include "Validators/MaterialItemValidator.h"
 #include "Utils/JsonUtils.h"
+#include <iostream>
 
 namespace MaterialItemValidator
 {
