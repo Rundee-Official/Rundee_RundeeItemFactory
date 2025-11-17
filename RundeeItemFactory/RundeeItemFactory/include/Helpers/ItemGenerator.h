@@ -11,10 +11,13 @@
 #pragma once
 
 #include <string>
-#include "Helpers/CommandLineParser.h"
+#include "Helpers/ItemGenerateParams.h"
 #include "Data/ItemFoodData.h"
 #include "Data/ItemDrinkData.h"
 #include "Data/ItemMaterialData.h"
+
+// Forward declaration
+struct CommandLineArgs;
 
 namespace ItemGenerator
 {

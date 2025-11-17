@@ -73,9 +73,15 @@ namespace CommandLineParser
                     args.itemType = ItemType::Drink;
                 else if (t == "material")
                     args.itemType = ItemType::Material;
+                else if (t == "weapon")
+                    args.itemType = ItemType::Weapon;
+                else if (t == "weaponcomponent")
+                    args.itemType = ItemType::WeaponComponent;
+                else if (t == "ammo")
+                    args.itemType = ItemType::Ammo;
                 else
                     std::cout << "[Warning] Unknown itemType: " << t
-                    << " (use 'food', 'drink', or 'material')\n";
+                    << " (use 'food', 'drink', 'material', 'weapon', 'weaponcomponent', or 'ammo')\n";
             }
             else if (arg == "--count" && i + 1 < argc)
             {
@@ -92,6 +98,11 @@ namespace CommandLineParser
             else if (arg == "--out" && i + 1 < argc)
             {
                 args.params.outputPath = argv[++i];
+            }
+            else if (arg == "--report" && i + 1 < argc)
+            {
+                args.reportPath = argv[++i];
+                args.mode = RunMode::Dummy; // Report mode doesn't need LLM
             }
             else
             {
@@ -118,10 +129,13 @@ namespace CommandLineParser
     {
         switch (itemType)
         {
-        case ItemType::Drink:    return "drink";
-        case ItemType::Material: return "material";
+        case ItemType::Drink:         return "drink";
+        case ItemType::Material:       return "material";
+        case ItemType::Weapon:         return "weapon";
+        case ItemType::WeaponComponent: return "weaponcomponent";
+        case ItemType::Ammo:           return "ammo";
         case ItemType::Food:
-        default:                 return "food";
+        default:                       return "food";
         }
     }
 

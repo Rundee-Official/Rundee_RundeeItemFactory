@@ -11,11 +11,19 @@
 #include <iostream>
 #include "Helpers/CommandLineParser.h"
 #include "Helpers/ItemGenerator.h"
+#include "Helpers/BalanceReporter.h"
 
 int main(int argc, char** argv)
 {
     // Parse command line arguments
     CommandLineArgs args = CommandLineParser::ParseArguments(argc, argv);
+
+    // Check if report mode
+    if (!args.reportPath.empty())
+    {
+        std::cout << "[Main] Generating balance report for: " << args.reportPath << "\n";
+        return BalanceReporter::GenerateReport(args.reportPath, args.itemType);
+    }
 
     // Print configuration
     std::cout << "[Main] Mode = " << CommandLineParser::GetRunModeName(args.mode)

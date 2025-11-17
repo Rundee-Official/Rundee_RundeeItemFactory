@@ -11,7 +11,8 @@
 #pragma once
 
 #include <string>
-#include "Generators/ItemFoodGenerator.h"
+#include <set>
+#include "Helpers/ItemGenerateParams.h"
 
 enum class PresetType
 {
@@ -29,13 +30,22 @@ public:
     static std::string GetPresetFlavorText(PresetType preset);
 
     // Build food item generation prompt
-    static std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset);
+    static std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
 
     // Build drink item generation prompt
-    static std::string BuildDrinkJsonPrompt(const FoodGenerateParams& params, PresetType preset);
+    static std::string BuildDrinkJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
 
     // Build material item generation prompt
-    static std::string BuildMaterialJsonPrompt(const FoodGenerateParams& params, PresetType preset);
+    static std::string BuildMaterialJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
+
+    // Build weapon item generation prompt
+    static std::string BuildWeaponJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
+
+    // Build weapon component item generation prompt
+    static std::string BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
+
+    // Build ammo item generation prompt
+    static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
 };
 
 

@@ -15,6 +15,9 @@
 #include "Data/ItemFoodData.h"
 #include "Data/ItemDrinkData.h"
 #include "Data/ItemMaterialData.h"
+#include "Data/ItemWeaponData.h"
+#include "Data/ItemWeaponComponentData.h"
+#include "Data/ItemAmmoData.h"
 
 class ItemJsonParser
 {
@@ -27,6 +30,15 @@ public:
 
     // Parse material items from JSON text
     static bool ParseMaterialFromJsonText(const std::string& jsonText, std::vector<ItemMaterialData>& outItems);
+
+    // Parse weapon items from JSON text
+    static bool ParseWeaponFromJsonText(const std::string& jsonText, std::vector<ItemWeaponData>& outItems);
+
+    // Parse weapon component items from JSON text
+    static bool ParseWeaponComponentFromJsonText(const std::string& jsonText, std::vector<ItemWeaponComponentData>& outItems);
+
+    // Parse ammo items from JSON text
+    static bool ParseAmmoFromJsonText(const std::string& jsonText, std::vector<ItemAmmoData>& outItems);
 };
 
 

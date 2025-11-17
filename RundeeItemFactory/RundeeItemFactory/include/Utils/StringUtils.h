@@ -21,6 +21,7 @@ namespace StringUtils
     // - Removes trailing commas
     // - Closes unclosed brackets
     std::string CleanJsonArrayText(const std::string& input);
+    std::string FixCommonJsonErrors(const std::string& input);
 
     // Escape special characters for command line
     std::string EscapeForCmd(const std::string& s);

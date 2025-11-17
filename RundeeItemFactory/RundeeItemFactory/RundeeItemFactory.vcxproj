@@ -23,15 +23,18 @@
     <ClCompile Include="src\Validators\FoodItemValidator.cpp" />
     <ClCompile Include="src\Validators\DrinkItemValidator.cpp" />
     <ClCompile Include="src\Validators\MaterialItemValidator.cpp" />
+    <ClCompile Include="src\Validators\WeaponItemValidator.cpp" />
+    <ClCompile Include="src\Validators\WeaponComponentItemValidator.cpp" />
+    <ClCompile Include="src\Validators\AmmoItemValidator.cpp" />
     <ClCompile Include="src\Parsers\ItemJsonParser.cpp" />
     <ClCompile Include="src\Writers\ItemJsonWriter.cpp" />
-    <ClCompile Include="src\Generators\ItemFoodGenerator.cpp" />
     <ClCompile Include="src\Clients\OllamaClient.cpp" />
     <ClCompile Include="src\Prompts\PromptBuilder.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\Utils\JsonUtils.cpp" />
     <ClCompile Include="src\Helpers\CommandLineParser.cpp" />
     <ClCompile Include="src\Helpers\ItemGenerator.cpp" />
+    <ClCompile Include="src\Helpers\BalanceReporter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\json.hpp" />
@@ -39,18 +42,25 @@
     <ClInclude Include="include\Data\ItemFoodData.h" />
     <ClInclude Include="include\Data\ItemDrinkData.h" />
     <ClInclude Include="include\Data\ItemMaterialData.h" />
+    <ClInclude Include="include\Data\ItemWeaponData.h" />
+    <ClInclude Include="include\Data\ItemWeaponComponentData.h" />
+    <ClInclude Include="include\Data\ItemAmmoData.h" />
     <ClInclude Include="include\Validators\FoodItemValidator.h" />
     <ClInclude Include="include\Validators\DrinkItemValidator.h" />
     <ClInclude Include="include\Validators\MaterialItemValidator.h" />
+    <ClInclude Include="include\Validators\WeaponItemValidator.h" />
+    <ClInclude Include="include\Validators\WeaponComponentItemValidator.h" />
+    <ClInclude Include="include\Validators\AmmoItemValidator.h" />
     <ClInclude Include="include\Parsers\ItemJsonParser.h" />
     <ClInclude Include="include\Writers\ItemJsonWriter.h" />
-    <ClInclude Include="include\Generators\ItemFoodGenerator.h" />
     <ClInclude Include="include\Clients\OllamaClient.h" />
+    <ClInclude Include="include\Helpers\ItemGenerateParams.h" />
     <ClInclude Include="include\Prompts\PromptBuilder.h" />
     <ClInclude Include="include\Utils\StringUtils.h" />
     <ClInclude Include="include\Utils\JsonUtils.h" />
     <ClInclude Include="include\Helpers\CommandLineParser.h" />
     <ClInclude Include="include\Helpers\ItemGenerator.h" />
+    <ClInclude Include="include\Helpers\BalanceReporter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

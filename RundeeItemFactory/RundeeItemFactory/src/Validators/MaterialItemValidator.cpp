@@ -15,6 +15,12 @@ namespace MaterialItemValidator
 {
     void Validate(ItemMaterialData& item)
     {
+        // Add prefix to ID
+        if (!item.id.empty() && item.id.find("Material_") != 0)
+        {
+            item.id = "Material_" + item.id;
+        }
+
         // Default category/materialType
         if (item.category.empty())
             item.category = "Material";
@@ -25,17 +31,24 @@ namespace MaterialItemValidator
         // rarity validation
         if (item.rarity != "Common" && item.rarity != "Uncommon" && item.rarity != "Rare")
         {
-            // value 기반으로 자동 분류
+            // Auto-classify based on value
             if (item.value <= 25)      item.rarity = "Common";
             else if (item.value <= 60) item.rarity = "Uncommon";
             else                       item.rarity = "Rare";
         }
 
-        // 수치 범위 클램핑
+        // Clamp value ranges
         item.maxStack = JsonUtils::ClampInt(item.maxStack, 1, 100);
         item.hardness = JsonUtils::ClampInt(item.hardness, 0, 100);
         item.flammability = JsonUtils::ClampInt(item.flammability, 0, 100);
         item.value = JsonUtils::ClampInt(item.value, 0, 100);
+
+        // Ensure description is not empty
+        if (item.description.empty())
+        {
+            item.description = "A " + item.displayName + " used for crafting.";
+            std::cout << "[MaterialItemValidator] Warning: Item " << item.id << " has empty description, using default.\n";
+        }
     }
 }
 

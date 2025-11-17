@@ -22,19 +22,19 @@ static float ComputePower(const ItemFoodData& item)
 
 static void EnsureFoodShape(ItemFoodData& item)
 {
-    // category 기본값: Food
+    // Default category: Food
     if (item.category.empty())
         item.category = "Food";
 
-    // 소문자로 들어온 경우 대문자로 변환
+    // Convert lowercase to proper case
     if (item.category == "food" || item.category == "FOOD")
         item.category = "Food";
 
-    // Food는 hungerRestore가 우선
+    // Food items prioritize hungerRestore
     if (item.hungerRestore < 5)
         item.hungerRestore = 5;
 
-    // Food는 hungerRestore가 thirstRestore보다 커야 함
+    // Food items should have hungerRestore greater than thirstRestore
     if (item.hungerRestore < item.thirstRestore)
     {
         item.hungerRestore = item.thirstRestore + 5;
@@ -43,14 +43,14 @@ static void EnsureFoodShape(ItemFoodData& item)
 
 static void EnsureSpoilage(ItemFoodData& item)
 {
-    // spoils == false 면 spoilTimeMinutes는 0
+    // If spoils == false, spoilTimeMinutes should be 0
     if (!item.spoils)
     {
         item.spoilTimeMinutes = 0;
         return;
     }
 
-    // spoils == true 면 최소/최대 범위를 설정한다 (5분 ~ 7일)
+    // If spoils == true, set min/max range (5 minutes ~ 7 days)
     int minMinutes = 5;
     int maxMinutes = 7 * 24 * 60; // 7 days
     item.spoilTimeMinutes = JsonUtils::ClampInt(item.spoilTimeMinutes, minMinutes, maxMinutes);
@@ -60,7 +60,7 @@ static void EnsureRarity(ItemFoodData& item)
 {
     float power = ComputePower(item);
 
-    // rarity가 비어있거나 잘못된 값이면 power 기반으로 자동 분류
+    // If rarity is empty or invalid, auto-classify based on power
     if (item.rarity.empty() ||
         (item.rarity != "Common" && item.rarity != "Uncommon" && item.rarity != "Rare"))
     {
@@ -70,7 +70,7 @@ static void EnsureRarity(ItemFoodData& item)
         return;
     }
 
-    // rarity에 맞는 범위로 조정
+    // Adjust to match rarity range
     float maxPower = 999.0f;
     if (item.rarity == "Common")
     {
@@ -86,9 +86,9 @@ static void EnsureRarity(ItemFoodData& item)
     }
 
     if (power <= maxPower)
-        return; // 이미 범위 안에 있음
+        return; // Already within range
 
-    // power가 너무 크면, 비율을 유지하면서 범위로 맞춤
+    // If power is too high, scale down while maintaining ratio
     float scale = maxPower / power;
     if (scale <= 0.0f)
         return;
@@ -106,21 +106,34 @@ static void EnsureRarity(ItemFoodData& item)
 
 void FoodItemValidator::Validate(ItemFoodData& item)
 {
-    // 1) 기본 수치 클램핑
+    // 0) Add prefix to ID
+    if (!item.id.empty() && item.id.find("Food_") != 0)
+    {
+        item.id = "Food_" + item.id;
+    }
+
+    // 1) Clamp basic values
     item.hungerRestore = JsonUtils::ClampInt(item.hungerRestore, 0, 100);
     item.thirstRestore = JsonUtils::ClampInt(item.thirstRestore, 0, 100);
     item.healthRestore = JsonUtils::ClampInt(item.healthRestore, 0, 100);
 
     item.maxStack = JsonUtils::ClampInt(item.maxStack, 1, 999);
 
-    // 2) Food 특성 보장 (hungerRestore 우선)
+    // 2) Ensure Food characteristics (hungerRestore priority)
     EnsureFoodShape(item);
 
-    // 3) 부패 처리
+    // 3) Handle spoilage
     EnsureSpoilage(item);
 
-    // 4) rarity 밸런스 처리
+    // 4) Balance rarity
     EnsureRarity(item);
+
+    // 5) Ensure description is not empty
+    if (item.description.empty())
+    {
+        item.description = "A " + item.displayName + " that restores hunger.";
+        std::cout << "[FoodItemValidator] Warning: Item " << item.id << " has empty description, using default.\n";
+    }
 }
 
 

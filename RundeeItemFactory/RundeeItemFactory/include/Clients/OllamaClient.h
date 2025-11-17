@@ -20,6 +20,16 @@ public:
     // Returns the entire stdout as a string.
     // Returns empty string on error.
     static std::string RunSimple(const std::string& modelName, const std::string& prompt);
+
+    // Run with retry logic:
+    // Attempts to call LLM with automatic retry on failure.
+    // maxRetries: Maximum number of retry attempts (default: 3)
+    // timeoutSeconds: Timeout per attempt in seconds (default: 120, 0 = no timeout)
+    // Returns the response string, or empty string if all attempts failed.
+    static std::string RunWithRetry(const std::string& modelName, 
+                                    const std::string& prompt,
+                                    int maxRetries = 3,
+                                    int timeoutSeconds = 120);
 };
 
 

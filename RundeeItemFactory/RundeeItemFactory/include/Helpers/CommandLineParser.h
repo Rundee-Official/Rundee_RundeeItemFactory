@@ -11,7 +11,7 @@
 #pragma once
 
 #include <string>
-#include "Generators/ItemFoodGenerator.h"
+#include "Helpers/ItemGenerateParams.h"
 #include "Prompts/PromptBuilder.h"
 
 enum class RunMode
@@ -24,16 +24,20 @@ enum class ItemType
 {
     Food,
     Drink,
-    Material
+    Material,
+    Weapon,
+    WeaponComponent,
+    Ammo
 };
 
 struct CommandLineArgs
 {
     std::string modelName = "llama3";
-    RunMode mode = RunMode::Dummy;
+    RunMode mode = RunMode::LLM;
     PresetType preset = PresetType::Default;
     ItemType itemType = ItemType::Food;
     FoodGenerateParams params;
+    std::string reportPath;   // Path to JSON file for balance report (empty if not reporting)
 };
 
 namespace CommandLineParser
