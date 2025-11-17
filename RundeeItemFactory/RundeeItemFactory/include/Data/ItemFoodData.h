@@ -9,17 +9,12 @@
 // ===============================
 
 #pragma once
-#include <string>
 
-struct ItemFoodData
+#include "Data/ItemDataBase.h"
+
+struct ItemFoodData : public ItemDataBase
 {
-    std::string id;
-    std::string displayName;
-    std::string category;
-    std::string rarity;
-
-    int maxStack = 1;
-
+    // Food-specific properties
     int hungerRestore = 0;
     int thirstRestore = 0;
     int healthRestore = 0;
@@ -27,5 +22,8 @@ struct ItemFoodData
     bool spoils = false;
     int spoilTimeMinutes = 0;
 
-    std::string description;
+    // Override base class method
+    std::string GetItemTypeName() const override { return "Food"; }
 };
+
+

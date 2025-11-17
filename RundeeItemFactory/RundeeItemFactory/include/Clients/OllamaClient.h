@@ -15,9 +15,11 @@
 class OllamaClient
 {
 public:
-    // 가장 단순한 버전:
-    // 지정한 모델 이름과 프롬프트를 사용해서 ollama run 실행,
-    // stdout 전체를 문자열로 리턴.
-    // 에러 발생 시 빈 문자열 리턴.
+    // Simple helper function:
+    // Runs ollama run command with the given model name and prompt,
+    // Returns the entire stdout as a string.
+    // Returns empty string on error.
     static std::string RunSimple(const std::string& modelName, const std::string& prompt);
 };
+
+

@@ -8,44 +8,15 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "OllamaClient.h"
+#include "Clients/OllamaClient.h"
+#include "Utils/StringUtils.h"
 #include <iostream>
-#include <cstdio> 
-
-static std::string NormalizeWhitespace(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size());
-
-    for (char c : s)
-    {
-        if (c == '\n' || c == '\r' || c == '\t')
-            out += ' ';
-        else
-            out += c;
-    }
-    return out;
-}
-
-// æ∆¡÷ ∑Ø«¡«œ∞‘ ƒı∆Æ∏∏ √÷º“«— escape
-static std::string EscapeForCmd(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size() + 8);
-    for (char c : s)
-    {
-        if (c == '"')
-            out += "\\\"";   // " °Ê \"
-        else
-            out += c;
-    }
-    return out;
-}
+#include <cstdio>
 
 std::string OllamaClient::RunSimple(const std::string& modelName, const std::string& prompt)
 {
-    std::string flatPrompt = NormalizeWhitespace(prompt);
-    std::string escapedPrompt = EscapeForCmd(flatPrompt);
+    std::string flatPrompt = StringUtils::NormalizeWhitespace(prompt);
+    std::string escapedPrompt = StringUtils::EscapeForCmd(flatPrompt);
     std::string command = "ollama run " + modelName +
         " \"" + escapedPrompt + "\"";
 
@@ -53,7 +24,7 @@ std::string OllamaClient::RunSimple(const std::string& modelName, const std::str
 
     std::string result;
 
-    // _popen ¿∏∑Œ ∏Ì∑… Ω««‡«œ∞Ì stdout ¿–±‚
+    // _popen ÏúºÎ°ú Î™ÖÎ†π Ïã§ÌñâÌïòÍ≥† stdout ÏùΩÍ∏∞
     FILE* pipe = _popen(command.c_str(), "r");
     if (!pipe)
     {
@@ -75,3 +46,5 @@ std::string OllamaClient::RunSimple(const std::string& modelName, const std::str
 
     return result;
 }
+
+

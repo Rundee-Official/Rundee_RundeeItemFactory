@@ -13,48 +13,150 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\Data">
+      <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Validators">
+      <UniqueIdentifier>{B2C3D4E5-F6A7-8901-BCDE-F12345678901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsers">
+      <UniqueIdentifier>{C3D4E5F6-A7B8-9012-CDEF-123456789012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Writers">
+      <UniqueIdentifier>{D4E5F6A7-B8C9-0123-DEF0-234567890123}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Generators">
+      <UniqueIdentifier>{E5F6A7B8-C9D0-1234-EF01-345678901234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Clients">
+      <UniqueIdentifier>{F6A7B8C9-D0E1-2345-F012-456789012345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Prompts">
+      <UniqueIdentifier>{A7B8C9D0-E1F2-3456-0123-567890123456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{B8C9D0E1-F2A3-4567-1234-678901234567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Validators">
+      <UniqueIdentifier>{C9D0E1F2-A3B4-5678-2345-789012345678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsers">
+      <UniqueIdentifier>{D0E1F2A3-B4C5-6789-3456-890123456789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Writers">
+      <UniqueIdentifier>{E1F2A3B4-C5D6-7890-4567-901234567890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generators">
+      <UniqueIdentifier>{F2A3B4C5-D6E7-8901-5678-012345678901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Clients">
+      <UniqueIdentifier>{A3B4C5D6-E7F8-9012-6789-123456789012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Prompts">
+      <UniqueIdentifier>{B4C5D6E7-F8A9-0123-7890-234567890123}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{C5D6E7F8-A9B0-1234-8901-345678901234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{D6E7F8A9-B0C1-2345-9012-456789012345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{E7F8A9B0-C1D2-3456-0123-567890123456}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RundeeItemFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ItemFoodGenerator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Validators\FoodItemValidator.cpp">
+      <Filter>Source Files\Validators</Filter>
     </ClCompile>
-    <ClCompile Include="src\FoodJsonWriter.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Validators\DrinkItemValidator.cpp">
+      <Filter>Source Files\Validators</Filter>
     </ClCompile>
-    <ClCompile Include="src\OllamaClient.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Validators\MaterialItemValidator.cpp">
+      <Filter>Source Files\Validators</Filter>
     </ClCompile>
-    <ClCompile Include="src\FoodJsonParser.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Parsers\ItemJsonParser.cpp">
+      <Filter>Source Files\Parsers</Filter>
     </ClCompile>
-    <ClCompile Include="src\FoodItemValidator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\Writers\ItemJsonWriter.cpp">
+      <Filter>Source Files\Writers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\ItemFoodGenerator.cpp">
+      <Filter>Source Files\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Clients\OllamaClient.cpp">
+      <Filter>Source Files\Clients</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Prompts\PromptBuilder.cpp">
+      <Filter>Source Files\Prompts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\StringUtils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\JsonUtils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helpers\CommandLineParser.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helpers\ItemGenerator.cpp">
+      <Filter>Source Files\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ItemFoodData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ItemFoodGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\FoodJsonWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OllamaClient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\FoodJsonParser.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Data\ItemDataBase.h">
+      <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\FoodItemValidator.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Data\ItemFoodData.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Data\ItemDrinkData.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Data\ItemMaterialData.h">
+      <Filter>Header Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Validators\FoodItemValidator.h">
+      <Filter>Header Files\Validators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Validators\DrinkItemValidator.h">
+      <Filter>Header Files\Validators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Validators\MaterialItemValidator.h">
+      <Filter>Header Files\Validators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Parsers\ItemJsonParser.h">
+      <Filter>Header Files\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Writers\ItemJsonWriter.h">
+      <Filter>Header Files\Writers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Generators\ItemFoodGenerator.h">
+      <Filter>Header Files\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Clients\OllamaClient.h">
+      <Filter>Header Files\Clients</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prompts\PromptBuilder.h">
+      <Filter>Header Files\Prompts</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utils\StringUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utils\JsonUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Helpers\CommandLineParser.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Helpers\ItemGenerator.h">
+      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

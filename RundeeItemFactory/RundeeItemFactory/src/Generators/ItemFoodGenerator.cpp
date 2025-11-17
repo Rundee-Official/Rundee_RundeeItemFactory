@@ -8,7 +8,7 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "ItemFoodGenerator.h"
+#include "Generators/ItemFoodGenerator.h"
 #include <iostream>
 
 std::vector<ItemFoodData> ItemFoodGenerator::GenerateDummy(const FoodGenerateParams& params)
@@ -25,7 +25,7 @@ std::vector<ItemFoodData> ItemFoodGenerator::GenerateDummy(const FoodGeneratePar
         item.rarity = "Common";
         item.maxStack = 10;
 
-        item.hungerRestore = 10 + i;   // 테스트용
+        item.hungerRestore = 10 + i;
         item.thirstRestore = 5;
         item.healthRestore = 0;
 
@@ -42,3 +42,5 @@ std::vector<ItemFoodData> ItemFoodGenerator::GenerateDummy(const FoodGeneratePar
 
     return items;
 }
+
+

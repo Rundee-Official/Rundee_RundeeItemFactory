@@ -19,21 +19,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FoodItemValidator.cpp" />
-    <ClCompile Include="src\FoodJsonParser.cpp" />
-    <ClCompile Include="src\FoodJsonWriter.cpp" />
-    <ClCompile Include="src\ItemFoodGenerator.cpp" />
-    <ClCompile Include="src\OllamaClient.cpp" />
     <ClCompile Include="src\RundeeItemFactory.cpp" />
+    <ClCompile Include="src\Validators\FoodItemValidator.cpp" />
+    <ClCompile Include="src\Validators\DrinkItemValidator.cpp" />
+    <ClCompile Include="src\Validators\MaterialItemValidator.cpp" />
+    <ClCompile Include="src\Parsers\ItemJsonParser.cpp" />
+    <ClCompile Include="src\Writers\ItemJsonWriter.cpp" />
+    <ClCompile Include="src\Generators\ItemFoodGenerator.cpp" />
+    <ClCompile Include="src\Clients\OllamaClient.cpp" />
+    <ClCompile Include="src\Prompts\PromptBuilder.cpp" />
+    <ClCompile Include="src\Utils\StringUtils.cpp" />
+    <ClCompile Include="src\Utils\JsonUtils.cpp" />
+    <ClCompile Include="src\Helpers\CommandLineParser.cpp" />
+    <ClCompile Include="src\Helpers\ItemGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\FoodItemValidator.h" />
-    <ClInclude Include="include\FoodJsonParser.h" />
-    <ClInclude Include="include\FoodJsonWriter.h" />
-    <ClInclude Include="include\ItemFoodData.h" />
-    <ClInclude Include="include\ItemFoodGenerator.h" />
     <ClInclude Include="include\json.hpp" />
-    <ClInclude Include="include\OllamaClient.h" />
+    <ClInclude Include="include\Data\ItemDataBase.h" />
+    <ClInclude Include="include\Data\ItemFoodData.h" />
+    <ClInclude Include="include\Data\ItemDrinkData.h" />
+    <ClInclude Include="include\Data\ItemMaterialData.h" />
+    <ClInclude Include="include\Validators\FoodItemValidator.h" />
+    <ClInclude Include="include\Validators\DrinkItemValidator.h" />
+    <ClInclude Include="include\Validators\MaterialItemValidator.h" />
+    <ClInclude Include="include\Parsers\ItemJsonParser.h" />
+    <ClInclude Include="include\Writers\ItemJsonWriter.h" />
+    <ClInclude Include="include\Generators\ItemFoodGenerator.h" />
+    <ClInclude Include="include\Clients\OllamaClient.h" />
+    <ClInclude Include="include\Prompts\PromptBuilder.h" />
+    <ClInclude Include="include\Utils\StringUtils.h" />
+    <ClInclude Include="include\Utils\JsonUtils.h" />
+    <ClInclude Include="include\Helpers\CommandLineParser.h" />
+    <ClInclude Include="include\Helpers\ItemGenerator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
