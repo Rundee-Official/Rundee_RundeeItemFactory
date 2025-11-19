@@ -17,3 +17,5 @@ namespace WeaponComponentItemValidator
     void Validate(ItemWeaponComponentData& item);
 }
 
+
+

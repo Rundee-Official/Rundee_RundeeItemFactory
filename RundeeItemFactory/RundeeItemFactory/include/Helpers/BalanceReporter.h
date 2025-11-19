@@ -20,3 +20,5 @@ namespace BalanceReporter
     int GenerateReport(const std::string& jsonFilePath, ItemType itemType);
 }
 
+
+

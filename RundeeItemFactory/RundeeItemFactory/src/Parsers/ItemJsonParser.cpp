@@ -27,13 +27,34 @@ bool ItemJsonParser::ParseFoodFromJsonText(const std::string& jsonText, std::vec
 {
     outItems.clear();
 
+    // Check for empty input
+    if (jsonText.empty() || jsonText.find_first_not_of(" \t\r\n") == std::string::npos)
+    {
+        std::cerr << "[ItemJsonParser] Error: Input JSON text is empty or contains only whitespace.\n";
+        return false;
+    }
+
     // Clean LLM response string
     std::string cleaned = StringUtils::CleanJsonArrayText(jsonText);
+    
+    if (cleaned.empty() || cleaned.find_first_not_of(" \t\r\n") == std::string::npos)
+    {
+        std::cerr << "[ItemJsonParser] Error: JSON text became empty after cleaning.\n";
+        return false;
+    }
 
     json root;
     try
     {
         root = json::parse(cleaned);
+    }
+    catch (const json::parse_error& e)
+    {
+        std::cerr << "[ItemJsonParser] JSON parse error (position " << e.byte << "): "
+            << e.what() << "\n";
+        std::cerr << "[ItemJsonParser] First 200 chars of cleaned text: "
+            << cleaned.substr(0, 200) << "\n";
+        return false;
     }
     catch (const std::exception& e)
     {
@@ -42,9 +63,22 @@ bool ItemJsonParser::ParseFoodFromJsonText(const std::string& jsonText, std::vec
         return false;
     }
 
+    if (root.is_null())
+    {
+        std::cerr << "[ItemJsonParser] Error: Parsed JSON is null.\n";
+        return false;
+    }
+
     if (!root.is_array())
     {
-        std::cerr << "[ItemJsonParser] Root JSON is not an array.\n";
+        std::cerr << "[ItemJsonParser] Error: Root JSON is not an array (type: " 
+            << (root.is_object() ? "object" : "other") << ").\n";
+        return false;
+    }
+
+    if (root.empty())
+    {
+        std::cerr << "[ItemJsonParser] Warning: JSON array is empty. No items to parse.\n";
         return false;
     }
 

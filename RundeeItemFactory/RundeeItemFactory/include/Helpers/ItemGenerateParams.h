@@ -21,3 +21,5 @@ struct FoodGenerateParams
     std::string outputPath = "items_food.json";
 };
 
+
+

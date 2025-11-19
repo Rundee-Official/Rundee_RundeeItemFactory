@@ -10,7 +10,9 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
 - **Multiple Item Types**: Food, Drink, Material, Weapon, WeaponComponent, and Ammo items
 - **Preset System**: Forest, Desert, Coast, City, and Default presets
 - **Unity Integration**: Automatic ScriptableObject generation with EditorWindow GUI
-- **Balance Reporting**: Statistical analysis of generated items
+- **Balance Reporting**: Statistical analysis of generated items with Quick Summary
+- **Unity Balance Report Integration**: Generate balance reports directly from Unity Editor
+- **Improved UI**: Organized sections with helpful tooltips and progress indicators
 - **Retry Logic**: Automatic retry on LLM failures with exponential backoff
 - **ID Prefixing**: Automatic type prefixes (Food_, Drink_, Material_, Weapon_, WeaponComponent_, Ammo_)
 - **JSON Merging**: Automatically merges new items with existing files, skipping duplicates
@@ -92,18 +94,38 @@ RundeeItemFactory.exe --mode dummy --itemType food --count 5 --out items_dummy.j
 
 1. Open Unity Editor
 2. Go to **Tools > Rundee > Item Factory Window**
-3. Configure the generation parameters:
+3. The window is organized into collapsible sections:
+
+   **Configuration Section:**
    - **Executable Path**: Path to `RundeeItemFactory.exe` (auto-detected if in standard location)
-   - **Model**: LLM model name (e.g., `llama3`)
-   - **Preset**: World preset (Default, Forest, Desert, Coast, City)
+   - Shows status indicator when executable is found
+
+   **Generation Parameters Section:**
+   - **Model**: LLM model name (e.g., `llama3`, `llama3:8b`, or custom)
+   - **Preset**: World preset with helpful descriptions:
+     - Default: Generic survival environment
+     - Forest: Natural resources, wild foods
+     - Desert: Scarce resources, preserved foods
+     - Coast: Seafood, fresh water sources
+     - City: Processed foods, modern weapons
    - **Item Type**: Food, Drink, Material, Weapon, Weapon Component, or Ammo
-   - **Count**: Number of items to generate
-   - **Max Hunger/Thirst**: Maximum values for balancing
-   - **Output File**: Path where JSON will be saved
+   - **Count**: Number of items to generate (recommended: 10-20 for testing, 50-100 for production)
+   - **Max Hunger/Thirst**: Maximum values for balancing (Food/Drink only)
+   - **Output File**: Path where JSON will be saved (shows file size if exists)
    - **Auto Import**: Automatically import items after generation
+
 4. Click **Generate Items**
-5. Monitor progress in the log area
+5. Monitor progress:
+   - Progress bar shows generation status
+   - Log area displays real-time output
+   - Cancel button available during generation
 6. Items will be automatically imported if "Auto Import" is enabled
+
+**Balance Report Feature:**
+- Expand the "Balance Report" section
+- Select a JSON file and item type
+- Click "Generate Report" to view statistical analysis
+- Reports include Quick Summary, distribution stats, and balance warnings
 
 #### Manual Import
 
@@ -196,6 +218,8 @@ UnityRundeeItemFactoryTest/
 ```
 
 ### Weapon Items
+Weapons are categorized as either "Ranged" or "Melee". Ranged weapons use ammo and have caliber, while Melee weapons have inherent damage and melee-specific stats.
+
 ```json
 {
   "id": "Weapon_ak47",
@@ -203,6 +227,7 @@ UnityRundeeItemFactoryTest/
   "category": "Weapon",
   "rarity": "Rare",
   "maxStack": 1,
+  "weaponCategory": "Ranged",
   "weaponType": "AssaultRifle",
   "caliber": "7.62mm",
   "minDamage": 45,
@@ -213,19 +238,53 @@ UnityRundeeItemFactoryTest/
   "ergonomics": 50,
   "weight": 3500,
   "durability": 100,
-  "magazineCapacity": 30,
-  "magazineType": "Standard",
+  "muzzleVelocity": 715,
+  "effectiveRange": 400,
+  "penetrationPower": 60,
+  "moddingSlots": 4,
   "attachmentSlots": [
     {"slotType": "Muzzle", "slotIndex": 0, "isRequired": false},
     {"slotType": "Grip", "slotIndex": 0, "isRequired": false},
-    {"slotType": "Sight", "slotIndex": 0, "isRequired": false}
+    {"slotType": "Sight", "slotIndex": 0, "isRequired": false},
+    {"slotType": "Magazine", "slotIndex": 0, "isRequired": true}
   ],
   "description": "A reliable assault rifle with high damage."
 }
 ```
 
+**Melee Weapon Example:**
+```json
+{
+  "id": "Weapon_combat_knife",
+  "displayName": "Combat Knife",
+  "category": "Weapon",
+  "rarity": "Common",
+  "maxStack": 1,
+  "weaponCategory": "Melee",
+  "weaponType": "Knife",
+  "caliber": "",
+  "minDamage": 20,
+  "maxDamage": 30,
+  "fireRate": 120,
+  "accuracy": 80,
+  "recoil": 0,
+  "ergonomics": 70,
+  "weight": 200,
+  "durability": 100,
+  "muzzleVelocity": 0,
+  "effectiveRange": 0,
+  "penetrationPower": 0,
+  "attackSpeed": 3,
+  "reach": 50,
+  "staminaCost": 10,
+  "moddingSlots": 0,
+  "attachmentSlots": [],
+  "description": "A sharp combat knife for close-quarters combat."
+}
+```
+
 ### Weapon Component Items
-Magazines can now describe their exact load order. Each entry in `loadedRounds` represents a contiguous block of rounds (top-to-bottom) with a specific ammo ID.
+Weapon components modify weapon stats when attached. Magazines can describe their exact load order with mixed ammo types. All magazines of the same caliber support mixed ammo by default.
 
 ```json
 {
@@ -297,20 +356,22 @@ Magazines can now describe their exact load order. Each entry in `loadedRounds` 
 
 ## Presets
 
+Presets define the world context for item generation, influencing the types and characteristics of generated items.
+
 ### Default
-Generic early-game survival environment with moderate resources.
+Generic early-game survival environment with moderate resources. Items should feel simple and grounded, not magical or high-tech.
 
 ### Forest
-Temperate forest with berries, nuts, roots, and simple cooked meals.
+Temperate forest environment with natural resources, wild foods, and organic materials. Items include berries, nuts, roots, and simple cooked meals.
 
 ### Desert
-Harsh desert with scarce vegetation. Food items are low in quantity but efficient.
+Harsh desert environment with scarce resources, preserved foods, and heat-resistant materials. Food items are low in quantity but efficient.
 
 ### Coast
-Coastal island with coconuts, fish, shellfish, and tropical fruits.
+Coastal environment with seafood, fresh water sources, and marine materials. Items include coconuts, fish, shellfish, and tropical fruits.
 
 ### City
-Abandoned modern city with processed food, canned goods, and energy drinks.
+Urban environment with processed foods, manufactured items, and modern weapons. Items include canned goods, energy drinks, and advanced weaponry.
 
 ## Retry Logic
 
@@ -333,19 +394,68 @@ This allows you to incrementally build your item database without losing existin
 
 ## Balance Report
 
-Generate statistical reports for generated items:
+Generate statistical reports for generated items to analyze balance and distribution patterns.
+
+### Command Line
 
 ```bash
 RundeeItemFactory.exe --report items_food.json --itemType food
 RundeeItemFactory.exe --report items_weapon.json --itemType weapon
+RundeeItemFactory.exe --report items_weaponcomponent.json --itemType weaponcomponent
 RundeeItemFactory.exe --report items_ammo.json --itemType ammo
 ```
 
-The report includes:
+### Unity Editor
+
+1. Open **Tools > Rundee > Item Factory Window**
+2. Expand the **Balance Report** section
+3. Select a JSON file and item type
+4. Click **Generate Report**
+5. View the report in the scrollable text area
+
+### Report Contents
+
+Each report includes:
+
+**Quick Summary:**
+- Key statistics at a glance
+- Average values for important stats
+- Distribution overview
+
+**Detailed Statistics:**
 - Total item count
-- Rarity distribution
-- Average/Min/Max stats
-- Balance warnings
+- Rarity distribution (with percentages)
+- Average/Min/Max for all stats
+- Type-specific distributions (weapon types, calibers, component types, etc.)
+
+**Balance Warnings:**
+- Detects unrealistic values
+- Highlights potential balance issues
+- Provides recommendations
+
+**Example Output:**
+```
+========================================
+   WEAPON ITEMS BALANCE REPORT
+========================================
+Total Items: 25
+
+--- Quick Summary ---
+  Average Damage: 42.5
+  Average Fire Rate: 580 RPM
+  Average Accuracy: 68/100
+  Average Weight: 3200g (3.2 kg)
+  Weapon Categories: 18 Ranged, 7 Melee
+
+--- Rarity Distribution ---
+  Common    :  8 (32.0%)
+  Uncommon  : 10 (40.0%)
+  Rare      :  7 (28.0%)
+
+--- Balance Warnings ---
+  [OK] No balance issues detected.
+========================================
+```
 
 ## Troubleshooting
 

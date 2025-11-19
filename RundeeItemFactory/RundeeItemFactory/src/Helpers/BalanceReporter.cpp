@@ -200,6 +200,17 @@ namespace BalanceReporter
         std::cout << "========================================\n";
         std::cout << "Total Items: " << stats.count << "\n\n";
 
+        // Quick Summary
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Hunger Restore: " << (stats.totalHunger / stats.count) << "\n";
+        std::cout << "  Average Thirst Restore: " << (stats.totalThirst / stats.count) << "\n";
+        std::cout << "  Average Health Restore: " << (stats.totalHealth / stats.count) << "\n";
+        float avgPower = (stats.totalHunger + stats.totalThirst + stats.totalHealth) / (float)stats.count;
+        std::cout << "  Average Total Power: " << std::fixed << std::setprecision(1) << avgPower << "\n";
+        std::cout << "  Spoiling Items: " << stats.spoilingCount << " (" 
+            << (stats.spoilingCount * 100.0f / stats.count) << "%)\n";
+        std::cout << "\n";
+
         std::cout << "--- Rarity Distribution ---\n";
         for (const auto& pair : stats.rarityCount)
         {
@@ -248,7 +259,6 @@ namespace BalanceReporter
             hasWarnings = true;
         }
 
-        float avgPower = (stats.totalHunger + stats.totalThirst + stats.totalHealth) / (float)stats.count;
         if (avgPower > 60)
         {
             std::cout << "  [WARNING] High average power detected (avg: " << std::fixed << std::setprecision(1) << avgPower << ")\n";
@@ -297,6 +307,17 @@ namespace BalanceReporter
         std::cout << "   DRINK ITEMS BALANCE REPORT\n";
         std::cout << "========================================\n";
         std::cout << "Total Items: " << stats.count << "\n\n";
+
+        // Quick Summary
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Hunger Restore: " << (stats.totalHunger / stats.count) << "\n";
+        std::cout << "  Average Thirst Restore: " << (stats.totalThirst / stats.count) << "\n";
+        std::cout << "  Average Health Restore: " << (stats.totalHealth / stats.count) << "\n";
+        float avgPower = (stats.totalHunger + stats.totalThirst + stats.totalHealth) / (float)stats.count;
+        std::cout << "  Average Total Power: " << std::fixed << std::setprecision(1) << avgPower << "\n";
+        std::cout << "  Spoiling Items: " << stats.spoilingCount << " (" 
+            << (stats.spoilingCount * 100.0f / stats.count) << "%)\n";
+        std::cout << "\n";
 
         std::cout << "--- Rarity Distribution ---\n";
         for (const auto& pair : stats.rarityCount)
@@ -381,6 +402,14 @@ namespace BalanceReporter
         std::cout << "   MATERIAL ITEMS BALANCE REPORT\n";
         std::cout << "========================================\n";
         std::cout << "Total Items: " << stats.count << "\n\n";
+
+        // Quick Summary
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Hardness: " << (stats.totalHardness / stats.count) << "/100\n";
+        std::cout << "  Average Flammability: " << (stats.totalFlammability / stats.count) << "/100\n";
+        std::cout << "  Average Value: " << (stats.totalValue / stats.count) << "\n";
+        std::cout << "  Material Types: " << stats.materialTypeCount.size() << " unique types\n";
+        std::cout << "\n";
 
         std::cout << "--- Rarity Distribution ---\n";
         for (const auto& pair : stats.rarityCount)
@@ -494,6 +523,28 @@ namespace BalanceReporter
         std::cout << "   WEAPON ITEMS BALANCE REPORT\n";
         std::cout << "========================================\n";
         std::cout << "Total Items: " << stats.count << "\n\n";
+
+        // Quick Summary
+        std::cout << "--- Quick Summary ---\n";
+        float avgDamage = (stats.totalMinDamage + stats.totalMaxDamage) / (2.0f * stats.count);
+        std::cout << "  Average Damage: " << std::fixed << std::setprecision(1) << avgDamage << "\n";
+        std::cout << "  Average Fire Rate: " << (stats.totalFireRate / stats.count) << " RPM\n";
+        std::cout << "  Average Accuracy: " << (stats.totalAccuracy / stats.count) << "/100\n";
+        std::cout << "  Average Weight: " << (stats.totalWeight / stats.count) << "g (" 
+            << std::fixed << std::setprecision(1) << ((stats.totalWeight / stats.count) / 1000.0f) << " kg)\n";
+        
+        // Ranged vs Melee breakdown
+        int rangedCount = 0, meleeCount = 0;
+        for (const auto& pair : stats.weaponCategoryCount)
+        {
+            if (pair.first == "Ranged") rangedCount = pair.second;
+            else if (pair.first == "Melee") meleeCount = pair.second;
+        }
+        if (rangedCount > 0 || meleeCount > 0)
+        {
+            std::cout << "  Weapon Categories: " << rangedCount << " Ranged, " << meleeCount << " Melee\n";
+        }
+        std::cout << "\n";
 
         std::cout << "--- Rarity Distribution ---\n";
         for (const auto& pair : stats.rarityCount)
@@ -699,6 +750,23 @@ namespace BalanceReporter
         std::cout << "========================================\n";
         std::cout << "Total Items: " << stats.count << "\n\n";
 
+        // Quick Summary
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Damage Modifier: " << std::fixed << std::setprecision(1) 
+            << (stats.totalDamageModifier / (float)stats.count) << "\n";
+        std::cout << "  Average Recoil Reduction: " << (stats.totalRecoilModifier / stats.count) << "\n";
+        std::cout << "  Average Ergonomics Bonus: " << (stats.totalErgonomicsModifier / stats.count) << "\n";
+        std::cout << "  Average Accuracy Bonus: " << (stats.totalAccuracyModifier / stats.count) << "\n";
+        std::cout << "  Average Weight Change: " << (stats.totalWeightModifier / stats.count) << "g\n";
+        
+        if (stats.magazineCount > 0)
+        {
+            std::cout << "  Magazines: " << stats.magazineCount << " (" 
+                << (stats.magazineCount * 100.0f / stats.count) << "% of all components)\n";
+            std::cout << "  Average Magazine Capacity: " << (stats.totalMagazineCapacity / stats.magazineCount) << " rounds\n";
+        }
+        std::cout << "\n";
+
         std::cout << "--- Rarity Distribution ---\n";
         for (const auto& pair : stats.rarityCount)
         {
@@ -866,6 +934,23 @@ namespace BalanceReporter
         std::cout << "========================================\n";
         std::cout << "Total Items: " << stats.count << "\n\n";
 
+        // Quick Summary
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Damage Bonus: " << std::fixed << std::setprecision(1) 
+            << (stats.totalDamageBonus / (float)stats.count) << "\n";
+        std::cout << "  Average Penetration: " << (stats.totalPenetration / stats.count) << "/100\n";
+        std::cout << "  Average Accuracy Bonus: " << (stats.totalAccuracyBonus / stats.count) << "\n";
+        std::cout << "  Average Value: " << (stats.totalValue / stats.count) << "\n";
+        
+        int specialCount = stats.armorPiercingCount + stats.hollowPointCount + stats.tracerCount + stats.incendiaryCount;
+        std::cout << "  Special Rounds: " << specialCount << " (" 
+            << (specialCount * 100.0f / stats.count) << "% of all ammo)\n";
+        std::cout << "    - AP: " << stats.armorPiercingCount 
+            << ", HP: " << stats.hollowPointCount 
+            << ", Tracer: " << stats.tracerCount 
+            << ", Incendiary: " << stats.incendiaryCount << "\n";
+        std::cout << "\n";
+
         std::cout << "--- Rarity Distribution ---\n";
         for (const auto& pair : stats.rarityCount)
         {
@@ -954,16 +1039,25 @@ namespace BalanceReporter
 
     int GenerateReport(const std::string& jsonFilePath, ItemType itemType)
     {
+        // Check if file exists
         std::ifstream file(jsonFilePath);
         if (!file.is_open())
         {
-            std::cerr << "[BalanceReporter] Failed to open file: " << jsonFilePath << "\n";
+            std::cerr << "[BalanceReporter] Error: Failed to open file: " << jsonFilePath << "\n";
+            std::cerr << "[BalanceReporter] Please check if the file exists and is accessible.\n";
             return 1;
         }
 
         std::string jsonText((std::istreambuf_iterator<char>(file)),
             std::istreambuf_iterator<char>());
         file.close();
+
+        // Check if file is empty
+        if (jsonText.empty() || jsonText.find_first_not_of(" \t\r\n") == std::string::npos)
+        {
+            std::cerr << "[BalanceReporter] Error: File is empty or contains only whitespace: " << jsonFilePath << "\n";
+            return 1;
+        }
 
         if (itemType == ItemType::Food)
         {

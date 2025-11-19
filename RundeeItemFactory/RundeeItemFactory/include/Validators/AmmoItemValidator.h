@@ -17,3 +17,5 @@ namespace AmmoItemValidator
     void Validate(ItemAmmoData& item);
 }
 
+
+

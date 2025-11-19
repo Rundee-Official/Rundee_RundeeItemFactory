@@ -37,3 +37,5 @@ struct ItemAmmoData : public ItemDataBase
     std::string GetItemTypeName() const override { return "Ammo"; }
 };
 
+
+

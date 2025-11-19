@@ -10,13 +10,16 @@
 
 #include "Helpers/ItemGenerator.h"
 #include "Helpers/CommandLineParser.h"
+#include "Helpers/QualityChecker.h"
 #include "Parsers/ItemJsonParser.h"
 #include "Writers/ItemJsonWriter.h"
 #include "Prompts/PromptBuilder.h"
+#include "Prompts/CustomPreset.h"
 #include "Clients/OllamaClient.h"
 #include <iostream>
 #include <fstream>
 #include <set>
+#include <iomanip>
 
 static bool SaveTextFile(const std::string& path, const std::string& text)
 {
@@ -52,6 +55,15 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
     }
 
     std::cout << "=== Parsed Items From LLM (" << items.size() << ") ===\n";
+    
+    // Quality check before filtering
+    std::cout << "\n=== Quality Check ===\n";
+    for (const auto& item : items)
+    {
+        auto qualityResult = QualityChecker::CheckFoodQuality(item);
+        QualityChecker::PrintQualityResult(qualityResult, item.id);
+    }
+
     for (const auto& item : items)
     {
         std::cout << "- " << item.id
@@ -78,8 +90,8 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
         }
     }
 
-    int addedCount = newItems.size();
-    int skippedCount = items.size() - addedCount;
+    int addedCount = static_cast<int>(newItems.size());
+    int skippedCount = static_cast<int>(items.size()) - addedCount;
 
     if (skippedCount > 0)
     {
@@ -178,6 +190,15 @@ static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::
     }
 
     std::cout << "=== Parsed Items From LLM (" << items.size() << ") ===\n";
+    
+    // Quality check before filtering
+    std::cout << "\n=== Quality Check ===\n";
+    for (const auto& item : items)
+    {
+        auto qualityResult = QualityChecker::CheckDrinkQuality(item);
+        QualityChecker::PrintQualityResult(qualityResult, item.id);
+    }
+
     for (const auto& item : items)
     {
         std::cout << "- " << item.id
@@ -304,6 +325,15 @@ static int ProcessLLMResponse_Material(const std::string& jsonResponse, const st
     }
 
     std::cout << "=== Parsed Material Items (" << items.size() << ") ===\n";
+    
+    // Quality check before filtering
+    std::cout << "\n=== Quality Check ===\n";
+    for (const auto& item : items)
+    {
+        auto qualityResult = QualityChecker::CheckMaterialQuality(item);
+        QualityChecker::PrintQualityResult(qualityResult, item.id);
+    }
+
     for (const auto& item : items)
     {
         std::cout << "- " << item.id
@@ -330,8 +360,8 @@ static int ProcessLLMResponse_Material(const std::string& jsonResponse, const st
         }
     }
 
-    int addedCount = newItems.size();
-    int skippedCount = items.size() - addedCount;
+    int addedCount = static_cast<int>(newItems.size());
+    int skippedCount = static_cast<int>(items.size()) - addedCount;
 
     if (skippedCount > 0)
     {
@@ -430,6 +460,15 @@ static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std:
     }
 
     std::cout << "=== Parsed Weapons From LLM (" << items.size() << ") ===\n";
+    
+    // Quality check before filtering
+    std::cout << "\n=== Quality Check ===\n";
+    for (const auto& item : items)
+    {
+        auto qualityResult = QualityChecker::CheckWeaponQuality(item);
+        QualityChecker::PrintQualityResult(qualityResult, item.id);
+    }
+
     for (const auto& item : items)
     {
         std::cout << "- " << item.id << " / " << item.displayName
@@ -537,6 +576,15 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
     }
 
     std::cout << "=== Parsed Weapon Components From LLM (" << items.size() << ") ===\n";
+    
+    // Quality check before filtering
+    std::cout << "\n=== Quality Check ===\n";
+    for (const auto& item : items)
+    {
+        auto qualityResult = QualityChecker::CheckWeaponComponentQuality(item);
+        QualityChecker::PrintQualityResult(qualityResult, item.id);
+    }
+
     for (const auto& item : items)
     {
         std::cout << "- " << item.id << " / " << item.displayName
@@ -643,6 +691,15 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
     }
 
     std::cout << "=== Parsed Ammo From LLM (" << items.size() << ") ===\n";
+    
+    // Quality check before filtering
+    std::cout << "\n=== Quality Check ===\n";
+    for (const auto& item : items)
+    {
+        auto qualityResult = QualityChecker::CheckAmmoQuality(item);
+        QualityChecker::PrintQualityResult(qualityResult, item.id);
+    }
+
     for (const auto& item : items)
     {
         std::cout << "- " << item.id << " / " << item.displayName
@@ -764,35 +821,66 @@ namespace ItemGenerator
             existingIds = ItemJsonWriter::GetExistingAmmoIds(args.params.outputPath);
         }
 
+        // Load custom preset if specified
+        CustomPreset customPreset;
+        bool useCustomPreset = !args.customPresetPath.empty();
+        if (useCustomPreset)
+        {
+            if (!CustomPresetManager::LoadPresetFromFile(args.customPresetPath, customPreset))
+            {
+                std::cerr << "[ItemGenerator] Failed to load custom preset from: " << args.customPresetPath << "\n";
+                return 1;
+            }
+            std::cout << "[ItemGenerator] Using custom preset: " << customPreset.displayName << " (" << customPreset.id << ")\n";
+        }
+
         // Build prompt and get LLM response
         if (args.itemType == ItemType::Food)
         {
-            prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, args.preset, existingIds);
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, customPreset, existingIds);
+            else
+                prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, args.preset, existingIds);
             std::cout << "=== Ollama Food JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Drink)
         {
-            prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, args.preset, existingIds);
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, customPreset, existingIds);
+            else
+                prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, args.preset, existingIds);
             std::cout << "=== Ollama Drink JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Material)
         {
-            prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, args.preset, existingIds);
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, customPreset, existingIds);
+            else
+                prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, args.preset, existingIds);
             std::cout << "=== Ollama Material JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Weapon)
         {
-            prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, args.preset, existingIds);
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, customPreset, existingIds);
+            else
+                prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, args.preset, existingIds);
             std::cout << "=== Ollama Weapon JSON Response ===\n";
         }
         else if (args.itemType == ItemType::WeaponComponent)
         {
-            prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, args.preset, existingIds);
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, customPreset, existingIds);
+            else
+                prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, args.preset, existingIds);
             std::cout << "=== Ollama Weapon Component JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Ammo)
         {
-            prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, args.preset, existingIds);
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, customPreset, existingIds);
+            else
+                prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, args.preset, existingIds);
             std::cout << "=== Ollama Ammo JSON Response ===\n";
         }
         else
@@ -1000,6 +1088,83 @@ namespace ItemGenerator
         }
 
         return 0;
+    }
+
+    int GenerateBatch(const CommandLineArgs& args)
+    {
+        std::cout << "[ItemGenerator] Running in Batch mode.\n";
+        std::cout << "[ItemGenerator] Batch items: " << args.batchItems.size() << "\n\n";
+
+        if (args.batchItems.empty())
+        {
+            std::cerr << "[ItemGenerator] Error: No batch items specified.\n";
+            return 1;
+        }
+
+        int totalSuccess = 0;
+        int totalFailed = 0;
+
+        for (size_t i = 0; i < args.batchItems.size(); ++i)
+        {
+            const auto& batchItem = args.batchItems[i];
+            
+            std::cout << "\n";
+            std::cout << "========================================\n";
+            std::cout << "  Batch Item " << (i + 1) << " / " << args.batchItems.size() << "\n";
+            std::cout << "  Type: " << CommandLineParser::GetItemTypeName(batchItem.itemType) << "\n";
+            std::cout << "  Count: " << batchItem.count << "\n";
+            std::cout << "========================================\n\n";
+
+            // Create a new CommandLineArgs for this batch item
+            CommandLineArgs itemArgs = args;
+            itemArgs.itemType = batchItem.itemType;
+            itemArgs.params.count = batchItem.count;
+            itemArgs.mode = RunMode::LLM; // Always use LLM for batch items
+            
+            // Use custom output path if provided, otherwise generate default
+            if (!batchItem.outputPath.empty())
+            {
+                itemArgs.params.outputPath = batchItem.outputPath;
+            }
+            else
+            {
+                // Generate default output path based on item type
+                std::string itemTypeName = CommandLineParser::GetItemTypeName(batchItem.itemType);
+                itemArgs.params.outputPath = "items_" + itemTypeName + ".json";
+            }
+
+            std::cout << "[ItemGenerator] Output: " << itemArgs.params.outputPath << "\n\n";
+
+            // Generate items
+            int result = GenerateWithLLM(itemArgs);
+            
+            if (result == 0)
+            {
+                totalSuccess++;
+                std::cout << "[ItemGenerator] ✓ Successfully generated " << batchItem.count 
+                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType) << " items.\n";
+            }
+            else
+            {
+                totalFailed++;
+                std::cerr << "[ItemGenerator] ✗ Failed to generate " << batchItem.count 
+                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType) << " items.\n";
+            }
+
+            std::cout << "\n";
+        }
+
+        // Summary
+        std::cout << "\n";
+        std::cout << "========================================\n";
+        std::cout << "  BATCH GENERATION SUMMARY\n";
+        std::cout << "========================================\n";
+        std::cout << "  Total Items: " << args.batchItems.size() << "\n";
+        std::cout << "  Successful:  " << totalSuccess << "\n";
+        std::cout << "  Failed:      " << totalFailed << "\n";
+        std::cout << "========================================\n\n";
+
+        return (totalFailed > 0) ? 1 : 0;
     }
 }
 
