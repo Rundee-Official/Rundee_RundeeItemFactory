@@ -46,3 +46,5 @@ namespace CustomPresetManager
     bool ValidatePreset(const CustomPreset& preset, std::string& errorMessage);
 }
 
+
+

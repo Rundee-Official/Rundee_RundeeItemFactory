@@ -1,0 +1,39 @@
+{ITEM_TYPE} Generation - Preset: {PRESET_NAME}
+
+{PRESET_CONTEXT}
+
+Task:
+Generate {COUNT} ammunition items for this survival setting.
+{EXCLUDE_IDS}
+
+Use this JSON schema EXACTLY for each ammo entry:
+{
+  "id": string (unique, lowercase, underscore),
+  "displayName": string,
+  "category": "Ammo",
+  "rarity": "Common" | "Uncommon" | "Rare",
+  "caliber": string,
+
+  "damageBonus": integer,     // -10 to +30
+  "penetration": integer,     // 0-100
+  "muzzleVelocity": integer,  // 200-1200 m/s
+  "accuracyModifier": integer,// -15 to +20
+  "recoilModifier": integer,  // -20 to +15
+  "fragmentationChance": integer, // 0-100
+  "tracerColor": string,      // "None" if not tracer
+
+  "description": string
+}
+
+Guidelines:
+- Caliber should match common weapon calibers (9mm, 5.56mm, 7.62mm, 12gauge, .45acp, etc.).
+- damageBonus affects base weapon damage: keep between -10 and +30.
+- penetration indicates armor piercing ability (0-100).
+- accuracyModifier/recoilModifier use negative numbers for penalties, positive for bonuses.
+- fragmentionChance: probability (0-100) of fragmenting after impact.
+- description must be 1 short sentence (5-20 words) describing construction or effect.
+
+Output:
+- Output ONLY a JSON array of items.
+- No comments, no extra text, no Markdown, no explanation.
+

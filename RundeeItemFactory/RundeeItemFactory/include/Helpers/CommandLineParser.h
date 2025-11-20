@@ -11,6 +11,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "Helpers/ItemGenerateParams.h"
 #include "Prompts/PromptBuilder.h"
 

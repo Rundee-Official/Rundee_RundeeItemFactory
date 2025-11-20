@@ -74,6 +74,28 @@ RundeeItemFactory.exe --report items_food.json --itemType food
 RundeeItemFactory.exe --mode dummy --itemType food --count 5 --out items_dummy.json
 ```
 
+### Prompt Template System
+
+All LLM prompts are loaded from external text files so you can tweak wording without recompiling.
+
+- Default templates live under `RundeeItemFactory/prompts/` inside the repo.
+- When you build the project, the templates are copied next to `RundeeItemFactory.exe` inside an automatically created `prompts/` directory (for example `x64/Debug/prompts/` during debug builds).
+- At runtime the generator loads `<exe>/prompts/<itemType>.txt`. If the file is missing the previous built-in prompt is used as a fallback.
+
+#### Available template placeholders
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{ITEM_TYPE}` | Friendly item type name (e.g., `Food`, `WeaponComponent`) |
+| `{PRESET_NAME}` | Active preset name (`Default`, `Forest`, custom preset display name, etc.) |
+| `{PRESET_CONTEXT}` | Long-form flavor text describing the preset |
+| `{MAX_HUNGER}` | Maximum hunger parameter (Food/Drink only) |
+| `{MAX_THIRST}` | Maximum thirst parameter (Food/Drink only) |
+| `{COUNT}` | Number of items requested |
+| `{EXCLUDE_IDS}` | Formatted list of IDs to avoid (empty when nothing to exclude) |
+
+Feel free to embed additional narrative instructions, balancing notes, or formatting hints in these files. If you need more placeholders, extend `PromptTemplateLoader::LoadTemplate` with the desired variable.
+
 ### Command Line Arguments
 
 | Argument | Description | Default |
@@ -87,6 +109,22 @@ RundeeItemFactory.exe --mode dummy --itemType food --count 5 --out items_dummy.j
 | `--maxThirst` | Maximum thirst value | `100` |
 | `--out` | Output JSON file path | `items_food.json` |
 | `--report` | Generate balance report for existing JSON file | - |
+
+### Batch Mode
+
+Run multiple generation jobs sequentially with one command:
+
+```bash
+RundeeItemFactory.exe ^
+  --mode batch ^
+  --batch "food:10:items_food.json,drink:5,material:8:items_material.json" ^
+  --model llama3 ^
+  --preset city
+```
+
+- Use `--batch "itemType:count[:outputPath],..."`.
+- Each entry inherits global arguments (model, preset, maxHunger, etc.) but can override the output path.
+- Batch logs show per-job progress, elapsed time, and a final summary table. Failures do not stop the rest of the jobs, so you can re-run only the ones that failed.
 
 ### Unity Integration
 
@@ -143,6 +181,15 @@ RundeeItemFactory.exe --mode dummy --itemType food --count 5 --out items_dummy.j
 - `Tools/Rundee/Import Weapon Items From JSON` - Manual import for Weapon items
 - `Tools/Rundee/Import Weapon Component Items From JSON` - Manual import for Weapon Component items
 - `Tools/Rundee/Import Ammo Items From JSON` - Manual import for Ammo items
+- `Tools/Rundee/Item Manager` - Item overview, selection, and cleanup
+
+#### Item Manager Window
+
+`Tools > Rundee > Item Manager` provides a searchable overview of every generated ScriptableObject:
+
+- Filter by item type, rarity, or keyword (matches ID/display name).
+- Ping the underlying asset in the Project window or bulk-delete obsolete items.
+- Helpful when pruning prototypes before re-importing fresh data.
 
 #### Using ItemDatabase
 

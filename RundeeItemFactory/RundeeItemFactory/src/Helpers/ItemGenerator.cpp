@@ -20,6 +20,9 @@
 #include <fstream>
 #include <set>
 #include <iomanip>
+#include <sstream>
+#include <chrono>
+#include <map>
 
 static bool SaveTextFile(const std::string& path, const std::string& text)
 {
@@ -99,44 +102,68 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
     }
 
     // Check if we need more items
-    int stillNeeded = requiredCount - addedCount;
-
-    // Merge or write
-    std::set<std::string> currentExistingIds = ItemJsonWriter::GetExistingFoodIds(outputPath);
-    if (!currentExistingIds.empty() || !newItems.empty())
+    // requiredCount is the maximum number of NEW items to add (not total count)
+    // Limit newItems to requiredCount if we got more than requested
+    int actualAddedCount = addedCount;
+    if (addedCount > requiredCount)
     {
-        if (!currentExistingIds.empty())
+        std::cout << "[ItemGenerator] Generated " << addedCount << " items but only " << requiredCount << " requested. Limiting to " << requiredCount << " items.\n";
+        newItems.resize(requiredCount);
+        actualAddedCount = requiredCount;
+    }
+    
+    int stillNeeded = requiredCount - actualAddedCount;
+
+    // Write new items (merge with existing if file exists)
+    std::set<std::string> currentExistingIds = ItemJsonWriter::GetExistingFoodIds(outputPath);
+    if (!currentExistingIds.empty())
+    {
+        // Read existing items and merge
+        std::vector<ItemFoodData> existingItems;
+        std::ifstream ifs(outputPath);
+        if (ifs.is_open())
         {
-            // Read existing items and merge
-            std::vector<ItemFoodData> existingItems;
-            std::ifstream ifs(outputPath);
-            if (ifs.is_open())
+            std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+            ifs.close();
+            if (!existingContent.empty())
             {
-                std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-                ifs.close();
-                if (!existingContent.empty())
-                {
-                    ItemJsonParser::ParseFoodFromJsonText(existingContent, existingItems);
-                }
-            }
-            
-            // Combine existing and new
-            std::vector<ItemFoodData> allItems = existingItems;
-            allItems.insert(allItems.end(), newItems.begin(), newItems.end());
-            
-            if (!ItemJsonWriter::WriteFoodToFile(allItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
-                return 1;
+                ItemJsonParser::ParseFoodFromJsonText(existingContent, existingItems);
             }
         }
-        else
+        
+        // Combine existing and new (only add non-duplicate new items)
+        std::vector<ItemFoodData> allItems = existingItems;
+        std::set<std::string> existingIdSet;
+        for (const auto& item : existingItems)
         {
-            if (!ItemJsonWriter::WriteFoodToFile(newItems, outputPath))
+            existingIdSet.insert(item.id);
+        }
+        
+        // Only add new items that don't already exist
+        for (const auto& newItem : newItems)
+        {
+            if (existingIdSet.find(newItem.id) == existingIdSet.end())
             {
-                std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
-                return 1;
+                allItems.push_back(newItem);
+                existingIdSet.insert(newItem.id);
             }
+        }
+        
+        if (!ItemJsonWriter::WriteFoodToFile(allItems, outputPath))
+        {
+            std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
+            return 1;
+        }
+        
+        std::cout << "[ItemGenerator] Merged " << existingItems.size() << " existing items with " << newItems.size() << " new items.\n";
+    }
+    else
+    {
+        // No existing file, just write new items
+        if (!ItemJsonWriter::WriteFoodToFile(newItems, outputPath))
+        {
+            std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
+            return 1;
         }
     }
 
@@ -162,7 +189,7 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
     }
     else
     {
-        std::cout << "[ItemGenerator] Successfully added " << addedCount << " new food items to " << outputPath << "\n";
+        std::cout << "[ItemGenerator] Successfully added " << actualAddedCount << " new food items to " << outputPath << "\n";
     }
 
     return 0;
@@ -787,6 +814,25 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
 
 namespace ItemGenerator
 {
+    namespace
+    {
+        struct BatchRunResult
+        {
+            BatchItem item;
+            std::string outputPath;
+            bool success = false;
+            int exitCode = 0;
+            double durationSeconds = 0.0;
+        };
+
+        std::string FormatSeconds(double seconds)
+        {
+            std::ostringstream oss;
+            oss << std::fixed << std::setprecision(1) << seconds << "s";
+            return oss.str();
+        }
+    }
+
     int GenerateWithLLM(const CommandLineArgs& args)
     {
         std::cout << "[ItemGenerator] Running in LLM mode.\n";
@@ -1103,6 +1149,9 @@ namespace ItemGenerator
 
         int totalSuccess = 0;
         int totalFailed = 0;
+        std::vector<BatchRunResult> batchResults;
+        std::map<ItemType, int> successCountsByType;
+        auto batchStart = std::chrono::steady_clock::now();
 
         for (size_t i = 0; i < args.batchItems.size(); ++i)
         {
@@ -1135,20 +1184,45 @@ namespace ItemGenerator
 
             std::cout << "[ItemGenerator] Output: " << itemArgs.params.outputPath << "\n\n";
 
-            // Generate items
+            auto itemStart = std::chrono::steady_clock::now();
+
             int result = GenerateWithLLM(itemArgs);
+            auto itemEnd = std::chrono::steady_clock::now();
+            double durationSeconds = std::chrono::duration<double>(itemEnd - itemStart).count();
+
+            BatchRunResult batchResult;
+            batchResult.item = batchItem;
+            batchResult.outputPath = itemArgs.params.outputPath;
+            batchResult.success = (result == 0);
+            batchResult.exitCode = result;
+            batchResult.durationSeconds = durationSeconds;
+            batchResults.push_back(batchResult);
             
             if (result == 0)
             {
                 totalSuccess++;
+                successCountsByType[batchItem.itemType] += batchItem.count;
                 std::cout << "[ItemGenerator] ✓ Successfully generated " << batchItem.count 
-                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType) << " items.\n";
+                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
+                    << " items (" << FormatSeconds(durationSeconds) << ").\n";
             }
             else
             {
                 totalFailed++;
                 std::cerr << "[ItemGenerator] ✗ Failed to generate " << batchItem.count 
-                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType) << " items.\n";
+                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
+                    << " items (exit code " << result << ").\n";
+            }
+
+            double progress = static_cast<double>(i + 1) / static_cast<double>(args.batchItems.size());
+            std::cout << std::fixed << std::setprecision(1);
+            std::cout << "[Batch] Progress: " << (i + 1) << "/" << args.batchItems.size()
+                << " (" << (progress * 100.0) << "%)\n";
+            std::cout.unsetf(std::ios::floatfield);
+
+            if (!batchResult.success)
+            {
+                std::cerr << "[Batch] Continuing despite failure. You can rerun this item later.\n";
             }
 
             std::cout << "\n";
@@ -1159,9 +1233,46 @@ namespace ItemGenerator
         std::cout << "========================================\n";
         std::cout << "  BATCH GENERATION SUMMARY\n";
         std::cout << "========================================\n";
+        auto batchEnd = std::chrono::steady_clock::now();
+        double totalDuration = std::chrono::duration<double>(batchEnd - batchStart).count();
+
         std::cout << "  Total Items: " << args.batchItems.size() << "\n";
         std::cout << "  Successful:  " << totalSuccess << "\n";
         std::cout << "  Failed:      " << totalFailed << "\n";
+        std::cout << "  Duration:    " << FormatSeconds(totalDuration) << "\n";
+        std::cout << "----------------------------------------\n";
+        std::cout << "  Items Generated per Type\n";
+        if (successCountsByType.empty())
+        {
+            std::cout << "    (none)\n";
+        }
+        else
+        {
+            for (const auto& entry : successCountsByType)
+            {
+                std::cout << "    - " << CommandLineParser::GetItemTypeName(entry.first)
+                    << ": " << entry.second << "\n";
+            }
+        }
+        std::cout << "----------------------------------------\n";
+        std::cout << "  Detailed Results\n";
+        if (batchResults.empty())
+        {
+            std::cout << "    (no items)\n";
+        }
+        else
+        {
+            for (size_t i = 0; i < batchResults.size(); ++i)
+            {
+                const auto& entry = batchResults[i];
+                std::cout << "    [" << (i + 1) << "] "
+                    << CommandLineParser::GetItemTypeName(entry.item.itemType)
+                    << " x" << entry.item.count
+                    << " -> " << entry.outputPath
+                    << " | " << (entry.success ? "OK" : "FAIL")
+                    << " | " << FormatSeconds(entry.durationSeconds) << "\n";
+            }
+        }
         std::cout << "========================================\n\n";
 
         return (totalFailed > 0) ? 1 : 0;

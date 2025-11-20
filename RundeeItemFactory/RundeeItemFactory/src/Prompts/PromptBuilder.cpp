@@ -10,8 +10,26 @@
 
 #include "Prompts/PromptBuilder.h"
 #include "Prompts/CustomPreset.h"
+#include "Prompts/PromptTemplateLoader.h"
 #include <set>
 #include <sstream>
+
+namespace
+{
+    std::string GetPresetNameString(PresetType preset)
+    {
+        switch (preset)
+        {
+        case PresetType::Forest: return "Forest";
+        case PresetType::Desert: return "Desert";
+        case PresetType::Coast:  return "Coast";
+        case PresetType::City:   return "City";
+        case PresetType::Default:
+        default:
+            return "Default";
+        }
+    }
+}
 
 std::string PromptBuilder::GetPresetFlavorText(PresetType preset)
 {
@@ -64,10 +82,21 @@ std::string PromptBuilder::GetPresetFlavorText(const CustomPreset& customPreset)
 
 std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
 {
+    // Try to load from template file first
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("food", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Food");
+    
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt; // Use template file
+    }
+
+    // Fall back to hardcoded prompt if template not found
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(preset);
+    prompt += presetContext;
 
     // 2) Describe player parameters
     prompt += "The player has:\n";
@@ -141,10 +170,21 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
 
 std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
 {
+    // Try to load from template file first
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("food", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Food");
+    
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt; // Use template file
+    }
+
+    // Fall back to hardcoded prompt if template not found
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(customPreset);
+    prompt += presetContext;
 
     // 2) Describe player parameters
     prompt += "The player has:\n";
@@ -212,10 +252,18 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
 
 std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("drink", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Drink");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(preset);
+    prompt += presetContext;
 
     // 2) Describe player parameters
     prompt += "The player has:\n";
@@ -289,8 +337,16 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
 
 std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("drink", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Drink");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
-    prompt += GetPresetFlavorText(customPreset);
+    prompt += presetContext;
     prompt += "The player has:\n";
     prompt += "- maxHunger = " + std::to_string(params.maxHunger) + "\n";
     prompt += "- maxThirst = " + std::to_string(params.maxThirst) + "\n\n";
@@ -351,10 +407,18 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
 
 std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("material", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Material");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(preset);
+    prompt += presetContext;
 
     // 2) Task description
     prompt += "Task:\n";
@@ -403,8 +467,16 @@ std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& par
 
 std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("material", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Material");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
-    prompt += GetPresetFlavorText(customPreset);
+    prompt += presetContext;
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " crafting materials and junk items ";
     prompt += "for this survival setting.\n\n";
@@ -448,10 +520,18 @@ std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& par
 
 std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Weapon");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(preset);
+    prompt += presetContext;
 
     // 2) Task description
     prompt += "Task:\n";
@@ -584,8 +664,16 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
 
 std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Weapon");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
-    prompt += GetPresetFlavorText(customPreset);
+    prompt += presetContext;
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " weapons ";
     prompt += "for this survival setting.\n";
@@ -660,10 +748,18 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
 
 std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon_component", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "WeaponComponent");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(preset);
+    prompt += presetContext;
 
     // 2) Task description
     prompt += "Task:\n";
@@ -805,8 +901,16 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
 
 std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon_component", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "WeaponComponent");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
-    prompt += GetPresetFlavorText(customPreset);
+    prompt += presetContext;
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " weapon attachment components ";
     prompt += "for this survival setting.\n";
@@ -879,10 +983,18 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
 
 std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("ammo", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Ammo");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
 
     // 1) Add preset world context
-    prompt += GetPresetFlavorText(preset);
+    prompt += presetContext;
 
     // 2) Task description
     prompt += "Task:\n";
@@ -963,8 +1075,16 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
 
 std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
 {
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("ammo", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Ammo");
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
     std::string prompt;
-    prompt += GetPresetFlavorText(customPreset);
+    prompt += presetContext;
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " ammunition items ";
     prompt += "for this survival setting.\n";

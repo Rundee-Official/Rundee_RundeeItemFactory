@@ -11,6 +11,8 @@
 #include "Validators/FoodItemValidator.h"
 #include "Utils/JsonUtils.h"
 #include <iostream>
+#include <algorithm>
+#include <cctype>
 
 static float ComputePower(const ItemFoodData& item)
 {
@@ -106,10 +108,22 @@ static void EnsureRarity(ItemFoodData& item)
 
 void FoodItemValidator::Validate(ItemFoodData& item)
 {
-    // 0) Add prefix to ID
-    if (!item.id.empty() && item.id.find("Food_") != 0)
+    // 0) Add prefix to ID (case-insensitive check to avoid double prefix)
+    if (!item.id.empty())
     {
-        item.id = "Food_" + item.id;
+        // Check if already has prefix (case-insensitive)
+        std::string idLower = item.id;
+        std::transform(idLower.begin(), idLower.end(), idLower.begin(), ::tolower);
+        
+        if (idLower.find("food_") != 0)
+        {
+            // Remove any existing "food_" prefix (case-insensitive) before adding "Food_"
+            if (idLower.find("food_") == 0)
+            {
+                item.id = item.id.substr(5); // Remove "food_" (5 characters)
+            }
+            item.id = "Food_" + item.id;
+        }
     }
 
     // 1) Clamp basic values
