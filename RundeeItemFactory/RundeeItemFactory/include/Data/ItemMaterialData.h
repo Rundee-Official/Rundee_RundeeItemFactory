@@ -16,16 +16,10 @@ struct ItemMaterialData : public ItemDataBase
 {
     // Material-specific properties
     std::string materialType;  // "Wood", "Metal", "Plastic", "Fabric", "Glass", "Electronic", etc.
-    int hardness = 0;          // 0–100, structural strength
-    int flammability = 0;      // 0–100, how well it burns
-    int value = 0;             // 0–100, scrap / trade value
+    int hardness = 0;          // 0-100, structural strength
+    int flammability = 0;      // 0-100, how well it burns
+    int value = 0;             // 0-100, scrap / trade value
 
     // Override base class method
     std::string GetItemTypeName() const override { return "Material"; }
 };
-
-
-
-
-
-

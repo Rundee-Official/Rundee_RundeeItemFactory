@@ -1,5 +1,9 @@
 # 리팩토링 요약
 
+## 최근 변경
+- Unity JSON Importer 단일 창으로 통합, 기존 per-type 메뉴 제거 (ItemImporter 경로 기반 메서드는 유지)
+- vcxproj에 C++17 명시 및 include 경로 정비 → `std::filesystem` 기반 AppConfig 로딩 정상화
+
 ## 완료된 작업
 
 ### 1. Utils 파일 생성 ✅
@@ -102,6 +106,12 @@ src/
 1. **템플릿 기반 Parser/Writer**: 현재는 Food/Material 각각 메서드가 있지만, 템플릿으로 더 통합 가능
 2. **ItemGenerator 통합**: Food와 Material Generator도 기본 클래스로 통합 가능
 3. **설정 파일**: 프롬프트 템플릿을 외부 파일로 분리
+
+
+
+
+
+
 
 
 

@@ -7,5 +7,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerCommandArguments>--mode llm --itemType drink --preset city --count 8 --out drinks_city.json</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArgumentsHistory>--mode llm --itemType drink --preset city --count 8 --out drinks_city.json|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
 </Project>

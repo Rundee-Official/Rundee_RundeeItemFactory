@@ -13,16 +13,49 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+#include <fstream>
+#include <chrono>
 
 namespace WeaponItemValidator
 {
     void Validate(ItemWeaponData& item)
     {
-        // Add prefix to ID
-        if (!item.id.empty() && item.id.find("Weapon_") != 0)
+        std::string originalId = item.id;
+
+        // Normalize prefix: strip any leading weapon_ (any case, repeated), then add canonical "Weapon_"
+        if (!item.id.empty())
         {
+            auto stripPrefix = [](std::string& value, const std::string& prefixLower)
+            {
+                std::string lower = value;
+                std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                while (lower.rfind(prefixLower, 0) == 0)
+                {
+                    value = value.substr(prefixLower.size());
+                    lower = value;
+                    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                }
+            };
+
+            stripPrefix(item.id, "weapon_");
             item.id = "Weapon_" + item.id;
         }
+
+        // #region agent log
+        static int dbgCount = 0;
+        if (dbgCount < 50)
+        {
+            ++dbgCount;
+            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+            if (dbg.is_open())
+            {
+                dbg << R"({"sessionId":"debug-session","runId":"prefix-debug","hypothesisId":"H1","location":"WeaponItemValidator.cpp:Validate","message":"id prefix normalization","data":{"before":")"
+                    << originalId << R"(","after":")" << item.id << R"("},"timestamp":)" << ts << "})" << "\n";
+            }
+        }
+        // #endregion
 
         // Default category
         if (item.category.empty())
@@ -101,6 +134,24 @@ namespace WeaponItemValidator
             item.attackSpeed = 0;
             item.reach = 0;
             item.staminaCost = 0;
+        }
+
+        // Normalize weight to avoid unrealistically light weapons
+        if (item.weight < 1500)
+        {
+            item.weight = 1500;
+        }
+
+        // For ranged, give default muzzle velocity if missing
+        if (item.weaponCategory == "Ranged" && item.muzzleVelocity == 0)
+        {
+            // Simple default based on type
+            std::string lowType = item.weaponType;
+            std::transform(lowType.begin(), lowType.end(), lowType.begin(), ::tolower);
+            if (lowType.find("bow") != std::string::npos || lowType.find("crossbow") != std::string::npos)
+                item.muzzleVelocity = 300;
+            else
+                item.muzzleVelocity = 400;
         }
 
         // Ensure maxDamage >= minDamage

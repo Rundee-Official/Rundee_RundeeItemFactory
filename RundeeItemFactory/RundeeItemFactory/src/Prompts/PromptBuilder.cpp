@@ -13,6 +13,8 @@
 #include "Prompts/PromptTemplateLoader.h"
 #include <set>
 #include <sstream>
+#include <vector>
+#include <cctype>
 
 namespace
 {
@@ -28,6 +30,98 @@ namespace
         default:
             return "Default";
         }
+    }
+
+    std::string ToSlug(const std::string& value, const std::string& fallback = "default")
+    {
+        std::string slug;
+        slug.reserve(value.size());
+        bool lastWasUnderscore = false;
+        for (char c : value)
+        {
+            unsigned char uc = static_cast<unsigned char>(c);
+            if (std::isalnum(uc))
+            {
+                slug += static_cast<char>(std::tolower(uc));
+                lastWasUnderscore = false;
+            }
+            else if (c == ' ' || c == '-' || c == '_' || c == '.')
+            {
+                if (!lastWasUnderscore)
+                {
+                    slug += '_';
+                    lastWasUnderscore = true;
+                }
+            }
+        }
+        if (!slug.empty() && slug.back() == '_')
+        {
+            slug.pop_back();
+        }
+        if (slug.empty())
+        {
+            slug = fallback;
+        }
+        return slug;
+    }
+
+    std::string BuildExcludeSection(const std::set<std::string>& excludeIds)
+    {
+        if (excludeIds.empty())
+            return {};
+
+        std::string text;
+        text += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
+        int count = 0;
+        const int kMaxList = 40;
+        for (const auto& id : excludeIds)
+        {
+            if (count > 0) text += ", ";
+            text += id;
+            count++;
+            if (count >= kMaxList)
+            {
+                text += " ... (and " + std::to_string(excludeIds.size() - kMaxList) + " more, list truncated)";
+                break;
+            }
+        }
+        text += "\nGenerate NEW unique IDs that are different from all existing IDs (assume many more exist). Avoid reusing stems; use fresh, novel names, not simple number suffixes.\n";
+        text += "Do NOT generate items that are near-duplicates in concept or function of anything above or of each other in the same batch. Each item must have a distinct idea/material/purpose, not just small adjective changes. If a concept is already present (e.g., magazine extension, muzzle brake), pick a different component/design.\n";
+        text += "For magazines: always include caliber and magazineType, and capacity must be realistic (10-60). Do NOT output capacity=1.\n";
+        return text;
+    }
+
+    std::string TryLoadTemplateWithFallback(
+        const std::vector<std::string>& templateNames,
+        const std::string& presetContext,
+        const FoodGenerateParams& params,
+        const std::set<std::string>& excludeIds,
+        const std::string& presetName,
+        const std::string& itemTypeDisplayName,
+        const std::string& modelName,
+        const std::string& generationTimestamp,
+        int existingCount)
+    {
+        for (const auto& name : templateNames)
+        {
+            auto candidate = PromptTemplateLoader::LoadTemplate(
+                name,
+                presetContext,
+                params.maxHunger,
+                params.maxThirst,
+                params.count,
+                excludeIds,
+                presetName,
+                itemTypeDisplayName,
+                modelName,
+                generationTimestamp,
+                existingCount);
+            if (!candidate.empty())
+            {
+                return candidate;
+            }
+        }
+        return {};
     }
 }
 
@@ -80,12 +174,34 @@ std::string PromptBuilder::GetPresetFlavorText(const CustomPreset& customPreset)
     return CustomPresetManager::GetPresetFlavorText(customPreset);
 }
 
-std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
+                                               PresetType preset,
+                                               const std::set<std::string>& excludeIds,
+                                               const std::string& modelName,
+                                               const std::string& generationTimestamp,
+                                               int existingCount)
 {
     // Try to load from template file first
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("food", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Food");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "food_" + presetSlug,
+        "food"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Food",
+        modelName,
+        generationTimestamp,
+        existingCount);
     
     if (!templatePrompt.empty())
     {
@@ -109,23 +225,7 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
     prompt += "for an early-game survival setting.\n";
     
     // Add exclusion list if provided
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20) // Limit to first 20 to avoid prompt bloat
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
 
     // 4) Define JSON Rules/Schema/Output text here and output as-is
@@ -168,12 +268,35 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
     return prompt;
 }
 
-std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
+                                               const CustomPreset& customPreset,
+                                               const std::set<std::string>& excludeIds,
+                                               const std::string& modelName,
+                                               const std::string& generationTimestamp,
+                                               int existingCount)
 {
     // Try to load from template file first
     std::string presetContext = GetPresetFlavorText(customPreset);
     std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("food", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Food");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "food_custom_" + presetSlug,
+        "food_" + presetSlug,
+        "food"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Food",
+        modelName,
+        generationTimestamp,
+        existingCount);
     
     if (!templatePrompt.empty())
     {
@@ -197,23 +320,7 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
     prompt += "for an early-game survival setting.\n";
     
     // Add exclusion list if provided
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20) // Limit to first 20 to avoid prompt bloat
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
 
     // 4) Define JSON Rules/Schema/Output text here and output as-is
@@ -250,11 +357,33 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
     return prompt;
 }
 
-std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params,
+                                                PresetType preset,
+                                                const std::set<std::string>& excludeIds,
+                                                const std::string& modelName,
+                                                const std::string& generationTimestamp,
+                                                int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("drink", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Drink");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "drink_" + presetSlug,
+        "drink"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Drink",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -276,23 +405,7 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
     prompt += "for an early-game survival setting.\n";
     
     // Add exclusion list if provided
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20) // Limit to first 20 to avoid prompt bloat
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
 
     // 4) JSON Rules/Schema/Output text
@@ -335,11 +448,34 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
     return prompt;
 }
 
-std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params,
+                                                const CustomPreset& customPreset,
+                                                const std::set<std::string>& excludeIds,
+                                                const std::string& modelName,
+                                                const std::string& generationTimestamp,
+                                                int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
     std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("drink", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Drink");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "drink_custom_" + presetSlug,
+        "drink_" + presetSlug,
+        "drink"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Drink",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -353,23 +489,7 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " drink-related items ";
     prompt += "for an early-game survival setting.\n";
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
     prompt += "Rules:\n";
     prompt += "- Use this JSON schema EXACTLY for each item:\n";
@@ -405,11 +525,33 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
     return prompt;
 }
 
-std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& params,
+                                                   PresetType preset,
+                                                   const std::set<std::string>& excludeIds,
+                                                   const std::string& modelName,
+                                                   const std::string& generationTimestamp,
+                                                   int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("material", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Material");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "material_" + presetSlug,
+        "material"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Material",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -465,11 +607,34 @@ std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& par
     return prompt;
 }
 
-std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& params,
+                                                   const CustomPreset& customPreset,
+                                                   const std::set<std::string>& excludeIds,
+                                                   const std::string& modelName,
+                                                   const std::string& generationTimestamp,
+                                                   int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
     std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("material", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Material");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "material_custom_" + presetSlug,
+        "material_" + presetSlug,
+        "material"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Material",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -518,11 +683,33 @@ std::string PromptBuilder::BuildMaterialJsonPrompt(const FoodGenerateParams& par
     return prompt;
 }
 
-std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& params,
+                                                 PresetType preset,
+                                                 const std::set<std::string>& excludeIds,
+                                                 const std::string& modelName,
+                                                 const std::string& generationTimestamp,
+                                                 int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Weapon");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "weapon_" + presetSlug,
+        "weapon"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Weapon",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -539,23 +726,7 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     prompt += "for this survival setting.\n\n";
 
     // 3) Add exclusion list if provided
-    if (!excludeIds.empty())
-    {
-        prompt += "IMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
 
     // 4) Define JSON schema
     prompt += "Use this JSON schema EXACTLY for each weapon:\n";
@@ -662,11 +833,34 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     return prompt;
 }
 
-std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& params,
+                                                 const CustomPreset& customPreset,
+                                                 const std::set<std::string>& excludeIds,
+                                                 const std::string& modelName,
+                                                 const std::string& generationTimestamp,
+                                                 int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
     std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Weapon");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "weapon_custom_" + presetSlug,
+        "weapon_" + presetSlug,
+        "weapon"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Weapon",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -677,23 +871,7 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " weapons ";
     prompt += "for this survival setting.\n";
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
     prompt += "Use this JSON schema EXACTLY for each weapon:\n";
     prompt += "{\n";
@@ -746,11 +924,33 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     return prompt;
 }
 
-std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params,
+                                                          PresetType preset,
+                                                          const std::set<std::string>& excludeIds,
+                                                          const std::string& modelName,
+                                                          const std::string& generationTimestamp,
+                                                          int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon_component", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "WeaponComponent");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "weapon_component_" + presetSlug,
+        "weapon_component"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "WeaponComponent",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -767,23 +967,7 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
     prompt += "for this survival setting.\n\n";
 
     // 3) Add exclusion list if provided
-    if (!excludeIds.empty())
-    {
-        prompt += "IMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
 
     // 4) Define JSON schema
     prompt += "Use this JSON schema EXACTLY for each component:\n";
@@ -899,11 +1083,34 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
     return prompt;
 }
 
-std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params,
+                                                          const CustomPreset& customPreset,
+                                                          const std::set<std::string>& excludeIds,
+                                                          const std::string& modelName,
+                                                          const std::string& generationTimestamp,
+                                                          int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
     std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("weapon_component", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "WeaponComponent");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "weapon_component_custom_" + presetSlug,
+        "weapon_component_" + presetSlug,
+        "weapon_component"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "WeaponComponent",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -914,23 +1121,7 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " weapon attachment components ";
     prompt += "for this survival setting.\n";
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
     prompt += "Use this JSON schema EXACTLY for each component:\n";
     prompt += "{\n";
@@ -981,11 +1172,33 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
     return prompt;
 }
 
-std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
+                                               PresetType preset,
+                                               const std::set<std::string>& excludeIds,
+                                               const std::string& modelName,
+                                               const std::string& generationTimestamp,
+                                               int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("ammo", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Ammo");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "ammo_" + presetSlug,
+        "ammo"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Ammo",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -1002,23 +1215,7 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     prompt += "for this survival setting.\n\n";
 
     // 3) Add exclusion list if provided
-    if (!excludeIds.empty())
-    {
-        prompt += "IMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
 
     // 4) Define JSON schema
     prompt += "Use this JSON schema EXACTLY for each ammo:\n";
@@ -1073,11 +1270,34 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     return prompt;
 }
 
-std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds)
+std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
+                                               const CustomPreset& customPreset,
+                                               const std::set<std::string>& excludeIds,
+                                               const std::string& modelName,
+                                               const std::string& generationTimestamp,
+                                               int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
     std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
-    std::string templatePrompt = PromptTemplateLoader::LoadTemplate("ammo", presetContext, params.maxHunger, params.maxThirst, params.count, excludeIds, presetName, "Ammo");
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "ammo_custom_" + presetSlug,
+        "ammo_" + presetSlug,
+        "ammo"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Ammo",
+        modelName,
+        generationTimestamp,
+        existingCount);
     if (!templatePrompt.empty())
     {
         return templatePrompt;
@@ -1088,23 +1308,7 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " ammunition items ";
     prompt += "for this survival setting.\n";
-    if (!excludeIds.empty())
-    {
-        prompt += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) prompt += ", ";
-            prompt += id;
-            count++;
-            if (count >= 20)
-            {
-                prompt += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
-                break;
-            }
-        }
-        prompt += "\nGenerate NEW unique IDs that are different from the above list.\n";
-    }
+    prompt += BuildExcludeSection(excludeIds);
     prompt += "\n";
     prompt += "Use this JSON schema EXACTLY for each ammo item:\n";
     prompt += "{\n";

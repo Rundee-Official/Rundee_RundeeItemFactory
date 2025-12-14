@@ -87,8 +87,8 @@ RundeeItemFactory.exe --report items_food_desert.json --itemType food
 
 ### Step 3: Import to Unity
 1. Open Unity Editor
-2. Go to `Tools/Rundee/Import Food Items From JSON`
-3. Select `items_food_desert.json`
+2. Go to `Tools/Rundee/Item Factory/JSON Importer`
+3. Select Item type = Food, file = `items_food_desert.json`
 4. Check `Assets/Resources/RundeeItemFactory/FoodItems/` for generated ScriptableObjects
 
 ## Advanced Examples

@@ -16,16 +16,197 @@
 #include "Prompts/PromptBuilder.h"
 #include "Prompts/CustomPreset.h"
 #include "Clients/OllamaClient.h"
+#include <json.hpp>
 #include <iostream>
 #include <fstream>
 #include <set>
 #include <iomanip>
 #include <sstream>
+#include <ctime>
 #include <chrono>
 #include <map>
+#include <algorithm>
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#endif
+
+namespace
+{
+    const std::vector<std::string> kBannedWords = { "dummy", "lorem", "ipsum", "placeholder", "test item", "badword" };
+    const std::string kRegistryDir = "TempState";
+
+    std::string ToLower(const std::string& s)
+    {
+        std::string out = s;
+        std::transform(out.begin(), out.end(), out.begin(), ::tolower);
+        return out;
+    }
+
+    int CountBanHits(const std::string& text)
+    {
+        int hits = 0;
+        std::string low = ToLower(text);
+        for (const auto& w : kBannedWords)
+        {
+            if (low.find(w) != std::string::npos)
+                ++hits;
+        }
+        return hits;
+    }
+
+    std::map<std::string, int> CountRarity(const std::vector<std::string>& rarities)
+    {
+        std::map<std::string, int> counts;
+        for (const auto& r : rarities)
+            ++counts[r];
+        return counts;
+    }
+
+    void PrintGuardrailSummary(const std::string& typeName, int warnings, int errors, int banHits, const std::map<std::string, int>& rarityCounts, int total)
+    {
+        std::cout << "[Guardrail] Type=" << typeName
+            << " warnings=" << warnings
+            << " errors=" << errors
+            << " bannedHits=" << banHits;
+        if (total > 0)
+        {
+            for (const auto& kv : rarityCounts)
+            {
+                double pct = (static_cast<double>(kv.second) / static_cast<double>(total)) * 100.0;
+                std::cout << " rarity[" << kv.first << "]=" << kv.second << " (" << std::fixed << std::setprecision(1) << pct << "%)";
+            }
+        }
+        std::cout << "\n";
+    }
+}
+
+static void EnsureParentDir(const std::string& path)
+{
+    size_t pos = path.find_last_of("/\\");
+    if (pos != std::string::npos)
+    {
+        std::string dir = path.substr(0, pos);
+#ifdef _WIN32
+        _mkdir(dir.c_str());
+#else
+        mkdir(dir.c_str(), 0755);
+#endif
+    }
+}
+
+// ------------------------------------------------------------
+// ID Registry (cross-run dedupe)
+// ------------------------------------------------------------
+static std::string GetRegistryPath(const std::string& typeName)
+{
+    return kRegistryDir + "/id_registry_" + typeName + ".json";
+}
+
+static std::set<std::string> LoadRegistryIds(const std::string& typeName)
+{
+    std::set<std::string> ids;
+    std::string path = GetRegistryPath(typeName);
+    std::ifstream ifs(path);
+    if (!ifs.is_open())
+        return ids;
+    try
+    {
+        nlohmann::json j;
+        ifs >> j;
+        if (j.is_object() && j.contains("ids") && j["ids"].is_array())
+        {
+            for (const auto& v : j["ids"])
+            {
+                if (v.is_string())
+                    ids.insert(v.get<std::string>());
+            }
+        }
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "[Registry] Failed to parse registry (" << path << "): " << e.what() << "\n";
+    }
+    return ids;
+}
+
+static bool SaveRegistryIds(const std::string& typeName, const std::set<std::string>& ids)
+{
+    std::string path = GetRegistryPath(typeName);
+    EnsureParentDir(path);
+    nlohmann::json j;
+    j["ids"] = ids;
+    std::ofstream ofs(path);
+    if (!ofs.is_open())
+    {
+        std::cerr << "[Registry] Failed to open registry for write: " << path << "\n";
+        return false;
+    }
+    ofs << j.dump(2);
+    return true;
+}
+
+static void LogRegistryEvent(const std::string& typeName, size_t beforeCount, size_t addedCount, size_t afterCount)
+{
+    // #region agent log
+    static int dbgCount = 0;
+    if (dbgCount < 40)
+    {
+        ++dbgCount;
+        auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+        std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+        if (dbg.is_open())
+        {
+            dbg << R"({"sessionId":"debug-session","runId":"dedupe-registry","hypothesisId":"H_REG","location":"ItemGenerator.cpp","message":"registry update","data":{"type":")"
+                << typeName << R"(","before":)" << beforeCount << R"(,"added":)" << addedCount << R"(,"after":)" << afterCount << R"(},"timestamp":)" << ts << "})" << "\n";
+        }
+    }
+    // #endregion
+}
+
+template <typename T>
+static void AppendIdsToRegistry(const std::string& typeName, const std::vector<T>& items)
+{
+    if (items.empty())
+        return;
+    std::set<std::string> ids = LoadRegistryIds(typeName);
+    size_t before = ids.size();
+    for (const auto& item : items)
+    {
+        ids.insert(item.id);
+    }
+    size_t after = ids.size();
+    size_t added = (after >= before) ? (after - before) : 0;
+    if (SaveRegistryIds(typeName, ids))
+    {
+        LogRegistryEvent(typeName, before, added, after);
+    }
+}
+
+static std::string CleanJsonTrailingCommas(const std::string& text)
+{
+    std::string s = text;
+    auto replace_all = [&](const std::string& from, const std::string& to)
+    {
+        size_t pos = 0;
+        while ((pos = s.find(from, pos)) != std::string::npos)
+        {
+            s.replace(pos, from.size(), to);
+        }
+    };
+
+    replace_all(",\r\n]", "\r\n]");
+    replace_all(",\n]", "\n]");
+    replace_all(", ]", " ]");
+    replace_all(",]", "]");
+    return s;
+}
 
 static bool SaveTextFile(const std::string& path, const std::string& text)
 {
+    EnsureParentDir(path);
     std::ofstream ofs(path);
     if (!ofs.is_open())
     {
@@ -34,6 +215,20 @@ static bool SaveTextFile(const std::string& path, const std::string& text)
     }
     ofs << text;
     return true;
+}
+
+static std::string GetCurrentTimestamp()
+{
+    std::time_t now = std::time(nullptr);
+    std::tm localTm{};
+#ifdef _WIN32
+    localtime_s(&localTm, &now);
+#else
+    localtime_r(&now, &localTm);
+#endif
+    char buffer[32];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &localTm);
+    return buffer;
 }
 
 static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
@@ -51,7 +246,8 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
     }
 
     std::vector<ItemFoodData> items;
-    if (!ItemJsonParser::ParseFoodFromJsonText(jsonResponse, items))
+    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
+    if (!ItemJsonParser::ParseFoodFromJsonText(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
         return 1;
@@ -61,14 +257,29 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
+    int warnCount = 0;
+    int errorCount = 0;
+    int banHits = 0;
+    std::vector<std::string> rarities;
+    rarities.reserve(items.size());
+
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckFoodQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        warnCount += static_cast<int>(qualityResult.warnings.size());
+        errorCount += static_cast<int>(qualityResult.errors.size());
+        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
+        rarities.push_back(item.rarity);
     }
+    PrintGuardrailSummary("Food", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
-    for (const auto& item : items)
+    for (auto& item : items)
     {
+        if (item.spoils && item.spoilTimeMinutes < 60)
+        {
+            item.spoilTimeMinutes = 60;
+        }
         std::cout << "- " << item.id
             << " / " << item.displayName
             << " / category: " << item.category
@@ -167,6 +378,9 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
         }
     }
 
+    // Append registry for this batch before potentially recursing for more
+    AppendIdsToRegistry("food", newItems);
+
     // If we still need more items, generate additional ones with updated exclusion list
     if (stillNeeded > 0)
     {
@@ -178,10 +392,16 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
         // Build prompt with exclusion list
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildFoodJsonPrompt(additionalParams, preset, updatedExistingIds);
+        std::string additionalPrompt = PromptBuilder::BuildFoodJsonPrompt(
+            additionalParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
         
         // Generate additional items
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 3, 120);
+        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
             return ProcessLLMResponse_Food(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
@@ -210,7 +430,8 @@ static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::
     }
 
     std::vector<ItemDrinkData> items;
-    if (!ItemJsonParser::ParseDrinkFromJsonText(jsonResponse, items))
+    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
+    if (!ItemJsonParser::ParseDrinkFromJsonText(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
         return 1;
@@ -220,14 +441,29 @@ static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
+    int warnCount = 0;
+    int errorCount = 0;
+    int banHits = 0;
+    std::vector<std::string> rarities;
+    rarities.reserve(items.size());
+
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckDrinkQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        warnCount += static_cast<int>(qualityResult.warnings.size());
+        errorCount += static_cast<int>(qualityResult.errors.size());
+        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
+        rarities.push_back(item.rarity);
     }
+    PrintGuardrailSummary("Drink", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
-    for (const auto& item : items)
+    for (auto& item : items)
     {
+        if (item.spoils && item.spoilTimeMinutes < 60)
+        {
+            item.spoilTimeMinutes = 60;
+        }
         std::cout << "- " << item.id
             << " / " << item.displayName
             << " / category: " << item.category
@@ -302,6 +538,9 @@ static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::
         }
     }
 
+    // Append registry for this batch before potentially recursing for more
+    AppendIdsToRegistry("drink", newItems);
+
     // If we still need more items, generate additional ones with updated exclusion list
     if (stillNeeded > 0)
     {
@@ -313,10 +552,16 @@ static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::
         // Build prompt with exclusion list
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildDrinkJsonPrompt(additionalParams, preset, updatedExistingIds);
+        std::string additionalPrompt = PromptBuilder::BuildDrinkJsonPrompt(
+            additionalParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
         
         // Generate additional items
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 3, 120);
+        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
             return ProcessLLMResponse_Drink(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
@@ -345,7 +590,8 @@ static int ProcessLLMResponse_Material(const std::string& jsonResponse, const st
     }
 
     std::vector<ItemMaterialData> items;
-    if (!ItemJsonParser::ParseMaterialFromJsonText(jsonResponse, items))
+    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
+    if (!ItemJsonParser::ParseMaterialFromJsonText(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse material JSON.\n";
         return 1;
@@ -355,11 +601,22 @@ static int ProcessLLMResponse_Material(const std::string& jsonResponse, const st
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
+    int warnCount = 0;
+    int errorCount = 0;
+    int banHits = 0;
+    std::vector<std::string> rarities;
+    rarities.reserve(items.size());
+
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckMaterialQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        warnCount += static_cast<int>(qualityResult.warnings.size());
+        errorCount += static_cast<int>(qualityResult.errors.size());
+        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
+        rarities.push_back(item.rarity);
     }
+    PrintGuardrailSummary("Material", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
     for (const auto& item : items)
     {
@@ -437,6 +694,9 @@ static int ProcessLLMResponse_Material(const std::string& jsonResponse, const st
         }
     }
 
+    // Append registry for this batch before potentially recursing for more
+    AppendIdsToRegistry("material", newItems);
+
     // If we still need more items, generate additional ones with updated exclusion list
     if (stillNeeded > 0)
     {
@@ -448,10 +708,16 @@ static int ProcessLLMResponse_Material(const std::string& jsonResponse, const st
         // Build prompt with exclusion list
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildMaterialJsonPrompt(additionalParams, preset, updatedExistingIds);
+        std::string additionalPrompt = PromptBuilder::BuildMaterialJsonPrompt(
+            additionalParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
         
         // Generate additional items
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 3, 120);
+        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
             return ProcessLLMResponse_Material(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
@@ -480,7 +746,8 @@ static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std:
     }
 
     std::vector<ItemWeaponData> items;
-    if (!ItemJsonParser::ParseWeaponFromJsonText(jsonResponse, items))
+    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
+    if (!ItemJsonParser::ParseWeaponFromJsonText(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
         return 1;
@@ -490,14 +757,36 @@ static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std:
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
+    int warnCount = 0;
+    int errorCount = 0;
+    int banHits = 0;
+    std::vector<std::string> rarities;
+    rarities.reserve(items.size());
+
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckWeaponQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        warnCount += static_cast<int>(qualityResult.warnings.size());
+        errorCount += static_cast<int>(qualityResult.errors.size());
+        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
+        rarities.push_back(item.rarity);
     }
+    PrintGuardrailSummary("Weapon", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
-    for (const auto& item : items)
+    for (auto& item : items)
     {
+        if (item.weaponType.empty())
+        {
+            if (item.weaponCategory == "Melee")
+                item.weaponType = "MeleeGeneric";
+            else
+                item.weaponType = "RangedGeneric";
+        }
+        if (item.weight < 500)
+        {
+            item.weight = 500;
+        }
         std::cout << "- " << item.id << " / " << item.displayName
             << " / " << item.weaponType << " / Damage: " << item.minDamage << "-" << item.maxDamage
             << " / FireRate: " << item.fireRate << "\n";
@@ -559,6 +848,9 @@ static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std:
         }
     }
 
+    // Append registry for this batch before potentially recursing for more
+    AppendIdsToRegistry("weapon", newItems);
+
     // If we still need more items, generate additional ones
     if (stillNeeded > 0)
     {
@@ -566,8 +858,14 @@ static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std:
         std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingWeaponIds(outputPath);
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildWeaponJsonPrompt(additionalParams, preset, updatedExistingIds);
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 3, 120);
+        std::string additionalPrompt = PromptBuilder::BuildWeaponJsonPrompt(
+            additionalParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
+        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
             return ProcessLLMResponse_Weapon(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
@@ -596,7 +894,8 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
     }
 
     std::vector<ItemWeaponComponentData> items;
-    if (!ItemJsonParser::ParseWeaponComponentFromJsonText(jsonResponse, items))
+    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
+    if (!ItemJsonParser::ParseWeaponComponentFromJsonText(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
         return 1;
@@ -606,11 +905,22 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
+    int warnCount = 0;
+    int errorCount = 0;
+    int banHits = 0;
+    std::vector<std::string> rarities;
+    rarities.reserve(items.size());
+
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckWeaponComponentQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        warnCount += static_cast<int>(qualityResult.warnings.size());
+        errorCount += static_cast<int>(qualityResult.errors.size());
+        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
+        rarities.push_back(item.rarity);
     }
+    PrintGuardrailSummary("WeaponComponent", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
     for (const auto& item : items)
     {
@@ -674,6 +984,9 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
         }
     }
 
+    // Append registry for this batch before potentially recursing for more
+    AppendIdsToRegistry("weaponcomponent", newItems);
+
     // If we still need more items, generate additional ones
     if (stillNeeded > 0)
     {
@@ -681,8 +994,14 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
         std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingWeaponComponentIds(outputPath);
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildWeaponComponentJsonPrompt(additionalParams, preset, updatedExistingIds);
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 3, 120);
+        std::string additionalPrompt = PromptBuilder::BuildWeaponComponentJsonPrompt(
+            additionalParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
+        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
             return ProcessLLMResponse_WeaponComponent(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
@@ -711,7 +1030,8 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
     }
 
     std::vector<ItemAmmoData> items;
-    if (!ItemJsonParser::ParseAmmoFromJsonText(jsonResponse, items))
+    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
+    if (!ItemJsonParser::ParseAmmoFromJsonText(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
         return 1;
@@ -721,14 +1041,30 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
+    int warnCount = 0;
+    int errorCount = 0;
+    int banHits = 0;
+    std::vector<std::string> rarities;
+    rarities.reserve(items.size());
+
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckAmmoQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        warnCount += static_cast<int>(qualityResult.warnings.size());
+        errorCount += static_cast<int>(qualityResult.errors.size());
+        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
+        rarities.push_back(item.rarity);
     }
+    PrintGuardrailSummary("Ammo", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
-    for (const auto& item : items)
+    for (auto& item : items)
     {
+        if (item.rarity == "Common")
+        {
+            if (item.damageBonus > 15) item.damageBonus = 15;
+            if (item.penetration > 25) item.penetration = 25;
+        }
         std::cout << "- " << item.id << " / " << item.displayName
             << " / " << item.caliber << " / Damage: +" << item.damageBonus
             << " / Penetration: " << item.penetration << "\n";
@@ -790,6 +1126,9 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
         }
     }
 
+    // Append registry for this batch before potentially recursing for more
+    AppendIdsToRegistry("ammo", newItems);
+
     // If we still need more items, generate additional ones
     if (stillNeeded > 0)
     {
@@ -797,8 +1136,14 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
         std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingAmmoIds(outputPath);
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildAmmoJsonPrompt(additionalParams, preset, updatedExistingIds);
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 3, 120);
+        std::string additionalPrompt = PromptBuilder::BuildAmmoJsonPrompt(
+            additionalParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
+        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
             return ProcessLLMResponse_Ammo(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
@@ -842,6 +1187,9 @@ namespace ItemGenerator
 
         // Get existing IDs to avoid duplicates in prompt
         std::set<std::string> existingIds;
+        std::string typeSlug = CommandLineParser::GetItemTypeName(args.itemType);
+        std::set<std::string> registryIds = LoadRegistryIds(typeSlug);
+        size_t registryCount = registryIds.size();
         if (args.itemType == ItemType::Food)
         {
             existingIds = ItemJsonWriter::GetExistingFoodIds(args.params.outputPath);
@@ -867,6 +1215,11 @@ namespace ItemGenerator
             existingIds = ItemJsonWriter::GetExistingAmmoIds(args.params.outputPath);
         }
 
+        size_t beforeMerge = existingIds.size();
+        existingIds.insert(registryIds.begin(), registryIds.end());
+        size_t afterMerge = existingIds.size();
+        LogRegistryEvent(typeSlug, beforeMerge, afterMerge - beforeMerge, afterMerge);
+
         // Load custom preset if specified
         CustomPreset customPreset;
         bool useCustomPreset = !args.customPresetPath.empty();
@@ -881,52 +1234,55 @@ namespace ItemGenerator
         }
 
         // Build prompt and get LLM response
+        std::string generationTimestamp = GetCurrentTimestamp();
+        int existingCount = static_cast<int>(existingIds.size());
+
         if (args.itemType == ItemType::Food)
         {
             if (useCustomPreset)
-                prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, customPreset, existingIds);
+                prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
             else
-                prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, args.preset, existingIds);
+                prompt = PromptBuilder::BuildFoodJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Food JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Drink)
         {
             if (useCustomPreset)
-                prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, customPreset, existingIds);
+                prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
             else
-                prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, args.preset, existingIds);
+                prompt = PromptBuilder::BuildDrinkJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Drink JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Material)
         {
             if (useCustomPreset)
-                prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, customPreset, existingIds);
+                prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
             else
-                prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, args.preset, existingIds);
+                prompt = PromptBuilder::BuildMaterialJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Material JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Weapon)
         {
             if (useCustomPreset)
-                prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, customPreset, existingIds);
+                prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
             else
-                prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, args.preset, existingIds);
+                prompt = PromptBuilder::BuildWeaponJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Weapon JSON Response ===\n";
         }
         else if (args.itemType == ItemType::WeaponComponent)
         {
             if (useCustomPreset)
-                prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, customPreset, existingIds);
+                prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
             else
-                prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, args.preset, existingIds);
+                prompt = PromptBuilder::BuildWeaponComponentJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Weapon Component JSON Response ===\n";
         }
         else if (args.itemType == ItemType::Ammo)
         {
             if (useCustomPreset)
-                prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, customPreset, existingIds);
+                prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
             else
-                prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, args.preset, existingIds);
+                prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Ammo JSON Response ===\n";
         }
         else
@@ -936,7 +1292,7 @@ namespace ItemGenerator
         }
 
         // Use retry logic for more reliable LLM calls
-        jsonResponse = OllamaClient::RunWithRetry(args.modelName, prompt, 3, 120);
+        jsonResponse = OllamaClient::RunWithRetry(args.modelName, prompt, 0, 0);
         
         if (jsonResponse.empty())
         {
@@ -973,167 +1329,6 @@ namespace ItemGenerator
         }
 
         return 1;
-    }
-
-    static std::vector<ItemFoodData> GenerateDummyFood(const FoodGenerateParams& params)
-    {
-        std::vector<ItemFoodData> items;
-        items.reserve(params.count);
-
-        for (int i = 0; i < params.count; ++i)
-        {
-            ItemFoodData item;
-            item.id = "Food_item_dummy_food_" + std::to_string(i);
-            item.displayName = "Dummy Food " + std::to_string(i);
-            item.category = "Food";
-            item.rarity = "Common";
-            item.maxStack = 10;
-
-            item.hungerRestore = 10 + i;
-            item.thirstRestore = 5;
-            item.healthRestore = 0;
-
-            item.spoils = true;
-            item.spoilTimeMinutes = 30;
-
-            item.description = "Placeholder food item generated without LLM.";
-
-            items.push_back(item);
-        }
-
-        return items;
-    }
-
-    static std::vector<ItemDrinkData> GenerateDummyDrink(const FoodGenerateParams& params)
-    {
-        std::vector<ItemDrinkData> items;
-        items.reserve(params.count);
-
-        for (int i = 0; i < params.count; ++i)
-        {
-            ItemDrinkData item;
-            item.id = "Drink_item_dummy_drink_" + std::to_string(i);
-            item.displayName = "Dummy Drink " + std::to_string(i);
-            item.category = "Drink";
-            item.rarity = "Common";
-            item.maxStack = 10;
-
-            item.hungerRestore = 0;
-            item.thirstRestore = 15 + i;
-            item.healthRestore = 0;
-
-            item.spoils = false;
-            item.spoilTimeMinutes = 0;
-
-            item.description = "Placeholder drink item generated without LLM.";
-
-            items.push_back(item);
-        }
-
-        return items;
-    }
-
-    static std::vector<ItemMaterialData> GenerateDummyMaterial(const FoodGenerateParams& params)
-    {
-        std::vector<ItemMaterialData> items;
-        items.reserve(params.count);
-
-        for (int i = 0; i < params.count; ++i)
-        {
-            ItemMaterialData item;
-            item.id = "Material_item_dummy_material_" + std::to_string(i);
-            item.displayName = "Dummy Material " + std::to_string(i);
-            item.category = "Material";
-            item.rarity = "Common";
-            item.maxStack = 50;
-
-            item.materialType = "Unknown";
-            item.hardness = 10 + i;
-            item.flammability = 20 + i;
-            item.value = 5 + i;
-
-            item.description = "Placeholder material item generated without LLM.";
-
-            items.push_back(item);
-        }
-
-        return items;
-    }
-
-    int GenerateDummy(const CommandLineArgs& args)
-    {
-        std::cout << "[ItemGenerator] Running in Dummy mode.\n";
-
-        if (args.itemType == ItemType::Food)
-        {
-            std::vector<ItemFoodData> items = GenerateDummyFood(args.params);
-
-            std::cout << "=== Generated Dummy Food Items (" << items.size() << ") ===\n";
-            for (const auto& item : items)
-            {
-                std::cout << "- " << item.displayName
-                    << " (Hunger +" << item.hungerRestore
-                    << ", Thirst +" << item.thirstRestore << ")\n";
-            }
-
-            if (!args.params.outputPath.empty())
-            {
-                if (!ItemJsonWriter::WriteFoodToFile(items, args.params.outputPath))
-                {
-                    std::cout << "[ItemGenerator] Failed to write dummy JSON file.\n";
-                    return 1;
-                }
-            }
-        }
-        else if (args.itemType == ItemType::Drink)
-        {
-            std::vector<ItemDrinkData> items = GenerateDummyDrink(args.params);
-
-            std::cout << "=== Generated Dummy Drink Items (" << items.size() << ") ===\n";
-            for (const auto& item : items)
-            {
-                std::cout << "- " << item.displayName
-                    << " (Hunger +" << item.hungerRestore
-                    << ", Thirst +" << item.thirstRestore << ")\n";
-            }
-
-            if (!args.params.outputPath.empty())
-            {
-                if (!ItemJsonWriter::WriteDrinkToFile(items, args.params.outputPath))
-                {
-                    std::cout << "[ItemGenerator] Failed to write dummy JSON file.\n";
-                    return 1;
-                }
-            }
-        }
-        else if (args.itemType == ItemType::Material)
-        {
-            std::vector<ItemMaterialData> items = GenerateDummyMaterial(args.params);
-
-            std::cout << "=== Generated Dummy Material Items (" << items.size() << ") ===\n";
-            for (const auto& item : items)
-            {
-                std::cout << "- " << item.displayName
-                    << " (value: " << item.value
-                    << ", hardness: " << item.hardness << ")\n";
-            }
-
-            if (!args.params.outputPath.empty())
-            {
-                if (!ItemJsonWriter::WriteMaterialToFile(items, args.params.outputPath))
-                {
-                    std::cout << "[ItemGenerator] Failed to write dummy JSON file.\n";
-                    return 1;
-                }
-            }
-        }
-        else
-        {
-            std::cout << "[ItemGenerator] Unknown item type.\n";
-            return 1;
-        }
-
-        return 0;
     }
 
     int GenerateBatch(const CommandLineArgs& args)
@@ -1179,7 +1374,7 @@ namespace ItemGenerator
             {
                 // Generate default output path based on item type
                 std::string itemTypeName = CommandLineParser::GetItemTypeName(batchItem.itemType);
-                itemArgs.params.outputPath = "items_" + itemTypeName + ".json";
+                itemArgs.params.outputPath = "ItemJson/items_" + itemTypeName + ".json";
             }
 
             std::cout << "[ItemGenerator] Output: " << itemArgs.params.outputPath << "\n\n";
@@ -1202,14 +1397,14 @@ namespace ItemGenerator
             {
                 totalSuccess++;
                 successCountsByType[batchItem.itemType] += batchItem.count;
-                std::cout << "[ItemGenerator] ✓ Successfully generated " << batchItem.count 
+                std::cout << "[ItemGenerator] OK Successfully generated " << batchItem.count 
                     << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
                     << " items (" << FormatSeconds(durationSeconds) << ").\n";
             }
             else
             {
                 totalFailed++;
-                std::cerr << "[ItemGenerator] ✗ Failed to generate " << batchItem.count 
+                std::cerr << "[ItemGenerator] FAIL Failed to generate " << batchItem.count
                     << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
                     << " items (exit code " << result << ").\n";
             }
@@ -1278,5 +1473,3 @@ namespace ItemGenerator
         return (totalFailed > 0) ? 1 : 0;
     }
 }
-
-

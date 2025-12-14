@@ -15,8 +15,41 @@
 #include <iostream>
 #include <set>
 #include <iterator>
+#include <windows.h>
 
 using nlohmann::json;
+
+namespace
+{
+    // Ensure directory exists for the given file path
+    bool EnsureDirectoryExists(const std::string& filePath)
+    {
+        // Extract directory path from file path
+        size_t lastSlash = filePath.find_last_of("/\\");
+        if (lastSlash == std::string::npos)
+        {
+            // No directory in path, file is in current directory
+            return true;
+        }
+
+        std::string dirPath = filePath.substr(0, lastSlash);
+        
+        // Create directory recursively using Windows API
+        std::wstring wDirPath(dirPath.begin(), dirPath.end());
+        
+        // CreateDirectory can only create one level at a time, so we need to create parent directories first
+        size_t pos = 0;
+        while ((pos = wDirPath.find_first_of(L"/\\", pos + 1)) != std::wstring::npos)
+        {
+            std::wstring subDir = wDirPath.substr(0, pos);
+            CreateDirectoryW(subDir.c_str(), NULL);
+        }
+        
+        // Create the final directory
+        DWORD result = CreateDirectoryW(wDirPath.c_str(), NULL);
+        return (result != 0 || GetLastError() == ERROR_ALREADY_EXISTS);
+    }
+}
 
 bool ItemJsonWriter::WriteFoodToFile(const std::vector<ItemFoodData>& items, const std::string& path)
 {
@@ -42,6 +75,13 @@ bool ItemJsonWriter::WriteFoodToFile(const std::vector<ItemFoodData>& items, con
         jItem["description"] = item.description;
 
         jArray.push_back(jItem);
+    }
+
+    // Ensure directory exists before writing
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
     }
 
     std::ofstream ofs(path);
@@ -83,6 +123,13 @@ bool ItemJsonWriter::WriteDrinkToFile(const std::vector<ItemDrinkData>& items, c
         jArray.push_back(jItem);
     }
 
+    // Ensure directory exists before writing
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
+    }
+
     std::ofstream ofs(path);
     if (!ofs.is_open())
     {
@@ -118,6 +165,13 @@ bool ItemJsonWriter::WriteMaterialToFile(const std::vector<ItemMaterialData>& it
         jItem["description"] = item.description;
 
         jArray.push_back(jItem);
+    }
+
+    // Ensure directory exists before writing
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
     }
 
     std::ofstream ofs(path);
@@ -442,6 +496,13 @@ bool ItemJsonWriter::WriteWeaponToFile(const std::vector<ItemWeaponData>& items,
         jArray.push_back(jItem);
     }
 
+    // Ensure directory exists before writing
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
+    }
+
     std::ofstream ofs(path);
     if (!ofs.is_open())
     {
@@ -519,6 +580,13 @@ bool ItemJsonWriter::WriteWeaponComponentToFile(const std::vector<ItemWeaponComp
         jItem["subSlots"] = jSubSlots;
 
         jArray.push_back(jItem);
+    }
+
+    // Ensure directory exists before writing
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
     }
 
     std::ofstream ofs(path);
@@ -681,6 +749,13 @@ bool ItemJsonWriter::WriteAmmoToFile(const std::vector<ItemAmmoData>& items, con
         jItem["value"] = item.value;
 
         jArray.push_back(jItem);
+    }
+
+    // Ensure directory exists before writing
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
     }
 
     std::ofstream ofs(path);

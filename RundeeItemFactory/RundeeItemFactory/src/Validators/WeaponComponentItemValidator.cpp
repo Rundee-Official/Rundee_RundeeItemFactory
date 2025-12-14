@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
+#include <fstream>
+#include <chrono>
 
 namespace
 {
@@ -195,11 +197,111 @@ namespace WeaponComponentItemValidator
 {
     void Validate(ItemWeaponComponentData& item)
     {
-        // Add prefix to ID
-        if (!item.id.empty() && item.id.find("WeaponComponent_") != 0)
+        std::string originalId = item.id;
+
+        // Normalize prefix: strip any leading weaponcomponent_/weapon_component_/weaponcomp_/weapon_/component_/comp_/wc_/llama* (any case, repeated), then add canonical "WeaponComponent_"
+        if (!item.id.empty())
         {
+            auto stripAnyPrefix = [](std::string& value, std::initializer_list<const char*> prefixesLower)
+            {
+                bool stripped = true;
+                while (stripped)
+                {
+                    stripped = false;
+                    std::string lower = value;
+                    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                    for (const char* p : prefixesLower)
+                    {
+                        std::string pref = p;
+                        if (lower.rfind(pref, 0) == 0)
+                        {
+                            value = value.substr(pref.size());
+                            stripped = true;
+                            break;
+                        }
+                    }
+                    if (stripped)
+                        continue;
+
+                    // Handle llama+digit or llama prefix (e.g., "llama3_barrel" or "llama_barrel")
+                    if (lower.rfind("llama", 0) == 0)
+                    {
+                        size_t underscore = lower.find('_');
+                        if (underscore != std::string::npos)
+                        {
+                            value = value.substr(underscore + 1);
+                        }
+                        else
+                        {
+                            value = value.substr(5); // remove "llama"
+                        }
+                        stripped = true;
+                        continue;
+                    }
+                }
+            };
+
+            stripAnyPrefix(item.id, { "weaponcomponent_", "weapon_component_", "weaponcomp_", "weapon_", "component_", "comp_", "wc_", "_", "llama_" });
+
+            // Trim any leading underscores left over
+            while (!item.id.empty() && (item.id[0] == '_' || item.id[0] == '-'))
+            {
+                item.id.erase(item.id.begin());
+            }
+
+            // Collapse any accidental double underscores
+            while (item.id.find("__") != std::string::npos)
+            {
+                item.id.replace(item.id.find("__"), 2, "_");
+            }
+
+            // If the remaining id is purely numeric or empty, derive from displayName
+            bool numericOnly = !item.id.empty() && std::all_of(item.id.begin(), item.id.end(), ::isdigit);
+            if (item.id.empty() || numericOnly)
+            {
+                std::string slug;
+                slug.reserve(item.displayName.size());
+                bool lastUnderscore = false;
+                for (char c : item.displayName)
+                {
+                    unsigned char uc = static_cast<unsigned char>(c);
+                    if (std::isalnum(uc))
+                    {
+                        slug += static_cast<char>(std::tolower(uc));
+                        lastUnderscore = false;
+                    }
+                    else if (c == ' ' || c == '-' || c == '_' || c == '.')
+                    {
+                        if (!lastUnderscore)
+                        {
+                            slug += '_';
+                            lastUnderscore = true;
+                        }
+                    }
+                }
+                while (!slug.empty() && slug.back() == '_') slug.pop_back();
+                if (slug.empty()) slug = "component";
+                item.id = slug;
+            }
+
             item.id = "WeaponComponent_" + item.id;
         }
+
+        // #region agent log
+        static int dbgCount = 0;
+        if (dbgCount < 50)
+        {
+            ++dbgCount;
+            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+            if (dbg.is_open())
+            {
+                dbg << R"({"sessionId":"debug-session","runId":"prefix-debug","hypothesisId":"H1","location":"WeaponComponentItemValidator.cpp:Validate","message":"id prefix normalization","data":{"before":")"
+                    << originalId << R"(","after":")" << item.id << R"("},"timestamp":)" << ts << "})" << "\n";
+            }
+        }
+        // #endregion
 
         // Default category
         if (item.category.empty())
@@ -216,6 +318,30 @@ namespace WeaponComponentItemValidator
         item.penetrationModifier = JsonUtils::ClampInt(item.penetrationModifier, -50, 50);
         item.maxStack = JsonUtils::ClampInt(item.maxStack, 1, 999);
         
+        // Infer componentType from displayName when missing or wrong
+        auto lowerDisplay = ToLowerCopy(item.displayName);
+        auto contains = [&](const std::string& needle)
+        {
+            return lowerDisplay.find(needle) != std::string::npos;
+        };
+
+        if (item.componentType.empty())
+        {
+            if (contains("stock")) item.componentType = "Stock";
+            else if (contains("grip")) item.componentType = "Grip";
+            else if (contains("handguard")) item.componentType = "Handguard";
+            else if (contains("muzzle") || contains("brake") || contains("suppress")) item.componentType = "Muzzle";
+            else if (contains("trigger")) item.componentType = "Trigger";
+            else if (contains("sight") || contains("rail")) item.componentType = "Sight";
+            else if (contains("magazine") || contains("mag")) item.componentType = "Magazine";
+            else item.componentType = "Accessory";
+        }
+        // Fix common mislabeling: handguard named as barrel
+        if (MatchesType(ToLowerCopy(item.componentType), { "barrel" }) && contains("handguard"))
+        {
+            item.componentType = "Handguard";
+        }
+
         // Magazine-specific validation
         auto isMagazine = [](const std::string& type)
         {
@@ -228,7 +354,7 @@ namespace WeaponComponentItemValidator
 
         if (isMagazine(item.componentType))
         {
-            item.magazineCapacity = JsonUtils::ClampInt(item.magazineCapacity, 1, 200);
+            item.magazineCapacity = JsonUtils::ClampInt(item.magazineCapacity, 10, 90);
             if (item.caliber.empty())
             {
                 item.caliber = "9mm"; // Default caliber

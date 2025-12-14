@@ -11,6 +11,7 @@
 #pragma once
 
 #include <string>
+#include "Helpers/AppConfig.h"
 
 class OllamaClient
 {
@@ -19,7 +20,9 @@ public:
     // Calls Ollama HTTP API with the given model name and prompt,
     // Returns the JSON response as a string.
     // Returns empty string on error.
-    static std::string RunSimple(const std::string& modelName, const std::string& prompt);
+    static std::string RunSimple(const std::string& modelName, 
+                                 const std::string& prompt,
+                                 const OllamaSettings& settings);
 
     // Run with retry logic:
     // Attempts to call LLM with automatic retry on failure.

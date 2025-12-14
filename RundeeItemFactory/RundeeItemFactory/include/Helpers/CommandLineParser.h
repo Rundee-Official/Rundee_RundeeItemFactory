@@ -17,7 +17,6 @@
 
 enum class RunMode
 {
-    Dummy,
     LLM,
     Batch
 };

@@ -13,6 +13,8 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+#include <fstream>
+#include <chrono>
 
 static float ComputePower(const ItemFoodData& item)
 {
@@ -108,23 +110,42 @@ static void EnsureRarity(ItemFoodData& item)
 
 void FoodItemValidator::Validate(ItemFoodData& item)
 {
-    // 0) Add prefix to ID (case-insensitive check to avoid double prefix)
+    std::string originalId = item.id;
+
+    // 0) Normalize prefix: strip any leading food_ (any case, repeated), then add canonical "Food_"
     if (!item.id.empty())
     {
-        // Check if already has prefix (case-insensitive)
-        std::string idLower = item.id;
-        std::transform(idLower.begin(), idLower.end(), idLower.begin(), ::tolower);
-        
-        if (idLower.find("food_") != 0)
+        auto stripPrefix = [](std::string& value, const std::string& prefixLower)
         {
-            // Remove any existing "food_" prefix (case-insensitive) before adding "Food_"
-            if (idLower.find("food_") == 0)
+            std::string lower = value;
+            std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+            while (lower.rfind(prefixLower, 0) == 0)
             {
-                item.id = item.id.substr(5); // Remove "food_" (5 characters)
+                value = value.substr(prefixLower.size());
+                lower = value;
+                std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
             }
-            item.id = "Food_" + item.id;
+        };
+
+        stripPrefix(item.id, "food_");
+        item.id = "Food_" + item.id;
+    }
+
+    // #region agent log
+    static int dbgCount = 0;
+    if (dbgCount < 50)
+    {
+        ++dbgCount;
+        auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+        std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+        if (dbg.is_open())
+        {
+            dbg << R"({"sessionId":"debug-session","runId":"prefix-debug","hypothesisId":"H2","location":"FoodItemValidator.cpp:Validate","message":"id prefix normalization","data":{"before":")"
+                << originalId << R"(","after":")" << item.id << R"("},"timestamp":)" << ts << "})" << "\n";
         }
     }
+    // #endregion
 
     // 1) Clamp basic values
     item.hungerRestore = JsonUtils::ClampInt(item.hungerRestore, 0, 100);

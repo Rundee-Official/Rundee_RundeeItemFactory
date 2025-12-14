@@ -11,16 +11,49 @@
 #include "Validators/AmmoItemValidator.h"
 #include "Utils/JsonUtils.h"
 #include <iostream>
+#include <fstream>
+#include <chrono>
 
 namespace AmmoItemValidator
 {
     void Validate(ItemAmmoData& item)
     {
-        // Add prefix to ID
-        if (!item.id.empty() && item.id.find("Ammo_") != 0)
+        std::string originalId = item.id;
+
+        // Normalize prefix: strip any leading ammo_ (any case, repeated), then add canonical "Ammo_"
+        if (!item.id.empty())
         {
+            auto stripPrefix = [](std::string& value, const std::string& prefixLower)
+            {
+                std::string lower = value;
+                std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                while (lower.rfind(prefixLower, 0) == 0)
+                {
+                    value = value.substr(prefixLower.size());
+                    lower = value;
+                    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+                }
+            };
+
+            stripPrefix(item.id, "ammo_");
             item.id = "Ammo_" + item.id;
         }
+
+        // #region agent log
+        static int dbgCount = 0;
+        if (dbgCount < 50)
+        {
+            ++dbgCount;
+            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+            if (dbg.is_open())
+            {
+                dbg << R"({"sessionId":"debug-session","runId":"prefix-debug","hypothesisId":"H1","location":"AmmoItemValidator.cpp:Validate","message":"id prefix normalization","data":{"before":")"
+                    << originalId << R"(","after":")" << item.id << R"("},"timestamp":)" << ts << "})" << "\n";
+            }
+        }
+        // #endregion
 
         // Default category
         if (item.category.empty())
@@ -59,6 +92,12 @@ namespace AmmoItemValidator
         }
     }
 }
+
+
+
+
+
+
 
 
 

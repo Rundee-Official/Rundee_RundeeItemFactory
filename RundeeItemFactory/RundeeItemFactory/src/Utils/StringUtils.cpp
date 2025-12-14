@@ -9,6 +9,8 @@
 // ===============================
 
 #include "Utils/StringUtils.h"
+#include <chrono>
+#include <fstream>
 
 namespace StringUtils
 {
@@ -123,6 +125,59 @@ namespace StringUtils
         // Fix common JSON errors first
         s = FixCommonJsonErrors(s);
 
+        // Strip text before first '[' and after last ']'
+        size_t first = s.find('[');
+        size_t last = s.find_last_of(']');
+        if (first != std::string::npos && last != std::string::npos && last >= first)
+        {
+            s = s.substr(first, last - first + 1);
+        }
+
+        // Remove/truncate at lines that are just "..." (truncated LLM output)
+        auto truncateAtDotsLine = [](std::string& text)
+        {
+            size_t pos = 0;
+            while (pos < text.size())
+            {
+                size_t lineStart = pos;
+                size_t lineEnd = text.find('\n', lineStart);
+                if (lineEnd == std::string::npos) lineEnd = text.size();
+
+                std::string_view line(&text[lineStart], lineEnd - lineStart);
+                size_t ls = 0;
+                while (ls < line.size() && (line[ls] == ' ' || line[ls] == '\t' || line[ls] == '\r')) ls++;
+                size_t le = line.size();
+                while (le > ls && (line[le - 1] == ' ' || line[le - 1] == '\t' || line[le - 1] == '\r')) le--;
+                std::string_view trimmed = line.substr(ls, le - ls);
+
+                if (trimmed == "...")
+                {
+                    text.erase(lineStart);
+                    break;
+                }
+                pos = (lineEnd < text.size()) ? (lineEnd + 1) : text.size();
+            }
+        };
+        truncateAtDotsLine(s);
+
+        // Remove trailing commas before a closing bracket (common after truncation)
+        auto fixTrailingComma = [](std::string& text)
+        {
+            auto replace_all = [&](const std::string& from, const std::string& to)
+            {
+                size_t p = 0;
+                while ((p = text.find(from, p)) != std::string::npos)
+                {
+                    text.replace(p, from.size(), to);
+                }
+            };
+            replace_all(",\r\n]", "\r\n]");
+            replace_all(",\n]", "\n]");
+            replace_all(", ]", " ]");
+            replace_all(",]", "]");
+        };
+        fixTrailingComma(s);
+
         // Remove trailing whitespace and trailing comma
         int idx = static_cast<int>(s.size()) - 1;
         while (idx >= 0 && (s[idx] == ' ' || s[idx] == '\t' || s[idx] == '\r' || s[idx] == '\n'))
@@ -135,11 +190,67 @@ namespace StringUtils
 
         // Close unclosed brackets
         int bracketBalance = 0;
+        int minBalance = 0;
+        int openCount = 0;
+        int closeCount = 0;
         for (char c : s)
         {
-            if (c == '[') bracketBalance++;
-            else if (c == ']') bracketBalance--;
+            if (c == '[')
+            {
+                ++openCount;
+                ++bracketBalance;
+            }
+            else if (c == ']')
+            {
+                ++closeCount;
+                --bracketBalance;
+                if (bracketBalance < minBalance) minBalance = bracketBalance;
+            }
         }
+
+        if (minBalance < 0 || bracketBalance != 0)
+        {
+            // #region agent log
+            static int dbgCount = 0;
+            if (dbgCount < 20)
+            {
+                ++dbgCount;
+                auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch()).count();
+                auto sanitize = [](std::string v)
+                {
+                    for (char& ch : v)
+                    {
+                        if (ch == '"') ch = '\'';
+                        else if (ch == '\\') ch = '/';
+                    }
+                    return v;
+                };
+                std::string first = sanitize(s.substr(0, std::min<size_t>(120, s.size())));
+                std::string last = (s.size() > 120) ? sanitize(s.substr(s.size() - 120)) : first;
+                std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+                if (dbg.is_open())
+                {
+                    dbg << R"({"sessionId":"debug-session","runId":"json-clean","hypothesisId":"H1","location":"StringUtils.cpp","message":"bracket-balance","data":{"open":)"
+                        << openCount << R"(,"close":)" << closeCount << R"(,"minBalance":)" << minBalance
+                        << R"(,"balance":)" << bracketBalance << R"(,"len":)" << s.size()
+                        << R"(,"first":")" << first << R"(","last":")" << last << R"("},"timestamp":)" << ts << "})" << "\n";
+                }
+            }
+            // #endregion
+        }
+
+        if (bracketBalance > 0)
+        {
+            int lastIdx = static_cast<int>(s.size()) - 1;
+            while (lastIdx >= 0 && (s[lastIdx] == ' ' || s[lastIdx] == '\t' || s[lastIdx] == '\r' || s[lastIdx] == '\n'))
+                --lastIdx;
+            if (lastIdx >= 0 && s[lastIdx] == ',')
+            {
+                s.erase(static_cast<size_t>(lastIdx), 1);
+            }
+        }
+
         while (bracketBalance > 0)
         {
             s += "\n]";

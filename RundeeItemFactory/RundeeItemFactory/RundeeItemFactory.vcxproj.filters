@@ -114,6 +114,9 @@
     <ClCompile Include="src\Helpers\QualityChecker.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Prompts\PromptTemplateLoader.cpp">
+      <Filter>Source Files\Prompts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\json.hpp">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="include\Helpers\QualityChecker.h">
       <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prompts\PromptTemplateLoader.h">
+      <Filter>Header Files\Prompts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,9 @@
 {ITEM_TYPE} Generation - Preset: {PRESET_NAME}
 
+Model: {MODEL_NAME}
+Run started: {TIMESTAMP}
+Current existing items in this category: {EXISTING_COUNT}
+
 {PRESET_CONTEXT}
 The player has:
 - maxHunger = {MAX_HUNGER}

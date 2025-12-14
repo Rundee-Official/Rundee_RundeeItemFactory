@@ -2,7 +2,7 @@
 // Project Name: RundeeItemFactory
 // File Name: PromptTemplateLoader.h
 // Author: Haneul Lee (Rundee)
-// Created Date: 2025-11-15
+// Created Date: 2025-11-20
 // Description: Loads and processes prompt templates from external files.
 // ===============================
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
@@ -25,7 +25,10 @@ public:
                                      int count,
                                      const std::set<std::string>& excludeIds = std::set<std::string>(),
                                      const std::string& presetName = "",
-                                     const std::string& itemTypeName = "");
+                                     const std::string& itemTypeName = "",
+                                     const std::string& modelName = "",
+                                     const std::string& generationTimestamp = "",
+                                     int existingCount = -1);
 
     // Get the base directory for templates (executable directory + "prompts/")
     static std::string GetTemplateDirectory();

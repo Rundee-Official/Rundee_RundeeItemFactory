@@ -2,7 +2,7 @@
 // Project Name: RundeeItemFactory
 // File Name: PromptTemplateLoader.cpp
 // Author: Haneul Lee (Rundee)
-// Created Date: 2025-11-15
+// Created Date: 2025-11-20
 // Description: Implementation of prompt template loading.
 // ===============================
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
@@ -49,7 +49,10 @@ std::string PromptTemplateLoader::LoadTemplate(const std::string& templateName,
                                                 int count,
                                                 const std::set<std::string>& excludeIds,
                                                 const std::string& presetName,
-                                                const std::string& itemTypeName)
+                                                const std::string& itemTypeName,
+                                                const std::string& modelName,
+                                                const std::string& generationTimestamp,
+                                                int existingCount)
 {
     std::string templatePath = GetTemplateDirectory() + templateName + ".txt";
     
@@ -98,6 +101,28 @@ std::string PromptTemplateLoader::LoadTemplate(const std::string& templateName,
         }
     }
 
+    // {MODEL_NAME}
+    if (!modelName.empty())
+    {
+        pos = templateContent.find("{MODEL_NAME}");
+        while (pos != std::string::npos)
+        {
+            templateContent.replace(pos, 12, modelName);
+            pos = templateContent.find("{MODEL_NAME}", pos + modelName.length());
+        }
+    }
+
+    // {TIMESTAMP}
+    if (!generationTimestamp.empty())
+    {
+        pos = templateContent.find("{TIMESTAMP}");
+        while (pos != std::string::npos)
+        {
+            templateContent.replace(pos, 11, generationTimestamp);
+            pos = templateContent.find("{TIMESTAMP}", pos + generationTimestamp.length());
+        }
+    }
+
     // {MAX_HUNGER}
     pos = templateContent.find("{MAX_HUNGER}");
     while (pos != std::string::npos)
@@ -138,13 +163,24 @@ std::string PromptTemplateLoader::LoadTemplate(const std::string& templateName,
                 idCount++;
                 if (idCount >= 20) // Limit to first 20 to avoid prompt bloat
                 {
-                    excludeIdsText += " ... (and " + std::to_string(excludeIds.size() - 20) + " more)";
+                    excludeIdsText += " ... (and " + std::to_string(excludeIds.size() - 20) + " more, list truncated)";
                     break;
                 }
             }
-            excludeIdsText += "\nGenerate NEW unique IDs that are different from the above list.\n";
+            excludeIdsText += "\nGenerate NEW unique IDs that are different from all existing IDs (assume many more exist). Avoid reusing stems; use fresh, novel names, not simple number suffixes.\n";
         }
         templateContent.replace(pos, 13, excludeIdsText);
+    }
+
+    // {EXISTING_COUNT}
+    if (existingCount >= 0)
+    {
+        pos = templateContent.find("{EXISTING_COUNT}");
+        while (pos != std::string::npos)
+        {
+            templateContent.replace(pos, 16, std::to_string(existingCount));
+            pos = templateContent.find("{EXISTING_COUNT}", pos + std::to_string(existingCount).length());
+        }
     }
 
     return templateContent;

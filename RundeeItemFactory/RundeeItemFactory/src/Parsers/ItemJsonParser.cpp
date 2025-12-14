@@ -17,11 +17,43 @@
 #include "Validators/WeaponItemValidator.h"
 #include "Validators/WeaponComponentItemValidator.h"
 #include "Validators/AmmoItemValidator.h"
+#include <fstream>
+#include <chrono>
 #include <iostream>
 #include <algorithm>
 #include <cctype>
 
 using nlohmann::json;
+
+// Debug-mode name shape logging (limited)
+namespace
+{
+    static int gNameLogCount = 0;
+    static const int kNameLogMax = 25;
+
+    std::string SanitizeForLog(const std::string& s)
+    {
+        std::string out = s;
+        for (char& c : out)
+        {
+            if (c == '"') c = '\'';
+        }
+        return out;
+    }
+
+    void LogNameShape(const char* typeName, const std::string& id, const std::string& displayName)
+    {
+        if (gNameLogCount >= kNameLogMax) return;
+        ++gNameLogCount;
+        auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+        std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+        if (!dbg.is_open()) return;
+        dbg << R"({"sessionId":"debug-session","runId":"display-debug","hypothesisId":"H3","location":"ItemJsonParser.cpp","message":"name shape","data":{"type":")"
+            << typeName << R"(","id":")" << SanitizeForLog(id) << R"(","display":")" << SanitizeForLog(displayName) << R"("},"timestamp":)"
+            << ts << "})" << "\n";
+    }
+}
 
 bool ItemJsonParser::ParseFoodFromJsonText(const std::string& jsonText, std::vector<ItemFoodData>& outItems)
 {
@@ -58,6 +90,32 @@ bool ItemJsonParser::ParseFoodFromJsonText(const std::string& jsonText, std::vec
     }
     catch (const std::exception& e)
     {
+        // #region agent log
+        static int dbgCountWeapon = 0;
+        if (dbgCountWeapon < 10)
+        {
+            ++dbgCountWeapon;
+            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            auto sanitize = [](std::string v)
+            {
+                for (char& ch : v)
+                {
+                    if (ch == '"') ch = '\'';
+                    else if (ch == '\\') ch = '/';
+                }
+                return v;
+            };
+            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+            if (dbg.is_open())
+            {
+                dbg << R"({"sessionId":"debug-session","runId":"parse-error","hypothesisId":"H1","location":"ItemJsonParser.cpp","message":"weapon parse fail","data":{"lenOriginal":)"
+                    << jsonText.size() << R"(,"lenCleaned":)" << cleaned.size() << R"(,"error":")" << sanitize(e.what() ? std::string(e.what()) : std::string("n/a"))
+                    << R"(","firstClean":")" << sanitize(cleaned.substr(0, std::min<size_t>(200, cleaned.size())))
+                    << R"("},"timestamp":)" << ts << "})" << "\n";
+            }
+        }
+        // #endregion
         std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
             << e.what() << "\n";
         return false;
@@ -121,6 +179,8 @@ bool ItemJsonParser::ParseFoodFromJsonText(const std::string& jsonText, std::vec
             continue;
         }
 
+        LogNameShape("Food", item.id, item.displayName);
+
         // Validation/balancing
         FoodItemValidator::Validate(item);
 
@@ -147,6 +207,32 @@ bool ItemJsonParser::ParseDrinkFromJsonText(const std::string& jsonText, std::ve
     }
     catch (const std::exception& e)
     {
+        // #region agent log
+        static int dbgCountWc = 0;
+        if (dbgCountWc < 10)
+        {
+            ++dbgCountWc;
+            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            auto sanitize = [](std::string v)
+            {
+                for (char& ch : v)
+                {
+                    if (ch == '"') ch = '\'';
+                    else if (ch == '\\') ch = '/';
+                }
+                return v;
+            };
+            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+            if (dbg.is_open())
+            {
+                dbg << R"({"sessionId":"debug-session","runId":"parse-error","hypothesisId":"H1","location":"ItemJsonParser.cpp","message":"weaponcomponent parse fail","data":{"lenOriginal":)"
+                    << jsonText.size() << R"(,"lenCleaned":)" << cleaned.size() << R"(,"error":")" << sanitize(e.what() ? std::string(e.what()) : std::string("n/a"))
+                    << R"(","firstClean":")" << sanitize(cleaned.substr(0, std::min<size_t>(200, cleaned.size())))
+                    << R"("},"timestamp":)" << ts << "})" << "\n";
+            }
+        }
+        // #endregion
         std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
             << e.what() << "\n";
         return false;
@@ -196,6 +282,8 @@ bool ItemJsonParser::ParseDrinkFromJsonText(const std::string& jsonText, std::ve
                 << " (category is \"" << item.category << "\", expected \"Drink\")\n";
             continue;
         }
+
+        LogNameShape("Drink", item.id, item.displayName);
 
         // Validation/balancing
         DrinkItemValidator::Validate(item);
@@ -260,6 +348,8 @@ bool ItemJsonParser::ParseMaterialFromJsonText(const std::string& jsonText, std:
             continue;
         }
 
+        LogNameShape("Material", item.id, item.displayName);
+
         MaterialItemValidator::Validate(item);
 
         outItems.push_back(item);
@@ -284,6 +374,32 @@ bool ItemJsonParser::ParseWeaponFromJsonText(const std::string& jsonText, std::v
     }
     catch (const std::exception& e)
     {
+        // #region agent log
+        static int dbgCountAmmo = 0;
+        if (dbgCountAmmo < 10)
+        {
+            ++dbgCountAmmo;
+            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            auto sanitize = [](std::string v)
+            {
+                for (char& ch : v)
+                {
+                    if (ch == '"') ch = '\'';
+                    else if (ch == '\\') ch = '/';
+                }
+                return v;
+            };
+            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
+            if (dbg.is_open())
+            {
+                dbg << R"({"sessionId":"debug-session","runId":"parse-error","hypothesisId":"H1","location":"ItemJsonParser.cpp","message":"ammo parse fail","data":{"lenOriginal":)"
+                    << jsonText.size() << R"(,"lenCleaned":)" << cleaned.size() << R"(,"error":")" << sanitize(e.what() ? std::string(e.what()) : std::string("n/a"))
+                    << R"(","firstClean":")" << sanitize(cleaned.substr(0, std::min<size_t>(200, cleaned.size())))
+                    << R"("},"timestamp":)" << ts << "})" << "\n";
+            }
+        }
+        // #endregion
         std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
             << e.what() << "\n";
         return false;
@@ -353,6 +469,8 @@ bool ItemJsonParser::ParseWeaponFromJsonText(const std::string& jsonText, std::v
                 << " (missing id/displayName)\n";
             continue;
         }
+
+        LogNameShape("Weapon", item.id, item.displayName);
 
         // Validate weaponCategory
         if (item.weaponCategory != "Ranged" && item.weaponCategory != "Melee" && item.weaponCategory != "ranged" && item.weaponCategory != "melee")
@@ -529,6 +647,8 @@ bool ItemJsonParser::ParseWeaponComponentFromJsonText(const std::string& jsonTex
             continue;
         }
 
+        LogNameShape("WeaponComponent", item.id, item.displayName);
+
         // Validation/balancing
         WeaponComponentItemValidator::Validate(item);
 
@@ -606,6 +726,8 @@ bool ItemJsonParser::ParseAmmoFromJsonText(const std::string& jsonText, std::vec
                 << " (category is \"" << item.category << "\", expected \"Ammo\")\n";
             continue;
         }
+
+        LogNameShape("Ammo", item.id, item.displayName);
 
         // Validation/balancing
         AmmoItemValidator::Validate(item);

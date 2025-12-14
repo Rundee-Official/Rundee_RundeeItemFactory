@@ -1,101 +1,35 @@
 # 현재 프로젝트 상태
 
-## ✅ 완료된 항목
-
-### Phase 0-1 핵심 기능 (100% 완료)
-- ✅ 로컬 LLM 연동 (Ollama)
-- ✅ Food/Drink/Material JSON 생성
-- ✅ Unity Food/Drink/Material 임포트
-- ✅ 코드 구조 정리 (폴더별 분리, OOP)
-- ✅ 밸런스 리포트 기능
-- ✅ ID 접두사 자동 추가 (Food_, Drink_, Material_)
-- ✅ 모든 주석 영어로 변경
-- ✅ Unity 스크립트 통합 (ItemImporter, ItemDatabase)
+## ✅ 최근 완료/업데이트
+- 모든 아이템 타입(Food/Drink/Material/Weapon/WeaponComponent/Ammo) 생성 및 Unity 임포트 경로 정비
+- Unity 메뉴 통합: **Tools > Rundee > JSON Importer** 하나로 수동 임포트 (기존 per-type 메뉴 제거)
+- Item Factory Window 유지(자동 임포트 지원), Item Manager 유지
+- C++ 프로젝트를 **C++17**로 고정, `std::filesystem` 사용 가능하도록 vcxproj 업데이트
+- AppConfig: 기본 경로(`config/rundee_config.json`) 로드 및 std::filesystem 기반 I/O 정상화
 
 ---
 
-## 🎯 다음 단계 제안
-
-### 🔥 **즉시 할 수 있는 것들** (1-2일)
-
-#### 1. **재시도 로직 추가** ⭐ (1-2시간)
-- LLM 응답 실패 시 자동 재시도
-- 타임아웃 설정
-- **왜?** 안정성 향상, 네트워크 오류 대응
-
-#### 2. **테스트 및 문서화** (2-3시간)
-- 엔드 투 엔드 테스트
-- 사용법 README 작성
-- 예제 JSON 파일 추가
+## 🎯 바로 다음에 하면 좋은 것들 (우선순위 제안)
+1. **JSON Importer 스모크 테스트**: 각 타입 JSON 샘플로 임포트 성공/실패 로그 확인
+2. **E2E 시나리오 갱신**: 새 메뉴 구조(JSON Importer) 기준으로 `docs/E2E_TEST_PLAN.md` 실행 기록 남기기
+3. **자동 테스트/CI 초안**: 빌드 + 간단한 JSON 파서/밸런스 리포트 유닛 테스트 워크플로 초안 작성
+4. **LLM 호출 경로 선택지 검토**: 현행 프로세스 실행 유지 vs HTTP API 전환 결정
+5. **배포 체크리스트 업데이트**: Release/Debug 출력물에 `config/` + `prompts/` 복사 규칙 검증
 
 ---
 
-### 🚀 **Phase 2 핵심 기능** (1-2주)
-
-#### 3. **Unity EditorWindow 통합** ⭐⭐⭐ (가장 중요, 1-2일)
-- GUI로 모델 선택, 프리셋 선택, 파라미터 입력
-- "Generate" 버튼으로 한 번에 실행
-- 생성 로그 표시
-- **왜?** Phase 2의 핵심, 사용성 대폭 향상
-
-#### 4. **배치 생성 안정화** (1일)
-- 50-200개 아이템 생성 테스트
-- 부분 실패 시 성공한 아이템만 저장
-- 진행률 표시
-
-#### 5. **아이템 관리 기능** (2-3일)
-- 이미 생성된 아이템 목록 표시
-- 필터 (카테고리/레어리티/테마)
-- 선택한 아이템만 재생성/삭제
+## 📌 리스크 / 주의
+- Unity 메뉴 변경으로 과거 문서의 "Import ... Items From JSON" 안내는 더 이상 유효하지 않음
+- Ollama 미설치/미기동 시 Item Factory Window의 Setup 탭이나 별도 설치 스크립트 필요
+- 대량 배치(50~200개) 시 LLM 응답 지연 가능 → 필요 시 재시도/타임아웃 설정 검토
 
 ---
 
-### 🔧 **기술적 개선** (선택사항)
-
-#### 6. **LLM HTTP API 직접 호출** (반나절)
-- 현재: `_popen("ollama run ...")`
-- 개선: HTTP POST to `http://localhost:11434/api/generate`
-- 장점: 더 빠르고 안정적, 스트리밍 지원
-- **주의**: HTTP 라이브러리 필요
-
-#### 7. **설정 파일 시스템** (반나절)
-- 프롬프트 템플릿을 외부 파일로 분리
-- JSON/YAML 설정 파일
-
-#### 8. **Unreal 연동** (선택사항)
-- Unreal DataAsset 생성
-- JSON 임포트 유틸리티
-
----
-
-## 💡 추천 순서
-
-### **옵션 A: 빠른 완성** (오늘~내일)
-1. 재시도 로직 추가 (1-2시간)
-2. 테스트 및 문서화 (2-3시간)
-
-### **옵션 B: Phase 2 진입** (다음 주)
-1. Unity EditorWindow 통합 (1-2일) ⭐
-2. 배치 생성 안정화 (1일)
-
-### **옵션 C: 기술적 개선** (선택)
-1. LLM HTTP API 직접 호출 (반나절)
-2. 설정 파일 시스템 (반나절)
-
----
-
-## 🎯 내 추천
-
-**지금 바로 할 것:**
-1. **재시도 로직 추가** - 빠르고 안정성 향상
-2. **테스트 및 문서화** - 프로젝트 완성도 높임
-
-**다음 주 할 것:**
-3. **Unity EditorWindow 통합** - Phase 2의 핵심 기능
-
-어떤 것부터 시작할까요? 🤔
-
-
+## 🧭 제안 워크플로 (짧은 스프린트용)
+1) JSON Importer로 단일 타입 임포트 스모크 테스트 (Food/Weapon 중 1개)  
+2) E2E 문서 실행/수정 → 성공 로그 캡쳐  
+3) README/NEXT_STEPS 재검토 후 CI 초안 작성  
+4) 필요 시 HTTP API 전환 여부 결정 (성능/안정성 비교 메모 포함)
 
 
 

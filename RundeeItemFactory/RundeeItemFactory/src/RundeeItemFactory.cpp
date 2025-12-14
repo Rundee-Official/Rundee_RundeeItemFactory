@@ -9,12 +9,16 @@
 // ===============================
 
 #include <iostream>
+#include "Helpers/AppConfig.h"
 #include "Helpers/CommandLineParser.h"
 #include "Helpers/ItemGenerator.h"
 #include "Helpers/BalanceReporter.h"
 
 int main(int argc, char** argv)
 {
+    // Load optional configuration (host/port/timeouts) before doing any work.
+    AppConfig::LoadFromDefaultLocation();
+
     // Parse command line arguments
     CommandLineArgs args = CommandLineParser::ParseArguments(argc, argv);
 
@@ -59,12 +63,9 @@ int main(int argc, char** argv)
     {
         return ItemGenerator::GenerateBatch(args);
     }
-    else if (args.mode == RunMode::LLM)
-    {
-        return ItemGenerator::GenerateWithLLM(args);
-    }
     else
     {
-        return ItemGenerator::GenerateDummy(args);
+        // Default to LLM for non-batch generation
+        return ItemGenerator::GenerateWithLLM(args);
     }
 }

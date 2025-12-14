@@ -9,11 +9,13 @@
 // ===============================
 
 #include "Clients/OllamaClient.h"
+#include "Helpers/AppConfig.h"
 #include "Utils/StringUtils.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <sstream>
+#include <iomanip>
 #include <windows.h>
 #include <winhttp.h>
 
@@ -178,13 +180,35 @@ namespace
     }
 }
 
-std::string OllamaClient::RunSimple(const std::string& modelName, const std::string& prompt)
+std::string OllamaClient::RunSimple(const std::string& modelName, 
+                                    const std::string& prompt,
+                                    const OllamaSettings& settings)
 {
-    std::cout << "[OllamaClient] Calling Ollama HTTP API: model=" << modelName << "\n";
+    const std::string host = settings.host.empty() ? "localhost" : settings.host;
+    const INTERNET_PORT port = static_cast<INTERNET_PORT>(settings.port > 0 ? settings.port : 11434);
+    const DWORD requestTimeoutMs = static_cast<DWORD>((settings.requestTimeoutSeconds > 0 ? settings.requestTimeoutSeconds : 120) * 1000);
+    const DWORD connectTimeout = static_cast<DWORD>(settings.connectTimeoutMs > 0 ? settings.connectTimeoutMs : 5000);
+    const DWORD sendTimeout = static_cast<DWORD>(settings.sendTimeoutMs > 0 ? settings.sendTimeoutMs : requestTimeoutMs);
+    const DWORD receiveTimeout = static_cast<DWORD>(settings.receiveTimeoutMs > 0 ? settings.receiveTimeoutMs : requestTimeoutMs);
+
+    std::cout << "[OllamaClient] Calling Ollama HTTP API (model=" << modelName
+        << ", host=" << host << ", port=" << port << ")\n";
     
     // Build JSON request
     std::string jsonRequest = BuildJsonRequest(modelName, prompt);
     
+    // Convert host to wide string
+    int wideLen = MultiByteToWideChar(CP_UTF8, 0, host.c_str(), -1, nullptr, 0);
+    std::wstring hostW;
+    hostW.resize(wideLen);
+    MultiByteToWideChar(CP_UTF8, 0, host.c_str(), -1, &hostW[0], wideLen);
+    if (!hostW.empty() && hostW.back() == L'\0')
+    {
+        hostW.pop_back();
+    }
+
+    auto requestStart = std::chrono::steady_clock::now();
+
     // Initialize WinHTTP
     HINTERNET hSession = WinHttpOpen(L"RundeeItemFactory/1.0",
                                      WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
@@ -198,7 +222,7 @@ std::string OllamaClient::RunSimple(const std::string& modelName, const std::str
     }
     
     // Connect to Ollama server
-    HINTERNET hConnect = WinHttpConnect(hSession, L"localhost", 11434, 0);
+    HINTERNET hConnect = WinHttpConnect(hSession, hostW.c_str(), port, 0);
     
     if (!hConnect)
     {
@@ -235,9 +259,8 @@ std::string OllamaClient::RunSimple(const std::string& modelName, const std::str
         return {};
     }
     
-    // Set timeout (120 seconds)
-    DWORD timeout = 120000; // 120 seconds in milliseconds
-    WinHttpSetTimeouts(hRequest, timeout, timeout, timeout, timeout);
+    // Set timeout values
+    WinHttpSetTimeouts(hRequest, connectTimeout, connectTimeout, sendTimeout, receiveTimeout);
     
     // Send request
     if (!WinHttpSendRequest(hRequest,
@@ -371,6 +394,11 @@ std::string OllamaClient::RunSimple(const std::string& modelName, const std::str
         }
     }
     
+    auto requestEnd = std::chrono::steady_clock::now();
+    double durationSeconds = std::chrono::duration<double>(requestEnd - requestStart).count();
+    std::cout << "[OllamaClient] HTTP call succeeded in " << std::fixed << std::setprecision(2)
+        << durationSeconds << "s (" << host << ":" << port << ")\n";
+
     return trimmed;
 }
 
@@ -379,13 +407,30 @@ std::string OllamaClient::RunWithRetry(const std::string& modelName,
                                        int maxRetries,
                                        int timeoutSeconds)
 {
+    const OllamaSettings& config = AppConfig::GetOllamaSettings();
+    OllamaSettings effective = config;
+
+    if (timeoutSeconds > 0)
+    {
+        effective.requestTimeoutSeconds = timeoutSeconds;
+    }
+    if (maxRetries > 0)
+    {
+        effective.maxRetries = maxRetries;
+    }
+
+    if (effective.maxRetries <= 0)
+        effective.maxRetries = 3;
+    if (effective.requestTimeoutSeconds <= 0)
+        effective.requestTimeoutSeconds = 120;
+
     std::string result;
     
-    for (int attempt = 1; attempt <= maxRetries; ++attempt)
+    for (int attempt = 1; attempt <= effective.maxRetries; ++attempt)
     {
-        std::cout << "[OllamaClient] Attempt " << attempt << " of " << maxRetries << "\n";
+        std::cout << "[OllamaClient] Attempt " << attempt << " of " << effective.maxRetries << "\n";
         
-        result = RunSimple(modelName, prompt);
+        result = RunSimple(modelName, prompt, effective);
         
         // Check if result is valid (not empty)
         if (!result.empty())
@@ -418,7 +463,7 @@ std::string OllamaClient::RunWithRetry(const std::string& modelName,
         }
         
         // If this is not the last attempt, wait before retrying
-        if (attempt < maxRetries)
+        if (attempt < effective.maxRetries)
         {
             int waitSeconds = 2 * attempt; // Exponential backoff: 2, 4, 6 seconds
             std::cout << "[OllamaClient] Response invalid or empty. Retrying in " << waitSeconds << " seconds...\n";

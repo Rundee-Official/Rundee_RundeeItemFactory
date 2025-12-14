@@ -18,8 +18,12 @@ struct FoodGenerateParams
     int count = 1;
     int maxHunger = 100;
     int maxThirst = 100;
-    std::string outputPath = "items_food.json";
+    std::string outputPath = "ItemJson/items_food.json";
 };
+
+
+
+
 
 
 

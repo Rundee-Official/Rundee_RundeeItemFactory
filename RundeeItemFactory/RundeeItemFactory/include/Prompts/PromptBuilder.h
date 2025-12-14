@@ -34,28 +34,28 @@ public:
     static std::string GetPresetFlavorText(const CustomPreset& customPreset);
 
     // Build food item generation prompt
-    static std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
-    static std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>());
+    static std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildFoodJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 
     // Build drink item generation prompt
-    static std::string BuildDrinkJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
-    static std::string BuildDrinkJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>());
+    static std::string BuildDrinkJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildDrinkJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 
     // Build material item generation prompt
-    static std::string BuildMaterialJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
-    static std::string BuildMaterialJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>());
+    static std::string BuildMaterialJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildMaterialJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 
     // Build weapon item generation prompt
-    static std::string BuildWeaponJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
-    static std::string BuildWeaponJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>());
+    static std::string BuildWeaponJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildWeaponJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 
     // Build weapon component item generation prompt
-    static std::string BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
-    static std::string BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>());
+    static std::string BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildWeaponComponentJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 
     // Build ammo item generation prompt
-    static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>());
-    static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>());
+    static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 };
 
 

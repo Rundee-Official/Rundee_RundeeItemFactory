@@ -23,6 +23,22 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
 - **C++ Compiler**: Visual Studio 2019 or later (Windows)
 - **Unity**: 2020.3 or later (for Unity integration)
 
+## Configuration
+
+- Optional config file: `config/rundee_config.json`
+- Controls Ollama host/port, retries, and HTTP timeouts. The file is copied next to `RundeeItemFactory.exe` on build so runtime picks it up automatically.
+- Example:
+  ```json
+  {
+    "ollama": {
+      "host": "localhost",
+      "port": 11434,
+      "maxRetries": 3,
+      "requestTimeoutSeconds": 120
+    }
+  }
+  ```
+
 ## Installation
 
 1. Clone this repository
@@ -81,6 +97,9 @@ All LLM prompts are loaded from external text files so you can tweak wording wit
 - Default templates live under `RundeeItemFactory/prompts/` inside the repo.
 - When you build the project, the templates are copied next to `RundeeItemFactory.exe` inside an automatically created `prompts/` directory (for example `x64/Debug/prompts/` during debug builds).
 - At runtime the generator loads `<exe>/prompts/<itemType>.txt`. If the file is missing the previous built-in prompt is used as a fallback.
+- **Preset-specific overrides:** add files named `prompts/<itemType>_<presetSlug>.txt` (e.g., `food_forest.txt`) or custom preset overrides `prompts/<itemType>_custom_<presetSlug>.txt`. `<presetSlug>` is the preset name lowercased with spaces and punctuation replaced by `_`. Resolution order is:
+  - `food_custom_<presetSlug>` → `food_<presetSlug>` → `food`
+  - Same pattern for `drink`, `material`, `weapon`, `weapon_component`, `ammo`
 
 #### Available template placeholders
 
@@ -93,6 +112,9 @@ All LLM prompts are loaded from external text files so you can tweak wording wit
 | `{MAX_THIRST}` | Maximum thirst parameter (Food/Drink only) |
 | `{COUNT}` | Number of items requested |
 | `{EXCLUDE_IDS}` | Formatted list of IDs to avoid (empty when nothing to exclude) |
+| `{MODEL_NAME}` | Active LLM model name (e.g., `llama3`) |
+| `{TIMESTAMP}` | Local timestamp when generation started |
+| `{EXISTING_COUNT}` | Number of existing IDs already present (size of exclusion set) |
 
 Feel free to embed additional narrative instructions, balancing notes, or formatting hints in these files. If you need more placeholders, extend `PromptTemplateLoader::LoadTemplate` with the desired variable.
 
@@ -131,7 +153,8 @@ RundeeItemFactory.exe ^
 #### Using the Item Factory Window (Recommended)
 
 1. Open Unity Editor
-2. Go to **Tools > Rundee > Item Factory Window**
+2. Go to **Tools > Rundee > Item Factory > Item Factory Window**
+3. (Optional) Open the **Setup (Ollama)** foldout to verify Ollama is installed. If not detected on Windows, run the bundled installer (.bat) directly from the window.
 3. The window is organized into collapsible sections:
 
    **Configuration Section:**
@@ -165,23 +188,20 @@ RundeeItemFactory.exe ^
 - Click "Generate Report" to view statistical analysis
 - Reports include Quick Summary, distribution stats, and balance warnings
 
-#### Manual Import
+#### Manual Import (Unified)
 
-1. Generate JSON files using the command line tool
-2. In Unity Editor, go to **Tools > Rundee > Import [Type] Items From JSON**
-3. Select the generated JSON file
-4. ScriptableObjects will be created automatically in `Assets/Resources/RundeeItemFactory/[Type]Items/`
+1. Generate JSON files using the command line tool.
+2. In Unity Editor, open **Tools > Rundee > Item Factory > JSON Importer**.
+3. Choose the target **Item type** (Food, Drink, Material, Weapon, Weapon Component, Ammo).
+4. Pick the JSON file and click **Import Selected JSON**.
+5. ScriptableObjects will be created automatically in `Assets/Resources/RundeeItemFactory/[Type]Items/`.
 
 #### Available Unity Menu Items
 
-- `Tools/Rundee/Item Factory Window` - GUI for generating and importing items
-- `Tools/Rundee/Import Food Items From JSON` - Manual import for Food items
-- `Tools/Rundee/Import Drink Items From JSON` - Manual import for Drink items
-- `Tools/Rundee/Import Material Items From JSON` - Manual import for Material items
-- `Tools/Rundee/Import Weapon Items From JSON` - Manual import for Weapon items
-- `Tools/Rundee/Import Weapon Component Items From JSON` - Manual import for Weapon Component items
-- `Tools/Rundee/Import Ammo Items From JSON` - Manual import for Ammo items
-- `Tools/Rundee/Item Manager` - Item overview, selection, and cleanup
+- `Tools/Rundee/Item Factory/Item Factory Window` - GUI for generating/importing items (auto-import optional)
+- `Tools/Rundee/Item Factory/JSON Importer` - Single window for all manual JSON imports
+- `Tools/Rundee/Item Factory/Item Manager` - Item overview, selection, and cleanup
+- `Tools/Rundee/Item Factory/Setup Item Factory` - Runs bundled Ollama installer batch
 
 #### Item Manager Window
 
@@ -207,6 +227,14 @@ WeaponComponentItemDataSO component = db.FindWeaponComponentItem("WeaponComponen
 AmmoItemDataSO ammo = db.FindAmmoItem("Ammo_9mm");
 ```
 
+## Testing & QA
+
+- **E2E flow**: `docs/E2E_TEST_PLAN.md` — CLI generation, Unity import, Item Manager cleanup.
+- **Batch stress**: `docs/BATCH_STRESS_PLAN.md` — batch strings, metrics, acceptance criteria.
+- **Pilot QA checklist**: `docs/QA_PILOT_CHECKLIST.md` — 50–100 items per type, import/QA steps.
+- **Guardrails**: `docs/QA_GUARDRAILS.md` — duplicate/ID rules, value ranges, text checks, rarity warnings.
+- **Metrics plan**: `docs/METRICS_PLAN.md` — what to log, targets, and reporting hints.
+
 ## Project Structure
 
 ```
@@ -223,7 +251,7 @@ RundeeItemFactory/
 │   └── Utils/             # Utility functions
 └── src/                   # Implementation files
 
-UnityRundeeItemFactoryTest/
+UnityRundeeItemFactory/
 └── Assets/RundeeItemFactory/
     ├── Editor/            # Unity Editor scripts
     └── Runtime/           # Runtime scripts
@@ -454,7 +482,7 @@ RundeeItemFactory.exe --report items_ammo.json --itemType ammo
 
 ### Unity Editor
 
-1. Open **Tools > Rundee > Item Factory Window**
+1. Open **Tools > Rundee > Item Factory > Item Factory Window**
 2. Expand the **Balance Report** section
 3. Select a JSON file and item type
 4. Click **Generate Report**

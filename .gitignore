@@ -10,6 +10,9 @@ Debug/
 Release/
 x64/
 x86/
+*.obj
+*.pdb
+*.idb
 
 # Test Projects
 UnityRundeeItemFactoryTest/
@@ -17,3 +20,32 @@ UnityRundeeItemFactoryTest/
 # CMake/VS temp
 [Cc]MakeCache.txt
 [Cc]MakeFiles/
+
+# Local tooling / logs
+.cursor/
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+
+# LLM artifacts
+RundeeItemFactory/x64/Release/ItemJson/
+RundeeItemFactory/x64/Release/TempState/
+RundeeItemFactory/x64/Release/*.raw.json
+
+# Unity generated
+UnityRundeeItemFactory/Library/
+UnityRundeeItemFactory/Logs/
+UnityRundeeItemFactory/obj/
+UnityRundeeItemFactory/Temp/
+UnityRundeeItemFactory/TempArtifacts/
+UnityRundeeItemFactory/Build/
+UnityRundeeItemFactory/Builds/
+UnityRundeeItemFactory/UserSettings/
+
+# IDE metadata
+.idea/
+.vscode/
+.history/

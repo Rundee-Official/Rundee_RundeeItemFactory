@@ -22,7 +22,7 @@ namespace CommandLineParser
         args.params.count = 5;
         args.params.maxHunger = 100;
         args.params.maxThirst = 100;
-        args.params.outputPath = "items_food.json";
+        args.params.outputPath = "ItemJson/items_food.json";
 
         for (int i = 1; i < argc; ++i)
         {
@@ -39,10 +39,6 @@ namespace CommandLineParser
                 {
                     args.mode = RunMode::LLM;
                 }
-                else if (m == "dummy")
-                {
-                    args.mode = RunMode::Dummy;
-                }
                 else if (m == "batch")
                 {
                     args.mode = RunMode::Batch;
@@ -50,7 +46,7 @@ namespace CommandLineParser
                 else
                 {
                     std::cout << "[Warning] Unknown mode: " << m
-                        << " (use 'dummy', 'llm', or 'batch')\n";
+                        << " (use 'llm' or 'batch')\n";
                 }
             }
             else if (arg == "--batch" && i + 1 < argc)
@@ -117,7 +113,7 @@ namespace CommandLineParser
             else if (arg == "--report" && i + 1 < argc)
             {
                 args.reportPath = argv[++i];
-                args.mode = RunMode::Dummy; // Report mode doesn't need LLM
+                // report mode is independent of LLM; mode value unused when reportPath is set
             }
             else if (arg == "--customPreset" && i + 1 < argc)
             {
@@ -164,8 +160,7 @@ namespace CommandLineParser
         {
         case RunMode::LLM: return "LLM";
         case RunMode::Batch: return "Batch";
-        case RunMode::Dummy:
-        default: return "Dummy";
+        default: return "LLM";
         }
     }
 

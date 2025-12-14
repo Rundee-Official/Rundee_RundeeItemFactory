@@ -24,9 +24,6 @@ namespace ItemGenerator
     // Generate items using LLM
     int GenerateWithLLM(const CommandLineArgs& args);
 
-    // Generate items using dummy data
-    int GenerateDummy(const CommandLineArgs& args);
-
     // Generate multiple item types in batch mode
     int GenerateBatch(const CommandLineArgs& args);
 }
