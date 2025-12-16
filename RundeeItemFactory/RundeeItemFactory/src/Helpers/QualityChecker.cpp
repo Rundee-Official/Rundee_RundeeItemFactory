@@ -2,7 +2,7 @@
 // Project Name: RundeeItemFactory
 // File Name: QualityChecker.cpp
 // Author: Haneul Lee (Rundee)
-// Created Date: 2025-11-17
+// Created Date: 2025-12-16
 // Description: Implementation of quality and realism checking.
 // ===============================
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
@@ -147,6 +147,53 @@ namespace QualityChecker
         QualityResult result;
         result.isValid = true;
         result.qualityScore = 100.0f;
+
+        // Check if all stat modifiers are zero (unrealistic and useless component)
+        int nonZeroModifierCount = 0;
+        if (item.damageModifier != 0) nonZeroModifierCount++;
+        if (item.recoilModifier != 0) nonZeroModifierCount++;
+        if (item.ergonomicsModifier != 0) nonZeroModifierCount++;
+        if (item.accuracyModifier != 0) nonZeroModifierCount++;
+        if (item.muzzleVelocityModifier != 0) nonZeroModifierCount++;
+        if (item.effectiveRangeModifier != 0) nonZeroModifierCount++;
+        if (item.penetrationModifier != 0) nonZeroModifierCount++;
+        
+        // Weight modifier is not a "stat" modifier, it's a physical property
+        // But if weight is 0, that's also unrealistic
+        
+        if (nonZeroModifierCount == 0)
+        {
+            result.errors.push_back("Component has all stat modifiers at zero - unrealistic and useless");
+            result.isValid = false;
+            result.qualityScore -= 50.0f;
+        }
+        else if (nonZeroModifierCount == 1 && item.weightModifier == 0)
+        {
+            result.warnings.push_back("Component has only one stat modifier - should have at least 2-3 meaningful modifiers");
+            result.qualityScore -= 20.0f;
+        }
+        else if (nonZeroModifierCount == 1)
+        {
+            result.warnings.push_back("Component has only one stat modifier - consider adding more realistic effects");
+            result.qualityScore -= 10.0f;
+        }
+
+        // Check weight realism
+        if (item.weightModifier == 0)
+        {
+            result.warnings.push_back("Component has zero weight - unrealistic (even small components weigh something)");
+            result.qualityScore -= 15.0f;
+        }
+        else if (item.weightModifier < 20)
+        {
+            result.warnings.push_back("Component weight seems too light (minimum realistic weight is ~20g)");
+            result.qualityScore -= 5.0f;
+        }
+        else if (item.weightModifier > 2000)
+        {
+            result.warnings.push_back("Component weight seems too heavy (maximum realistic weight is ~2000g)");
+            result.qualityScore -= 10.0f;
+        }
 
         // Check for unrealistic modifiers
         if (std::abs(item.damageModifier) > 30)

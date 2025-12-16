@@ -1,3 +1,13 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: SetupItemFactoryMenu.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Initial setup menu for Item Factory, including Ollama installation check.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -5,6 +15,9 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Setup menu for initial Item Factory configuration.
+/// </summary>
 public static class SetupItemFactoryMenu
 {
     // #region agent log helper
@@ -29,7 +42,7 @@ public static class SetupItemFactoryMenu
     }
     // #endregion
 
-    [MenuItem("Tools/Rundee/Item Factory/Setup Item Factory")]
+    [MenuItem("Tools/Rundee/Item Factory/Setup Item Factory", false, 0)]
     public static void RunSetup()
     {
         AgentLog("H0", "SetupItemFactoryMenu.RunSetup:entry", "menu clicked");

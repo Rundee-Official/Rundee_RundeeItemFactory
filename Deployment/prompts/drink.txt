@@ -1,0 +1,51 @@
+{ITEM_TYPE} Generation - Preset: {PRESET_NAME}
+
+Model: {MODEL_NAME}
+Run started: {TIMESTAMP}
+Current existing items in this category: {EXISTING_COUNT}
+
+{PRESET_CONTEXT}
+The player has:
+- maxHunger = {MAX_HUNGER}
+- maxThirst = {MAX_THIRST}
+
+Task:
+Generate {COUNT} drink-related items for an early-game survival setting.
+{EXCLUDE_IDS}
+
+Rules:
+- Use this JSON schema EXACTLY for each item:
+{
+  "id": string (unique, lowercase, underscore),
+  "displayName": string,
+  "category": "Drink",
+  "rarity": "Common" | "Uncommon" | "Rare",
+  "maxStack": integer,
+
+  "hungerRestore": integer,
+  "thirstRestore": integer,
+  "healthRestore": integer,
+
+  "spoils": boolean,
+  "spoilTimeMinutes": integer,
+
+  "description": string
+}
+
+IMPORTANT:
+- category MUST be "Drink" (NOT "Food").
+- Generate ONLY drink items, not food.
+- description must NOT be empty and should be 1 short sentence (5-20 words)
+  that describes what the drink looks like and its taste.
+
+Balancing:
+- Refreshing drinks: hungerRestore 0-5, thirstRestore 15-30
+- Energy drinks / tonics: hungerRestore 0-10, thirstRestore 25-45, healthRestore 5-15
+- All values must be between 0 and 100.
+- Use only integers for all restore values.
+- thirstRestore should be higher than hungerRestore for drinks.
+
+Output:
+- Output ONLY a JSON array of items.
+- No comments, no extra text, no Markdown, no explanation.
+

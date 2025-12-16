@@ -1,5 +1,18 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: FoodItemDataSO.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: ScriptableObject data structure for Food items.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using UnityEngine;
 
+/// <summary>
+/// ScriptableObject representing a Food item with all its properties.
+/// </summary>
 [CreateAssetMenu(
     fileName = "FoodItemData",
     menuName = "Rundee/Items/Food Item Data",

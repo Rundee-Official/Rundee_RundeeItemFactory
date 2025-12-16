@@ -1,3 +1,13 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: ItemFactoryWindow.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Main Unity Editor window for generating items using LLM (Ollama).
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +18,9 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
+/// <summary>
+/// Preset types for item generation context.
+/// </summary>
 public enum PresetType
 {
     Default,
@@ -65,6 +78,7 @@ public class ItemFactoryWindow : EditorWindow
     private int maxHunger = 100;
     private int maxThirst = 100;
     private string outputPath = "";
+    private string additionalPrompt = "";  // User-defined additional prompt
 
     // UI State
     private Vector2 logScrollPosition;
@@ -468,6 +482,18 @@ public class ItemFactoryWindow : EditorWindow
             autoImportAfterGeneration = EditorGUILayout.Toggle("Auto Import After Generation", autoImportAfterGeneration);
             EditorGUILayout.HelpBox("Automatically import generated items into Unity ScriptableObjects after generation completes.", MessageType.None);
 
+            EditorGUILayout.Space(5);
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            
+            // Additional User Prompt
+            EditorGUILayout.LabelField("Additional Prompt (Optional)", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Add custom instructions or details to the generation prompt. This will be appended to the base prompt.", MessageType.Info);
+            additionalPrompt = EditorGUILayout.TextArea(additionalPrompt, GUILayout.Height(80));
+            if (GUILayout.Button("Clear Additional Prompt", GUILayout.Height(22)))
+            {
+                additionalPrompt = "";
+            }
+
             EditorGUI.indentLevel--;
         }
 
@@ -823,6 +849,15 @@ public class ItemFactoryWindow : EditorWindow
             args += $" --preset {presetName}";
         }
         args += $" --out \"{outputPath}\"";
+        
+        // Add additional prompt if provided
+        if (!string.IsNullOrEmpty(additionalPrompt))
+        {
+            // Escape quotes and newlines for command line
+            string escapedPrompt = additionalPrompt.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
+            args += $" --additionalPrompt \"{escapedPrompt}\"";
+            AddLog($"Additional Prompt: {additionalPrompt.Substring(0, Math.Min(50, additionalPrompt.Length))}...");
+        }
 
         AddLog($"Command: {executablePath} {args}");
         AddLog("");
@@ -866,7 +901,7 @@ public class ItemFactoryWindow : EditorWindow
     private void DrawWeaponComponentEditingSection()
     {
         EditorGUILayout.LabelField("Weapon Component Load Plan Editor", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("생성된 Magazine ScriptableObject를 바로 선택해서 혼합 장전 순서를 편집할 수 있습니다.", MessageType.None);
+        EditorGUILayout.HelpBox("Select a generated Magazine ScriptableObject to edit the mixed loading sequence.", MessageType.None);
 
         WeaponComponentItemDataSO newAsset = (WeaponComponentItemDataSO)EditorGUILayout.ObjectField("Target Component", selectedWeaponComponentAsset, typeof(WeaponComponentItemDataSO), false);
         if (newAsset != selectedWeaponComponentAsset)
@@ -876,14 +911,14 @@ public class ItemFactoryWindow : EditorWindow
 
         if (selectedWeaponComponentAsset == null)
         {
-            EditorGUILayout.HelpBox("편집할 Weapon Component (Magazine)을 선택하세요.", MessageType.Info);
+            EditorGUILayout.HelpBox("Please select a Weapon Component (Magazine) to edit.", MessageType.Info);
             return;
         }
 
         bool isMagazine = string.Equals(selectedWeaponComponentAsset.componentType, "Magazine", StringComparison.OrdinalIgnoreCase);
         if (!isMagazine)
         {
-            EditorGUILayout.HelpBox("선택된 컴포넌트가 Magazine 타입이 아닙니다. Magazine만 로드 플랜을 가집니다.", MessageType.Warning);
+            EditorGUILayout.HelpBox("The selected component is not a Magazine type. Only Magazine components have load plans.", MessageType.Warning);
             return;
         }
 
@@ -894,7 +929,7 @@ public class ItemFactoryWindow : EditorWindow
 
         if (weaponComponentSerializedObject == null || loadedRoundsList == null)
         {
-            EditorGUILayout.HelpBox("SerializedObject 초기화에 실패했습니다.", MessageType.Error);
+            EditorGUILayout.HelpBox("Failed to initialize SerializedObject.", MessageType.Error);
             return;
         }
 
@@ -905,7 +940,7 @@ public class ItemFactoryWindow : EditorWindow
         showLoadPlanEditor = EditorGUILayout.Foldout(showLoadPlanEditor, "Loaded Rounds", true);
         if (showLoadPlanEditor)
         {
-            EditorGUILayout.HelpBox("orderIndex 0이 가장 먼저 발사됩니다. roundCount 합계가 용량을 넘지 않도록 하세요. ammoId는 Ammo ScriptableObject ID와 일치해야 합니다.", MessageType.None);
+            EditorGUILayout.HelpBox("orderIndex 0 fires first. Ensure the sum of roundCount does not exceed capacity. ammoId must match the Ammo ScriptableObject ID.", MessageType.None);
             loadedRoundsList.DoLayoutList();
 
             EditorGUILayout.BeginHorizontal();
@@ -1168,6 +1203,14 @@ public class ItemFactoryWindow : EditorWindow
         else
         {
             args += $" --preset {presetName}";
+        }
+        
+        // Add additional prompt if provided (applies to all items in batch)
+        if (!string.IsNullOrEmpty(additionalPrompt))
+        {
+            string escapedPrompt = additionalPrompt.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
+            args += $" --additionalPrompt \"{escapedPrompt}\"";
+            AddLog($"Additional Prompt (applies to all batch items): {additionalPrompt.Substring(0, Math.Min(50, additionalPrompt.Length))}...");
         }
 
         AddLog($"Command: {executablePath} {args}");

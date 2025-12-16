@@ -1,5 +1,18 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: AmmoItemDataSO.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: ScriptableObject data structure for Ammo items.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using UnityEngine;
 
+/// <summary>
+/// ScriptableObject representing an Ammo item with all its properties.
+/// </summary>
 [CreateAssetMenu(
     fileName = "AmmoItemData",
     menuName = "Rundee/Items/Ammo Item Data",

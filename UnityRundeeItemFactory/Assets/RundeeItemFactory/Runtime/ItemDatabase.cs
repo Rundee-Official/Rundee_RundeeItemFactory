@@ -1,5 +1,18 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: ItemDatabase.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Runtime database for loading and accessing all item ScriptableObjects.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using UnityEngine;
 
+/// <summary>
+/// Runtime database component that loads all item ScriptableObjects from Resources folder.
+/// </summary>
 public class ItemDatabase : MonoBehaviour
 {
     [Header("Food Items")]

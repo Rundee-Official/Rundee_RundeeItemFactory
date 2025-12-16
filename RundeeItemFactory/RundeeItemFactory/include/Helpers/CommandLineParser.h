@@ -52,6 +52,9 @@ struct CommandLineArgs
     
     // Custom preset
     std::string customPresetPath;  // Path to custom preset JSON file (empty if using built-in preset)
+    
+    // User-defined additional prompt
+    std::string additionalPrompt;  // Additional user-defined prompt text to append to the generated prompt
 };
 
 namespace CommandLineParser

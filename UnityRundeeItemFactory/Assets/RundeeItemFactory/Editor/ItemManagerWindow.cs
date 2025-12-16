@@ -1,9 +1,22 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: ItemManagerWindow.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Unity Editor window for managing and viewing all imported item ScriptableObjects.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Editor window for managing and viewing all imported item ScriptableObjects.
+/// </summary>
 public class ItemManagerWindow : EditorWindow
 {
     private ItemType selectedType = ItemType.Food;

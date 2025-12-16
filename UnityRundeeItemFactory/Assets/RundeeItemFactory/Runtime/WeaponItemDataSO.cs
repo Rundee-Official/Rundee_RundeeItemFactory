@@ -1,6 +1,19 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: WeaponItemDataSO.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: ScriptableObject data structure for Weapon items.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using UnityEngine;
 
+/// <summary>
+/// ScriptableObject representing a Weapon item with all its properties.
+/// </summary>
 [CreateAssetMenu(
     fileName = "WeaponItemData",
     menuName = "Rundee/Items/Weapon Item Data",

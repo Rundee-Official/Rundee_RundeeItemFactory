@@ -1,8 +1,22 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: JsonImportCli.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Command-line interface for importing JSON item files into Unity from command line.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Command-line interface for importing JSON item files into Unity.
+/// Usage: Unity.exe -projectPath <path> -executeMethod JsonImportCli.Run --jsonPath <path> --itemType <type>
+/// </summary>
 public static class JsonImportCli
 {
     // Usage: Unity.exe -projectPath <path> -executeMethod JsonImportCli.Run --jsonPath <path> --itemType <food|drink|material|weapon|weaponcomponent|ammo>
@@ -72,5 +86,14 @@ public static class JsonImportCli
         }
     }
 }
+
+
+
+
+
+
+
+
+
 
 

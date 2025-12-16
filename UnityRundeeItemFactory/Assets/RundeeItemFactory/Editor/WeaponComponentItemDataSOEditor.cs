@@ -1,7 +1,20 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: WeaponComponentItemDataSOEditor.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Custom Unity Editor for WeaponComponentItemDataSO with enhanced UI for loaded rounds management.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
+/// <summary>
+/// Custom Unity Editor for WeaponComponentItemDataSO with enhanced UI for loaded rounds management.
+/// </summary>
 [CustomEditor(typeof(WeaponComponentItemDataSO))]
 public class WeaponComponentItemDataSOEditor : Editor
 {

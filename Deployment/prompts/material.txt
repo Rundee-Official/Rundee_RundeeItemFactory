@@ -1,0 +1,48 @@
+{ITEM_TYPE} Generation - Preset: {PRESET_NAME}
+
+Model: {MODEL_NAME}
+Run started: {TIMESTAMP}
+Current existing items in this category: {EXISTING_COUNT}
+
+{PRESET_CONTEXT}
+
+Task:
+Generate {COUNT} crafting materials and junk items for this survival setting.
+{EXCLUDE_IDS}
+
+Item type guidelines:
+- These items are used for crafting, building, or scrapping.
+- Do NOT create food, drink, weapons, or medicine in this preset.
+- Focus on materials like wood planks, scrap metal, nails, screws, springs, electronic boards, wires, cloth, etc.
+
+Use this JSON schema EXACTLY for each item:
+{
+  "id": string (unique, lowercase, underscore),
+  "displayName": string,
+
+  "category": "Material" | "Junk" | "Component",
+  "rarity": "Common" | "Uncommon" | "Rare",
+  "maxStack": integer,
+
+  "materialType": "Wood" | "Metal" | "Plastic" | "Fabric" | "Glass" | "Electronic" | "Stone" | "Rubber",
+
+  "hardness": integer,      // 0-100, structural strength
+  "flammability": integer,  // 0-100, how well it burns
+  "value": integer,         // 0-100, scrap/trade value
+
+  "description": string
+}
+
+Balancing rules:
+- Common items: low to medium value (value 5-40), simple materials.
+- Uncommon items: better structural stats or higher value (value 25-70).
+- Rare items: high value or very useful components (value 50-100).
+- hardness, flammability, and value must all be in the range 0-100.
+- maxStack should be between 1 and 100.
+- description must NOT be empty and should be 1 short sentence (5-20 words)
+  that explains what the item looks like and how it is used.
+
+Output:
+- Output ONLY a JSON array of items.
+- No comments, no extra text, no Markdown, no explanation.
+

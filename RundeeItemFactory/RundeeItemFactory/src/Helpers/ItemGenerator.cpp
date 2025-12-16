@@ -23,6 +23,7 @@
 #include <iomanip>
 #include <sstream>
 #include <ctime>
+#include <memory>
 #include <chrono>
 #include <map>
 #include <algorithm>
@@ -1289,6 +1290,15 @@ namespace ItemGenerator
         {
             std::cout << "[ItemGenerator] Unknown item type.\n";
             return 1;
+        }
+
+        // Append user-defined additional prompt if provided
+        if (!args.additionalPrompt.empty())
+        {
+            prompt += "\n\nAdditional User Instructions:\n";
+            prompt += args.additionalPrompt;
+            prompt += "\n";
+            std::cout << "[ItemGenerator] Added user-defined additional prompt.\n";
         }
 
         // Use retry logic for more reliable LLM calls

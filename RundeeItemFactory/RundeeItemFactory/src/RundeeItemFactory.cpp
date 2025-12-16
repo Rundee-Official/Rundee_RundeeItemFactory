@@ -1,6 +1,6 @@
 // ===============================
 // Project Name: RundeeItemFactory
-// File Name: main.cpp
+// File Name: RundeeItemFactory.cpp
 // Author: Haneul Lee (Rundee)
 // Created Date: 2025-11-14
 // Description: Entry point for LLM/dummy-based item generation pipeline.

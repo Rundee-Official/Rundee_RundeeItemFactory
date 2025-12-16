@@ -1,0 +1,51 @@
+{ITEM_TYPE} Generation - Preset: {PRESET_NAME}
+
+Model: {MODEL_NAME}
+Run started: {TIMESTAMP}
+Current existing items in this category: {EXISTING_COUNT}
+
+{PRESET_CONTEXT}
+The player has:
+- maxHunger = {MAX_HUNGER}
+- maxThirst = {MAX_THIRST}
+
+Task:
+Generate {COUNT} food-related items for an early-game survival setting.
+{EXCLUDE_IDS}
+
+Rules:
+- Use this JSON schema EXACTLY for each item:
+{
+  "id": string (unique, lowercase, underscore),
+  "displayName": string,
+  "category": "Food",
+  "rarity": "Common" | "Uncommon" | "Rare",
+  "maxStack": integer,
+
+  "hungerRestore": integer,
+  "thirstRestore": integer,
+  "healthRestore": integer,
+
+  "spoils": boolean,
+  "spoilTimeMinutes": integer,
+
+  "description": string
+}
+
+IMPORTANT:
+- category MUST be "Food" (NOT "Drink").
+- Generate ONLY food items, not drinks.
+- description must NOT be empty and should be 1 short sentence (5-20 words)
+  that describes what the food looks like and its taste.
+
+Balancing:
+- Snacks: hungerRestore 5-15, thirstRestore 0-5
+- Light meals: hungerRestore 15-30, thirstRestore 0-10
+- Heavy meals: hungerRestore 30-50, thirstRestore 0-10
+- All values must be between 0 and 100.
+- Use only integers for all restore values.
+
+Output:
+- Output ONLY a JSON array of items.
+- No comments, no extra text, no Markdown, no explanation.
+

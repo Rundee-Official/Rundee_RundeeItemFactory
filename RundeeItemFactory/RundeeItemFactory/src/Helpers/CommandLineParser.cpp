@@ -119,6 +119,10 @@ namespace CommandLineParser
             {
                 args.customPresetPath = argv[++i];
             }
+            else if (arg == "--additionalPrompt" && i + 1 < argc)
+            {
+                args.additionalPrompt = argv[++i];
+            }
             else
             {
                 std::cout << "[Warning] Unknown or incomplete argument: " << arg << "\n";

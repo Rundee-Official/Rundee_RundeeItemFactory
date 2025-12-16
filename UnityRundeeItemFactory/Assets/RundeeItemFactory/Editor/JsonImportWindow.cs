@@ -1,11 +1,20 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: JsonImportWindow.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Simple one-stop JSON importer window that routes to the existing ItemImporter methods for each item type.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Simple one-stop JSON importer that routes to the existing ItemImporter
-/// methods for each item type.
+/// Simple one-stop JSON importer that routes to the existing ItemImporter methods for each item type.
 /// </summary>
 public class JsonImportWindow : EditorWindow
 {

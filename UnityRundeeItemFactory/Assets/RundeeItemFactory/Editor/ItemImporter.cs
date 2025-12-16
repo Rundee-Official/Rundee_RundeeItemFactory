@@ -1,3 +1,13 @@
+// ===============================
+// Project Name: RundeeItemFactory
+// File Name: ItemImporter.cs
+// Author: Haneul Lee (Rundee)
+// Created Date: 2025-12-16
+// Description: Imports JSON item data files and converts them to Unity ScriptableObjects.
+// ===============================
+// Copyright (c) 2025 Haneul Lee. All rights reserved.
+// ===============================
+
 using System;
 using System.IO;
 using UnityEditor;
