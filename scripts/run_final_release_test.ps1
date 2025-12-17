@@ -19,18 +19,18 @@ $deployPath = Join-Path $repoRoot $DeploymentDir
 # Check executable path (build directory first, then deployment directory)
 $exePath = $null
 # 1. Check build directory (Release first, then Debug)
-# Correct paths: RundeeItemFactory\x64\Release or RundeeItemFactory\x64\Debug
-$buildPath1 = Join-Path $repoRoot "RundeeItemFactory\x64\Release\RundeeItemFactory.exe"
-$buildPath2 = Join-Path $repoRoot "RundeeItemFactory\x64\Debug\RundeeItemFactory.exe"
-$buildPath3 = Join-Path $repoRoot "RundeeItemFactory\RundeeItemFactory\x64\Release\RundeeItemFactory.exe"
-$buildPath4 = Join-Path $repoRoot "RundeeItemFactory\RundeeItemFactory\x64\Debug\RundeeItemFactory.exe"
+# Correct paths: RundeeItemFactory\RundeeItemFactory\x64\Release or RundeeItemFactory\RundeeItemFactory\x64\Debug
+$buildPath1 = Join-Path $repoRoot "RundeeItemFactory\RundeeItemFactory\x64\Release\RundeeItemFactory.exe"
+$buildPath2 = Join-Path $repoRoot "RundeeItemFactory\RundeeItemFactory\x64\Debug\RundeeItemFactory.exe"
+$buildPath3 = Join-Path $repoRoot "RundeeItemFactory\x64\Release\RundeeItemFactory.exe"
+$buildPath4 = Join-Path $repoRoot "RundeeItemFactory\x64\Debug\RundeeItemFactory.exe"
 
 if (Test-Path $buildPath1) {
     $exePath = (Resolve-Path $buildPath1).Path
-    Write-Host "Found built executable (Release): $exePath" -ForegroundColor Green
+    Write-Host "Found built executable (Release, primary path): $exePath" -ForegroundColor Green
 } elseif (Test-Path $buildPath2) {
     $exePath = (Resolve-Path $buildPath2).Path
-    Write-Host "Found built executable (Debug): $exePath" -ForegroundColor Green
+    Write-Host "Found built executable (Debug, primary path): $exePath" -ForegroundColor Green
 } elseif (Test-Path $buildPath3) {
     $exePath = (Resolve-Path $buildPath3).Path
     Write-Host "Found built executable (Release, alternate path): $exePath" -ForegroundColor Green

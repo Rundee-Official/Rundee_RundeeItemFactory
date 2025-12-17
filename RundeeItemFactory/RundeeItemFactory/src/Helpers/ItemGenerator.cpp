@@ -16,6 +16,7 @@
 #include "Prompts/PromptBuilder.h"
 #include "Prompts/CustomPreset.h"
 #include "Clients/OllamaClient.h"
+#include <map>
 #include <json.hpp>
 #include <iostream>
 #include <fstream>
@@ -880,7 +881,7 @@ static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std:
     return 0;
 }
 
-static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
+static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
 {
     if (jsonResponse.empty())
     {
@@ -911,11 +912,13 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
     int banHits = 0;
     std::vector<std::string> rarities;
     rarities.reserve(items.size());
+    // qualityResults is passed by reference and accumulated across batches
 
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckWeaponComponentQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        qualityResults[item.id] = qualityResult; // Store for filtering
         warnCount += static_cast<int>(qualityResult.warnings.size());
         errorCount += static_cast<int>(qualityResult.errors.size());
         banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
@@ -929,21 +932,199 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
             << " / " << item.componentType << "\n";
     }
 
-    // Filter out duplicates
+    // Filter out duplicates and invalid items (isValid = false)
     std::vector<ItemWeaponComponentData> newItems;
     std::set<std::string> newIds = excludeIds;
+    int filteredInvalidCount = 0;
+    std::cout << "[ItemGenerator] DEBUG: Starting filter loop for " << items.size() << " items, qualityResults map size: " << qualityResults.size() << "\n";
+    
+    // First, collect all ERROR items BEFORE filtering
+    std::vector<std::string> errorItemIds;
+    std::vector<std::string> errorMessages;
+    std::cout << "[ItemGenerator] DEBUG: Checking " << items.size() << " items against qualityResults map (size: " << qualityResults.size() << ")\n";
     for (const auto& item : items)
     {
-        if (newIds.find(item.id) == newIds.end())
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end())
         {
-            newItems.push_back(item);
-            newIds.insert(item.id);
+            if (!it->second.isValid)
+            {
+                errorItemIds.push_back(item.id);
+                for (const auto& err : it->second.errors)
+                {
+                    errorMessages.push_back(err);
+                }
+                std::cout << "[ItemGenerator] ERROR item found: " << item.id << " (isValid=false, errors=" << it->second.errors.size() << ") (will be filtered/regenerated)\n";
+            }
         }
         else
         {
-            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
+            std::cout << "[ItemGenerator] WARNING: Quality result not found for item in error collection: " << item.id << "\n";
         }
     }
+        
+    if (!errorItemIds.empty())
+    {
+        std::cout << "[ItemGenerator] ERROR items detected BEFORE filtering: " << errorItemIds.size() << " items\n";
+        std::cout << "[ItemGenerator] ERROR item IDs: ";
+        for (const auto& id : errorItemIds)
+        {
+            std::cout << id << " ";
+        }
+        std::cout << "\n";
+    }
+    else
+    {
+        std::cout << "[ItemGenerator] No ERROR items detected in quality check results.\n";
+    }
+    
+    for (const auto& item : items)
+    {
+        if (newIds.find(item.id) != newIds.end())
+        {
+            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
+            continue;
+        }
+        
+        // Filter out invalid items (isValid = false)
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end())
+        {
+            if (!it->second.isValid)
+            {
+                std::cout << "[ItemGenerator] Filtered out invalid item (quality check failed): " << item.id << "\n";
+                filteredInvalidCount++;
+                continue;
+            }
+        }
+        else
+        {
+            // This should not happen, but log it for debugging
+            std::cout << "[ItemGenerator] WARNING: Quality result not found for item: " << item.id << " (skipping quality filter)\n";
+        }
+        
+        newItems.push_back(item);
+        newIds.insert(item.id);
+    }
+
+    if (filteredInvalidCount > 0)
+    {
+        std::cout << "[ItemGenerator] Filtered out " << filteredInvalidCount << " invalid items (quality check failed).\n";
+    }
+
+    // errorItemIds and errorMessages are already collected above during filtering
+
+    // CRITICAL: Remove ERROR items from newItems BEFORE regeneration
+    // This ensures ERROR items are never saved, even if regeneration fails
+    std::vector<ItemWeaponComponentData> validItemsOnly;
+    for (const auto& item : newItems)
+    {
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end() && !it->second.isValid)
+        {
+            std::cout << "[ItemGenerator] Removing ERROR item from newItems before regeneration: " << item.id << "\n";
+            continue;
+        }
+        validItemsOnly.push_back(item);
+    }
+    newItems = validItemsOnly;
+
+    // CRITICAL: If we have error items, regenerate them BEFORE saving anything
+    // This ensures ERROR items are never saved to the file
+    static int retryCountWeaponComponent = 0;
+    const int MAX_RETRIES = 3;
+    if (!errorItemIds.empty() && retryCountWeaponComponent < MAX_RETRIES)
+    {
+        retryCountWeaponComponent++;
+        std::cout << "[ItemGenerator] ERROR items detected (" << errorItemIds.size() << " items). Regenerating with feedback (retry " << retryCountWeaponComponent << "/" << MAX_RETRIES << ")...\n";
+        
+        // Build feedback message
+        std::stringstream feedback;
+        feedback << "\n\nCRITICAL: Previous generation had ERRORS that caused items to be REJECTED:\n";
+        feedback << "- " << errorItemIds.size() << " items were rejected due to quality check failures\n";
+        feedback << "Common errors found:\n";
+        std::set<std::string> uniqueErrors(errorMessages.begin(), errorMessages.end());
+        for (const auto& err : uniqueErrors)
+        {
+            feedback << "  * " << err << "\n";
+        }
+        feedback << "\nYou MUST fix these issues in the new generation:\n";
+        feedback << "1. EVERY component MUST have at least 2-3 non-zero stat modifiers (weightModifier alone is NOT enough)\n";
+        feedback << "2. Components with ALL stat modifiers at 0 will be REJECTED\n";
+        feedback << "3. Magazine components MUST have at least one non-weight modifier (effectiveRangeModifier, ergonomicsModifier, or recoilModifier)\n";
+        feedback << "4. Verify ALL items meet the CRITICAL RULES before outputting JSON\n";
+        feedback << "\nDO NOT repeat the same mistakes. Check each item carefully before including it in the JSON array.\n";
+
+        // Regenerate with feedback
+        std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingWeaponComponentIds(outputPath);
+        FoodGenerateParams retryParams = params;
+        retryParams.count = static_cast<int>(errorItemIds.size());
+        std::string retryPrompt = PromptBuilder::BuildWeaponComponentJsonPrompt(
+            retryParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
+        retryPrompt += feedback.str();
+        
+        std::string retryResponse = OllamaClient::RunWithRetry(modelName, retryPrompt, 0, 0);
+        if (!retryResponse.empty())
+        {
+            // Reset retry count on successful regeneration attempt
+            retryCountWeaponComponent = 0; // Reset for next batch
+            // Pass the accumulated qualityResults to the recursive call
+            int result = ProcessLLMResponse_WeaponComponent(retryResponse, outputPath, retryParams.count, updatedExistingIds, modelName, retryParams, preset, qualityResults);
+            if (result == 0)
+            {
+                std::cout << "[ItemGenerator] Successfully regenerated ERROR items.\n";
+            }
+            return result;
+        }
+        else
+        {
+            retryCountWeaponComponent = 0; // Reset on failure
+            std::cout << "[ItemGenerator] Failed to regenerate ERROR items (LLM response empty).\n";
+            // ERROR items already removed from newItems, so we can continue with valid items only
+        }
+    }
+    else if (retryCountWeaponComponent >= MAX_RETRIES)
+    {
+        std::cout << "[ItemGenerator] WARNING: Maximum retry count reached. ERROR items have been removed from newItems.\n";
+        retryCountWeaponComponent = 0; // Reset for next batch
+    }
+    else
+    {
+        retryCountWeaponComponent = 0; // Reset if no errors
+    }
+
+    // CRITICAL: Final check - ensure no ERROR items in newItems before saving
+    // This is a safety check in case regeneration logic failed
+    if (!errorItemIds.empty())
+    {
+        std::cout << "[ItemGenerator] WARNING: ERROR items detected but regeneration failed or reached limit. Only valid items will be saved.\n";
+        std::cout << "[ItemGenerator] ERROR item IDs that were removed: ";
+        for (const auto& id : errorItemIds)
+        {
+            std::cout << id << " ";
+        }
+        std::cout << "\n";
+    }
+
+    // CRITICAL: Double-check that newItems does not contain any ERROR items
+    // This is a safety check in case filtering logic failed
+    std::vector<ItemWeaponComponentData> finalItems;
+    for (const auto& item : newItems)
+    {
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end() && !it->second.isValid)
+        {
+            std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in newItems after filtering: " << item.id << " - removing it!\n";
+            continue;
+        }
+        finalItems.push_back(item);
+    }
+    newItems = finalItems;
 
     int addedCount = static_cast<int>(newItems.size());
     int stillNeeded = requiredCount - addedCount;
@@ -966,10 +1147,36 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
                 }
             }
             
-            std::vector<ItemWeaponComponentData> allItems = existingItems;
+            // CRITICAL: Filter out ERROR items from existing items before merging
+            std::vector<ItemWeaponComponentData> validExistingItems;
+            for (const auto& item : existingItems)
+            {
+                auto it = qualityResults.find(item.id);
+                if (it != qualityResults.end() && !it->second.isValid)
+                {
+                    std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in existing items: " << item.id << " - removing it!\n";
+                    continue;
+                }
+                validExistingItems.push_back(item);
+            }
+            
+            std::vector<ItemWeaponComponentData> allItems = validExistingItems;
             allItems.insert(allItems.end(), newItems.begin(), newItems.end());
             
-            if (!ItemJsonWriter::WriteWeaponComponentToFile(allItems, outputPath))
+            // CRITICAL: Final validation - ensure no ERROR items in allItems before writing
+            std::vector<ItemWeaponComponentData> finalAllItems;
+            for (const auto& item : allItems)
+            {
+                auto it = qualityResults.find(item.id);
+                if (it != qualityResults.end() && !it->second.isValid)
+                {
+                    std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in allItems before writing: " << item.id << " - removing it!\n";
+                    continue;
+                }
+                finalAllItems.push_back(item);
+            }
+            
+            if (!ItemJsonWriter::WriteWeaponComponentToFile(finalAllItems, outputPath))
             {
                 std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
                 return 1;
@@ -977,7 +1184,20 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
         }
         else
         {
-            if (!ItemJsonWriter::WriteWeaponComponentToFile(newItems, outputPath))
+            // CRITICAL: Final validation - ensure no ERROR items in newItems before writing
+            std::vector<ItemWeaponComponentData> finalNewItems;
+            for (const auto& item : newItems)
+            {
+                auto it = qualityResults.find(item.id);
+                if (it != qualityResults.end() && !it->second.isValid)
+                {
+                    std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in newItems before writing: " << item.id << " - removing it!\n";
+                    continue;
+                }
+                finalNewItems.push_back(item);
+            }
+            
+            if (!ItemJsonWriter::WriteWeaponComponentToFile(finalNewItems, outputPath))
             {
                 std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
                 return 1;
@@ -1005,7 +1225,8 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
         std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
-            return ProcessLLMResponse_WeaponComponent(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
+            // Pass the accumulated qualityResults to the recursive call
+            return ProcessLLMResponse_WeaponComponent(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
         }
     }
     else
@@ -1016,7 +1237,7 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
     return 0;
 }
 
-static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
+static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
 {
     if (jsonResponse.empty())
     {
@@ -1047,11 +1268,13 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
     int banHits = 0;
     std::vector<std::string> rarities;
     rarities.reserve(items.size());
+    // qualityResults is passed by reference and accumulated across batches
 
     for (const auto& item : items)
     {
         auto qualityResult = QualityChecker::CheckAmmoQuality(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        qualityResults[item.id] = qualityResult; // Store for filtering
         warnCount += static_cast<int>(qualityResult.warnings.size());
         errorCount += static_cast<int>(qualityResult.errors.size());
         banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
@@ -1071,20 +1294,198 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
             << " / Penetration: " << item.penetration << "\n";
     }
 
-    // Filter out duplicates
+    // First, fix value-related errors before filtering
+    for (auto& item : items)
+    {
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end() && !it->second.isValid)
+        {
+            bool hasValueError = false;
+            bool hasCriticalError = false;
+            
+            for (const auto& err : it->second.errors)
+            {
+                if (err.find("value") != std::string::npos || err.find("Value") != std::string::npos)
+                {
+                    hasValueError = true;
+                }
+                else
+                {
+                    hasCriticalError = true;
+                }
+            }
+            
+            // If only value error, fix value directly
+            if (hasValueError && !hasCriticalError)
+            {
+                // Calculate appropriate value based on performance
+                bool isHighPerformance = (item.damageBonus > 10 || item.penetration > 50);
+                if (isHighPerformance)
+                {
+                    // High-performance: value should be at least 10, preferably 15-30
+                    int calculatedValue = std::max(10, std::min(50, 
+                        static_cast<int>((std::abs(item.damageBonus) + item.penetration) / 5.0f)));
+                    if (item.rarity == "Rare")
+                    {
+                        calculatedValue = std::max(15, calculatedValue);
+                    }
+                    item.value = calculatedValue;
+                    std::cout << "[ItemGenerator] Fixed value for " << item.id << ": " << item.value << " (was low/0)\n";
+                }
+                else
+                {
+                    // Normal performance: rarity-based value
+                    if (item.rarity == "Common")
+                        item.value = std::max(1, std::min(5, static_cast<int>((std::abs(item.damageBonus) + item.penetration) / 10.0f + 1)));
+                    else if (item.rarity == "Uncommon")
+                        item.value = std::max(5, std::min(15, static_cast<int>((std::abs(item.damageBonus) + item.penetration) / 8.0f + 5)));
+                    else // Rare
+                        item.value = std::max(15, std::min(50, static_cast<int>((std::abs(item.damageBonus) + item.penetration) / 5.0f + 15)));
+                    std::cout << "[ItemGenerator] Fixed value for " << item.id << ": " << item.value << " (based on rarity and performance)\n";
+                }
+                
+                // Re-check quality after value fix
+                auto fixedQualityResult = QualityChecker::CheckAmmoQuality(item);
+                qualityResults[item.id] = fixedQualityResult;
+                if (fixedQualityResult.isValid)
+                {
+                    std::cout << "[ItemGenerator] Item " << item.id << " is now valid after value fix.\n";
+                }
+            }
+        }
+    }
+
+    // Filter out duplicates and invalid items (isValid = false)
     std::vector<ItemAmmoData> newItems;
     std::set<std::string> newIds = excludeIds;
+    int filteredInvalidCount = 0;
+    std::cout << "[ItemGenerator] DEBUG: Starting filter loop for " << items.size() << " items, qualityResults map size: " << qualityResults.size() << "\n";
     for (const auto& item : items)
     {
-        if (newIds.find(item.id) == newIds.end())
+        if (newIds.find(item.id) != newIds.end())
         {
-            newItems.push_back(item);
-            newIds.insert(item.id);
+            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
+            continue;
+        }
+        
+        // Filter out invalid items (isValid = false)
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end())
+        {
+            std::cout << "[ItemGenerator] DEBUG: Found quality result for " << item.id << ", isValid=" << (it->second.isValid ? "true" : "false") << ", errors=" << it->second.errors.size() << "\n";
+            if (!it->second.isValid)
+            {
+                std::cout << "[ItemGenerator] Filtered out invalid item (quality check failed): " << item.id << "\n";
+                filteredInvalidCount++;
+                continue;
+            }
         }
         else
         {
-            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
+            // This should not happen, but log it for debugging
+            std::cout << "[ItemGenerator] WARNING: Quality result not found for item: " << item.id << " (skipping quality filter)\n";
         }
+        
+        newItems.push_back(item);
+        newIds.insert(item.id);
+    }
+    
+    if (filteredInvalidCount > 0)
+    {
+        std::cout << "[ItemGenerator] Filtered out " << filteredInvalidCount << " invalid items (quality check failed).\n";
+    }
+
+    // Collect critical error items (not value-related) for regeneration feedback
+    std::vector<std::string> errorItemIds;
+    std::vector<std::string> criticalErrorMessages;
+    
+    for (const auto& item : items)
+    {
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end() && !it->second.isValid)
+        {
+            bool hasCriticalError = false;
+            for (const auto& err : it->second.errors)
+            {
+                // Only collect non-value errors for regeneration
+                if (err.find("value") == std::string::npos && err.find("Value") == std::string::npos)
+                {
+                    hasCriticalError = true;
+                    criticalErrorMessages.push_back(err);
+                }
+            }
+            
+            if (hasCriticalError)
+            {
+                errorItemIds.push_back(item.id);
+            }
+        }
+    }
+
+    // If we have critical error items (not just value errors), regenerate them with feedback (max 3 retries)
+    static int retryCountAmmo = 0;
+    const int MAX_RETRIES = 3;
+    if (!errorItemIds.empty() && retryCountAmmo < MAX_RETRIES)
+    {
+        retryCountAmmo++;
+        std::cout << "[ItemGenerator] ERROR items detected (" << errorItemIds.size() << " items). Regenerating with feedback (retry " << retryCountAmmo << "/" << MAX_RETRIES << ")...\n";
+        
+        // Build feedback message (only for critical errors, not value errors)
+        std::stringstream feedback;
+        feedback << "\n\nCRITICAL: Previous generation had ERRORS that caused items to be REJECTED:\n";
+        feedback << "- " << errorItemIds.size() << " items were rejected due to quality check failures\n";
+        feedback << "Common errors found:\n";
+        std::set<std::string> uniqueErrors(criticalErrorMessages.begin(), criticalErrorMessages.end());
+        for (const auto& err : uniqueErrors)
+        {
+            feedback << "  * " << err << "\n";
+        }
+        feedback << "\nYou MUST fix these issues in the new generation:\n";
+        feedback << "1. Common ammo MUST have damageBonus <= 5 AND penetration <= 40 (NO EXCEPTIONS)\n";
+        feedback << "2. High-performance ammo MUST be Uncommon or Rare rarity (NOT Common)\n";
+        feedback << "3. Value MUST match performance: Common (1-5), Uncommon (5-15), Rare (15-50)\n";
+        feedback << "\nDO NOT repeat the same mistakes. Check each item carefully before including it in the JSON array.\n";
+
+        // Regenerate with feedback
+        std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingAmmoIds(outputPath);
+        FoodGenerateParams retryParams = params;
+        retryParams.count = static_cast<int>(errorItemIds.size());
+        std::string retryPrompt = PromptBuilder::BuildAmmoJsonPrompt(
+            retryParams,
+            preset,
+            updatedExistingIds,
+            modelName,
+            GetCurrentTimestamp(),
+            static_cast<int>(updatedExistingIds.size()));
+        retryPrompt += feedback.str();
+        
+        std::string retryResponse = OllamaClient::RunWithRetry(modelName, retryPrompt, 0, 0);
+        if (!retryResponse.empty())
+        {
+            // Reset retry count on successful regeneration attempt
+            retryCountAmmo = 0; // Reset for next batch
+            // Pass the accumulated qualityResults to the recursive call
+            int result = ProcessLLMResponse_Ammo(retryResponse, outputPath, retryParams.count, updatedExistingIds, modelName, retryParams, preset, qualityResults);
+            if (result == 0)
+            {
+                std::cout << "[ItemGenerator] Successfully regenerated ERROR items.\n";
+            }
+            return result;
+        }
+        else
+        {
+            retryCountAmmo = 0; // Reset on failure
+            std::cout << "[ItemGenerator] Failed to regenerate ERROR items (LLM response empty).\n";
+        }
+    }
+    else if (retryCountAmmo >= MAX_RETRIES)
+    {
+        std::cout << "[ItemGenerator] WARNING: Maximum retry count reached. Some ERROR items may not be fixed.\n";
+        retryCountAmmo = 0; // Reset for next batch
+    }
+    else
+    {
+        retryCountAmmo = 0; // Reset if no errors
     }
 
     int addedCount = static_cast<int>(newItems.size());
@@ -1108,10 +1509,36 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
                 }
             }
             
-            std::vector<ItemAmmoData> allItems = existingItems;
+            // CRITICAL: Filter out ERROR items from existing items before merging
+            std::vector<ItemAmmoData> validExistingItems;
+            for (const auto& item : existingItems)
+            {
+                auto it = qualityResults.find(item.id);
+                if (it != qualityResults.end() && !it->second.isValid)
+                {
+                    std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in existing items: " << item.id << " - removing it!\n";
+                    continue;
+                }
+                validExistingItems.push_back(item);
+            }
+            
+            std::vector<ItemAmmoData> allItems = validExistingItems;
             allItems.insert(allItems.end(), newItems.begin(), newItems.end());
             
-            if (!ItemJsonWriter::WriteAmmoToFile(allItems, outputPath))
+            // CRITICAL: Final validation - ensure no ERROR items in allItems before writing
+            std::vector<ItemAmmoData> finalAllItems;
+            for (const auto& item : allItems)
+            {
+                auto it = qualityResults.find(item.id);
+                if (it != qualityResults.end() && !it->second.isValid)
+                {
+                    std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in allItems before writing: " << item.id << " - removing it!\n";
+                    continue;
+                }
+                finalAllItems.push_back(item);
+            }
+            
+            if (!ItemJsonWriter::WriteAmmoToFile(finalAllItems, outputPath))
             {
                 std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
                 return 1;
@@ -1119,7 +1546,20 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
         }
         else
         {
-            if (!ItemJsonWriter::WriteAmmoToFile(newItems, outputPath))
+            // CRITICAL: Final validation - ensure no ERROR items in newItems before writing
+            std::vector<ItemAmmoData> finalNewItems;
+            for (const auto& item : newItems)
+            {
+                auto it = qualityResults.find(item.id);
+                if (it != qualityResults.end() && !it->second.isValid)
+                {
+                    std::cout << "[ItemGenerator] CRITICAL: Found ERROR item in newItems before writing: " << item.id << " - removing it!\n";
+                    continue;
+                }
+                finalNewItems.push_back(item);
+            }
+            
+            if (!ItemJsonWriter::WriteAmmoToFile(finalNewItems, outputPath))
             {
                 std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
                 return 1;
@@ -1147,7 +1587,8 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
         std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
-            return ProcessLLMResponse_Ammo(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
+            // Pass the accumulated qualityResults to the recursive call
+            return ProcessLLMResponse_Ammo(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
         }
     }
     else
@@ -1331,11 +1772,13 @@ namespace ItemGenerator
         }
         else if (args.itemType == ItemType::WeaponComponent)
         {
-            return ProcessLLMResponse_WeaponComponent(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset);
+            std::map<std::string, QualityChecker::QualityResult> qualityResults; // Accumulate across batches
+            return ProcessLLMResponse_WeaponComponent(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
         else if (args.itemType == ItemType::Ammo)
         {
-            return ProcessLLMResponse_Ammo(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset);
+            std::map<std::string, QualityChecker::QualityResult> qualityResults; // Accumulate across batches
+            return ProcessLLMResponse_Ammo(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
 
         return 1;

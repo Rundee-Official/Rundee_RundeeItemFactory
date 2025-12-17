@@ -311,13 +311,33 @@ namespace QualityChecker
         if (item.value < 5 && (item.damageBonus > 10 || item.penetration > 50))
         {
             result.warnings.push_back("High-performance ammo with low value may be unbalanced");
-            result.qualityScore -= 5.0f;
+            result.qualityScore -= 10.0f;
         }
 
-        // Check rarity vs stats
-        if (item.rarity == "Common" && (item.damageBonus > 10 || item.penetration > 60))
+        // Check rarity vs stats (STRICT - Common + high stats is ERROR)
+        if (item.rarity == "Common" && (item.damageBonus > 5 || item.penetration > 40))
         {
-            result.warnings.push_back("Common ammo with high stats may be unbalanced");
+            result.errors.push_back("Common ammo with high stats is unbalanced - should be Uncommon or Rare");
+            result.isValid = false;
+            result.qualityScore -= 30.0f;
+        }
+        else if (item.rarity == "Uncommon" && (item.damageBonus > 15 || item.penetration > 70))
+        {
+            result.warnings.push_back("Uncommon ammo with very high stats should be Rare");
+            result.qualityScore -= 10.0f;
+        }
+
+        // Check value vs performance (STRICT - high-performance + low value is ERROR)
+        bool isHighPerformance = (item.damageBonus > 10 || item.penetration > 50);
+        if (isHighPerformance && item.value < 10)
+        {
+            result.errors.push_back("High-performance ammo with low value is unbalanced - value should be at least 10");
+            result.isValid = false;
+            result.qualityScore -= 25.0f;
+        }
+        else if (isHighPerformance && item.value < 15)
+        {
+            result.warnings.push_back("High-performance ammo should have higher value (recommended: 15-30)");
             result.qualityScore -= 5.0f;
         }
 
@@ -360,10 +380,15 @@ namespace QualityChecker
             result.qualityScore -= 5.0f;
         }
 
-        // Check spoilage consistency
+        // Check spoilage consistency (aligned with prompt guidelines)
         if (item.spoils && item.spoilTimeMinutes < 60)
         {
-            result.warnings.push_back("Very short spoil time may be unrealistic");
+            result.warnings.push_back("Very short spoil time is unrealistic (minimum 60 minutes)");
+            result.qualityScore -= 10.0f;
+        }
+        else if (item.spoils && item.spoilTimeMinutes < 240 && item.rarity != "Common")
+        {
+            result.warnings.push_back("Non-common food with very short spoil time may be inconsistent");
             result.qualityScore -= 5.0f;
         }
 
@@ -392,12 +417,22 @@ namespace QualityChecker
             result.qualityScore -= 10.0f;
         }
 
-        // Check total power
+        // Check total power (aligned with prompt guidelines)
         int totalPower = item.hungerRestore + item.thirstRestore + item.healthRestore;
-        if (totalPower > 80)
+        if (totalPower > 100)
         {
-            result.warnings.push_back("Very high total restore value for drink");
+            result.warnings.push_back("Very high total restore value for drink (breaks game balance)");
+            result.qualityScore -= 15.0f;
+        }
+        else if (totalPower > 60 && item.rarity == "Common")
+        {
+            result.warnings.push_back("Common drink with high total restore value may be unbalanced");
             result.qualityScore -= 10.0f;
+        }
+        else if (totalPower > 80 && item.rarity == "Uncommon")
+        {
+            result.warnings.push_back("Uncommon drink with very high total restore value should be Rare");
+            result.qualityScore -= 5.0f;
         }
 
         // Clamp quality score

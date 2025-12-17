@@ -125,6 +125,96 @@ namespace StringUtils
         // Fix common JSON errors first
         s = FixCommonJsonErrors(s);
 
+        // Remove comments (both // and /* */ style)
+        // This must be done before other processing to avoid parsing errors
+        auto removeComments = [](std::string& text)
+        {
+            std::string result;
+            result.reserve(text.size());
+            bool inString = false;
+            bool escapeNext = false;
+            size_t i = 0;
+            
+            while (i < text.size())
+            {
+                char c = text[i];
+                
+                if (escapeNext)
+                {
+                    result += c;
+                    escapeNext = false;
+                    ++i;
+                    continue;
+                }
+                
+                if (c == '\\')
+                {
+                    escapeNext = true;
+                    result += c;
+                    ++i;
+                    continue;
+                }
+                
+                if (c == '"')
+                {
+                    inString = !inString;
+                    result += c;
+                    ++i;
+                    continue;
+                }
+                
+                // Only process comments outside of strings
+                if (!inString)
+                {
+                    // Check for // style comment
+                    if (c == '/' && i + 1 < text.size() && text[i + 1] == '/')
+                    {
+                        // Skip to end of line
+                        while (i < text.size() && text[i] != '\n' && text[i] != '\r')
+                        {
+                            ++i;
+                        }
+                        // Keep the newline if present
+                        if (i < text.size() && (text[i] == '\n' || text[i] == '\r'))
+                        {
+                            result += text[i];
+                            ++i;
+                            // Handle \r\n
+                            if (i < text.size() && text[i - 1] == '\r' && text[i] == '\n')
+                            {
+                                result += text[i];
+                                ++i;
+                            }
+                        }
+                        continue;
+                    }
+                    
+                    // Check for /* */ style comment
+                    if (c == '/' && i + 1 < text.size() && text[i + 1] == '*')
+                    {
+                        // Skip to end of comment
+                        i += 2; // Skip /*
+                        while (i + 1 < text.size())
+                        {
+                            if (text[i] == '*' && text[i + 1] == '/')
+                            {
+                                i += 2; // Skip */
+                                break;
+                            }
+                            ++i;
+                        }
+                        continue;
+                    }
+                }
+                
+                result += c;
+                ++i;
+            }
+            
+            text = result;
+        };
+        removeComments(s);
+
         // Strip text before first '[' and after last ']'
         size_t first = s.find('[');
         size_t last = s.find_last_of(']');
@@ -251,6 +341,23 @@ namespace StringUtils
             }
         }
 
+        // Also check for unclosed braces in objects
+        int braceBalance = 0;
+        for (char c : s)
+        {
+            if (c == '{')
+                ++braceBalance;
+            else if (c == '}')
+                --braceBalance;
+        }
+        
+        // Close unclosed braces
+        while (braceBalance > 0)
+        {
+            s += "}";
+            --braceBalance;
+        }
+        
         while (bracketBalance > 0)
         {
             s += "\n]";

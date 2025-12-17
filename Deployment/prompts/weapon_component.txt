@@ -92,9 +92,43 @@ CRITICAL RULES - MUST FOLLOW:
    - Valid: "recoilModifier": -8, "ergonomicsModifier": 5
    - Invalid: "recoilModifier": "-8", "ergonomicsModifier": "+5", "recoilModifier": +
 
-6. **NEVER create components where ALL stat modifiers are 0** - this is unrealistic and useless
+6. **CRITICAL: NEVER create components where ALL stat modifiers are 0** - this is unrealistic and useless
+   - If you create a component with all stat modifiers at 0, it will be REJECTED
+   - EVERY component MUST have at least 2-3 non-zero stat modifiers
+   - Even Magazine components need modifiers (e.g., effectiveRangeModifier for extended magazines, weightModifier for capacity)
+   - Example of BAD component (DO NOT CREATE):
+     {
+       "id": "useless_magazine",
+       "componentType": "Magazine",
+       "weightModifier": 150,
+       "recoilModifier": 0,
+       "ergonomicsModifier": 0,
+       "accuracyModifier": 0,
+       "damageModifier": 0,
+       "muzzleVelocityModifier": 0,
+       "effectiveRangeModifier": 0,
+       "penetrationModifier": 0
+     }
+   - Example of GOOD Magazine component:
+     {
+       "id": "extended_magazine",
+       "componentType": "Magazine",
+       "weightModifier": 200,
+       "effectiveRangeModifier": 5,
+       "recoilModifier": 0,
+       "ergonomicsModifier": -2,
+       "accuracyModifier": 0,
+       "damageModifier": 0,
+       "muzzleVelocityModifier": 0,
+       "penetrationModifier": 0
+     }
+
 7. **weightModifier MUST be realistic** - components range from 20g (small trigger) to 1500g (heavy barrel)
 8. **recoilModifier is usually NEGATIVE** (reduces recoil), positive values mean INCREASED recoil (bad)
+9. **Magazine components MUST have at least one non-weight modifier**:
+   - Extended magazines: effectiveRangeModifier (+5 to +15) or ergonomicsModifier (-2 to -5)
+   - Drum magazines: effectiveRangeModifier (+10 to +20), ergonomicsModifier (-5 to -10)
+   - Lightweight magazines: weightModifier (50-100), ergonomicsModifier (+2 to +5)
 
 Guidelines:
 - Describe real-world inspired components (e.g., "Carbon Fiber Skeleton Stock", "Polymer Foregrip").
