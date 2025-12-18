@@ -8,13 +8,20 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Prompts/PromptBuilder.h"
-#include "Prompts/CustomPreset.h"
-#include "Prompts/PromptTemplateLoader.h"
+// Standard Library Includes
+#include <cctype>
 #include <set>
 #include <sstream>
 #include <vector>
-#include <cctype>
+
+// Project Includes
+#include "Prompts/CustomPreset.h"
+#include "Prompts/PromptBuilder.h"
+#include "Prompts/PromptTemplateLoader.h"
+
+// ============================================================================
+// SECTION 1: Anonymous Namespace - Internal Helper Functions
+// ============================================================================
 
 namespace
 {
@@ -26,6 +33,7 @@ namespace
         case PresetType::Desert: return "Desert";
         case PresetType::Coast:  return "Coast";
         case PresetType::City:   return "City";
+        case PresetType::Arctic: return "Arctic";
         case PresetType::Default:
         default:
             return "Default";
@@ -159,6 +167,15 @@ std::string PromptBuilder::GetPresetFlavorText(PresetType preset)
             "- Most food is processed: canned food, instant noodles, snacks, and energy bars.\n"
             "- Drinks are bottled water, soft drinks, and energy drinks with higher thirst restoration.\n"
             "- Many items do not spoil quickly, but some fresh food can still be found.\n\n";
+
+    case PresetType::Arctic:
+        return
+            "World context:\n"
+            "- The setting is a frozen arctic tundra with extreme cold, snow, and ice.\n"
+            "- Food items should provide high warmth and calories: dried meat, pemmican, seal blubber, and preserved fish.\n"
+            "- Drinks are hot beverages, melted snow, and warm soups that restore both hunger and warmth.\n"
+            "- Clothing and armor must provide excellent cold resistance.\n"
+            "- Items should emphasize survival in freezing temperatures and limited resources.\n\n";
 
     case PresetType::Default:
     default:
@@ -1386,6 +1403,239 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     prompt += "- Output ONLY a JSON array of ammo items.\n";
     prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
     return prompt;
+}
+
+std::string PromptBuilder::BuildArmorJsonPrompt(const FoodGenerateParams& params,
+                                                PresetType preset,
+                                                const std::set<std::string>& excludeIds,
+                                                const std::string& modelName,
+                                                const std::string& generationTimestamp,
+                                                int existingCount)
+{
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "armor_" + presetSlug,
+        "armor"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Armor",
+        modelName,
+        generationTimestamp,
+        existingCount);
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
+    std::string prompt;
+
+    prompt += presetContext;
+
+    prompt += "Task:\n";
+    prompt += "Generate " + std::to_string(params.count) + " armor items ";
+    prompt += "for this survival setting.\n\n";
+
+    prompt += BuildExcludeSection(excludeIds);
+
+    prompt += "Use this JSON schema EXACTLY for each armor:\n";
+    prompt += "{\n";
+    prompt += "  \"id\": string (unique, lowercase, underscore),\n";
+    prompt += "  \"displayName\": string,\n";
+    prompt += "  \"category\": \"Armor\",\n";
+    prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
+    prompt += "  \"maxStack\": integer (usually 1-5 for armor),\n";
+    prompt += "\n";
+    prompt += "  \"armorType\": string (e.g., \"Helmet\", \"Vest\", \"Armor\", \"Backpack\", \"Rig\", \"FaceCover\", \"EarProtection\"),\n";
+    prompt += "  \"armorClass\": integer,        // 0-6, armor class (higher = better protection)\n";
+    prompt += "  \"durability\": integer,        // 0-100, armor condition\n";
+    prompt += "  \"material\": integer,          // 0-100, material quality\n";
+    prompt += "  \"protectionZones\": string,   // Comma-separated: \"Head\", \"Thorax\", \"Stomach\", \"Arms\", \"Legs\"\n";
+    prompt += "  \"movementSpeedPenalty\": integer,  // 0-100, percentage penalty to movement speed\n";
+    prompt += "  \"ergonomicsPenalty\": integer,    // 0-100, penalty to weapon handling\n";
+    prompt += "  \"turnSpeedPenalty\": integer,     // 0-100, penalty to turning speed\n";
+    prompt += "  \"weight\": integer,           // Weight in grams\n";
+    prompt += "  \"capacity\": integer,         // Storage capacity (for backpacks/rigs, in slots or liters)\n";
+    prompt += "  \"blocksHeadset\": boolean,   // Whether this armor blocks headset/ear protection\n";
+    prompt += "  \"blocksFaceCover\": boolean, // Whether this armor blocks face cover\n";
+    prompt += "\n";
+    prompt += "  \"description\": string\n";
+    prompt += "}\n";
+    prompt += "\n";
+    prompt += "IMPORTANT:\n";
+    prompt += "- category MUST be \"Armor\".\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words).\n";
+    prompt += "- armorClass: 0-2 for light armor, 3-4 for medium, 5-6 for heavy.\n";
+    prompt += "- Heavier armor has higher penalties but better protection.\n";
+    prompt += "- Balancing: Common armor (AC 0-2), Uncommon (AC 3-4), Rare (AC 5-6).\n";
+    prompt += "\n";
+    prompt += "Output:\n";
+    prompt += "- Output ONLY a JSON array of armor items.\n";
+    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
+
+    return prompt;
+}
+
+std::string PromptBuilder::BuildArmorJsonPrompt(const FoodGenerateParams& params,
+                                                const CustomPreset& customPreset,
+                                                const std::set<std::string>& excludeIds,
+                                                const std::string& modelName,
+                                                const std::string& generationTimestamp,
+                                                int existingCount)
+{
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName;
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "armor_custom_" + presetSlug,
+        "armor_" + presetSlug,
+        "armor"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Armor",
+        modelName,
+        generationTimestamp,
+        existingCount);
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
+    return BuildArmorJsonPrompt(params, PresetType::Default, excludeIds, modelName, generationTimestamp, existingCount);
+}
+
+std::string PromptBuilder::BuildClothingJsonPrompt(const FoodGenerateParams& params,
+                                                  PresetType preset,
+                                                  const std::set<std::string>& excludeIds,
+                                                  const std::string& modelName,
+                                                  const std::string& generationTimestamp,
+                                                  int existingCount)
+{
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "clothing_" + presetSlug,
+        "clothing"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Clothing",
+        modelName,
+        generationTimestamp,
+        existingCount);
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
+    std::string prompt;
+
+    prompt += presetContext;
+
+    prompt += "Task:\n";
+    prompt += "Generate " + std::to_string(params.count) + " clothing items ";
+    prompt += "for this survival setting.\n\n";
+
+    prompt += BuildExcludeSection(excludeIds);
+
+    prompt += "Use this JSON schema EXACTLY for each clothing:\n";
+    prompt += "{\n";
+    prompt += "  \"id\": string (unique, lowercase, underscore),\n";
+    prompt += "  \"displayName\": string,\n";
+    prompt += "  \"category\": \"Clothing\",\n";
+    prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
+    prompt += "  \"maxStack\": integer (usually 1-5 for clothing),\n";
+    prompt += "\n";
+    prompt += "  \"clothingType\": string (e.g., \"Shirt\", \"Pants\", \"Jacket\", \"Hat\", \"Shoes\", \"Gloves\", \"Outfit\"),\n";
+    prompt += "  \"coldResistance\": integer,   // 0-100, protection against cold weather\n";
+    prompt += "  \"heatResistance\": integer,   // 0-100, protection against hot weather\n";
+    prompt += "  \"waterResistance\": integer,  // 0-100, protection against water/rain\n";
+    prompt += "  \"windResistance\": integer,   // 0-100, protection against wind\n";
+    prompt += "  \"comfort\": integer,          // 0-100, overall comfort level\n";
+    prompt += "  \"mobilityBonus\": integer,    // -50 to 50, bonus/penalty to movement speed\n";
+    prompt += "  \"staminaBonus\": integer,     // -50 to 50, bonus/penalty to stamina regeneration\n";
+    prompt += "  \"durability\": integer,       // 0-100, clothing condition\n";
+    prompt += "  \"material\": integer,         // 0-100, material quality\n";
+    prompt += "  \"weight\": integer,           // Weight in grams\n";
+    prompt += "  \"isInsulated\": boolean,      // Whether clothing provides insulation\n";
+    prompt += "  \"isWaterproof\": boolean,    // Whether clothing is waterproof\n";
+    prompt += "  \"isWindproof\": boolean,      // Whether clothing is windproof\n";
+    prompt += "\n";
+    prompt += "  \"description\": string\n";
+    prompt += "}\n";
+    prompt += "\n";
+    prompt += "IMPORTANT:\n";
+    prompt += "- category MUST be \"Clothing\".\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words).\n";
+    prompt += "- Environmental protection should match the preset (e.g., Desert = high heatResistance).\n";
+    prompt += "- Balancing: Common clothing (basic protection), Uncommon (better stats), Rare (excellent protection).\n";
+    prompt += "\n";
+    prompt += "Output:\n";
+    prompt += "- Output ONLY a JSON array of clothing items.\n";
+    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
+
+    return prompt;
+}
+
+std::string PromptBuilder::BuildClothingJsonPrompt(const FoodGenerateParams& params,
+                                                  const CustomPreset& customPreset,
+                                                  const std::set<std::string>& excludeIds,
+                                                  const std::string& modelName,
+                                                  const std::string& generationTimestamp,
+                                                  int existingCount)
+{
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName;
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "clothing_custom_" + presetSlug,
+        "clothing_" + presetSlug,
+        "clothing"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Clothing",
+        modelName,
+        generationTimestamp,
+        existingCount);
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
+    return BuildClothingJsonPrompt(params, PresetType::Default, excludeIds, modelName, generationTimestamp, existingCount);
 }
 
 

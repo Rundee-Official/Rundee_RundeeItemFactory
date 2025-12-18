@@ -8,24 +8,34 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Parsers/ItemJsonParser.h"
-#include "Utils/StringUtils.h"
-#include "Utils/JsonUtils.h"
-#include "Validators/FoodItemValidator.h"
-#include "Validators/DrinkItemValidator.h"
-#include "Validators/MaterialItemValidator.h"
-#include "Validators/WeaponItemValidator.h"
-#include "Validators/WeaponComponentItemValidator.h"
-#include "Validators/AmmoItemValidator.h"
-#include <fstream>
-#include <chrono>
-#include <iostream>
+// Standard Library Includes
 #include <algorithm>
 #include <cctype>
+#include <chrono>
+#include <fstream>
+#include <iostream>
 
+// Third-Party Includes
+#include "json.hpp"
 using nlohmann::json;
 
-// Debug-mode name shape logging (limited)
+// Project Includes
+#include "Parsers/ItemJsonParser.h"
+#include "Utils/JsonUtils.h"
+#include "Utils/StringUtils.h"
+#include "Validators/AmmoItemValidator.h"
+#include "Validators/ArmorItemValidator.h"
+#include "Validators/ClothingItemValidator.h"
+#include "Validators/DrinkItemValidator.h"
+#include "Validators/FoodItemValidator.h"
+#include "Validators/MaterialItemValidator.h"
+#include "Validators/WeaponComponentItemValidator.h"
+#include "Validators/WeaponItemValidator.h"
+
+// ============================================================================
+// SECTION 1: Anonymous Namespace - Internal Helpers
+// ============================================================================
+
 namespace
 {
     static int gNameLogCount = 0;
@@ -737,6 +747,196 @@ bool ItemJsonParser::ParseAmmoFromJsonText(const std::string& jsonText, std::vec
 
     std::cout << "[ItemJsonParser] Parsed " << outItems.size()
         << " ammo items from JSON.\n";
+
+    return !outItems.empty();
+}
+
+bool ItemJsonParser::ParseArmorFromJsonText(const std::string& jsonText, std::vector<ItemArmorData>& outItems)
+{
+    outItems.clear();
+
+    if (jsonText.empty() || jsonText.find_first_not_of(" \t\r\n") == std::string::npos)
+    {
+        std::cerr << "[ItemJsonParser] Error: Input JSON text is empty or contains only whitespace.\n";
+        return false;
+    }
+
+    std::string cleaned = StringUtils::CleanJsonArrayText(jsonText);
+    
+    if (cleaned.empty() || cleaned.find_first_not_of(" \t\r\n") == std::string::npos)
+    {
+        std::cerr << "[ItemJsonParser] Error: JSON text became empty after cleaning.\n";
+        return false;
+    }
+
+    json root;
+    try
+    {
+        root = json::parse(cleaned);
+    }
+    catch (const json::parse_error& e)
+    {
+        std::cerr << "[ItemJsonParser] JSON parse error (position " << e.byte << "): "
+            << e.what() << "\n";
+        return false;
+    }
+
+    if (!root.is_array())
+    {
+        std::cerr << "[ItemJsonParser] Error: Root JSON is not an array.\n";
+        return false;
+    }
+
+    for (size_t i = 0; i < root.size(); ++i)
+    {
+        const auto& jItem = root[i];
+        if (!jItem.is_object())
+        {
+            std::cerr << "[ItemJsonParser] Skipping non-object at index " << i << "\n";
+            continue;
+        }
+
+        ItemArmorData item;
+
+        item.id = JsonUtils::GetStringSafe(jItem, "id");
+        item.displayName = JsonUtils::GetStringSafe(jItem, "displayName");
+        item.category = JsonUtils::GetStringSafe(jItem, "category");
+        item.rarity = JsonUtils::GetStringSafe(jItem, "rarity");
+        item.maxStack = JsonUtils::GetIntSafe(jItem, "maxStack", 1);
+        item.description = JsonUtils::GetStringSafe(jItem, "description");
+
+        item.armorType = JsonUtils::GetStringSafe(jItem, "armorType");
+        item.armorClass = JsonUtils::GetIntSafe(jItem, "armorClass", 0);
+        item.durability = JsonUtils::GetIntSafe(jItem, "durability", 100);
+        item.material = JsonUtils::GetIntSafe(jItem, "material", 0);
+        item.protectionZones = JsonUtils::GetStringSafe(jItem, "protectionZones");
+        item.movementSpeedPenalty = JsonUtils::GetIntSafe(jItem, "movementSpeedPenalty", 0);
+        item.ergonomicsPenalty = JsonUtils::GetIntSafe(jItem, "ergonomicsPenalty", 0);
+        item.turnSpeedPenalty = JsonUtils::GetIntSafe(jItem, "turnSpeedPenalty", 0);
+        item.weight = JsonUtils::GetIntSafe(jItem, "weight", 0);
+        item.capacity = JsonUtils::GetIntSafe(jItem, "capacity", 0);
+        item.blocksHeadset = JsonUtils::GetBoolSafe(jItem, "blocksHeadset", false);
+        item.blocksFaceCover = JsonUtils::GetBoolSafe(jItem, "blocksFaceCover", false);
+
+        if (item.id.empty() || item.displayName.empty())
+        {
+            std::cerr << "[ItemJsonParser] Skipping armor at index " << i
+                << " (missing id/displayName)\n";
+            continue;
+        }
+
+        if (item.category != "Armor" && item.category != "armor" && item.category != "ARMOR")
+        {
+            std::cerr << "[ItemJsonParser] Skipping item at index " << i
+                << " (category is \"" << item.category << "\", expected \"Armor\")\n";
+            continue;
+        }
+
+        LogNameShape("Armor", item.id, item.displayName);
+
+        ArmorItemValidator::Validate(item);
+
+        outItems.push_back(item);
+    }
+
+    std::cout << "[ItemJsonParser] Parsed " << outItems.size()
+        << " armor items from JSON.\n";
+
+    return !outItems.empty();
+}
+
+bool ItemJsonParser::ParseClothingFromJsonText(const std::string& jsonText, std::vector<ItemClothingData>& outItems)
+{
+    outItems.clear();
+
+    if (jsonText.empty() || jsonText.find_first_not_of(" \t\r\n") == std::string::npos)
+    {
+        std::cerr << "[ItemJsonParser] Error: Input JSON text is empty or contains only whitespace.\n";
+        return false;
+    }
+
+    std::string cleaned = StringUtils::CleanJsonArrayText(jsonText);
+    
+    if (cleaned.empty() || cleaned.find_first_not_of(" \t\r\n") == std::string::npos)
+    {
+        std::cerr << "[ItemJsonParser] Error: JSON text became empty after cleaning.\n";
+        return false;
+    }
+
+    json root;
+    try
+    {
+        root = json::parse(cleaned);
+    }
+    catch (const json::parse_error& e)
+    {
+        std::cerr << "[ItemJsonParser] JSON parse error (position " << e.byte << "): "
+            << e.what() << "\n";
+        return false;
+    }
+
+    if (!root.is_array())
+    {
+        std::cerr << "[ItemJsonParser] Error: Root JSON is not an array.\n";
+        return false;
+    }
+
+    for (size_t i = 0; i < root.size(); ++i)
+    {
+        const auto& jItem = root[i];
+        if (!jItem.is_object())
+        {
+            std::cerr << "[ItemJsonParser] Skipping non-object at index " << i << "\n";
+            continue;
+        }
+
+        ItemClothingData item;
+
+        item.id = JsonUtils::GetStringSafe(jItem, "id");
+        item.displayName = JsonUtils::GetStringSafe(jItem, "displayName");
+        item.category = JsonUtils::GetStringSafe(jItem, "category");
+        item.rarity = JsonUtils::GetStringSafe(jItem, "rarity");
+        item.maxStack = JsonUtils::GetIntSafe(jItem, "maxStack", 1);
+        item.description = JsonUtils::GetStringSafe(jItem, "description");
+
+        item.clothingType = JsonUtils::GetStringSafe(jItem, "clothingType");
+        item.coldResistance = JsonUtils::GetIntSafe(jItem, "coldResistance", 0);
+        item.heatResistance = JsonUtils::GetIntSafe(jItem, "heatResistance", 0);
+        item.waterResistance = JsonUtils::GetIntSafe(jItem, "waterResistance", 0);
+        item.windResistance = JsonUtils::GetIntSafe(jItem, "windResistance", 0);
+        item.comfort = JsonUtils::GetIntSafe(jItem, "comfort", 0);
+        item.mobilityBonus = JsonUtils::GetIntSafe(jItem, "mobilityBonus", 0);
+        item.staminaBonus = JsonUtils::GetIntSafe(jItem, "staminaBonus", 0);
+        item.durability = JsonUtils::GetIntSafe(jItem, "durability", 100);
+        item.material = JsonUtils::GetIntSafe(jItem, "material", 0);
+        item.weight = JsonUtils::GetIntSafe(jItem, "weight", 0);
+        item.isInsulated = JsonUtils::GetBoolSafe(jItem, "isInsulated", false);
+        item.isWaterproof = JsonUtils::GetBoolSafe(jItem, "isWaterproof", false);
+        item.isWindproof = JsonUtils::GetBoolSafe(jItem, "isWindproof", false);
+
+        if (item.id.empty() || item.displayName.empty())
+        {
+            std::cerr << "[ItemJsonParser] Skipping clothing at index " << i
+                << " (missing id/displayName)\n";
+            continue;
+        }
+
+        if (item.category != "Clothing" && item.category != "clothing" && item.category != "CLOTHING")
+        {
+            std::cerr << "[ItemJsonParser] Skipping item at index " << i
+                << " (category is \"" << item.category << "\", expected \"Clothing\")\n";
+            continue;
+        }
+
+        LogNameShape("Clothing", item.id, item.displayName);
+
+        ClothingItemValidator::Validate(item);
+
+        outItems.push_back(item);
+    }
+
+    std::cout << "[ItemJsonParser] Parsed " << outItems.size()
+        << " clothing items from JSON.\n";
 
     return !outItems.empty();
 }

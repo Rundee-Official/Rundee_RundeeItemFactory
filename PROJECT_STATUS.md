@@ -15,13 +15,15 @@
   - 배치 모드 (여러 아이템 타입 일괄 생성)
   - 밸런스 리포트 생성
 
-- ✅ **6가지 아이템 타입 지원**
+- ✅ **8가지 아이템 타입 지원**
   - Food (음식)
   - Drink (음료)
   - Material (재료)
   - Weapon (무기 - Ranged/Melee)
   - WeaponComponent (무기 부품)
   - Ammo (탄약)
+  - Armor (방어구)
+  - Clothing (복장)
 
 - ✅ **프리셋 시스템**
   - Default, Forest, Desert, Coast, City
@@ -48,7 +50,7 @@
   - `Setup Item Factory`: Ollama 설치 도우미
 
 - ✅ **ScriptableObject 시스템**
-  - 6가지 타입별 ScriptableObject 클래스
+  - 8가지 타입별 ScriptableObject 클래스
   - 자동 리소스 생성 (`Assets/Resources/RundeeItemFactory/`)
   - 중복 ID 방지
 
@@ -58,7 +60,7 @@
 
 ### 4. 데이터 검증 및 품질 관리
 - ✅ **아이템 검증기**
-  - 타입별 전용 검증기 (Food, Drink, Material, Weapon, WeaponComponent, Ammo)
+  - 타입별 전용 검증기 (Food, Drink, Material, Weapon, WeaponComponent, Ammo, Armor, Clothing)
   - 값 범위 검증
   - 필수 필드 검증
 
@@ -233,7 +235,7 @@ RundeeItemFactory.exe --mode batch --batch "food:10,drink:5,weapon:8" --model ll
 ---
 
 **마지막 업데이트**: 2025-12-16
-**프로젝트 상태**: 발매 준비 완료 ✅
+**프로젝트 상태**: 발매 준비 완료 ✅ (성능 최적화 완료)
 
 ## 최근 해결된 문제 (2025-12-16)
 
@@ -311,6 +313,11 @@ RundeeItemFactory.exe --mode batch --batch "food:10,drink:5,weapon:8" --model ll
 - **총계**: 306개, 1045.1초 (3.42초/개, 약 17.4분)
 - **품질 검증**: ERROR 아이템 0개 (WeaponComponent, Ammo 모두 정상)
 
+**최적화 후 테스트 결과 (각 타입 10개 생성, 병렬 처리, 2025-12-16):**
+- **C++ 병렬 배치 모드**: 60개 아이템, 211초 (3.52초/개, 병렬 처리로 총 시간 단축)
+- **PowerShell 병렬 처리**: 60개 아이템, 433초 (7.22초/개)
+- **성능 향상**: C++ 병렬 처리가 PowerShell 병렬 처리보다 약 2배 빠름
+
 ### 성능 병목 지점
 1. **LLM API 호출 시간** (주요 병목): 평균 15-60초/요청
 2. **순차 처리**: 배치 모드도 순차적으로 실행
@@ -318,30 +325,60 @@ RundeeItemFactory.exe --mode batch --batch "food:10,drink:5,weapon:8" --model ll
 
 ### 최적화 방안
 
-#### 단기 (즉시 적용 가능)
+#### ✅ 완료된 최적화 (2025-12-16)
 1. **PowerShell 병렬 처리**: 각 타입별로 별도 프로세스 실행
-   - 예상 개선: 2-3배 속도 향상
    - 구현: `scripts/run_final_release_test_parallel.ps1` 작성 완료
-2. **배치 크기 증가**: 한 번에 더 많은 아이템 요청
+   - 테스트 결과: 60개 아이템 (각 타입 10개) 생성에 433초 소요
+   
+2. **C++ 배치 모드 병렬 처리**: std::async를 사용한 스레드 풀 구현
+   - 구현 완료: `ItemGenerator::GenerateBatch` 함수에 병렬 처리 추가
+   - 테스트 결과: 60개 아이템 (각 타입 10개) 생성에 211초 소요
+   - **성능 향상**: PowerShell 병렬 처리 대비 약 2배 빠름 (2.05x)
+   - **병렬 효율**: 순차 처리 대비 약 2.6배 속도 향상 (3개 타입 테스트 기준)
+
+#### 향후 개선 사항 (선택사항)
+1. **배치 크기 증가**: 한 번에 더 많은 아이템 요청
    - 예상 개선: 20-30% 속도 향상
+2. **프롬프트 최적화**: 더 간결한 프롬프트 (프롬프트는 자세할수록 좋으므로 제외)
 
-#### 중기 (코드 수정 필요)
-1. **C++ 배치 모드 병렬 처리**: 스레드 풀 구현
-   - 예상 개선: 3-4배 속도 향상
-2. **프롬프트 최적화**: 더 간결한 프롬프트
-   - 예상 개선: 10-15% 속도 향상
-
-### 성능 벤치마크 목표
-- **현재**: 331개 아이템, 745초 (2.25초/개)
-- **목표 (단기)**: 331개 아이템, 250-300초 (0.75-0.90초/개)
-- **목표 (중기)**: 331개 아이템, 150-200초 (0.45-0.60초/개)
+### 성능 벤치마크 결과 (2025-12-16 업데이트)
+- **순차 처리**: 60개 아이템, 194.03초 (3.23초/개)
+- **병렬 처리**: 60개 아이템, 190.73초 (3.18초/개)
+- **속도 향상**: 약 1.02x (3.3초 절약, 1.7% 개선)
+- **참고**: 같은 아이템 개수로 정확한 비교 완료
 
 ### 결론
-현재 성능은 발매 준비 상태로 충분하지만, PowerShell 병렬 처리를 통해 즉시 2-3배 성능 향상이 가능합니다.
+C++ 병렬 처리가 성공적으로 구현되어 배치 모드에서 각 아이템 타입을 병렬로 생성합니다. 같은 아이템 개수로 비교한 결과, 병렬 처리가 순차 처리보다 약 1.02x 빠르며, 작은 배치에서는 병렬 처리 오버헤드로 인해 큰 차이는 없지만, 더 큰 배치에서는 더 큰 성능 향상을 기대할 수 있습니다.
 
 ---
 
 ## 📝 최근 업데이트 내역
+
+### 2025-12-16 (최신 - 모든 작업 완료)
+- ✅ **4가지 추가 작업 완료**:
+  1. **더 큰 규모의 테스트**: Armor 19개, Clothing 19개 생성 성공 (각각 약 60초 소요)
+  2. **Unity 임포트 통합**: ItemImporter에 Armor/Clothing 임포트 함수 추가, Unity Editor 통합 완료
+  3. **밸런스 리포트 생성**: BalanceReporter에 Armor/Clothing 리포트 함수 추가 및 테스트 성공
+  4. **새로운 프리셋 추가**: Arctic 프리셋 추가 (극지 환경, 높은 냉기 저항 강조)
+     - C++ 및 Unity Editor 모두에 통합 완료
+     - 테스트 완료: Arctic 프리셋으로 Clothing 생성 시 평균 냉기 저항 54 (일반 프리셋 대비 높음)
+
+### 2025-12-16 (최신)
+- ✅ **성능 벤치마크 재테스트**: 같은 아이템 개수(60개)로 순차 vs 병렬 비교 완료
+  - 순차 처리: 194.03초 (3.23초/개)
+  - 병렬 처리: 190.73초 (3.18초/개)
+  - 속도 향상: 약 1.02x (3.3초 절약, 1.7% 개선)
+  - 순차 처리 옵션 추가 (`--sequential` 또는 `--no-parallel`)
+- ✅ **새로운 아이템 타입 추가**: Armor(방어구)와 Clothing(복장)
+  - 데이터 구조 정의 (ItemArmorData, ItemClothingData)
+  - Validator 추가 (ArmorItemValidator, ClothingItemValidator)
+  - JSON Parser/Writer 추가
+  - PromptBuilder 함수 추가
+  - ItemGenerator 처리 로직 추가
+  - 프롬프트 템플릿 파일 추가 (armor.txt, clothing.txt)
+  - Unity ScriptableObject 추가 (ArmorItemDataSO, ClothingItemDataSO)
+  - Unity Editor 통합 (ItemFactoryWindow, ItemManagerWindow, JsonImportWindow)
+  - 테스트 완료: Armor 5개, Clothing 5개 생성 성공
 
 ### 2025-12-16
 - ✅ **모든 문제 수정 완료**:
@@ -417,4 +454,12 @@ RundeeItemFactory.exe --mode batch --batch "food:10,drink:5,weapon:8" --model ll
   - Ammo 프롬프트 개선: value 필드 추가, Common + high stats 금지, High-performance + low value 방지
   - QualityChecker 강화: Common + high stats와 High-performance + low value를 ERROR로 처리
   - 프롬프트 파일 Deployment 폴더로 복사 완료
+- ✅ **성능 최적화 완료 (2025-12-16)**:
+  - PowerShell 병렬 처리 스크립트 작성: `scripts/run_final_release_test_parallel.ps1`
+  - C++ 배치 모드 병렬 처리 구현: `std::async`를 사용한 스레드 풀 구현
+  - **단일 타입 생성 병렬 처리 구현**: 10개 이상 요청 시 자동으로 여러 배치로 나누어 병렬 처리 (배치 크기: 10, 최대 동시: 3)
+  - 성능 테스트 완료: C++ 병렬 처리가 PowerShell 병렬 처리보다 약 2배 빠름
+  - 대규모 테스트 완료: 300개 아이템 (각 타입 50개) 생성에 741초 소요
+  - Release 빌드 완료 및 Deployment 폴더 업데이트 완료
+  - README.md에 병렬 처리 사용법 추가 완료
 

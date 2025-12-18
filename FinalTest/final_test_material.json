@@ -1,0 +1,122 @@
+[
+  {
+    "category": "Junk",
+    "description": "A discarded plastic bottle for melting down or reusing.",
+    "displayName": "Plastic Bottle",
+    "flammability": 80,
+    "hardness": 40,
+    "id": "Material_plastic_bottle",
+    "materialType": "Plastic",
+    "maxStack": 10,
+    "rarity": "Common",
+    "value": 15
+  },
+  {
+    "category": "Material",
+    "description": "A strip of sturdy rope for binding or crafting.",
+    "displayName": "Rope Strip",
+    "flammability": 10,
+    "hardness": 60,
+    "id": "Material_rope_strip",
+    "materialType": "Fabric",
+    "maxStack": 5,
+    "rarity": "Uncommon",
+    "value": 35
+  },
+  {
+    "category": "Material",
+    "description": "A simple wooden plank used for building structures.",
+    "displayName": "Wood Plank",
+    "flammability": 10,
+    "hardness": 50,
+    "id": "Material_wood_plank",
+    "materialType": "Wood",
+    "maxStack": 20,
+    "rarity": "Common",
+    "value": 15
+  },
+  {
+    "category": "Material",
+    "description": "A thin sheet of aluminum used for crafting and building.",
+    "displayName": "Aluminum Sheet",
+    "flammability": 5,
+    "hardness": 80,
+    "id": "Material_aluminum_sheet",
+    "materialType": "Metal",
+    "maxStack": 10,
+    "rarity": "Uncommon",
+    "value": 35
+  },
+  {
+    "category": "Component",
+    "description": "A length of copper wire used for electronics and crafting.",
+    "displayName": "Copper Wire",
+    "flammability": 30,
+    "hardness": 20,
+    "id": "Material_copper_wire",
+    "materialType": "Electronic",
+    "maxStack": 50,
+    "rarity": "Uncommon",
+    "value": 40
+  },
+  {
+    "category": "Junk",
+    "description": "A pile of scrap steel useful for crafting and building.",
+    "displayName": "Scrap Steel",
+    "flammability": 40,
+    "hardness": 10,
+    "id": "Material_scrap_steel",
+    "materialType": "Metal",
+    "maxStack": 100,
+    "rarity": "Common",
+    "value": 5
+  },
+  {
+    "category": "Component",
+    "description": "An old screw used for crafting and repairing.",
+    "displayName": "Old Screw",
+    "flammability": 10,
+    "hardness": 60,
+    "id": "Material_old_screw",
+    "materialType": "Metal",
+    "maxStack": 20,
+    "rarity": "Common",
+    "value": 10
+  },
+  {
+    "category": "Material",
+    "description": "A strip of rubber used for crafting and sealing.",
+    "displayName": "Rubber Strip",
+    "flammability": 10,
+    "hardness": 30,
+    "id": "Material_rubber_strip",
+    "materialType": "Rubber",
+    "maxStack": 50,
+    "rarity": "Common",
+    "value": 20
+  },
+  {
+    "category": "Junk",
+    "description": "A plastic bottle cap used for crafting and building.",
+    "displayName": "Plastic Bottle Cap",
+    "flammability": 20,
+    "hardness": 10,
+    "id": "Material_plastic_bottle_cap",
+    "materialType": "Plastic",
+    "maxStack": 100,
+    "rarity": "Common",
+    "value": 5
+  },
+  {
+    "category": "Material",
+    "description": "A glass cylinder used for crafting and building.",
+    "displayName": "Glass Cylinder",
+    "flammability": 5,
+    "hardness": 90,
+    "id": "Material_glass_cylinder",
+    "materialType": "Glass",
+    "maxStack": 10,
+    "rarity": "Uncommon",
+    "value": 40
+  }
+]

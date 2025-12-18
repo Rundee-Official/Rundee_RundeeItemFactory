@@ -8,12 +8,18 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
+// Standard Library Includes
 using System;
 using System.IO;
+
+// Unity Includes
 using UnityEditor;
 using UnityEngine;
 
-// DTOs for JSON deserialization
+// ============================================================================
+// SECTION 1: Data Transfer Objects (DTOs) for JSON Deserialization
+// ============================================================================
+
 [Serializable]
 public class FoodDrinkItemDataDTO
 {
@@ -181,6 +187,66 @@ public class AmmoItemListWrapper
     public AmmoItemDataDTO[] items;
 }
 
+[Serializable]
+public class ArmorItemDataDTO
+{
+    public string id;
+    public string displayName;
+    public string category;
+    public string rarity;
+    public int maxStack;
+    public string armorType;
+    public int armorClass;
+    public int durability;
+    public int material;
+    public string protectionZones;
+    public int movementSpeedPenalty;
+    public int ergonomicsPenalty;
+    public int turnSpeedPenalty;
+    public int weight;
+    public int capacity;
+    public bool blocksHeadset;
+    public bool blocksFaceCover;
+    public string description;
+}
+
+[Serializable]
+public class ClothingItemDataDTO
+{
+    public string id;
+    public string displayName;
+    public string category;
+    public string rarity;
+    public int maxStack;
+    public string clothingType;
+    public int coldResistance;
+    public int heatResistance;
+    public int waterResistance;
+    public int windResistance;
+    public int comfort;
+    public int mobilityBonus;
+    public int staminaBonus;
+    public int durability;
+    public int material;
+    public int weight;
+    public bool isInsulated;
+    public bool isWaterproof;
+    public bool isWindproof;
+    public string description;
+}
+
+[Serializable]
+public class ArmorItemListWrapper
+{
+    public ArmorItemDataDTO[] items;
+}
+
+[Serializable]
+public class ClothingItemListWrapper
+{
+    public ClothingItemDataDTO[] items;
+}
+
 public enum ItemType
 {
     Food,
@@ -188,8 +254,14 @@ public enum ItemType
     Material,
     Weapon,
     WeaponComponent,
-    Ammo
+    Ammo,
+    Armor,
+    Clothing
 }
+
+// ============================================================================
+// SECTION 2: ItemImporter Class
+// ============================================================================
 
 public static class ItemImporter
 {
@@ -258,6 +330,28 @@ public static class ItemImporter
         }
         string jsonText = File.ReadAllText(jsonPath);
         ImportAmmoItems(jsonText);
+    }
+
+    public static void ImportArmorFromJsonPath(string jsonPath)
+    {
+        if (string.IsNullOrEmpty(jsonPath) || !File.Exists(jsonPath))
+        {
+            Debug.LogError($"[ItemImporter] File not found: {jsonPath}");
+            return;
+        }
+        string jsonText = File.ReadAllText(jsonPath);
+        ImportArmorItems(jsonText);
+    }
+
+    public static void ImportClothingFromJsonPath(string jsonPath)
+    {
+        if (string.IsNullOrEmpty(jsonPath) || !File.Exists(jsonPath))
+        {
+            Debug.LogError($"[ItemImporter] File not found: {jsonPath}");
+            return;
+        }
+        string jsonText = File.ReadAllText(jsonPath);
+        ImportClothingItems(jsonText);
     }
 
     private static void ImportFoodItems(string jsonText)
@@ -773,6 +867,164 @@ public static class ItemImporter
         AssetDatabase.Refresh();
 
         Debug.Log($"[ItemImporter] Ammo items imported. Created: {created}, Skipped (already exist): {skipped}");
+    }
+
+    private static void ImportArmorItems(string jsonText)
+    {
+        string wrapped = "{ \"items\": " + jsonText + " }";
+
+        ArmorItemListWrapper wrapper;
+        try
+        {
+            wrapper = JsonUtility.FromJson<ArmorItemListWrapper>(wrapped);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[ItemImporter] JSON parse error: {e.Message}");
+            return;
+        }
+
+        if (wrapper == null || wrapper.items == null || wrapper.items.Length == 0)
+        {
+            Debug.LogWarning("[ItemImporter] No items found in JSON.");
+            return;
+        }
+
+        string assetsRoot = "Assets/Resources/RundeeItemFactory/ArmorItems";
+        EnsureFolderStructure(assetsRoot);
+
+        int created = 0;
+        int skipped = 0;
+
+        foreach (var dto in wrapper.items)
+        {
+            if (string.IsNullOrEmpty(dto.id))
+            {
+                Debug.LogWarning("[ItemImporter] Skipping item with empty id.");
+                continue;
+            }
+
+            string safeId = MakeSafeFileName(dto.id);
+            string assetPath = assetsRoot + "/" + safeId + ".asset";
+
+            ArmorItemDataSO existingAsset = AssetDatabase.LoadAssetAtPath<ArmorItemDataSO>(assetPath);
+            
+            if (existingAsset != null)
+            {
+                skipped++;
+                Debug.Log($"[ItemImporter] Skipping existing armor item: {dto.id} (already exists)");
+                continue;
+            }
+
+            ArmorItemDataSO asset = ScriptableObject.CreateInstance<ArmorItemDataSO>();
+
+            asset.id = dto.id;
+            asset.displayName = dto.displayName;
+            asset.category = dto.category;
+            asset.rarity = dto.rarity;
+            asset.maxStack = dto.maxStack;
+            asset.armorType = dto.armorType;
+            asset.armorClass = Mathf.Clamp(dto.armorClass, 0, 6);
+            asset.durability = Mathf.Clamp(dto.durability, 0, 100);
+            asset.material = Mathf.Clamp(dto.material, 0, 100);
+            asset.protectionZones = dto.protectionZones;
+            asset.movementSpeedPenalty = Mathf.Clamp(dto.movementSpeedPenalty, 0, 100);
+            asset.ergonomicsPenalty = Mathf.Clamp(dto.ergonomicsPenalty, 0, 100);
+            asset.turnSpeedPenalty = Mathf.Clamp(dto.turnSpeedPenalty, 0, 100);
+            asset.weight = dto.weight;
+            asset.capacity = dto.capacity;
+            asset.blocksHeadset = dto.blocksHeadset;
+            asset.blocksFaceCover = dto.blocksFaceCover;
+            asset.description = dto.description;
+
+            AssetDatabase.CreateAsset(asset, assetPath);
+            created++;
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log($"[ItemImporter] Armor items imported. Created: {created}, Skipped (already exist): {skipped}");
+    }
+
+    private static void ImportClothingItems(string jsonText)
+    {
+        string wrapped = "{ \"items\": " + jsonText + " }";
+
+        ClothingItemListWrapper wrapper;
+        try
+        {
+            wrapper = JsonUtility.FromJson<ClothingItemListWrapper>(wrapped);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[ItemImporter] JSON parse error: {e.Message}");
+            return;
+        }
+
+        if (wrapper == null || wrapper.items == null || wrapper.items.Length == 0)
+        {
+            Debug.LogWarning("[ItemImporter] No items found in JSON.");
+            return;
+        }
+
+        string assetsRoot = "Assets/Resources/RundeeItemFactory/ClothingItems";
+        EnsureFolderStructure(assetsRoot);
+
+        int created = 0;
+        int skipped = 0;
+
+        foreach (var dto in wrapper.items)
+        {
+            if (string.IsNullOrEmpty(dto.id))
+            {
+                Debug.LogWarning("[ItemImporter] Skipping item with empty id.");
+                continue;
+            }
+
+            string safeId = MakeSafeFileName(dto.id);
+            string assetPath = assetsRoot + "/" + safeId + ".asset";
+
+            ClothingItemDataSO existingAsset = AssetDatabase.LoadAssetAtPath<ClothingItemDataSO>(assetPath);
+            
+            if (existingAsset != null)
+            {
+                skipped++;
+                Debug.Log($"[ItemImporter] Skipping existing clothing item: {dto.id} (already exists)");
+                continue;
+            }
+
+            ClothingItemDataSO asset = ScriptableObject.CreateInstance<ClothingItemDataSO>();
+
+            asset.id = dto.id;
+            asset.displayName = dto.displayName;
+            asset.category = dto.category;
+            asset.rarity = dto.rarity;
+            asset.maxStack = dto.maxStack;
+            asset.clothingType = dto.clothingType;
+            asset.coldResistance = Mathf.Clamp(dto.coldResistance, 0, 100);
+            asset.heatResistance = Mathf.Clamp(dto.heatResistance, 0, 100);
+            asset.waterResistance = Mathf.Clamp(dto.waterResistance, 0, 100);
+            asset.windResistance = Mathf.Clamp(dto.windResistance, 0, 100);
+            asset.comfort = Mathf.Clamp(dto.comfort, 0, 100);
+            asset.mobilityBonus = Mathf.Clamp(dto.mobilityBonus, -50, 50);
+            asset.staminaBonus = Mathf.Clamp(dto.staminaBonus, -50, 50);
+            asset.durability = Mathf.Clamp(dto.durability, 0, 100);
+            asset.material = Mathf.Clamp(dto.material, 0, 100);
+            asset.weight = dto.weight;
+            asset.isInsulated = dto.isInsulated;
+            asset.isWaterproof = dto.isWaterproof;
+            asset.isWindproof = dto.isWindproof;
+            asset.description = dto.description;
+
+            AssetDatabase.CreateAsset(asset, assetPath);
+            created++;
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log($"[ItemImporter] Clothing items imported. Created: {created}, Skipped (already exist): {skipped}");
     }
 
     private static void EnsureFolderStructure(string assetsRoot)

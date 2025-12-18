@@ -10,7 +10,12 @@
 
 #pragma once
 
+// Project Includes
 #include "Data/ItemMaterialData.h"
+
+// ============================================================================
+// SECTION 1: MaterialItemValidator Namespace
+// ============================================================================
 
 namespace MaterialItemValidator
 {

@@ -8,11 +8,18 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
+// Standard Library Includes
+#include <chrono>
+#include <fstream>
+#include <iostream>
+
+// Project Includes
 #include "Validators/DrinkItemValidator.h"
 #include "Utils/JsonUtils.h"
-#include <iostream>
-#include <fstream>
-#include <chrono>
+
+// ============================================================================
+// SECTION 1: Anonymous Namespace - Internal Helper Functions
+// ============================================================================
 
 static float ComputePower(const ItemDrinkData& item)
 {

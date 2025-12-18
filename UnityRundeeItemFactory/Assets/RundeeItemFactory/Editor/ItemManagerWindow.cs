@@ -27,7 +27,7 @@ public class ItemManagerWindow : EditorWindow
     private readonly List<ItemRecord> _items = new();
     private readonly HashSet<string> _selectedPaths = new();
 
-    private static readonly string[] RarityOptions = { "All", "Common", "Uncommon", "Rare", "Legendary" };
+    private static readonly string[] RarityOptions = { "All", "Common", "Uncommon", "Rare" };
 
     private class ItemRecord
     {
@@ -232,6 +232,10 @@ public class ItemManagerWindow : EditorWindow
                 return CreateRecord(asset as WeaponComponentItemDataSO, path, so => so.rarity);
             case ItemType.Ammo:
                 return CreateRecord(asset as AmmoItemDataSO, path, so => so.rarity);
+            case ItemType.Armor:
+                return CreateRecord(asset as ArmorItemDataSO, path, so => so.rarity);
+            case ItemType.Clothing:
+                return CreateRecord(asset as ClothingItemDataSO, path, so => so.rarity);
             default:
                 return null;
         }
@@ -298,6 +302,8 @@ public class ItemManagerWindow : EditorWindow
             ItemType.Weapon => "Assets/Resources/RundeeItemFactory/WeaponItems",
             ItemType.WeaponComponent => "Assets/Resources/RundeeItemFactory/WeaponComponentItems",
             ItemType.Ammo => "Assets/Resources/RundeeItemFactory/AmmoItems",
+            ItemType.Armor => "Assets/Resources/RundeeItemFactory/ArmorItems",
+            ItemType.Clothing => "Assets/Resources/RundeeItemFactory/ClothingItems",
             _ => "Assets/Resources/RundeeItemFactory"
         };
     }
@@ -312,6 +318,8 @@ public class ItemManagerWindow : EditorWindow
             ItemType.Weapon => typeof(WeaponItemDataSO),
             ItemType.WeaponComponent => typeof(WeaponComponentItemDataSO),
             ItemType.Ammo => typeof(AmmoItemDataSO),
+            ItemType.Armor => typeof(ArmorItemDataSO),
+            ItemType.Clothing => typeof(ClothingItemDataSO),
             _ => null
         };
     }

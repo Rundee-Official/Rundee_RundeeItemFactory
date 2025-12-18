@@ -1,0 +1,56 @@
+{ITEM_TYPE} Generation - Preset: {PRESET_NAME}
+
+Model: {MODEL_NAME}
+Run started: {TIMESTAMP}
+Current existing items in this category: {EXISTING_COUNT}
+
+{PRESET_CONTEXT}
+
+Task:
+Generate {COUNT} armor items for this survival setting.
+{EXCLUDE_IDS}
+
+Use this JSON schema EXACTLY for each armor:
+{
+  "id": string (unique, lowercase, underscore),
+  "displayName": string,
+  "category": "Armor",
+  "rarity": "Common" | "Uncommon" | "Rare",
+  "maxStack": integer (usually 1-5 for armor),
+
+  "armorType": string (e.g., "Helmet", "Vest", "Armor", "Backpack", "Rig", "FaceCover", "EarProtection"),
+  "armorClass": integer,        // 0-6, armor class (higher = better protection)
+  "durability": integer,        // 0-100, armor condition
+  "material": integer,          // 0-100, material quality
+  "protectionZones": string,   // Comma-separated: "Head", "Thorax", "Stomach", "Arms", "Legs"
+  "movementSpeedPenalty": integer,  // 0-100, percentage penalty to movement speed
+  "ergonomicsPenalty": integer,    // 0-100, penalty to weapon handling
+  "turnSpeedPenalty": integer,     // 0-100, penalty to turning speed
+  "weight": integer,           // Weight in grams
+  "capacity": integer,         // Storage capacity (for backpacks/rigs, in slots or liters)
+  "blocksHeadset": boolean,   // Whether this armor blocks headset/ear protection
+  "blocksFaceCover": boolean, // Whether this armor blocks face cover
+
+  "description": string
+}
+
+Balancing:
+- armorClass: 0-2 for light armor, 3-4 for medium, 5-6 for heavy.
+- Heavier armor has higher penalties but better protection.
+- Common armor: AC 0-2, low penalties (0-20), basic materials (0-40).
+- Uncommon armor: AC 3-4, medium penalties (10-40), better materials (40-70).
+- Rare armor: AC 5-6, high penalties (30-60), excellent materials (70-100).
+- Movement speed penalty should correlate with weight and armor class.
+- Ergonomics penalty affects weapon handling (important for combat effectiveness).
+- Protection zones should match armor type (Helmet = Head, Vest = Thorax/Stomach, etc.).
+
+IMPORTANT:
+- category MUST be "Armor".
+- description must NOT be empty and should be 1 short sentence (5-20 words).
+- All numeric values must be within their specified ranges.
+- Each armor item must have realistic stats that match its type and rarity.
+
+Output:
+- Output ONLY a JSON array of armor items.
+- No comments, no extra text, no Markdown, no explanation.
+

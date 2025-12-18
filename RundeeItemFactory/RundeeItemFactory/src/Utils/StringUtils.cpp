@@ -8,12 +8,23 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Utils/StringUtils.h"
+// Standard Library Includes
 #include <chrono>
 #include <fstream>
 
+// Project Includes
+#include "Utils/StringUtils.h"
+
+// ============================================================================
+// SECTION 1: JSON Processing Functions
+// ============================================================================
+
 namespace StringUtils
 {
+    // ========================================================================
+    // String Manipulation Functions
+    // ========================================================================
+    
     void TrimString(std::string& str)
     {
         size_t start = str.find_first_not_of(" \t\r\n");
@@ -26,6 +37,10 @@ namespace StringUtils
         str = str.substr(start, end - start + 1);
     }
 
+    // ========================================================================
+    // JSON Processing Functions
+    // ========================================================================
+    
     std::string FixCommonJsonErrors(const std::string& input)
     {
         std::string s = input;
@@ -367,6 +382,10 @@ namespace StringUtils
         return s;
     }
 
+    // ========================================================================
+    // Escape Functions
+    // ========================================================================
+    
     std::string EscapeForCmd(const std::string& s)
     {
         std::string out;
@@ -397,6 +416,10 @@ namespace StringUtils
         return out;
     }
 
+    // ========================================================================
+    // String Manipulation Functions (continued)
+    // ========================================================================
+    
     std::string NormalizeWhitespace(const std::string& s)
     {
         std::string out;
@@ -412,6 +435,10 @@ namespace StringUtils
         return out;
     }
 
+    // ========================================================================
+    // Control Character Removal Functions
+    // ========================================================================
+    
     std::string StripAnsiEscapeCodes(const std::string& s)
     {
         std::string out;

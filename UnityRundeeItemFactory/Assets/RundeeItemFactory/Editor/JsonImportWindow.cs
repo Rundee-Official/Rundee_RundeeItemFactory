@@ -95,6 +95,12 @@ public class JsonImportWindow : EditorWindow
                 case ItemType.Ammo:
                     ItemImporter.ImportAmmoFromJsonPath(_jsonPath);
                     break;
+                case ItemType.Armor:
+                    ItemImporter.ImportArmorFromJsonPath(_jsonPath);
+                    break;
+                case ItemType.Clothing:
+                    ItemImporter.ImportClothingFromJsonPath(_jsonPath);
+                    break;
                 default:
                     Debug.LogWarning("[JSON Importer] Unknown item type.");
                     return;

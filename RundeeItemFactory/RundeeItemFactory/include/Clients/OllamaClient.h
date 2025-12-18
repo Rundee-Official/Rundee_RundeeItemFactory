@@ -10,8 +10,15 @@
 
 #pragma once
 
+// Standard Library Includes
 #include <string>
+
+// Project Includes
 #include "Helpers/AppConfig.h"
+
+// ============================================================================
+// SECTION 1: OllamaClient Class
+// ============================================================================
 
 class OllamaClient
 {

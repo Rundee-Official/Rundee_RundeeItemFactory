@@ -32,24 +32,32 @@ namespace QualityChecker
         float qualityScore = 100.0f; // 0-100, higher is better
     };
 
+    // ========================================================================
+    // Quality Check Functions (by Item Type)
+    // ========================================================================
+    
     // Check weapon quality
     QualityResult CheckWeaponQuality(const ItemWeaponData& item);
-
+    
     // Check weapon component quality
     QualityResult CheckWeaponComponentQuality(const ItemWeaponComponentData& item);
-
+    
     // Check ammo quality
     QualityResult CheckAmmoQuality(const ItemAmmoData& item);
-
+    
     // Check food quality
     QualityResult CheckFoodQuality(const ItemFoodData& item);
-
+    
     // Check drink quality
     QualityResult CheckDrinkQuality(const ItemDrinkData& item);
-
+    
     // Check material quality
     QualityResult CheckMaterialQuality(const ItemMaterialData& item);
-
+    
+    // ========================================================================
+    // Utility Functions
+    // ========================================================================
+    
     // Print quality result
     void PrintQualityResult(const QualityResult& result, const std::string& itemId);
 }

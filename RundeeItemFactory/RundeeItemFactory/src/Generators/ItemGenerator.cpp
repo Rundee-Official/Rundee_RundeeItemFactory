@@ -8,7 +8,7 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Helpers/ItemGenerator.h"
+#include "Generators/ItemGenerator.h"
 #include "Helpers/CommandLineParser.h"
 #include "Helpers/QualityChecker.h"
 #include "Parsers/ItemJsonParser.h"
@@ -28,6 +28,10 @@
 #include <chrono>
 #include <map>
 #include <algorithm>
+#include <thread>
+#include <future>
+#include <mutex>
+#include <functional>
 #ifdef _WIN32
 #include <direct.h>
 #else
@@ -233,7 +237,51 @@ static std::string GetCurrentTimestamp()
     return buffer;
 }
 
-static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
+// ============================================================================
+// SECTION 3: ProcessLLMResponse Functions (Alphabetical Order)
+// ============================================================================
+// These functions process LLM JSON responses and generate item data
+// All functions now use qualityResults for unified invalid item filtering
+
+// ============================================================================
+// SECTION 1: Forward Declarations
+// ============================================================================
+// All ProcessLLMResponse_* functions now use qualityResults for unified processing
+static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_Armor(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_Clothing(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_Material(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults);
+
+// ============================================================================
+// SECTION 2: Common Template-Based Processing Logic
+// ============================================================================
+// REFACTORED: This template function extracts the common logic from ProcessLLMResponse_* functions
+// Type-specific operations are passed as function objects/lambdas
+// All item types now use qualityResults for unified invalid item filtering
+
+template<typename ItemType, typename ParseFunc, typename QualityCheckFunc, typename WriteFunc, typename GetExistingIdsFunc, typename BuildPromptFunc, typename ProcessRecursiveFunc, typename PostProcessFunc = std::function<void(std::vector<ItemType>&)>>
+static int ProcessLLMResponse_Common(
+    const std::string& jsonResponse,
+    const std::string& outputPath,
+    int requiredCount,
+    const std::set<std::string>& excludeIds,
+    const std::string& modelName,
+    const FoodGenerateParams& params,
+    PresetType preset,
+    const std::string& itemTypeName,
+    const std::string& registrySlug,
+    ParseFunc parseFunc,
+    QualityCheckFunc qualityCheckFunc,
+    WriteFunc writeFunc,
+    GetExistingIdsFunc getExistingIdsFunc,
+    BuildPromptFunc buildPromptFunc,
+    ProcessRecursiveFunc processRecursiveFunc,
+    std::map<std::string, QualityChecker::QualityResult>& qualityResults,
+    PostProcessFunc postProcessFunc = [](std::vector<ItemType>&) {})
 {
     if (jsonResponse.empty())
     {
@@ -247,15 +295,18 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
         std::cout << "[ItemGenerator] Saved LLM raw JSON to " << rawPath << "\n";
     }
 
-    std::vector<ItemFoodData> items;
+    std::vector<ItemType> items;
     std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
-    if (!ItemJsonParser::ParseFoodFromJsonText(cleanedJson, items))
+    if (!parseFunc(cleanedJson, items))
     {
         std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
         return 1;
     }
 
-    std::cout << "=== Parsed Items From LLM (" << items.size() << ") ===\n";
+    std::cout << "=== Parsed " << itemTypeName << " From LLM (" << items.size() << ") ===\n";
+    
+    // Post-process items (type-specific adjustments)
+    postProcessFunc(items);
     
     // Quality check before filtering
     std::cout << "\n=== Quality Check ===\n";
@@ -267,43 +318,47 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
 
     for (const auto& item : items)
     {
-        auto qualityResult = QualityChecker::CheckFoodQuality(item);
+        auto qualityResult = qualityCheckFunc(item);
         QualityChecker::PrintQualityResult(qualityResult, item.id);
+        qualityResults[item.id] = qualityResult; // Store for filtering (unified approach)
         warnCount += static_cast<int>(qualityResult.warnings.size());
         errorCount += static_cast<int>(qualityResult.errors.size());
         banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
         rarities.push_back(item.rarity);
     }
-    PrintGuardrailSummary("Food", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
+    PrintGuardrailSummary(itemTypeName, warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
 
-    for (auto& item : items)
-    {
-        if (item.spoils && item.spoilTimeMinutes < 60)
-        {
-            item.spoilTimeMinutes = 60;
-        }
-        std::cout << "- " << item.id
-            << " / " << item.displayName
-            << " / category: " << item.category
-            << " / Hunger +" << item.hungerRestore
-            << ", Thirst +" << item.thirstRestore
-            << "\n";
-    }
-
-    // Filter out duplicates (should be rare since we told LLM to avoid them, but just in case)
-    std::vector<ItemFoodData> newItems;
-    std::set<std::string> newIds = excludeIds; // Start with existing IDs
+    // Filter out duplicates and invalid items (using qualityResults)
+    std::vector<ItemType> newItems;
+    std::set<std::string> newIds = excludeIds;
+    int filteredInvalidCount = 0;
     for (const auto& item : items)
     {
-        if (newIds.find(item.id) == newIds.end())
-        {
-            newItems.push_back(item);
-            newIds.insert(item.id);
-        }
-        else
+        if (newIds.find(item.id) != newIds.end())
         {
             std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
+            continue;
         }
+        
+        // Filter out invalid items (isValid = false)
+        auto it = qualityResults.find(item.id);
+        if (it != qualityResults.end())
+        {
+            if (!it->second.isValid)
+            {
+                std::cout << "[ItemGenerator] Filtered out invalid item (quality check failed): " << item.id << "\n";
+                filteredInvalidCount++;
+                continue;
+            }
+        }
+        
+        newItems.push_back(item);
+        newIds.insert(item.id);
+    }
+    
+    if (filteredInvalidCount > 0)
+    {
+        std::cout << "[ItemGenerator] Filtered out " << filteredInvalidCount << " invalid items (quality check failed).\n";
     }
 
     int addedCount = static_cast<int>(newItems.size());
@@ -311,12 +366,10 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
 
     if (skippedCount > 0)
     {
-        std::cout << "[ItemGenerator] Filtered out " << skippedCount << " duplicate items (LLM generated duplicates despite exclusion list).\n";
+        std::cout << "[ItemGenerator] Filtered out " << skippedCount << " duplicate items.\n";
     }
 
-    // Check if we need more items
-    // requiredCount is the maximum number of NEW items to add (not total count)
-    // Limit newItems to requiredCount if we got more than requested
+    // Limit to requiredCount
     int actualAddedCount = addedCount;
     if (addedCount > requiredCount)
     {
@@ -327,12 +380,11 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
     
     int stillNeeded = requiredCount - actualAddedCount;
 
-    // Write new items (merge with existing if file exists)
-    std::set<std::string> currentExistingIds = ItemJsonWriter::GetExistingFoodIds(outputPath);
+    // Merge or write
+    std::set<std::string> currentExistingIds = getExistingIdsFunc(outputPath);
     if (!currentExistingIds.empty())
     {
-        // Read existing items and merge
-        std::vector<ItemFoodData> existingItems;
+        std::vector<ItemType> existingItems;
         std::ifstream ifs(outputPath);
         if (ifs.is_open())
         {
@@ -340,61 +392,66 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
             ifs.close();
             if (!existingContent.empty())
             {
-                ItemJsonParser::ParseFoodFromJsonText(existingContent, existingItems);
+                parseFunc(existingContent, existingItems);
             }
         }
         
-        // Combine existing and new (only add non-duplicate new items)
-        std::vector<ItemFoodData> allItems = existingItems;
+        std::vector<ItemType> allItems = existingItems;
         std::set<std::string> existingIdSet;
         for (const auto& item : existingItems)
         {
             existingIdSet.insert(item.id);
         }
         
-        // Only add new items that don't already exist
+        int addedToExisting = 0;
         for (const auto& newItem : newItems)
         {
             if (existingIdSet.find(newItem.id) == existingIdSet.end())
             {
                 allItems.push_back(newItem);
                 existingIdSet.insert(newItem.id);
+                addedToExisting++;
             }
         }
         
-        if (!ItemJsonWriter::WriteFoodToFile(allItems, outputPath))
+        int totalAfterMerge = static_cast<int>(allItems.size());
+        int originalCount = static_cast<int>(existingItems.size());
+        int targetTotal = originalCount + requiredCount;
+        if (totalAfterMerge > targetTotal)
+        {
+            std::cout << "[ItemGenerator] Warning: Total items (" << totalAfterMerge << ") exceeds target (" << targetTotal << "). Limiting to " << targetTotal << " items.\n";
+            allItems.resize(targetTotal);
+        }
+        
+        if (!writeFunc(allItems, outputPath))
         {
             std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
             return 1;
         }
         
-        std::cout << "[ItemGenerator] Merged " << existingItems.size() << " existing items with " << newItems.size() << " new items.\n";
+        std::cout << "[ItemGenerator] Merged " << existingItems.size() << " existing items with " << addedToExisting << " new items (total: " << allItems.size() << ").\n";
     }
     else
     {
-        // No existing file, just write new items
-        if (!ItemJsonWriter::WriteFoodToFile(newItems, outputPath))
+        if (!writeFunc(newItems, outputPath))
         {
             std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
             return 1;
         }
     }
 
-    // Append registry for this batch before potentially recursing for more
-    AppendIdsToRegistry("food", newItems);
+    AppendIdsToRegistry(registrySlug, newItems);
 
-    // If we still need more items, generate additional ones with updated exclusion list
+    // Regeneration logic
     if (stillNeeded > 0)
     {
         std::cout << "[ItemGenerator] Still need " << stillNeeded << " more items. Generating additional items...\n";
         
-        // Get updated existing IDs (including newly added ones)
-        std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingFoodIds(outputPath);
+        std::set<std::string> updatedExistingIds = getExistingIdsFunc(outputPath);
         
-        // Build prompt with exclusion list
         FoodGenerateParams additionalParams = params;
         additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildFoodJsonPrompt(
+        std::string additionalPrompt = buildPromptFunc(
             additionalParams,
             preset,
             updatedExistingIds,
@@ -402,483 +459,191 @@ static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::s
             GetCurrentTimestamp(),
             static_cast<int>(updatedExistingIds.size()));
         
-        // Generate additional items
         std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
         if (!additionalResponse.empty())
         {
-            return ProcessLLMResponse_Food(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
+            int recurseResult = processRecursiveFunc(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
+            if (recurseResult == 0)
+            {
+                std::set<std::string> finalIds = getExistingIdsFunc(outputPath);
+                int finalCount = static_cast<int>(finalIds.size());
+                int originalCount = static_cast<int>(updatedExistingIds.size());
+                int actuallyAdded = finalCount - originalCount;
+                
+                if (actuallyAdded < stillNeeded)
+                {
+                    std::cout << "[ItemGenerator] Warning: Only added " << actuallyAdded << " of " << stillNeeded << " needed items. Attempting one more regeneration...\n";
+                    int remaining = stillNeeded - actuallyAdded;
+                    std::set<std::string> finalExistingIds = getExistingIdsFunc(outputPath);
+                    FoodGenerateParams finalParams = params;
+                    finalParams.count = remaining;
+                    std::string finalPrompt = buildPromptFunc(
+                        finalParams,
+                        preset,
+                        finalExistingIds,
+                        modelName,
+                        GetCurrentTimestamp(),
+                        static_cast<int>(finalExistingIds.size()));
+                    std::string finalResponse = OllamaClient::RunWithRetry(modelName, finalPrompt, 0, 0);
+                    if (!finalResponse.empty())
+                    {
+                        return processRecursiveFunc(finalResponse, outputPath, remaining, finalExistingIds, modelName, finalParams, preset, qualityResults);
+                    }
+                }
+            }
+            return recurseResult;
+        }
+        else
+        {
+            std::cout << "[ItemGenerator] Warning: Failed to get additional response for " << stillNeeded << " more items.\n";
         }
     }
     else
     {
-        std::cout << "[ItemGenerator] Successfully added " << actualAddedCount << " new food items to " << outputPath << "\n";
+        std::cout << "[ItemGenerator] Successfully added " << actualAddedCount << " new " << itemTypeName << " items to " << outputPath << "\n";
     }
 
     return 0;
 }
 
-static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
+static int ProcessLLMResponse_Food(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
 {
-    if (jsonResponse.empty())
-    {
-        std::cout << "[ItemGenerator] LLM response is empty.\n";
-        return 1;
-    }
-
-    std::string rawPath = outputPath + ".raw.json";
-    if (SaveTextFile(rawPath, jsonResponse))
-    {
-        std::cout << "[ItemGenerator] Saved LLM raw JSON to " << rawPath << "\n";
-    }
-
-    std::vector<ItemDrinkData> items;
-    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
-    if (!ItemJsonParser::ParseDrinkFromJsonText(cleanedJson, items))
-    {
-        std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
-        return 1;
-    }
-
-    std::cout << "=== Parsed Items From LLM (" << items.size() << ") ===\n";
-    
-    // Quality check before filtering
-    std::cout << "\n=== Quality Check ===\n";
-    int warnCount = 0;
-    int errorCount = 0;
-    int banHits = 0;
-    std::vector<std::string> rarities;
-    rarities.reserve(items.size());
-
-    for (const auto& item : items)
-    {
-        auto qualityResult = QualityChecker::CheckDrinkQuality(item);
-        QualityChecker::PrintQualityResult(qualityResult, item.id);
-        warnCount += static_cast<int>(qualityResult.warnings.size());
-        errorCount += static_cast<int>(qualityResult.errors.size());
-        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
-        rarities.push_back(item.rarity);
-    }
-    PrintGuardrailSummary("Drink", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
-
-    for (auto& item : items)
-    {
-        if (item.spoils && item.spoilTimeMinutes < 60)
-        {
-            item.spoilTimeMinutes = 60;
-        }
-        std::cout << "- " << item.id
-            << " / " << item.displayName
-            << " / category: " << item.category
-            << " / Hunger +" << item.hungerRestore
-            << ", Thirst +" << item.thirstRestore
-            << "\n";
-    }
-
-    // Filter out duplicates (should be rare since we told LLM to avoid them, but just in case)
-    std::vector<ItemDrinkData> newItems;
-    std::set<std::string> newIds = excludeIds; // Start with existing IDs
-    for (const auto& item : items)
-    {
-        if (newIds.find(item.id) == newIds.end())
-        {
-            newItems.push_back(item);
-            newIds.insert(item.id);
-        }
-        else
-        {
-            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
-        }
-    }
-
-    int addedCount = static_cast<int>(newItems.size());
-    int skippedCount = static_cast<int>(items.size()) - addedCount;
-
-    if (skippedCount > 0)
-    {
-        std::cout << "[ItemGenerator] Filtered out " << skippedCount << " duplicate items (LLM generated duplicates despite exclusion list).\n";
-    }
-
-    // Check if we need more items
-    int stillNeeded = requiredCount - addedCount;
-
-    // Merge or write
-    std::set<std::string> currentExistingIds = ItemJsonWriter::GetExistingDrinkIds(outputPath);
-    if (!currentExistingIds.empty() || !newItems.empty())
-    {
-        if (!currentExistingIds.empty())
-        {
-            // Read existing items and merge
-            std::vector<ItemDrinkData> existingItems;
-            std::ifstream ifs(outputPath);
-            if (ifs.is_open())
+    // REFACTORED: Use common template function (unified with qualityResults)
+    return ProcessLLMResponse_Common<ItemFoodData>(
+        jsonResponse, outputPath, requiredCount, excludeIds, modelName, params, preset,
+        "Food", "food",
+        [](const std::string& json, std::vector<ItemFoodData>& out) { return ItemJsonParser::ParseFoodFromJsonText(json, out); },
+        [](const ItemFoodData& item) { return QualityChecker::CheckFoodQuality(item); },
+        [](const std::vector<ItemFoodData>& items, const std::string& path) { return ItemJsonWriter::WriteFoodToFile(items, path); },
+        [](const std::string& path) { return ItemJsonWriter::GetExistingFoodIds(path); },
+        [](const FoodGenerateParams& p, PresetType pr, const std::set<std::string>& ids, const std::string& m, const std::string& t, int c) {
+            return PromptBuilder::BuildFoodJsonPrompt(p, pr, ids, m, t, c);
+        },
+        [](const std::string& resp, const std::string& path, int count, const std::set<std::string>& ids, const std::string& m, const FoodGenerateParams& p, PresetType pr, std::map<std::string, QualityChecker::QualityResult>& qr) {
+            return ProcessLLMResponse_Food(resp, path, count, ids, m, p, pr, qr);
+        },
+        qualityResults,
+        [](std::vector<ItemFoodData>& items) {
+            for (auto& item : items)
             {
-                std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-                ifs.close();
-                if (!existingContent.empty())
+                if (item.spoils && item.spoilTimeMinutes < 60)
                 {
-                    ItemJsonParser::ParseDrinkFromJsonText(existingContent, existingItems);
+                    item.spoilTimeMinutes = 60;
                 }
-            }
-            
-            // Combine existing and new
-            std::vector<ItemDrinkData> allItems = existingItems;
-            allItems.insert(allItems.end(), newItems.begin(), newItems.end());
-            
-            if (!ItemJsonWriter::WriteDrinkToFile(allItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
-                return 1;
+                std::cout << "- " << item.id
+                    << " / " << item.displayName
+                    << " / category: " << item.category
+                    << " / Hunger +" << item.hungerRestore
+                    << ", Thirst +" << item.thirstRestore
+                    << "\n";
             }
         }
-        else
-        {
-            if (!ItemJsonWriter::WriteDrinkToFile(newItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
-                return 1;
-            }
-        }
-    }
-
-    // Append registry for this batch before potentially recursing for more
-    AppendIdsToRegistry("drink", newItems);
-
-    // If we still need more items, generate additional ones with updated exclusion list
-    if (stillNeeded > 0)
-    {
-        std::cout << "[ItemGenerator] Still need " << stillNeeded << " more items. Generating additional items...\n";
-        
-        // Get updated existing IDs (including newly added ones)
-        std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingDrinkIds(outputPath);
-        
-        // Build prompt with exclusion list
-        FoodGenerateParams additionalParams = params;
-        additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildDrinkJsonPrompt(
-            additionalParams,
-            preset,
-            updatedExistingIds,
-            modelName,
-            GetCurrentTimestamp(),
-            static_cast<int>(updatedExistingIds.size()));
-        
-        // Generate additional items
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
-        if (!additionalResponse.empty())
-        {
-            return ProcessLLMResponse_Drink(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
-        }
-    }
-    else
-    {
-        std::cout << "[ItemGenerator] Successfully added " << addedCount << " new drink items to " << outputPath << "\n";
-    }
-
-    return 0;
+    );
 }
 
-static int ProcessLLMResponse_Material(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
+static int ProcessLLMResponse_Drink(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
 {
-    if (jsonResponse.empty())
-    {
-        std::cout << "[ItemGenerator] LLM response is empty.\n";
-        return 1;
-    }
-
-    std::string rawPath = outputPath + ".raw.json";
-    if (SaveTextFile(rawPath, jsonResponse))
-    {
-        std::cout << "[ItemGenerator] Saved LLM raw JSON to " << rawPath << "\n";
-    }
-
-    std::vector<ItemMaterialData> items;
-    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
-    if (!ItemJsonParser::ParseMaterialFromJsonText(cleanedJson, items))
-    {
-        std::cout << "[ItemGenerator] Failed to parse material JSON.\n";
-        return 1;
-    }
-
-    std::cout << "=== Parsed Material Items (" << items.size() << ") ===\n";
-    
-    // Quality check before filtering
-    std::cout << "\n=== Quality Check ===\n";
-    int warnCount = 0;
-    int errorCount = 0;
-    int banHits = 0;
-    std::vector<std::string> rarities;
-    rarities.reserve(items.size());
-
-    for (const auto& item : items)
-    {
-        auto qualityResult = QualityChecker::CheckMaterialQuality(item);
-        QualityChecker::PrintQualityResult(qualityResult, item.id);
-        warnCount += static_cast<int>(qualityResult.warnings.size());
-        errorCount += static_cast<int>(qualityResult.errors.size());
-        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
-        rarities.push_back(item.rarity);
-    }
-    PrintGuardrailSummary("Material", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
-
-    for (const auto& item : items)
-    {
-        std::cout << "- " << item.id
-            << " / " << item.displayName
-            << " / category: " << item.category
-            << " / materialType: " << item.materialType
-            << " / value: " << item.value
-            << "\n";
-    }
-
-    // Filter out duplicates (should be rare since we told LLM to avoid them, but just in case)
-    std::vector<ItemMaterialData> newItems;
-    std::set<std::string> newIds = excludeIds; // Start with existing IDs
-    for (const auto& item : items)
-    {
-        if (newIds.find(item.id) == newIds.end())
-        {
-            newItems.push_back(item);
-            newIds.insert(item.id);
-        }
-        else
-        {
-            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
-        }
-    }
-
-    int addedCount = static_cast<int>(newItems.size());
-    int skippedCount = static_cast<int>(items.size()) - addedCount;
-
-    if (skippedCount > 0)
-    {
-        std::cout << "[ItemGenerator] Filtered out " << skippedCount << " duplicate items (LLM generated duplicates despite exclusion list).\n";
-    }
-
-    // Check if we need more items
-    int stillNeeded = requiredCount - addedCount;
-
-    // Merge or write
-    std::set<std::string> currentExistingIds = ItemJsonWriter::GetExistingMaterialIds(outputPath);
-    if (!currentExistingIds.empty() || !newItems.empty())
-    {
-        if (!currentExistingIds.empty())
-        {
-            // Read existing items and merge
-            std::vector<ItemMaterialData> existingItems;
-            std::ifstream ifs(outputPath);
-            if (ifs.is_open())
+    // REFACTORED: Use common template function (unified with qualityResults)
+    return ProcessLLMResponse_Common<ItemDrinkData>(
+        jsonResponse, outputPath, requiredCount, excludeIds, modelName, params, preset,
+        "Drink", "drink",
+        [](const std::string& json, std::vector<ItemDrinkData>& out) { return ItemJsonParser::ParseDrinkFromJsonText(json, out); },
+        [](const ItemDrinkData& item) { return QualityChecker::CheckDrinkQuality(item); },
+        [](const std::vector<ItemDrinkData>& items, const std::string& path) { return ItemJsonWriter::WriteDrinkToFile(items, path); },
+        [](const std::string& path) { return ItemJsonWriter::GetExistingDrinkIds(path); },
+        [](const FoodGenerateParams& p, PresetType pr, const std::set<std::string>& ids, const std::string& m, const std::string& t, int c) {
+            return PromptBuilder::BuildDrinkJsonPrompt(p, pr, ids, m, t, c);
+        },
+        [](const std::string& resp, const std::string& path, int count, const std::set<std::string>& ids, const std::string& m, const FoodGenerateParams& p, PresetType pr, std::map<std::string, QualityChecker::QualityResult>& qr) {
+            return ProcessLLMResponse_Drink(resp, path, count, ids, m, p, pr, qr);
+        },
+        qualityResults,
+        [](std::vector<ItemDrinkData>& items) {
+            for (auto& item : items)
             {
-                std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-                ifs.close();
-                if (!existingContent.empty())
+                if (item.spoils && item.spoilTimeMinutes < 60)
                 {
-                    ItemJsonParser::ParseMaterialFromJsonText(existingContent, existingItems);
+                    item.spoilTimeMinutes = 60;
                 }
-            }
-            
-            // Combine existing and new
-            std::vector<ItemMaterialData> allItems = existingItems;
-            allItems.insert(allItems.end(), newItems.begin(), newItems.end());
-            
-            if (!ItemJsonWriter::WriteMaterialToFile(allItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
-                return 1;
+                std::cout << "- " << item.id
+                    << " / " << item.displayName
+                    << " / category: " << item.category
+                    << " / Hunger +" << item.hungerRestore
+                    << ", Thirst +" << item.thirstRestore
+                    << "\n";
             }
         }
-        else
-        {
-            if (!ItemJsonWriter::WriteMaterialToFile(newItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write material JSON file.\n";
-                return 1;
-            }
-        }
-    }
-
-    // Append registry for this batch before potentially recursing for more
-    AppendIdsToRegistry("material", newItems);
-
-    // If we still need more items, generate additional ones with updated exclusion list
-    if (stillNeeded > 0)
-    {
-        std::cout << "[ItemGenerator] Still need " << stillNeeded << " more items. Generating additional items...\n";
-        
-        // Get updated existing IDs (including newly added ones)
-        std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingMaterialIds(outputPath);
-        
-        // Build prompt with exclusion list
-        FoodGenerateParams additionalParams = params;
-        additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildMaterialJsonPrompt(
-            additionalParams,
-            preset,
-            updatedExistingIds,
-            modelName,
-            GetCurrentTimestamp(),
-            static_cast<int>(updatedExistingIds.size()));
-        
-        // Generate additional items
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
-        if (!additionalResponse.empty())
-        {
-            return ProcessLLMResponse_Material(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
-        }
-    }
-    else
-    {
-        std::cout << "[ItemGenerator] Successfully added " << addedCount << " new material items to " << outputPath << "\n";
-    }
-
-    return 0;
+    );
 }
 
-static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset)
+static int ProcessLLMResponse_Material(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
 {
-    if (jsonResponse.empty())
-    {
-        std::cout << "[ItemGenerator] LLM response is empty.\n";
-        return 1;
-    }
-
-    std::string rawPath = outputPath + ".raw.json";
-    if (SaveTextFile(rawPath, jsonResponse))
-    {
-        std::cout << "[ItemGenerator] Saved LLM raw JSON to " << rawPath << "\n";
-    }
-
-    std::vector<ItemWeaponData> items;
-    std::string cleanedJson = CleanJsonTrailingCommas(jsonResponse);
-    if (!ItemJsonParser::ParseWeaponFromJsonText(cleanedJson, items))
-    {
-        std::cout << "[ItemGenerator] Failed to parse LLM JSON.\n";
-        return 1;
-    }
-
-    std::cout << "=== Parsed Weapons From LLM (" << items.size() << ") ===\n";
-    
-    // Quality check before filtering
-    std::cout << "\n=== Quality Check ===\n";
-    int warnCount = 0;
-    int errorCount = 0;
-    int banHits = 0;
-    std::vector<std::string> rarities;
-    rarities.reserve(items.size());
-
-    for (const auto& item : items)
-    {
-        auto qualityResult = QualityChecker::CheckWeaponQuality(item);
-        QualityChecker::PrintQualityResult(qualityResult, item.id);
-        warnCount += static_cast<int>(qualityResult.warnings.size());
-        errorCount += static_cast<int>(qualityResult.errors.size());
-        banHits += CountBanHits(item.id) + CountBanHits(item.displayName) + CountBanHits(item.description);
-        rarities.push_back(item.rarity);
-    }
-    PrintGuardrailSummary("Weapon", warnCount, errorCount, banHits, CountRarity(rarities), static_cast<int>(rarities.size()));
-
-    for (auto& item : items)
-    {
-        if (item.weaponType.empty())
-        {
-            if (item.weaponCategory == "Melee")
-                item.weaponType = "MeleeGeneric";
-            else
-                item.weaponType = "RangedGeneric";
-        }
-        if (item.weight < 500)
-        {
-            item.weight = 500;
-        }
-        std::cout << "- " << item.id << " / " << item.displayName
-            << " / " << item.weaponType << " / Damage: " << item.minDamage << "-" << item.maxDamage
-            << " / FireRate: " << item.fireRate << "\n";
-    }
-
-    // Filter out duplicates
-    std::vector<ItemWeaponData> newItems;
-    std::set<std::string> newIds = excludeIds;
-    for (const auto& item : items)
-    {
-        if (newIds.find(item.id) == newIds.end())
-        {
-            newItems.push_back(item);
-            newIds.insert(item.id);
-        }
-        else
-        {
-            std::cout << "[ItemGenerator] Filtered out duplicate ID: " << item.id << "\n";
-        }
-    }
-
-    int addedCount = static_cast<int>(newItems.size());
-    int stillNeeded = requiredCount - addedCount;
-
-    // Merge or write
-    std::set<std::string> currentExistingIds = ItemJsonWriter::GetExistingWeaponIds(outputPath);
-    if (!currentExistingIds.empty() || !newItems.empty())
-    {
-        if (!currentExistingIds.empty())
-        {
-            std::vector<ItemWeaponData> existingItems;
-            std::ifstream ifs(outputPath);
-            if (ifs.is_open())
+    // REFACTORED: Use common template function (unified with qualityResults)
+    return ProcessLLMResponse_Common<ItemMaterialData>(
+        jsonResponse, outputPath, requiredCount, excludeIds, modelName, params, preset,
+        "Material", "material",
+        [](const std::string& json, std::vector<ItemMaterialData>& out) { return ItemJsonParser::ParseMaterialFromJsonText(json, out); },
+        [](const ItemMaterialData& item) { return QualityChecker::CheckMaterialQuality(item); },
+        [](const std::vector<ItemMaterialData>& items, const std::string& path) { return ItemJsonWriter::WriteMaterialToFile(items, path); },
+        [](const std::string& path) { return ItemJsonWriter::GetExistingMaterialIds(path); },
+        [](const FoodGenerateParams& p, PresetType pr, const std::set<std::string>& ids, const std::string& m, const std::string& t, int c) {
+            return PromptBuilder::BuildMaterialJsonPrompt(p, pr, ids, m, t, c);
+        },
+        [](const std::string& resp, const std::string& path, int count, const std::set<std::string>& ids, const std::string& m, const FoodGenerateParams& p, PresetType pr, std::map<std::string, QualityChecker::QualityResult>& qr) {
+            return ProcessLLMResponse_Material(resp, path, count, ids, m, p, pr, qr);
+        },
+        qualityResults,
+        [](std::vector<ItemMaterialData>& items) {
+            for (const auto& item : items)
             {
-                std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-                ifs.close();
-                if (!existingContent.empty())
+                std::cout << "- " << item.id
+                    << " / " << item.displayName
+                    << " / category: " << item.category
+                    << " / materialType: " << item.materialType
+                    << " / value: " << item.value
+                    << "\n";
+            }
+        }
+    );
+}
+
+static int ProcessLLMResponse_Weapon(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
+{
+    // REFACTORED: Use common template function (unified with qualityResults)
+    return ProcessLLMResponse_Common<ItemWeaponData>(
+        jsonResponse, outputPath, requiredCount, excludeIds, modelName, params, preset,
+        "Weapon", "weapon",
+        [](const std::string& json, std::vector<ItemWeaponData>& out) { return ItemJsonParser::ParseWeaponFromJsonText(json, out); },
+        [](const ItemWeaponData& item) { return QualityChecker::CheckWeaponQuality(item); },
+        [](const std::vector<ItemWeaponData>& items, const std::string& path) { return ItemJsonWriter::WriteWeaponToFile(items, path); },
+        [](const std::string& path) { return ItemJsonWriter::GetExistingWeaponIds(path); },
+        [](const FoodGenerateParams& p, PresetType pr, const std::set<std::string>& ids, const std::string& m, const std::string& t, int c) {
+            return PromptBuilder::BuildWeaponJsonPrompt(p, pr, ids, m, t, c);
+        },
+        [](const std::string& resp, const std::string& path, int count, const std::set<std::string>& ids, const std::string& m, const FoodGenerateParams& p, PresetType pr, std::map<std::string, QualityChecker::QualityResult>& qr) {
+            return ProcessLLMResponse_Weapon(resp, path, count, ids, m, p, pr, qr);
+        },
+        qualityResults,
+        [](std::vector<ItemWeaponData>& items) {
+            for (auto& item : items)
+            {
+                if (item.weaponType.empty())
                 {
-                    ItemJsonParser::ParseWeaponFromJsonText(existingContent, existingItems);
+                    if (item.weaponCategory == "Melee")
+                        item.weaponType = "MeleeGeneric";
+                    else
+                        item.weaponType = "RangedGeneric";
                 }
-            }
-            
-            std::vector<ItemWeaponData> allItems = existingItems;
-            allItems.insert(allItems.end(), newItems.begin(), newItems.end());
-            
-            if (!ItemJsonWriter::WriteWeaponToFile(allItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
-                return 1;
+                if (item.weight < 500)
+                {
+                    item.weight = 500;
+                }
+                std::cout << "- " << item.id << " / " << item.displayName
+                    << " / " << item.weaponType << " / Damage: " << item.minDamage << "-" << item.maxDamage
+                    << " / FireRate: " << item.fireRate << "\n";
             }
         }
-        else
-        {
-            if (!ItemJsonWriter::WriteWeaponToFile(newItems, outputPath))
-            {
-                std::cout << "[ItemGenerator] Failed to write LLM-generated JSON file.\n";
-                return 1;
-            }
-        }
-    }
-
-    // Append registry for this batch before potentially recursing for more
-    AppendIdsToRegistry("weapon", newItems);
-
-    // If we still need more items, generate additional ones
-    if (stillNeeded > 0)
-    {
-        std::cout << "[ItemGenerator] Still need " << stillNeeded << " more items. Generating additional items...\n";
-        std::set<std::string> updatedExistingIds = ItemJsonWriter::GetExistingWeaponIds(outputPath);
-        FoodGenerateParams additionalParams = params;
-        additionalParams.count = stillNeeded;
-        std::string additionalPrompt = PromptBuilder::BuildWeaponJsonPrompt(
-            additionalParams,
-            preset,
-            updatedExistingIds,
-            modelName,
-            GetCurrentTimestamp(),
-            static_cast<int>(updatedExistingIds.size()));
-        std::string additionalResponse = OllamaClient::RunWithRetry(modelName, additionalPrompt, 0, 0);
-        if (!additionalResponse.empty())
-        {
-            return ProcessLLMResponse_Weapon(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset);
-        }
-    }
-    else
-    {
-        std::cout << "[ItemGenerator] Successfully added " << addedCount << " new weapon items to " << outputPath << "\n";
-    }
-
-    return 0;
+    );
 }
 
 static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
@@ -1161,7 +926,23 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
             }
             
             std::vector<ItemWeaponComponentData> allItems = validExistingItems;
-            allItems.insert(allItems.end(), newItems.begin(), newItems.end());
+            std::set<std::string> existingIdSet;
+            for (const auto& item : validExistingItems)
+            {
+                existingIdSet.insert(item.id);
+            }
+            
+            // Only add new items that don't already exist
+            int addedToExisting = 0;
+            for (const auto& newItem : newItems)
+            {
+                if (existingIdSet.find(newItem.id) == existingIdSet.end())
+                {
+                    allItems.push_back(newItem);
+                    existingIdSet.insert(newItem.id);
+                    addedToExisting++;
+                }
+            }
             
             // CRITICAL: Final validation - ensure no ERROR items in allItems before writing
             std::vector<ItemWeaponComponentData> finalAllItems;
@@ -1174,6 +955,16 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
                     continue;
                 }
                 finalAllItems.push_back(item);
+            }
+            
+            // Ensure total doesn't exceed what we need
+            int totalAfterMerge = static_cast<int>(finalAllItems.size());
+            int originalCount = static_cast<int>(validExistingItems.size());
+            int targetTotal = originalCount + requiredCount;
+            if (totalAfterMerge > targetTotal)
+            {
+                std::cout << "[ItemGenerator] Warning: Total items (" << totalAfterMerge << ") exceeds target (" << targetTotal << "). Limiting to " << targetTotal << " items.\n";
+                finalAllItems.resize(targetTotal);
             }
             
             if (!ItemJsonWriter::WriteWeaponComponentToFile(finalAllItems, outputPath))
@@ -1226,7 +1017,41 @@ static int ProcessLLMResponse_WeaponComponent(const std::string& jsonResponse, c
         if (!additionalResponse.empty())
         {
             // Pass the accumulated qualityResults to the recursive call
-            return ProcessLLMResponse_WeaponComponent(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
+            int recurseResult = ProcessLLMResponse_WeaponComponent(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
+            if (recurseResult == 0)
+            {
+                // Verify we actually got the needed items
+                std::set<std::string> finalIds = ItemJsonWriter::GetExistingWeaponComponentIds(outputPath);
+                int finalCount = static_cast<int>(finalIds.size());
+                int originalCount = static_cast<int>(updatedExistingIds.size());
+                int actuallyAdded = finalCount - originalCount;
+                
+                if (actuallyAdded < stillNeeded)
+                {
+                    std::cout << "[ItemGenerator] Warning: Only added " << actuallyAdded << " of " << stillNeeded << " needed items. Attempting one more regeneration...\n";
+                    int remaining = stillNeeded - actuallyAdded;
+                    std::set<std::string> finalExistingIds = ItemJsonWriter::GetExistingWeaponComponentIds(outputPath);
+                    FoodGenerateParams finalParams = params;
+                    finalParams.count = remaining;
+                    std::string finalPrompt = PromptBuilder::BuildWeaponComponentJsonPrompt(
+                        finalParams,
+                        preset,
+                        finalExistingIds,
+                        modelName,
+                        GetCurrentTimestamp(),
+                        static_cast<int>(finalExistingIds.size()));
+                    std::string finalResponse = OllamaClient::RunWithRetry(modelName, finalPrompt, 0, 0);
+                    if (!finalResponse.empty())
+                    {
+                        return ProcessLLMResponse_WeaponComponent(finalResponse, outputPath, remaining, finalExistingIds, modelName, finalParams, preset, qualityResults);
+                    }
+                }
+            }
+            return recurseResult;
+        }
+        else
+        {
+            std::cout << "[ItemGenerator] Warning: Failed to get additional response for " << stillNeeded << " more items.\n";
         }
     }
     else
@@ -1523,7 +1348,23 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
             }
             
             std::vector<ItemAmmoData> allItems = validExistingItems;
-            allItems.insert(allItems.end(), newItems.begin(), newItems.end());
+            std::set<std::string> existingIdSet;
+            for (const auto& item : validExistingItems)
+            {
+                existingIdSet.insert(item.id);
+            }
+            
+            // Only add new items that don't already exist
+            int addedToExisting = 0;
+            for (const auto& newItem : newItems)
+            {
+                if (existingIdSet.find(newItem.id) == existingIdSet.end())
+                {
+                    allItems.push_back(newItem);
+                    existingIdSet.insert(newItem.id);
+                    addedToExisting++;
+                }
+            }
             
             // CRITICAL: Final validation - ensure no ERROR items in allItems before writing
             std::vector<ItemAmmoData> finalAllItems;
@@ -1538,11 +1379,23 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
                 finalAllItems.push_back(item);
             }
             
+            // Ensure total doesn't exceed what we need
+            int totalAfterMerge = static_cast<int>(finalAllItems.size());
+            int originalCount = static_cast<int>(validExistingItems.size());
+            int targetTotal = originalCount + requiredCount;
+            if (totalAfterMerge > targetTotal)
+            {
+                std::cout << "[ItemGenerator] Warning: Total items (" << totalAfterMerge << ") exceeds target (" << targetTotal << "). Limiting to " << targetTotal << " items.\n";
+                finalAllItems.resize(targetTotal);
+            }
+            
             if (!ItemJsonWriter::WriteAmmoToFile(finalAllItems, outputPath))
             {
                 std::cout << "[ItemGenerator] Failed to write merged JSON file.\n";
                 return 1;
             }
+            
+            std::cout << "[ItemGenerator] Merged " << validExistingItems.size() << " existing items with " << addedToExisting << " new items (total: " << finalAllItems.size() << ").\n";
         }
         else
         {
@@ -1588,7 +1441,41 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
         if (!additionalResponse.empty())
         {
             // Pass the accumulated qualityResults to the recursive call
-            return ProcessLLMResponse_Ammo(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
+            int recurseResult = ProcessLLMResponse_Ammo(additionalResponse, outputPath, stillNeeded, updatedExistingIds, modelName, additionalParams, preset, qualityResults);
+            if (recurseResult == 0)
+            {
+                // Verify we actually got the needed items
+                std::set<std::string> finalIds = ItemJsonWriter::GetExistingAmmoIds(outputPath);
+                int finalCount = static_cast<int>(finalIds.size());
+                int originalCount = static_cast<int>(updatedExistingIds.size());
+                int actuallyAdded = finalCount - originalCount;
+                
+                if (actuallyAdded < stillNeeded)
+                {
+                    std::cout << "[ItemGenerator] Warning: Only added " << actuallyAdded << " of " << stillNeeded << " needed items. Attempting one more regeneration...\n";
+                    int remaining = stillNeeded - actuallyAdded;
+                    std::set<std::string> finalExistingIds = ItemJsonWriter::GetExistingAmmoIds(outputPath);
+                    FoodGenerateParams finalParams = params;
+                    finalParams.count = remaining;
+                    std::string finalPrompt = PromptBuilder::BuildAmmoJsonPrompt(
+                        finalParams,
+                        preset,
+                        finalExistingIds,
+                        modelName,
+                        GetCurrentTimestamp(),
+                        static_cast<int>(finalExistingIds.size()));
+                    std::string finalResponse = OllamaClient::RunWithRetry(modelName, finalPrompt, 0, 0);
+                    if (!finalResponse.empty())
+                    {
+                        return ProcessLLMResponse_Ammo(finalResponse, outputPath, remaining, finalExistingIds, modelName, finalParams, preset, qualityResults);
+                    }
+                }
+            }
+            return recurseResult;
+        }
+        else
+        {
+            std::cout << "[ItemGenerator] Warning: Failed to get additional response for " << stillNeeded << " more items.\n";
         }
     }
     else
@@ -1597,6 +1484,56 @@ static int ProcessLLMResponse_Ammo(const std::string& jsonResponse, const std::s
     }
 
     return 0;
+}
+
+static int ProcessLLMResponse_Armor(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
+{
+    // REFACTORED: Use common template function (unified with qualityResults, Armor has no quality check)
+    return ProcessLLMResponse_Common<ItemArmorData>(
+        jsonResponse, outputPath, requiredCount, excludeIds, modelName, params, preset,
+        "Armor", "armor",
+        [](const std::string& json, std::vector<ItemArmorData>& out) { return ItemJsonParser::ParseArmorFromJsonText(json, out); },
+        [](const ItemArmorData&) { 
+            QualityChecker::QualityResult result;
+            result.isValid = true;
+            return result;
+        },
+        [](const std::vector<ItemArmorData>& items, const std::string& path) { return ItemJsonWriter::WriteArmorToFile(items, path); },
+        [](const std::string& path) { return ItemJsonWriter::GetExistingArmorIds(path); },
+        [](const FoodGenerateParams& p, PresetType pr, const std::set<std::string>& ids, const std::string& m, const std::string& t, int c) {
+            return PromptBuilder::BuildArmorJsonPrompt(p, pr, ids, m, t, c);
+        },
+        [](const std::string& resp, const std::string& path, int count, const std::set<std::string>& ids, const std::string& m, const FoodGenerateParams& p, PresetType pr, std::map<std::string, QualityChecker::QualityResult>& qr) {
+            return ProcessLLMResponse_Armor(resp, path, count, ids, m, p, pr, qr);
+        },
+        qualityResults,
+        [](std::vector<ItemArmorData>&) {}
+    );
+}
+
+static int ProcessLLMResponse_Clothing(const std::string& jsonResponse, const std::string& outputPath, int requiredCount, const std::set<std::string>& excludeIds, const std::string& modelName, const FoodGenerateParams& params, PresetType preset, std::map<std::string, QualityChecker::QualityResult>& qualityResults)
+{
+    // REFACTORED: Use common template function (unified with qualityResults, Clothing has no quality check)
+    return ProcessLLMResponse_Common<ItemClothingData>(
+        jsonResponse, outputPath, requiredCount, excludeIds, modelName, params, preset,
+        "Clothing", "clothing",
+        [](const std::string& json, std::vector<ItemClothingData>& out) { return ItemJsonParser::ParseClothingFromJsonText(json, out); },
+        [](const ItemClothingData&) { 
+            QualityChecker::QualityResult result;
+            result.isValid = true;
+            return result;
+        },
+        [](const std::vector<ItemClothingData>& items, const std::string& path) { return ItemJsonWriter::WriteClothingToFile(items, path); },
+        [](const std::string& path) { return ItemJsonWriter::GetExistingClothingIds(path); },
+        [](const FoodGenerateParams& p, PresetType pr, const std::set<std::string>& ids, const std::string& m, const std::string& t, int c) {
+            return PromptBuilder::BuildClothingJsonPrompt(p, pr, ids, m, t, c);
+        },
+        [](const std::string& resp, const std::string& path, int count, const std::set<std::string>& ids, const std::string& m, const FoodGenerateParams& p, PresetType pr, std::map<std::string, QualityChecker::QualityResult>& qr) {
+            return ProcessLLMResponse_Clothing(resp, path, count, ids, m, p, pr, qr);
+        },
+        qualityResults,
+        [](std::vector<ItemClothingData>&) {}
+    );
 }
 
 namespace ItemGenerator
@@ -1622,10 +1559,7 @@ namespace ItemGenerator
 
     int GenerateWithLLM(const CommandLineArgs& args)
     {
-        std::cout << "[ItemGenerator] Running in LLM mode.\n";
-
-        std::string prompt;
-        std::string jsonResponse;
+        std::cout << "[ItemGenerator] Running in LLM mode (Parallel).\n";
 
         // Get existing IDs to avoid duplicates in prompt
         std::set<std::string> existingIds;
@@ -1656,6 +1590,14 @@ namespace ItemGenerator
         {
             existingIds = ItemJsonWriter::GetExistingAmmoIds(args.params.outputPath);
         }
+        else if (args.itemType == ItemType::Armor)
+        {
+            existingIds = ItemJsonWriter::GetExistingArmorIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Clothing)
+        {
+            existingIds = ItemJsonWriter::GetExistingClothingIds(args.params.outputPath);
+        }
 
         size_t beforeMerge = existingIds.size();
         existingIds.insert(registryIds.begin(), registryIds.end());
@@ -1674,6 +1616,260 @@ namespace ItemGenerator
             }
             std::cout << "[ItemGenerator] Using custom preset: " << customPreset.displayName << " (" << customPreset.id << ")\n";
         }
+
+        // Parallel batch processing: Split large requests into parallel batches
+        const int BATCH_SIZE = 10; // Items per batch
+        const int MAX_CONCURRENT_BATCHES = 3; // Limit concurrent requests to avoid overwhelming Ollama
+        int totalCount = args.params.count;
+        
+        if (totalCount <= BATCH_SIZE)
+        {
+            // Small request: process normally (single request)
+            return GenerateWithLLM_SingleBatch(args, existingIds, useCustomPreset, customPreset);
+        }
+
+        // Large request: split into parallel batches
+        std::cout << "[ItemGenerator] Splitting " << totalCount << " items into parallel batches (batch size: " << BATCH_SIZE << ", max concurrent: " << MAX_CONCURRENT_BATCHES << ")\n";
+        
+        int numBatches = (totalCount + BATCH_SIZE - 1) / BATCH_SIZE; // Ceiling division
+        std::vector<std::future<int>> futures;
+        std::mutex outputMutex;
+        std::mutex idsMutex;
+        std::set<std::string> sharedExistingIds = existingIds; // Shared across batches
+        
+        auto batchStart = std::chrono::steady_clock::now();
+        
+        // Launch batches with concurrency limit
+        for (int batchIdx = 0; batchIdx < numBatches; ++batchIdx)
+        {
+            // Wait if we've reached max concurrent batches
+            while (futures.size() >= MAX_CONCURRENT_BATCHES)
+            {
+                // Remove completed futures
+                futures.erase(
+                    std::remove_if(futures.begin(), futures.end(),
+                        [](std::future<int>& f) { return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready; }),
+                    futures.end());
+                
+                if (futures.size() >= MAX_CONCURRENT_BATCHES)
+                {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }
+            
+            int batchCount = (batchIdx == numBatches - 1) ? (totalCount - batchIdx * BATCH_SIZE) : BATCH_SIZE;
+            
+            // Create batch args
+            CommandLineArgs batchArgs = args;
+            batchArgs.params.count = batchCount;
+            
+            // Launch async batch
+            auto future = std::async(std::launch::async, [batchArgs, batchIdx, numBatches, &sharedExistingIds, &idsMutex, &outputMutex, useCustomPreset, customPreset]() -> int {
+                // Get current existing IDs (thread-safe)
+                std::set<std::string> batchExistingIds;
+                {
+                    std::lock_guard<std::mutex> lock(idsMutex);
+                    batchExistingIds = sharedExistingIds;
+                }
+                
+                {
+                    std::lock_guard<std::mutex> lock(outputMutex);
+                    std::cout << "[ItemGenerator] Starting batch " << (batchIdx + 1) << "/" << numBatches << " (" << batchArgs.params.count << " items)\n";
+                }
+                
+                int result = GenerateWithLLM_SingleBatch(batchArgs, batchExistingIds, useCustomPreset, customPreset);
+                
+                // Update shared existing IDs (thread-safe)
+                if (result == 0)
+                {
+                    std::set<std::string> newIds;
+                    if (batchArgs.itemType == ItemType::Food)
+                    {
+                        newIds = ItemJsonWriter::GetExistingFoodIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::Drink)
+                    {
+                        newIds = ItemJsonWriter::GetExistingDrinkIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::Material)
+                    {
+                        newIds = ItemJsonWriter::GetExistingMaterialIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::Weapon)
+                    {
+                        newIds = ItemJsonWriter::GetExistingWeaponIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::WeaponComponent)
+                    {
+                        newIds = ItemJsonWriter::GetExistingWeaponComponentIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::Ammo)
+                    {
+                        newIds = ItemJsonWriter::GetExistingAmmoIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::Armor)
+                    {
+                        newIds = ItemJsonWriter::GetExistingArmorIds(batchArgs.params.outputPath);
+                    }
+                    else if (batchArgs.itemType == ItemType::Clothing)
+                    {
+                        newIds = ItemJsonWriter::GetExistingClothingIds(batchArgs.params.outputPath);
+                    }
+                    
+                    {
+                        std::lock_guard<std::mutex> lock(idsMutex);
+                        sharedExistingIds.insert(newIds.begin(), newIds.end());
+                    }
+                    
+                    {
+                        std::lock_guard<std::mutex> lock(outputMutex);
+                        std::cout << "[ItemGenerator] Completed batch " << (batchIdx + 1) << "/" << numBatches << "\n";
+                    }
+                }
+                
+                return result;
+            });
+            
+            futures.push_back(std::move(future));
+        }
+        
+        // Wait for all batches to complete and collect results
+        int totalSuccess = 0;
+        int totalFailed = 0;
+        for (auto& future : futures)
+        {
+            int result = future.get();
+            if (result == 0)
+                totalSuccess++;
+            else
+                totalFailed++;
+        }
+        
+        // After all batches complete, verify total count and generate additional items if needed
+        std::set<std::string> finalExistingIds;
+        if (args.itemType == ItemType::Food)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingFoodIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Drink)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingDrinkIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Material)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingMaterialIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Weapon)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingWeaponIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::WeaponComponent)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingWeaponComponentIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Ammo)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingAmmoIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Armor)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingArmorIds(args.params.outputPath);
+        }
+        else if (args.itemType == ItemType::Clothing)
+        {
+            finalExistingIds = ItemJsonWriter::GetExistingClothingIds(args.params.outputPath);
+        }
+        
+        int finalCount = static_cast<int>(finalExistingIds.size());
+        int stillNeededAfterBatches = totalCount - finalCount;
+        
+        if (stillNeededAfterBatches > 0)
+        {
+            std::cout << "[ItemGenerator] After parallel batches: " << finalCount << " items generated, " << stillNeededAfterBatches << " still needed. Generating additional items...\n";
+            
+            // Generate remaining items
+            CommandLineArgs additionalArgs = args;
+            additionalArgs.params.count = stillNeededAfterBatches;
+            int additionalResult = GenerateWithLLM_SingleBatch(additionalArgs, finalExistingIds, useCustomPreset, customPreset);
+            
+            if (additionalResult == 0)
+            {
+                // Verify final count
+                std::set<std::string> verifyIds;
+                if (args.itemType == ItemType::Food)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingFoodIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::Drink)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingDrinkIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::Material)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingMaterialIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::Weapon)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingWeaponIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::WeaponComponent)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingWeaponComponentIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::Ammo)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingAmmoIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::Armor)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingArmorIds(args.params.outputPath);
+                }
+                else if (args.itemType == ItemType::Clothing)
+                {
+                    verifyIds = ItemJsonWriter::GetExistingClothingIds(args.params.outputPath);
+                }
+                
+                int verifyCount = static_cast<int>(verifyIds.size());
+                if (verifyCount < totalCount)
+                {
+                    std::cout << "[ItemGenerator] Warning: Still only " << verifyCount << " items after additional generation (target: " << totalCount << "). Attempting one more time...\n";
+                    int remaining = totalCount - verifyCount;
+                    CommandLineArgs finalArgs = args;
+                    finalArgs.params.count = remaining;
+                    GenerateWithLLM_SingleBatch(finalArgs, verifyIds, useCustomPreset, customPreset);
+                }
+                else
+                {
+                    std::cout << "[ItemGenerator] Successfully generated " << verifyCount << " items (target: " << totalCount << ").\n";
+                }
+            }
+        }
+        else if (finalCount > totalCount)
+        {
+            std::cout << "[ItemGenerator] Warning: Generated " << finalCount << " items (exceeds target: " << totalCount << ").\n";
+        }
+        else
+        {
+            std::cout << "[ItemGenerator] Successfully generated " << finalCount << " items (target: " << totalCount << ").\n";
+        }
+        
+        auto batchEnd = std::chrono::steady_clock::now();
+        double totalDuration = std::chrono::duration<double>(batchEnd - batchStart).count();
+        
+        std::cout << "\n[ItemGenerator] Parallel batch generation completed:\n";
+        std::cout << "  Batches: " << numBatches << "\n";
+        std::cout << "  Successful: " << totalSuccess << "\n";
+        std::cout << "  Failed: " << totalFailed << "\n";
+        std::cout << "  Duration: " << FormatSeconds(totalDuration) << "\n";
+        
+        return (totalFailed > 0) ? 1 : 0;
+    }
+
+    // Helper function for single batch generation (original logic)
+    int GenerateWithLLM_SingleBatch(const CommandLineArgs& args, const std::set<std::string>& existingIds, bool useCustomPreset, const CustomPreset& customPreset)
+    {
+        std::string prompt;
+        std::string jsonResponse;
 
         // Build prompt and get LLM response
         std::string generationTimestamp = GetCurrentTimestamp();
@@ -1727,6 +1923,22 @@ namespace ItemGenerator
                 prompt = PromptBuilder::BuildAmmoJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
             std::cout << "=== Ollama Ammo JSON Response ===\n";
         }
+        else if (args.itemType == ItemType::Armor)
+        {
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildArmorJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
+            else
+                prompt = PromptBuilder::BuildArmorJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
+            std::cout << "=== Ollama Armor JSON Response ===\n";
+        }
+        else if (args.itemType == ItemType::Clothing)
+        {
+            if (useCustomPreset)
+                prompt = PromptBuilder::BuildClothingJsonPrompt(args.params, customPreset, existingIds, args.modelName, generationTimestamp, existingCount);
+            else
+                prompt = PromptBuilder::BuildClothingJsonPrompt(args.params, args.preset, existingIds, args.modelName, generationTimestamp, existingCount);
+            std::cout << "=== Ollama Clothing JSON Response ===\n";
+        }
         else
         {
             std::cout << "[ItemGenerator] Unknown item type.\n";
@@ -1753,32 +1965,40 @@ namespace ItemGenerator
         
         std::cout << jsonResponse << "\n";
 
-        // Process response based on item type
+        // Process response based on item type (unified with qualityResults)
+        std::map<std::string, QualityChecker::QualityResult> qualityResults;
+        
         if (args.itemType == ItemType::Food)
         {
-            return ProcessLLMResponse_Food(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset);
+            return ProcessLLMResponse_Food(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
         else if (args.itemType == ItemType::Drink)
         {
-            return ProcessLLMResponse_Drink(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset);
+            return ProcessLLMResponse_Drink(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
         else if (args.itemType == ItemType::Material)
         {
-            return ProcessLLMResponse_Material(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset);
+            return ProcessLLMResponse_Material(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
         else if (args.itemType == ItemType::Weapon)
         {
-            return ProcessLLMResponse_Weapon(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset);
+            return ProcessLLMResponse_Weapon(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
         else if (args.itemType == ItemType::WeaponComponent)
         {
-            std::map<std::string, QualityChecker::QualityResult> qualityResults; // Accumulate across batches
             return ProcessLLMResponse_WeaponComponent(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
         else if (args.itemType == ItemType::Ammo)
         {
-            std::map<std::string, QualityChecker::QualityResult> qualityResults; // Accumulate across batches
             return ProcessLLMResponse_Ammo(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
+        }
+        else if (args.itemType == ItemType::Armor)
+        {
+            return ProcessLLMResponse_Armor(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
+        }
+        else if (args.itemType == ItemType::Clothing)
+        {
+            return ProcessLLMResponse_Clothing(jsonResponse, args.params.outputPath, args.params.count, existingIds, args.modelName, args.params, args.preset, qualityResults);
         }
 
         return 1;
@@ -1786,7 +2006,7 @@ namespace ItemGenerator
 
     int GenerateBatch(const CommandLineArgs& args)
     {
-        std::cout << "[ItemGenerator] Running in Batch mode.\n";
+        std::cout << "[ItemGenerator] Running in Batch mode (" << (args.useSequentialBatch ? "Sequential" : "Parallel") << ").\n";
         std::cout << "[ItemGenerator] Batch items: " << args.batchItems.size() << "\n\n";
 
         if (args.batchItems.empty())
@@ -1801,17 +2021,97 @@ namespace ItemGenerator
         std::map<ItemType, int> successCountsByType;
         auto batchStart = std::chrono::steady_clock::now();
 
+        if (args.useSequentialBatch)
+        {
+            // Sequential processing (for performance comparison)
+            for (size_t i = 0; i < args.batchItems.size(); ++i)
+            {
+                const auto& batchItem = args.batchItems[i];
+                
+                std::cout << "\n";
+                std::cout << "========================================\n";
+                std::cout << "  Batch Item " << (i + 1) << " / " << args.batchItems.size() << " (Sequential)\n";
+                std::cout << "  Type: " << CommandLineParser::GetItemTypeName(batchItem.itemType) << "\n";
+                std::cout << "  Count: " << batchItem.count << "\n";
+                std::cout << "========================================\n\n";
+
+                // Create a new CommandLineArgs for this batch item
+                CommandLineArgs itemArgs = args;
+                itemArgs.itemType = batchItem.itemType;
+                itemArgs.params.count = batchItem.count;
+                itemArgs.mode = RunMode::LLM; // Always use LLM for batch items
+                
+                // Use custom output path if provided, otherwise generate default
+                if (!batchItem.outputPath.empty())
+                {
+                    itemArgs.params.outputPath = batchItem.outputPath;
+                }
+                else
+                {
+                    // Generate default output path based on item type
+                    std::string itemTypeName = CommandLineParser::GetItemTypeName(batchItem.itemType);
+                    itemArgs.params.outputPath = "ItemJson/items_" + itemTypeName + ".json";
+                }
+
+                std::cout << "[ItemGenerator] Output: " << itemArgs.params.outputPath << "\n\n";
+
+                auto itemStart = std::chrono::steady_clock::now();
+                int result = GenerateWithLLM(itemArgs);
+                auto itemEnd = std::chrono::steady_clock::now();
+                double durationSeconds = std::chrono::duration<double>(itemEnd - itemStart).count();
+
+                BatchRunResult batchResult;
+                batchResult.item = batchItem;
+                batchResult.outputPath = itemArgs.params.outputPath;
+                batchResult.success = (result == 0);
+                batchResult.exitCode = result;
+                batchResult.durationSeconds = durationSeconds;
+                batchResults.push_back(batchResult);
+                
+                if (result == 0)
+                {
+                    totalSuccess++;
+                    successCountsByType[batchItem.itemType] += batchItem.count;
+                    std::cout << "[ItemGenerator] OK Successfully generated " << batchItem.count 
+                        << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
+                        << " items (" << FormatSeconds(durationSeconds) << ").\n";
+                }
+                else
+                {
+                    totalFailed++;
+                    std::cerr << "[ItemGenerator] FAIL Failed to generate " << batchItem.count
+                        << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
+                        << " items (exit code " << result << ").\n";
+                }
+
+                double progress = static_cast<double>(i + 1) / static_cast<double>(args.batchItems.size());
+                std::cout << std::fixed << std::setprecision(1);
+                std::cout << "[Batch] Progress: " << (i + 1) << "/" << args.batchItems.size()
+                    << " (" << (progress * 100.0) << "%)\n";
+                std::cout.unsetf(std::ios::floatfield);
+
+                if (!batchResult.success)
+                {
+                    std::cerr << "[Batch] Continuing despite failure. You can rerun this item later.\n";
+                }
+
+                std::cout << "\n";
+            }
+        }
+        else
+        {
+            // Parallel processing (default)
+            // Mutex for thread-safe output and result collection
+            std::mutex outputMutex;
+            std::mutex resultsMutex;
+
+            // Launch all batch items in parallel using async
+            std::vector<std::future<BatchRunResult>> futures;
+        
         for (size_t i = 0; i < args.batchItems.size(); ++i)
         {
             const auto& batchItem = args.batchItems[i];
             
-            std::cout << "\n";
-            std::cout << "========================================\n";
-            std::cout << "  Batch Item " << (i + 1) << " / " << args.batchItems.size() << "\n";
-            std::cout << "  Type: " << CommandLineParser::GetItemTypeName(batchItem.itemType) << "\n";
-            std::cout << "  Count: " << batchItem.count << "\n";
-            std::cout << "========================================\n\n";
-
             // Create a new CommandLineArgs for this batch item
             CommandLineArgs itemArgs = args;
             itemArgs.itemType = batchItem.itemType;
@@ -1830,50 +2130,82 @@ namespace ItemGenerator
                 itemArgs.params.outputPath = "ItemJson/items_" + itemTypeName + ".json";
             }
 
-            std::cout << "[ItemGenerator] Output: " << itemArgs.params.outputPath << "\n\n";
+            // Launch async task for this batch item
+            auto future = std::async(std::launch::async, [itemArgs, batchItem, i, &args, &outputMutex]() -> BatchRunResult {
+                {
+                    std::lock_guard<std::mutex> lock(outputMutex);
+                    std::cout << "\n";
+                    std::cout << "========================================\n";
+                    std::cout << "  Batch Item " << (i + 1) << " / " << args.batchItems.size() << " (Parallel)\n";
+                    std::cout << "  Type: " << CommandLineParser::GetItemTypeName(batchItem.itemType) << "\n";
+                    std::cout << "  Count: " << batchItem.count << "\n";
+                    std::cout << "========================================\n\n";
+                    std::cout << "[ItemGenerator] Output: " << itemArgs.params.outputPath << "\n\n";
+                }
 
-            auto itemStart = std::chrono::steady_clock::now();
+                auto itemStart = std::chrono::steady_clock::now();
+                int result = GenerateWithLLM(itemArgs);
+                auto itemEnd = std::chrono::steady_clock::now();
+                double durationSeconds = std::chrono::duration<double>(itemEnd - itemStart).count();
 
-            int result = GenerateWithLLM(itemArgs);
-            auto itemEnd = std::chrono::steady_clock::now();
-            double durationSeconds = std::chrono::duration<double>(itemEnd - itemStart).count();
+                BatchRunResult batchResult;
+                batchResult.item = batchItem;
+                batchResult.outputPath = itemArgs.params.outputPath;
+                batchResult.success = (result == 0);
+                batchResult.exitCode = result;
+                batchResult.durationSeconds = durationSeconds;
 
-            BatchRunResult batchResult;
-            batchResult.item = batchItem;
-            batchResult.outputPath = itemArgs.params.outputPath;
-            batchResult.success = (result == 0);
-            batchResult.exitCode = result;
-            batchResult.durationSeconds = durationSeconds;
-            batchResults.push_back(batchResult);
+                {
+                    std::lock_guard<std::mutex> lock(outputMutex);
+                    if (result == 0)
+                    {
+                        std::cout << "[ItemGenerator] OK Successfully generated " << batchItem.count 
+                            << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
+                            << " items (" << FormatSeconds(durationSeconds) << ").\n";
+                    }
+                    else
+                    {
+                        std::cerr << "[ItemGenerator] FAIL Failed to generate " << batchItem.count
+                            << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
+                            << " items (exit code " << result << ").\n";
+                    }
+                }
+
+                return batchResult;
+            });
+
+            futures.push_back(std::move(future));
+        }
+
+            // Wait for all tasks to complete and collect results
+            std::cout << "\n[Batch] Waiting for all parallel tasks to complete...\n\n";
             
-            if (result == 0)
+            for (size_t i = 0; i < futures.size(); ++i)
             {
-                totalSuccess++;
-                successCountsByType[batchItem.itemType] += batchItem.count;
-                std::cout << "[ItemGenerator] OK Successfully generated " << batchItem.count 
-                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
-                    << " items (" << FormatSeconds(durationSeconds) << ").\n";
-            }
-            else
-            {
-                totalFailed++;
-                std::cerr << "[ItemGenerator] FAIL Failed to generate " << batchItem.count
-                    << " " << CommandLineParser::GetItemTypeName(batchItem.itemType)
-                    << " items (exit code " << result << ").\n";
-            }
+                BatchRunResult batchResult = futures[i].get();
+                batchResults.push_back(batchResult);
+                
+                {
+                    std::lock_guard<std::mutex> lock(resultsMutex);
+                    if (batchResult.success)
+                    {
+                        totalSuccess++;
+                        successCountsByType[batchResult.item.itemType] += batchResult.item.count;
+                    }
+                    else
+                    {
+                        totalFailed++;
+                        std::cerr << "[Batch] Continuing despite failure. You can rerun this item later.\n";
+                    }
+                }
 
-            double progress = static_cast<double>(i + 1) / static_cast<double>(args.batchItems.size());
-            std::cout << std::fixed << std::setprecision(1);
-            std::cout << "[Batch] Progress: " << (i + 1) << "/" << args.batchItems.size()
-                << " (" << (progress * 100.0) << "%)\n";
-            std::cout.unsetf(std::ios::floatfield);
-
-            if (!batchResult.success)
-            {
-                std::cerr << "[Batch] Continuing despite failure. You can rerun this item later.\n";
+                double progress = static_cast<double>(i + 1) / static_cast<double>(args.batchItems.size());
+                std::cout << std::fixed << std::setprecision(1);
+                std::cout << "[Batch] Progress: " << (i + 1) << "/" << args.batchItems.size()
+                    << " (" << (progress * 100.0) << "%)\n";
+                std::cout.unsetf(std::ios::floatfield);
+                std::cout << "\n";
             }
-
-            std::cout << "\n";
         }
 
         // Summary

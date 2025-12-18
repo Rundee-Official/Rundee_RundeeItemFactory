@@ -10,7 +10,12 @@
 
 #pragma once
 
+// Standard Library Includes
 #include <string>
+
+// ============================================================================
+// SECTION 1: Data Structures
+// ============================================================================
 
 struct OllamaSettings
 {
@@ -22,6 +27,10 @@ struct OllamaSettings
     int sendTimeoutMs = 120000;        // upload timeout
     int receiveTimeoutMs = 120000;     // download timeout
 };
+
+// ============================================================================
+// SECTION 2: AppConfig Class
+// ============================================================================
 
 class AppConfig
 {

@@ -8,11 +8,18 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Helpers/CommandLineParser.h"
-#include <iostream>
-#include <cstdlib>
-#include <sstream>
+// Standard Library Includes
 #include <algorithm>
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
+
+// Project Includes
+#include "Helpers/CommandLineParser.h"
+
+// ============================================================================
+// SECTION 1: Argument Parsing
+// ============================================================================
 
 namespace CommandLineParser
 {
@@ -69,11 +76,13 @@ namespace CommandLineParser
                     args.preset = PresetType::Coast;
                 else if (p == "city")
                     args.preset = PresetType::City;
+                else if (p == "arctic")
+                    args.preset = PresetType::Arctic;
                 else if (p == "default")
                     args.preset = PresetType::Default;
                 else
                     std::cout << "[Warning] Unknown preset: " << p
-                    << " (use default/forest/desert/coast/city)\n";
+                    << " (use default/forest/desert/coast/city/arctic)\n";
             }
             else if (arg == "--itemType" && i + 1 < argc)
             {
@@ -90,9 +99,13 @@ namespace CommandLineParser
                     args.itemType = ItemType::WeaponComponent;
                 else if (t == "ammo")
                     args.itemType = ItemType::Ammo;
+                else if (t == "armor")
+                    args.itemType = ItemType::Armor;
+                else if (t == "clothing")
+                    args.itemType = ItemType::Clothing;
                 else
                     std::cout << "[Warning] Unknown itemType: " << t
-                    << " (use 'food', 'drink', 'material', 'weapon', 'weaponcomponent', or 'ammo')\n";
+                    << " (use 'food', 'drink', 'material', 'weapon', 'weaponcomponent', 'ammo', 'armor', or 'clothing')\n";
             }
             else if (arg == "--count" && i + 1 < argc)
             {
@@ -123,6 +136,10 @@ namespace CommandLineParser
             {
                 args.additionalPrompt = argv[++i];
             }
+            else if (arg == "--sequential" || arg == "--no-parallel")
+            {
+                args.useSequentialBatch = true;
+            }
             else
             {
                 std::cout << "[Warning] Unknown or incomplete argument: " << arg << "\n";
@@ -132,62 +149,9 @@ namespace CommandLineParser
         return args;
     }
 
-    std::string GetPresetName(PresetType preset)
-    {
-        switch (preset)
-        {
-        case PresetType::Forest:  return "forest";
-        case PresetType::Desert:  return "desert";
-        case PresetType::Coast:   return "coast";
-        case PresetType::City:    return "city";
-        default:                  return "default";
-        }
-    }
-
-    std::string GetItemTypeName(ItemType itemType)
-    {
-        switch (itemType)
-        {
-        case ItemType::Drink:         return "drink";
-        case ItemType::Material:       return "material";
-        case ItemType::Weapon:         return "weapon";
-        case ItemType::WeaponComponent: return "weaponcomponent";
-        case ItemType::Ammo:           return "ammo";
-        case ItemType::Food:
-        default:                       return "food";
-        }
-    }
-
-    std::string GetRunModeName(RunMode mode)
-    {
-        switch (mode)
-        {
-        case RunMode::LLM: return "LLM";
-        case RunMode::Batch: return "Batch";
-        default: return "LLM";
-        }
-    }
-
-    ItemType ParseItemType(const std::string& typeStr)
-    {
-        std::string lower = typeStr;
-        std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-        
-        if (lower == "food")
-            return ItemType::Food;
-        else if (lower == "drink")
-            return ItemType::Drink;
-        else if (lower == "material")
-            return ItemType::Material;
-        else if (lower == "weapon")
-            return ItemType::Weapon;
-        else if (lower == "weaponcomponent" || lower == "weapon_component")
-            return ItemType::WeaponComponent;
-        else if (lower == "ammo")
-            return ItemType::Ammo;
-        else
-            return ItemType::Food; // Default
-    }
+    // ============================================================================
+    // SECTION 2: Batch String Parsing
+    // ============================================================================
 
     std::vector<BatchItem> ParseBatchString(const std::string& batchStr)
     {
@@ -255,6 +219,74 @@ namespace CommandLineParser
         }
 
         return result;
+    }
+
+    // ============================================================================
+    // SECTION 3: Enum to String Conversion
+    // ============================================================================
+
+    std::string GetPresetName(PresetType preset)
+    {
+        switch (preset)
+        {
+        case PresetType::Forest:  return "forest";
+        case PresetType::Desert:  return "desert";
+        case PresetType::Coast:   return "coast";
+        case PresetType::City:    return "city";
+        case PresetType::Arctic:  return "arctic";
+        default:                  return "default";
+        }
+    }
+
+    std::string GetItemTypeName(ItemType itemType)
+    {
+        switch (itemType)
+        {
+        case ItemType::Drink:         return "drink";
+        case ItemType::Material:       return "material";
+        case ItemType::Weapon:         return "weapon";
+        case ItemType::WeaponComponent: return "weaponcomponent";
+        case ItemType::Ammo:           return "ammo";
+        case ItemType::Armor:          return "armor";
+        case ItemType::Clothing:        return "clothing";
+        case ItemType::Food:
+        default:                       return "food";
+        }
+    }
+
+    std::string GetRunModeName(RunMode mode)
+    {
+        switch (mode)
+        {
+        case RunMode::LLM: return "LLM";
+        case RunMode::Batch: return "Batch";
+        default: return "LLM";
+        }
+    }
+
+    ItemType ParseItemType(const std::string& typeStr)
+    {
+        std::string lower = typeStr;
+        std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+        
+        if (lower == "food")
+            return ItemType::Food;
+        else if (lower == "drink")
+            return ItemType::Drink;
+        else if (lower == "material")
+            return ItemType::Material;
+        else if (lower == "weapon")
+            return ItemType::Weapon;
+        else if (lower == "weaponcomponent" || lower == "weapon_component")
+            return ItemType::WeaponComponent;
+        else if (lower == "ammo")
+            return ItemType::Ammo;
+        else if (lower == "armor")
+            return ItemType::Armor;
+        else if (lower == "clothing")
+            return ItemType::Clothing;
+        else
+            return ItemType::Food; // Default
     }
 }
 

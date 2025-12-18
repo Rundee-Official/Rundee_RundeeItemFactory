@@ -10,7 +10,12 @@
 
 #pragma once
 
+// Project Includes
 #include "Data/ItemFoodData.h"
+
+// ============================================================================
+// SECTION 1: FoodItemValidator Class
+// ============================================================================
 
 class FoodItemValidator
 {

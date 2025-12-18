@@ -8,15 +8,22 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
+// Standard Library Includes
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+
+// Unity Includes
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+
+// ============================================================================
+// SECTION 1: Enums
+// ============================================================================
 
 /// <summary>
 /// Preset types for item generation context.
@@ -27,7 +34,8 @@ public enum PresetType
     Forest,
     Desert,
     Coast,
-    City
+    City,
+    Arctic
 }
 
 public enum ModelType
@@ -40,6 +48,10 @@ public enum ModelType
     Qwen,
     Custom
 }
+
+// ============================================================================
+// SECTION 2: ItemFactoryWindow Class
+// ============================================================================
 
 public class ItemFactoryWindow : EditorWindow
 {
@@ -132,8 +144,8 @@ public class ItemFactoryWindow : EditorWindow
     private bool showLoadPlanEditor = true;
 
     // Preset options
-    private readonly string[] presetNames = { "Default", "Forest", "Desert", "Coast", "City" };
-    private readonly PresetType[] presetValues = { PresetType.Default, PresetType.Forest, PresetType.Desert, PresetType.Coast, PresetType.City };
+    private readonly string[] presetNames = { "Default", "Forest", "Desert", "Coast", "City", "Arctic" };
+    private readonly PresetType[] presetValues = { PresetType.Default, PresetType.Forest, PresetType.Desert, PresetType.Coast, PresetType.City, PresetType.Arctic };
     
     // Custom Preset Management
     [System.Serializable]
@@ -158,8 +170,8 @@ public class ItemFactoryWindow : EditorWindow
     private readonly ModelType[] modelValues = { ModelType.Llama3, ModelType.Llama2, ModelType.Mistral, ModelType.Gemma, ModelType.Phi3, ModelType.Qwen, ModelType.Custom };
 
     // Item type options
-    private readonly string[] itemTypeNames = { "Food", "Drink", "Material", "Weapon", "Weapon Component", "Ammo" };
-    private readonly ItemType[] itemTypeValues = { ItemType.Food, ItemType.Drink, ItemType.Material, ItemType.Weapon, ItemType.WeaponComponent, ItemType.Ammo };
+    private readonly string[] itemTypeNames = { "Food", "Drink", "Material", "Weapon", "Weapon Component", "Ammo", "Armor", "Clothing" };
+    private readonly ItemType[] itemTypeValues = { ItemType.Food, ItemType.Drink, ItemType.Material, ItemType.Weapon, ItemType.WeaponComponent, ItemType.Ammo, ItemType.Armor, ItemType.Clothing };
 
     private string GetModelName()
     {
@@ -1376,6 +1388,14 @@ public class ItemFactoryWindow : EditorWindow
             {
                 ItemImporter.ImportAmmoFromJsonPath(outputPath);
             }
+            else if (selectedItemType == ItemType.Armor)
+            {
+                ItemImporter.ImportArmorFromJsonPath(outputPath);
+            }
+            else if (selectedItemType == ItemType.Clothing)
+            {
+                ItemImporter.ImportClothingFromJsonPath(outputPath);
+            }
 
             AddLog("[Auto Import] Import completed successfully!");
         }
@@ -1445,6 +1465,14 @@ public class ItemFactoryWindow : EditorWindow
                 {
                     ItemImporter.ImportAmmoFromJsonPath(filePath);
                 }
+                else if (batchItem.itemType == ItemType.Armor)
+                {
+                    ItemImporter.ImportArmorFromJsonPath(filePath);
+                }
+                else if (batchItem.itemType == ItemType.Clothing)
+                {
+                    ItemImporter.ImportClothingFromJsonPath(filePath);
+                }
 
                 successCount++;
                 AddLog($"[Auto Import] ✓ {batchItem.itemType} imported successfully.");
@@ -1504,6 +1532,8 @@ public class ItemFactoryWindow : EditorWindow
                 return "Coastal environment: Seafood, fresh water sources, marine materials.";
             case PresetType.City:
                 return "Urban environment: Processed foods, manufactured items, modern weapons.";
+            case PresetType.Arctic:
+                return "Arctic environment: Frozen tundra, extreme cold, high-calorie foods, warm clothing essential.";
             case PresetType.Default:
             default:
                 return "Generic survival environment with moderate resources.";

@@ -10,8 +10,13 @@
 
 #pragma once
 
-#include <string>
+// Standard Library Includes
 #include <set>
+#include <string>
+
+// ============================================================================
+// SECTION 1: PromptTemplateLoader Class
+// ============================================================================
 
 class PromptTemplateLoader
 {

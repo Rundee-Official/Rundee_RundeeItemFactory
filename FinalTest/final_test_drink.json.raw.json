@@ -1,0 +1,67 @@
+[
+  {
+    "id": "drink_willow_root_tonic",
+    "displayName": "Willow Root Tonic",
+    "category": "Drink",
+    "rarity": "Common",
+    "maxStack": 10,
+    "hungerRestore": 5,
+    "thirstRestore": 30,
+    "healthRestore": 0,
+    "spoils": true,
+    "spoilTimeMinutes": 60,
+    "description": "A clear, slightly bitter drink made from dried willow root."
+  },
+  {
+    "id": "drink_muddy_stream_water",
+    "displayName": "Muddy Stream Water",
+    "category": "Drink",
+    "rarity": "Common",
+    "maxStack": 10,
+    "hungerRestore": 0,
+    "thirstRestore": 35,
+    "healthRestore": 0,
+    "spoils": true,
+    "spoilTimeMinutes": 120,
+    "description": "A murky, slightly muddy water collected from a stream."
+  },
+  {
+    "id": "drink_spruce_needle_broth",
+    "displayName": "Spruce Needle Broth",
+    "category": "Drink",
+    "rarity": "Uncommon",
+    "maxStack": 5,
+    "hungerRestore": 8,
+    "thirstRestore": 25,
+    "healthRestore": 10,
+    "spoils": true,
+    "spoilTimeMinutes": 90,
+    "description": "A warm, slightly sweet broth made from simmered spruce needles."
+  },
+  {
+    "id": "drink_dried_meadow_flower_infusion",
+    "displayName": "Dried Meadow Flower Infusion",
+    "category": "Drink",
+    "rarity": "Uncommon",
+    "maxStack": 5,
+    "hungerRestore": 2,
+    "thirstRestore": 40,
+    "healthRestore": 15,
+    "spoils": true,
+    "spoilTimeMinutes": 100,
+    "description": "A delicate, floral infusion made from dried meadow flowers."
+  },
+  {
+    "id": "drink_elderberry_juice",
+    "displayName": "Elderberry Juice",
+    "category": "Drink",
+    "rarity": "Rare",
+    "maxStack": 5,
+    "hungerRestore": 10,
+    "thirstRestore": 30,
+    "healthRestore": 20,
+    "spoils": true,
+    "spoilTimeMinutes": 120,
+    "description": "A rich, dark juice made from the berries of elder trees."
+  }
+]

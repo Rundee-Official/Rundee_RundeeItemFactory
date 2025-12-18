@@ -10,8 +10,13 @@
 
 #pragma once
 
+// Standard Library Includes
 #include <string>
 #include <vector>
+
+// ============================================================================
+// SECTION 1: Data Structures
+// ============================================================================
 
 struct CustomPreset
 {
@@ -30,6 +35,10 @@ struct CustomPreset
         return !id.empty() && !displayName.empty() && !flavorText.empty();
     }
 };
+
+// ============================================================================
+// SECTION 2: CustomPresetManager Namespace
+// ============================================================================
 
 namespace CustomPresetManager
 {

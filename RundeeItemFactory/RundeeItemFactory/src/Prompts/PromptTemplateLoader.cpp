@@ -8,11 +8,20 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Prompts/PromptTemplateLoader.h"
+// Standard Library Includes
+#include <algorithm>
 #include <fstream>
 #include <sstream>
+
+// Windows Platform Includes
 #include <windows.h>
-#include <algorithm>
+
+// Project Includes
+#include "Prompts/PromptTemplateLoader.h"
+
+// ============================================================================
+// SECTION 1: PromptTemplateLoader Class Implementation
+// ============================================================================
 
 std::string PromptTemplateLoader::GetTemplateDirectory()
 {

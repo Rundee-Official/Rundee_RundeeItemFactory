@@ -10,10 +10,17 @@
 
 #pragma once
 
+// Standard Library Includes
 #include <string>
 #include <vector>
+
+// Project Includes
 #include "Helpers/ItemGenerateParams.h"
 #include "Prompts/PromptBuilder.h"
+
+// ============================================================================
+// SECTION 1: Enums
+// ============================================================================
 
 enum class RunMode
 {
@@ -28,8 +35,14 @@ enum class ItemType
     Material,
     Weapon,
     WeaponComponent,
-    Ammo
+    Ammo,
+    Armor,
+    Clothing
 };
+
+// ============================================================================
+// SECTION 2: Data Structures
+// ============================================================================
 
 struct BatchItem
 {
@@ -49,6 +62,7 @@ struct CommandLineArgs
     
     // Batch generation
     std::vector<BatchItem> batchItems;  // For batch mode: multiple item types to generate
+    bool useSequentialBatch = false;  // If true, process batch items sequentially instead of in parallel
     
     // Custom preset
     std::string customPresetPath;  // Path to custom preset JSON file (empty if using built-in preset)
@@ -56,6 +70,10 @@ struct CommandLineArgs
     // User-defined additional prompt
     std::string additionalPrompt;  // Additional user-defined prompt text to append to the generated prompt
 };
+
+// ============================================================================
+// SECTION 3: CommandLineParser Namespace
+// ============================================================================
 
 namespace CommandLineParser
 {

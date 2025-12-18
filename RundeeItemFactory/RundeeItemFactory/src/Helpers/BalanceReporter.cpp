@@ -8,20 +8,29 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Helpers/BalanceReporter.h"
-#include "Parsers/ItemJsonParser.h"
-#include "Data/ItemFoodData.h"
-#include "Data/ItemDrinkData.h"
-#include "Data/ItemMaterialData.h"
-#include "Data/ItemWeaponData.h"
-#include "Data/ItemWeaponComponentData.h"
-#include "Data/ItemAmmoData.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <map>
+// Standard Library Includes
 #include <algorithm>
+#include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <map>
+#include <string>
+
+// Project Includes
+#include "Helpers/BalanceReporter.h"
+#include "Data/ItemAmmoData.h"
+#include "Data/ItemArmorData.h"
+#include "Data/ItemClothingData.h"
+#include "Data/ItemDrinkData.h"
+#include "Data/ItemFoodData.h"
+#include "Data/ItemMaterialData.h"
+#include "Data/ItemWeaponComponentData.h"
+#include "Data/ItemWeaponData.h"
+#include "Parsers/ItemJsonParser.h"
+
+// ============================================================================
+// SECTION 1: BalanceReporter Namespace - Internal Data Structures
+// ============================================================================
 
 namespace BalanceReporter
 {
@@ -164,6 +173,83 @@ namespace BalanceReporter
         std::map<std::string, int> rarityCount;
         std::map<std::string, int> caliberCount;
     };
+
+    struct ArmorStats
+    {
+        int count = 0;
+        int totalArmorClass = 0;
+        int totalDurability = 0;
+        int totalMaterial = 0;
+        int totalMovementSpeedPenalty = 0;
+        int totalErgonomicsPenalty = 0;
+        int totalTurnSpeedPenalty = 0;
+        int totalWeight = 0;
+        int totalCapacity = 0;
+        int minArmorClass = 100;
+        int maxArmorClass = -1;
+        int minDurability = 100;
+        int maxDurability = -1;
+        int minMaterial = 100;
+        int maxMaterial = -1;
+        int minMovementSpeedPenalty = 100;
+        int maxMovementSpeedPenalty = -1;
+        int minErgonomicsPenalty = 100;
+        int maxErgonomicsPenalty = -1;
+        int minTurnSpeedPenalty = 100;
+        int maxTurnSpeedPenalty = -1;
+        int minWeight = 100000;
+        int maxWeight = -1;
+        int minCapacity = 10000;
+        int maxCapacity = -1;
+        int blocksHeadsetCount = 0;
+        int blocksFaceCoverCount = 0;
+        std::map<std::string, int> rarityCount;
+        std::map<std::string, int> armorTypeCount;
+    };
+
+    struct ClothingStats
+    {
+        int count = 0;
+        int totalColdResistance = 0;
+        int totalHeatResistance = 0;
+        int totalWaterResistance = 0;
+        int totalWindResistance = 0;
+        int totalComfort = 0;
+        int totalMobilityBonus = 0;
+        int totalStaminaBonus = 0;
+        int totalDurability = 0;
+        int totalMaterial = 0;
+        int totalWeight = 0;
+        int minColdResistance = 100;
+        int maxColdResistance = -1;
+        int minHeatResistance = 100;
+        int maxHeatResistance = -1;
+        int minWaterResistance = 100;
+        int maxWaterResistance = -1;
+        int minWindResistance = 100;
+        int maxWindResistance = -1;
+        int minComfort = 100;
+        int maxComfort = -1;
+        int minMobilityBonus = 100;
+        int maxMobilityBonus = -100;
+        int minStaminaBonus = 100;
+        int maxStaminaBonus = -100;
+        int minDurability = 100;
+        int maxDurability = -1;
+        int minMaterial = 100;
+        int maxMaterial = -1;
+        int minWeight = 100000;
+        int maxWeight = -1;
+        int isInsulatedCount = 0;
+        int isWaterproofCount = 0;
+        int isWindproofCount = 0;
+        std::map<std::string, int> rarityCount;
+        std::map<std::string, int> clothingTypeCount;
+    };
+
+    // ============================================================================
+    // SECTION 2: Report Printing Functions (by Item Type - Alphabetical Order)
+    // ============================================================================
 
     static void PrintFoodReport(const std::vector<ItemFoodData>& items)
     {
@@ -1037,6 +1123,220 @@ namespace BalanceReporter
         std::cout << "========================================\n\n";
     }
 
+    static void PrintArmorReport(const std::vector<ItemArmorData>& items)
+    {
+        if (items.empty())
+        {
+            std::cout << "[BalanceReporter] No armor items to analyze.\n";
+            return;
+        }
+
+        ArmorStats stats;
+        for (const auto& item : items)
+        {
+            stats.count++;
+            stats.totalArmorClass += item.armorClass;
+            stats.totalDurability += item.durability;
+            stats.totalMaterial += item.material;
+            stats.totalMovementSpeedPenalty += item.movementSpeedPenalty;
+            stats.totalErgonomicsPenalty += item.ergonomicsPenalty;
+            stats.totalTurnSpeedPenalty += item.turnSpeedPenalty;
+            stats.totalWeight += item.weight;
+            stats.totalCapacity += item.capacity;
+
+            stats.minArmorClass = std::min(stats.minArmorClass, item.armorClass);
+            stats.maxArmorClass = std::max(stats.maxArmorClass, item.armorClass);
+            stats.minDurability = std::min(stats.minDurability, item.durability);
+            stats.maxDurability = std::max(stats.maxDurability, item.durability);
+            stats.minMaterial = std::min(stats.minMaterial, item.material);
+            stats.maxMaterial = std::max(stats.maxMaterial, item.material);
+            stats.minMovementSpeedPenalty = std::min(stats.minMovementSpeedPenalty, item.movementSpeedPenalty);
+            stats.maxMovementSpeedPenalty = std::max(stats.maxMovementSpeedPenalty, item.movementSpeedPenalty);
+            stats.minErgonomicsPenalty = std::min(stats.minErgonomicsPenalty, item.ergonomicsPenalty);
+            stats.maxErgonomicsPenalty = std::max(stats.maxErgonomicsPenalty, item.ergonomicsPenalty);
+            stats.minTurnSpeedPenalty = std::min(stats.minTurnSpeedPenalty, item.turnSpeedPenalty);
+            stats.maxTurnSpeedPenalty = std::max(stats.maxTurnSpeedPenalty, item.turnSpeedPenalty);
+            stats.minWeight = std::min(stats.minWeight, item.weight);
+            stats.maxWeight = std::max(stats.maxWeight, item.weight);
+            stats.minCapacity = std::min(stats.minCapacity, item.capacity);
+            stats.maxCapacity = std::max(stats.maxCapacity, item.capacity);
+
+            if (item.blocksHeadset) stats.blocksHeadsetCount++;
+            if (item.blocksFaceCover) stats.blocksFaceCoverCount++;
+
+            stats.rarityCount[item.rarity]++;
+            stats.armorTypeCount[item.armorType]++;
+        }
+
+        std::cout << "\n";
+        std::cout << "========================================\n";
+        std::cout << "   ARMOR ITEMS BALANCE REPORT\n";
+        std::cout << "========================================\n";
+        std::cout << "Total Items: " << stats.count << "\n\n";
+
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Armor Class: " << std::fixed << std::setprecision(1)
+            << (stats.totalArmorClass / (float)stats.count) << "/6\n";
+        std::cout << "  Average Durability: " << (stats.totalDurability / stats.count) << "/100\n";
+        std::cout << "  Average Weight: " << (stats.totalWeight / stats.count) << " grams\n";
+        std::cout << "  Average Movement Speed Penalty: " << (stats.totalMovementSpeedPenalty / stats.count) << "%\n";
+        std::cout << "\n";
+
+        std::cout << "--- Rarity Distribution ---\n";
+        for (const auto& pair : stats.rarityCount)
+        {
+            float percentage = (pair.second * 100.0f) / stats.count;
+            std::cout << "  " << std::setw(10) << std::left << pair.first
+                << ": " << std::setw(3) << pair.second
+                << " (" << std::fixed << std::setprecision(1) << percentage << "%)\n";
+        }
+
+        std::cout << "\n--- Armor Type Distribution ---\n";
+        for (const auto& pair : stats.armorTypeCount)
+        {
+            float percentage = (pair.second * 100.0f) / stats.count;
+            std::cout << "  " << std::setw(15) << std::left << pair.first
+                << ": " << std::setw(3) << pair.second
+                << " (" << std::fixed << std::setprecision(1) << percentage << "%)\n";
+        }
+
+        std::cout << "\n--- Armor Class Stats ---\n";
+        std::cout << "  Average: " << (stats.totalArmorClass / stats.count) << "\n";
+        std::cout << "  Min:     " << stats.minArmorClass << "\n";
+        std::cout << "  Max:     " << stats.maxArmorClass << "\n";
+
+        std::cout << "\n--- Weight Stats ---\n";
+        std::cout << "  Average: " << (stats.totalWeight / stats.count) << " grams\n";
+        std::cout << "  Min:     " << stats.minWeight << " grams\n";
+        std::cout << "  Max:     " << stats.maxWeight << " grams\n";
+
+        std::cout << "\n--- Penalty Stats ---\n";
+        std::cout << "  Movement Speed Penalty: " << (stats.totalMovementSpeedPenalty / stats.count) << "% (avg)\n";
+        std::cout << "  Ergonomics Penalty: " << (stats.totalErgonomicsPenalty / stats.count) << "% (avg)\n";
+        std::cout << "  Turn Speed Penalty: " << (stats.totalTurnSpeedPenalty / stats.count) << "% (avg)\n";
+
+        std::cout << "\n--- Special Properties ---\n";
+        std::cout << "  Blocks Headset: " << stats.blocksHeadsetCount
+            << " (" << (stats.blocksHeadsetCount * 100.0f / stats.count) << "%)\n";
+        std::cout << "  Blocks Face Cover: " << stats.blocksFaceCoverCount
+            << " (" << (stats.blocksFaceCoverCount * 100.0f / stats.count) << "%)\n";
+
+        std::cout << "========================================\n\n";
+    }
+
+    static void PrintClothingReport(const std::vector<ItemClothingData>& items)
+    {
+        if (items.empty())
+        {
+            std::cout << "[BalanceReporter] No clothing items to analyze.\n";
+            return;
+        }
+
+        ClothingStats stats;
+        for (const auto& item : items)
+        {
+            stats.count++;
+            stats.totalColdResistance += item.coldResistance;
+            stats.totalHeatResistance += item.heatResistance;
+            stats.totalWaterResistance += item.waterResistance;
+            stats.totalWindResistance += item.windResistance;
+            stats.totalComfort += item.comfort;
+            stats.totalMobilityBonus += item.mobilityBonus;
+            stats.totalStaminaBonus += item.staminaBonus;
+            stats.totalDurability += item.durability;
+            stats.totalMaterial += item.material;
+            stats.totalWeight += item.weight;
+
+            stats.minColdResistance = std::min(stats.minColdResistance, item.coldResistance);
+            stats.maxColdResistance = std::max(stats.maxColdResistance, item.coldResistance);
+            stats.minHeatResistance = std::min(stats.minHeatResistance, item.heatResistance);
+            stats.maxHeatResistance = std::max(stats.maxHeatResistance, item.heatResistance);
+            stats.minWaterResistance = std::min(stats.minWaterResistance, item.waterResistance);
+            stats.maxWaterResistance = std::max(stats.maxWaterResistance, item.waterResistance);
+            stats.minWindResistance = std::min(stats.minWindResistance, item.windResistance);
+            stats.maxWindResistance = std::max(stats.maxWindResistance, item.windResistance);
+            stats.minComfort = std::min(stats.minComfort, item.comfort);
+            stats.maxComfort = std::max(stats.maxComfort, item.comfort);
+            stats.minMobilityBonus = std::min(stats.minMobilityBonus, item.mobilityBonus);
+            stats.maxMobilityBonus = std::max(stats.maxMobilityBonus, item.mobilityBonus);
+            stats.minStaminaBonus = std::min(stats.minStaminaBonus, item.staminaBonus);
+            stats.maxStaminaBonus = std::max(stats.maxStaminaBonus, item.staminaBonus);
+            stats.minDurability = std::min(stats.minDurability, item.durability);
+            stats.maxDurability = std::max(stats.maxDurability, item.durability);
+            stats.minMaterial = std::min(stats.minMaterial, item.material);
+            stats.maxMaterial = std::max(stats.maxMaterial, item.material);
+            stats.minWeight = std::min(stats.minWeight, item.weight);
+            stats.maxWeight = std::max(stats.maxWeight, item.weight);
+
+            if (item.isInsulated) stats.isInsulatedCount++;
+            if (item.isWaterproof) stats.isWaterproofCount++;
+            if (item.isWindproof) stats.isWindproofCount++;
+
+            stats.rarityCount[item.rarity]++;
+            stats.clothingTypeCount[item.clothingType]++;
+        }
+
+        std::cout << "\n";
+        std::cout << "========================================\n";
+        std::cout << "   CLOTHING ITEMS BALANCE REPORT\n";
+        std::cout << "========================================\n";
+        std::cout << "Total Items: " << stats.count << "\n\n";
+
+        std::cout << "--- Quick Summary ---\n";
+        std::cout << "  Average Cold Resistance: " << (stats.totalColdResistance / stats.count) << "/100\n";
+        std::cout << "  Average Heat Resistance: " << (stats.totalHeatResistance / stats.count) << "/100\n";
+        std::cout << "  Average Water Resistance: " << (stats.totalWaterResistance / stats.count) << "/100\n";
+        std::cout << "  Average Comfort: " << (stats.totalComfort / stats.count) << "/100\n";
+        std::cout << "  Average Weight: " << (stats.totalWeight / stats.count) << " grams\n";
+        std::cout << "\n";
+
+        std::cout << "--- Rarity Distribution ---\n";
+        for (const auto& pair : stats.rarityCount)
+        {
+            float percentage = (pair.second * 100.0f) / stats.count;
+            std::cout << "  " << std::setw(10) << std::left << pair.first
+                << ": " << std::setw(3) << pair.second
+                << " (" << std::fixed << std::setprecision(1) << percentage << "%)\n";
+        }
+
+        std::cout << "\n--- Clothing Type Distribution ---\n";
+        for (const auto& pair : stats.clothingTypeCount)
+        {
+            float percentage = (pair.second * 100.0f) / stats.count;
+            std::cout << "  " << std::setw(15) << std::left << pair.first
+                << ": " << std::setw(3) << pair.second
+                << " (" << std::fixed << std::setprecision(1) << percentage << "%)\n";
+        }
+
+        std::cout << "\n--- Environmental Protection Stats ---\n";
+        std::cout << "  Cold Resistance: " << (stats.totalColdResistance / stats.count) << " (avg), "
+            << stats.minColdResistance << "-" << stats.maxColdResistance << " (range)\n";
+        std::cout << "  Heat Resistance: " << (stats.totalHeatResistance / stats.count) << " (avg), "
+            << stats.minHeatResistance << "-" << stats.maxHeatResistance << " (range)\n";
+        std::cout << "  Water Resistance: " << (stats.totalWaterResistance / stats.count) << " (avg), "
+            << stats.minWaterResistance << "-" << stats.maxWaterResistance << " (range)\n";
+        std::cout << "  Wind Resistance: " << (stats.totalWindResistance / stats.count) << " (avg), "
+            << stats.minWindResistance << "-" << stats.maxWindResistance << " (range)\n";
+
+        std::cout << "\n--- Comfort and Mobility Stats ---\n";
+        std::cout << "  Comfort: " << (stats.totalComfort / stats.count) << " (avg), "
+            << stats.minComfort << "-" << stats.maxComfort << " (range)\n";
+        std::cout << "  Mobility Bonus: " << (stats.totalMobilityBonus / stats.count) << " (avg), "
+            << stats.minMobilityBonus << "-" << stats.maxMobilityBonus << " (range)\n";
+        std::cout << "  Stamina Bonus: " << (stats.totalStaminaBonus / stats.count) << " (avg), "
+            << stats.minStaminaBonus << "-" << stats.maxStaminaBonus << " (range)\n";
+
+        std::cout << "\n--- Special Properties ---\n";
+        std::cout << "  Insulated: " << stats.isInsulatedCount
+            << " (" << (stats.isInsulatedCount * 100.0f / stats.count) << "%)\n";
+        std::cout << "  Waterproof: " << stats.isWaterproofCount
+            << " (" << (stats.isWaterproofCount * 100.0f / stats.count) << "%)\n";
+        std::cout << "  Windproof: " << stats.isWindproofCount
+            << " (" << (stats.isWindproofCount * 100.0f / stats.count) << "%)\n";
+
+        std::cout << "========================================\n\n";
+    }
+
     int GenerateReport(const std::string& jsonFilePath, ItemType itemType)
     {
         // Check if file exists
@@ -1118,6 +1418,26 @@ namespace BalanceReporter
                 return 1;
             }
             PrintAmmoReport(items);
+        }
+        else if (itemType == ItemType::Armor)
+        {
+            std::vector<ItemArmorData> items;
+            if (!ItemJsonParser::ParseArmorFromJsonText(jsonText, items))
+            {
+                std::cerr << "[BalanceReporter] Failed to parse armor JSON.\n";
+                return 1;
+            }
+            PrintArmorReport(items);
+        }
+        else if (itemType == ItemType::Clothing)
+        {
+            std::vector<ItemClothingData> items;
+            if (!ItemJsonParser::ParseClothingFromJsonText(jsonText, items))
+            {
+                std::cerr << "[BalanceReporter] Failed to parse clothing JSON.\n";
+                return 1;
+            }
+            PrintClothingReport(items);
         }
         else
         {

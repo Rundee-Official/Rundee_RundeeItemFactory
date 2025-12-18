@@ -10,7 +10,12 @@
 
 #pragma once
 
+// Project Includes
 #include "Data/ItemWeaponData.h"
+
+// ============================================================================
+// SECTION 1: WeaponItemValidator Namespace
+// ============================================================================
 
 namespace WeaponItemValidator
 {

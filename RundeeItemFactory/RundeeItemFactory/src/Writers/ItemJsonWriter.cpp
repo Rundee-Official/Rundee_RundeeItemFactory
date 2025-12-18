@@ -8,16 +8,26 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Writers/ItemJsonWriter.h"
-#include "Parsers/ItemJsonParser.h"
-#include "json.hpp"
+// Standard Library Includes
 #include <fstream>
 #include <iostream>
-#include <set>
 #include <iterator>
+#include <set>
+
+// Windows Platform Includes
 #include <windows.h>
 
+// Third-Party Includes
+#include "json.hpp"
 using nlohmann::json;
+
+// Project Includes
+#include "Parsers/ItemJsonParser.h"
+#include "Writers/ItemJsonWriter.h"
+
+// ============================================================================
+// SECTION 1: Anonymous Namespace - Internal Helper Functions
+// ============================================================================
 
 namespace
 {
@@ -819,6 +829,228 @@ std::set<std::string> ItemJsonWriter::GetExistingAmmoIds(const std::string& path
         if (!existingContent.empty())
         {
             if (ItemJsonParser::ParseAmmoFromJsonText(existingContent, existingItems))
+            {
+                for (const auto& item : existingItems)
+                {
+                    existingIds.insert(item.id);
+                }
+            }
+        }
+    }
+
+    return existingIds;
+}
+
+bool ItemJsonWriter::WriteArmorToFile(const std::vector<ItemArmorData>& items, const std::string& path)
+{
+    json jArray = json::array();
+
+    for (const auto& item : items)
+    {
+        json jItem;
+
+        jItem["id"] = item.id;
+        jItem["displayName"] = item.displayName;
+        jItem["category"] = item.category;
+        jItem["rarity"] = item.rarity;
+        jItem["maxStack"] = item.maxStack;
+        jItem["description"] = item.description;
+
+        jItem["armorType"] = item.armorType;
+        jItem["armorClass"] = item.armorClass;
+        jItem["durability"] = item.durability;
+        jItem["material"] = item.material;
+        jItem["protectionZones"] = item.protectionZones;
+        jItem["movementSpeedPenalty"] = item.movementSpeedPenalty;
+        jItem["ergonomicsPenalty"] = item.ergonomicsPenalty;
+        jItem["turnSpeedPenalty"] = item.turnSpeedPenalty;
+        jItem["weight"] = item.weight;
+        jItem["capacity"] = item.capacity;
+        jItem["blocksHeadset"] = item.blocksHeadset;
+        jItem["blocksFaceCover"] = item.blocksFaceCover;
+
+        jArray.push_back(jItem);
+    }
+
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
+    }
+
+    std::ofstream ofs(path);
+    if (!ofs.is_open())
+    {
+        std::cerr << "[ItemJsonWriter] Failed to open file: " << path << "\n";
+        return false;
+    }
+
+    ofs << jArray.dump(2);
+    std::cout << "[ItemJsonWriter] Wrote " << items.size()
+        << " armor items to JSON file: " << path << "\n";
+    return true;
+}
+
+bool ItemJsonWriter::WriteClothingToFile(const std::vector<ItemClothingData>& items, const std::string& path)
+{
+    json jArray = json::array();
+
+    for (const auto& item : items)
+    {
+        json jItem;
+
+        jItem["id"] = item.id;
+        jItem["displayName"] = item.displayName;
+        jItem["category"] = item.category;
+        jItem["rarity"] = item.rarity;
+        jItem["maxStack"] = item.maxStack;
+        jItem["description"] = item.description;
+
+        jItem["clothingType"] = item.clothingType;
+        jItem["coldResistance"] = item.coldResistance;
+        jItem["heatResistance"] = item.heatResistance;
+        jItem["waterResistance"] = item.waterResistance;
+        jItem["windResistance"] = item.windResistance;
+        jItem["comfort"] = item.comfort;
+        jItem["mobilityBonus"] = item.mobilityBonus;
+        jItem["staminaBonus"] = item.staminaBonus;
+        jItem["durability"] = item.durability;
+        jItem["material"] = item.material;
+        jItem["weight"] = item.weight;
+        jItem["isInsulated"] = item.isInsulated;
+        jItem["isWaterproof"] = item.isWaterproof;
+        jItem["isWindproof"] = item.isWindproof;
+
+        jArray.push_back(jItem);
+    }
+
+    if (!EnsureDirectoryExists(path))
+    {
+        std::cerr << "[ItemJsonWriter] Failed to create directory for: " << path << "\n";
+        return false;
+    }
+
+    std::ofstream ofs(path);
+    if (!ofs.is_open())
+    {
+        std::cerr << "[ItemJsonWriter] Failed to open file: " << path << "\n";
+        return false;
+    }
+
+    ofs << jArray.dump(2);
+    std::cout << "[ItemJsonWriter] Wrote " << items.size()
+        << " clothing items to JSON file: " << path << "\n";
+    return true;
+}
+
+bool ItemJsonWriter::MergeArmorToFile(const std::vector<ItemArmorData>& newItems, const std::string& path)
+{
+    std::vector<ItemArmorData> existingItems;
+    std::set<std::string> existingIds;
+
+    std::ifstream ifs(path);
+    if (ifs.is_open())
+    {
+        std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        ifs.close();
+        if (!existingContent.empty())
+        {
+            if (ItemJsonParser::ParseArmorFromJsonText(existingContent, existingItems))
+            {
+                for (const auto& item : existingItems)
+                {
+                    existingIds.insert(item.id);
+                }
+            }
+        }
+    }
+
+    std::vector<ItemArmorData> mergedItems = existingItems;
+    for (const auto& newItem : newItems)
+    {
+        if (existingIds.find(newItem.id) == existingIds.end())
+        {
+            mergedItems.push_back(newItem);
+            existingIds.insert(newItem.id);
+        }
+    }
+
+    return WriteArmorToFile(mergedItems, path);
+}
+
+bool ItemJsonWriter::MergeClothingToFile(const std::vector<ItemClothingData>& newItems, const std::string& path)
+{
+    std::vector<ItemClothingData> existingItems;
+    std::set<std::string> existingIds;
+
+    std::ifstream ifs(path);
+    if (ifs.is_open())
+    {
+        std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        ifs.close();
+        if (!existingContent.empty())
+        {
+            if (ItemJsonParser::ParseClothingFromJsonText(existingContent, existingItems))
+            {
+                for (const auto& item : existingItems)
+                {
+                    existingIds.insert(item.id);
+                }
+            }
+        }
+    }
+
+    std::vector<ItemClothingData> mergedItems = existingItems;
+    for (const auto& newItem : newItems)
+    {
+        if (existingIds.find(newItem.id) == existingIds.end())
+        {
+            mergedItems.push_back(newItem);
+            existingIds.insert(newItem.id);
+        }
+    }
+
+    return WriteClothingToFile(mergedItems, path);
+}
+
+std::set<std::string> ItemJsonWriter::GetExistingArmorIds(const std::string& path)
+{
+    std::set<std::string> existingIds;
+    std::vector<ItemArmorData> existingItems;
+
+    std::ifstream ifs(path);
+    if (ifs.is_open())
+    {
+        std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        ifs.close();
+        if (!existingContent.empty())
+        {
+            if (ItemJsonParser::ParseArmorFromJsonText(existingContent, existingItems))
+            {
+                for (const auto& item : existingItems)
+                {
+                    existingIds.insert(item.id);
+                }
+            }
+        }
+    }
+
+    return existingIds;
+}
+
+std::set<std::string> ItemJsonWriter::GetExistingClothingIds(const std::string& path)
+{
+    std::set<std::string> existingIds;
+    std::vector<ItemClothingData> existingItems;
+
+    std::ifstream ifs(path);
+    if (ifs.is_open())
+    {
+        std::string existingContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        ifs.close();
+        if (!existingContent.empty())
+        {
+            if (ItemJsonParser::ParseClothingFromJsonText(existingContent, existingItems))
             {
                 for (const auto& item : existingItems)
                 {

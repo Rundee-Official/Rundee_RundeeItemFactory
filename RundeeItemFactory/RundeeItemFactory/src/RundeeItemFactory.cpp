@@ -11,7 +11,7 @@
 #include <iostream>
 #include "Helpers/AppConfig.h"
 #include "Helpers/CommandLineParser.h"
-#include "Helpers/ItemGenerator.h"
+#include "Generators/ItemGenerator.h"
 #include "Helpers/BalanceReporter.h"
 
 int main(int argc, char** argv)

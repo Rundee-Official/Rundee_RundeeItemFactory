@@ -10,12 +10,22 @@
 
 #pragma once
 
-#include <string>
+// Standard Library Includes
 #include <set>
+#include <string>
+
+// Project Includes
 #include "Helpers/ItemGenerateParams.h"
 
-// Forward declaration
+// ============================================================================
+// SECTION 1: Forward Declarations
+// ============================================================================
+
 struct CustomPreset;
+
+// ============================================================================
+// SECTION 2: Enums
+// ============================================================================
 
 enum class PresetType
 {
@@ -23,8 +33,13 @@ enum class PresetType
     Forest,
     Desert,
     Coast,
-    City
+    City,
+    Arctic
 };
+
+// ============================================================================
+// SECTION 3: PromptBuilder Class
+// ============================================================================
 
 class PromptBuilder
 {
@@ -56,6 +71,14 @@ public:
     // Build ammo item generation prompt
     static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
     static std::string BuildAmmoJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+
+    // Build armor item generation prompt
+    static std::string BuildArmorJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildArmorJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+
+    // Build clothing item generation prompt
+    static std::string BuildClothingJsonPrompt(const FoodGenerateParams& params, PresetType preset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
+    static std::string BuildClothingJsonPrompt(const FoodGenerateParams& params, const CustomPreset& customPreset, const std::set<std::string>& excludeIds = std::set<std::string>(), const std::string& modelName = std::string(), const std::string& generationTimestamp = std::string(), int existingCount = -1);
 };
 
 

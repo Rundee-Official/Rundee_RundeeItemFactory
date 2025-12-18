@@ -10,7 +10,12 @@
 
 #pragma once
 
+// Project Includes
 #include "Data/ItemAmmoData.h"
+
+// ============================================================================
+// SECTION 1: AmmoItemValidator Namespace
+// ============================================================================
 
 namespace AmmoItemValidator
 {

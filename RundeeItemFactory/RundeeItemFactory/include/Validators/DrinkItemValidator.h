@@ -10,7 +10,12 @@
 
 #pragma once
 
+// Project Includes
 #include "Data/ItemDrinkData.h"
+
+// ============================================================================
+// SECTION 1: DrinkItemValidator Class
+// ============================================================================
 
 class DrinkItemValidator
 {

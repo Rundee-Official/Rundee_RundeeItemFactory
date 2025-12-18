@@ -8,13 +8,20 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Validators/FoodItemValidator.h"
-#include "Utils/JsonUtils.h"
-#include <iostream>
+// Standard Library Includes
 #include <algorithm>
 #include <cctype>
-#include <fstream>
 #include <chrono>
+#include <fstream>
+#include <iostream>
+
+// Project Includes
+#include "Validators/FoodItemValidator.h"
+#include "Utils/JsonUtils.h"
+
+// ============================================================================
+// SECTION 1: Anonymous Namespace - Internal Helper Functions
+// ============================================================================
 
 static float ComputePower(const ItemFoodData& item)
 {
@@ -107,6 +114,10 @@ static void EnsureRarity(ItemFoodData& item)
     scaleAndClamp(item.thirstRestore);
     scaleAndClamp(item.healthRestore);
 }
+
+// ============================================================================
+// SECTION 2: FoodItemValidator Class Implementation
+// ============================================================================
 
 void FoodItemValidator::Validate(ItemFoodData& item)
 {

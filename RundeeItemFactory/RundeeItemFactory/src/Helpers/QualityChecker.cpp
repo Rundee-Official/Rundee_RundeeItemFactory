@@ -8,17 +8,24 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Helpers/QualityChecker.h"
-#include "Data/ItemWeaponData.h"
-#include "Data/ItemWeaponComponentData.h"
-#include "Data/ItemAmmoData.h"
-#include "Data/ItemFoodData.h"
-#include "Data/ItemDrinkData.h"
-#include "Data/ItemMaterialData.h"
-#include <iostream>
-#include <cmath>
+// Standard Library Includes
 #include <algorithm>
+#include <cmath>
 #include <iomanip>
+#include <iostream>
+
+// Project Includes
+#include "Helpers/QualityChecker.h"
+#include "Data/ItemAmmoData.h"
+#include "Data/ItemDrinkData.h"
+#include "Data/ItemFoodData.h"
+#include "Data/ItemMaterialData.h"
+#include "Data/ItemWeaponComponentData.h"
+#include "Data/ItemWeaponData.h"
+
+// ============================================================================
+// SECTION 1: Quality Check Functions (by Item Type)
+// ============================================================================
 
 namespace QualityChecker
 {
@@ -466,6 +473,10 @@ namespace QualityChecker
 
         return result;
     }
+
+    // ============================================================================
+    // SECTION 2: Utility Functions
+    // ============================================================================
 
     void PrintQualityResult(const QualityResult& result, const std::string& itemId)
     {

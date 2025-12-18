@@ -8,7 +8,12 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
+// Unity Includes
 using UnityEngine;
+
+// ============================================================================
+// SECTION 1: ItemDatabase Class
+// ============================================================================
 
 /// <summary>
 /// Runtime database component that loads all item ScriptableObjects from Resources folder.
@@ -32,6 +37,16 @@ public class ItemDatabase : MonoBehaviour
 
     [Header("Ammo Items")]
     public AmmoItemDataSO[] ammoItems;
+
+    [Header("Armor Items")]
+    public ArmorItemDataSO[] armorItems;
+
+    [Header("Clothing Items")]
+    public ClothingItemDataSO[] clothingItems;
+
+    // ========================================================================
+    // Unity Lifecycle Methods
+    // ========================================================================
 
     private void Awake()
     {
@@ -64,9 +79,21 @@ public class ItemDatabase : MonoBehaviour
         ammoItems = Resources.LoadAll<AmmoItemDataSO>("RundeeItemFactory/AmmoItems");
         Debug.Log($"[ItemDatabase] Loaded {ammoItems.Length} ammo items from Resources.");
 
+        // Load Armor items
+        armorItems = Resources.LoadAll<ArmorItemDataSO>("RundeeItemFactory/ArmorItems");
+        Debug.Log($"[ItemDatabase] Loaded {armorItems.Length} armor items from Resources.");
+
+        // Load Clothing items
+        clothingItems = Resources.LoadAll<ClothingItemDataSO>("RundeeItemFactory/ClothingItems");
+        Debug.Log($"[ItemDatabase] Loaded {clothingItems.Length} clothing items from Resources.");
+
         // Output logs
         LogAllItems();
     }
+
+    // ========================================================================
+    // Private Helper Methods
+    // ========================================================================
 
     private void LogAllItems()
     {
@@ -96,10 +123,31 @@ public class ItemDatabase : MonoBehaviour
         }
     }
 
-    // Convenience methods: Find items by ID
-    public FoodItemDataSO FindFoodItem(string id)
+    // ========================================================================
+    // Public API - Find Methods (by Item Type - Alphabetical Order)
+    // ========================================================================
+
+    public AmmoItemDataSO FindAmmoItem(string id)
     {
-        foreach (var item in foodItems)
+        foreach (var item in ammoItems)
+        {
+            if (item.id == id) return item;
+        }
+        return null;
+    }
+
+    public ArmorItemDataSO FindArmorItem(string id)
+    {
+        foreach (var item in armorItems)
+        {
+            if (item.id == id) return item;
+        }
+        return null;
+    }
+
+    public ClothingItemDataSO FindClothingItem(string id)
+    {
+        foreach (var item in clothingItems)
         {
             if (item.id == id) return item;
         }
@@ -109,6 +157,15 @@ public class ItemDatabase : MonoBehaviour
     public DrinkItemDataSO FindDrinkItem(string id)
     {
         foreach (var item in drinkItems)
+        {
+            if (item.id == id) return item;
+        }
+        return null;
+    }
+
+    public FoodItemDataSO FindFoodItem(string id)
+    {
+        foreach (var item in foodItems)
         {
             if (item.id == id) return item;
         }
@@ -136,15 +193,6 @@ public class ItemDatabase : MonoBehaviour
     public WeaponComponentItemDataSO FindWeaponComponentItem(string id)
     {
         foreach (var item in weaponComponentItems)
-        {
-            if (item.id == id) return item;
-        }
-        return null;
-    }
-
-    public AmmoItemDataSO FindAmmoItem(string id)
-    {
-        foreach (var item in ammoItems)
         {
             if (item.id == id) return item;
         }

@@ -8,11 +8,20 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-#include "Helpers/AppConfig.h"
-#include "json.hpp"
+// Standard Library Includes
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
+// Third-Party Includes
+#include "json.hpp"
+
+// Project Includes
+#include "Helpers/AppConfig.h"
+
+// ============================================================================
+// SECTION 1: Anonymous Namespace - Internal Helpers
+// ============================================================================
 
 namespace
 {
@@ -48,6 +57,10 @@ namespace
         }
     }
 }
+
+// ============================================================================
+// SECTION 2: AppConfig Class Implementation
+// ============================================================================
 
 void AppConfig::EnsureLoaded()
 {
