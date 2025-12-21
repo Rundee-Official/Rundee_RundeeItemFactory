@@ -1,41 +1,21 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: ItemFactoryWindow.cs
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: Main Unity Editor window for generating items using LLM (Ollama).
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
-
-// Standard Library Includes
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-
-// Unity Includes
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-// ============================================================================
-// SECTION 1: Enums
-// ============================================================================
-
-/// <summary>
-/// Preset types for item generation context.
-/// </summary>
 public enum PresetType
 {
     Default,
     Forest,
     Desert,
     Coast,
-    City,
-    Arctic
+    City
 }
 
 public enum ModelType
@@ -49,33 +29,54 @@ public enum ModelType
     Custom
 }
 
-// ============================================================================
-// SECTION 2: ItemFactoryWindow Class
-// ============================================================================
-
+/// <summary>
+/// Unity Editor window for generating game items using LLM
+/// </summary>
+/// <remarks>
+/// Provides a GUI interface for:
+/// - Configuring item generation parameters
+/// - Selecting LLM models and presets
+/// - Batch generation of multiple item types
+/// - Auto-importing generated items into Unity ScriptableObjects
+/// - Managing custom presets
+/// - Generating balance reports
+/// </remarks>
 public class ItemFactoryWindow : EditorWindow
 {
-    // #region agent log helper
-    private static void AgentLog(string hypothesisId, string location, string message)
+    /// <summary>
+    /// Log entry with color information for colored log display
+    /// </summary>
+    private class LogEntry
     {
-        var payload = $"{{\"sessionId\":\"debug-session\",\"runId\":\"run4\",\"hypothesisId\":\"{hypothesisId}\",\"location\":\"{location}\",\"message\":\"{message}\",\"timestamp\":{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}}}\n";
-        TryWriteLog(@"d:\_VisualStudioProjects\_Rundee_RundeeItemFactory\.cursor\debug.log", payload);
-        TryWriteLog(Path.Combine(Application.dataPath.Replace("/Assets", ""), ".cursor", "debug_fallback.log"), payload);
-    }
-
-    private static void TryWriteLog(string path, string payload)
-    {
-        try
+        public string message;
+        public LogType type;
+        public DateTime timestamp;
+        
+        public LogEntry(string msg, LogType logType = LogType.Log)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            File.AppendAllText(path, payload);
-        }
-        catch
-        {
-            // ignore logging errors
+            message = msg;
+            type = logType;
+            timestamp = DateTime.Now;
         }
     }
-    // #endregion
+    
+    /// <summary>
+    /// Log entry type for color coding
+    /// </summary>
+    private enum LogType
+    {
+        /// <summary>Standard log message</summary>
+        Log,
+        /// <summary>Warning message (orange)</summary>
+        Warning,
+        /// <summary>Error message (red)</summary>
+        Error,
+        /// <summary>Success message (green)</summary>
+        Success,
+        /// <summary>Info message (blue)</summary>
+        Info
+    }
+    // Debug logging disabled for release
 
     // Configuration
     private string executablePath = "";
@@ -91,11 +92,27 @@ public class ItemFactoryWindow : EditorWindow
     private int maxThirst = 100;
     private string outputPath = "";
     private string additionalPrompt = "";  // User-defined additional prompt
+    private bool useTestMode = false;  // Test mode: outputs to Test/ folder instead of ItemJson/
+    
+    // Generation Profile
+    private ItemGenerationProfile selectedProfile = null;
+    private bool useProfile = false;
 
     // UI State
+    private Vector2 mainScrollPosition;  // Main window scroll position
     private Vector2 logScrollPosition;
     private string logText = "";
+    private List<LogEntry> logEntries = new List<LogEntry>();
     private bool isGenerating = false;
+    
+    // Progress tracking
+    private int generatedItemCount = 0;
+    private int targetItemCount = 0;
+    private Dictionary<ItemType, int> batchProgress = new Dictionary<ItemType, int>();
+    
+    // Settings persistence
+    private const string PREFS_KEY_PREFIX = "RundeeItemFactory_";
+    private bool autoCleanRawFiles = true;
     private Process currentProcess = null;
     private bool autoImportAfterGeneration = true;
     private bool isBatchGeneration = false;  // Track if current generation is batch mode
@@ -111,13 +128,28 @@ public class ItemFactoryWindow : EditorWindow
     private string ollamaDetectedPath = "";
     private string ollamaDetectMessage = "";
 
+    // Tab System
+    private enum TabType
+    {
+        Settings,
+        SingleGeneration,
+        BatchGeneration,
+        BalanceReport,
+        PresetManager
+    }
+    private TabType selectedTab = TabType.Settings;
+    private readonly string[] tabNames = { "Settings", "Single Generation", "Batch Generation", "Balance Report", "Preset Manager" };
+    
     // UI Foldouts
     private bool showConfigSection = true;
     private bool showGenerationParams = true;
-    private bool showBatchGeneration = false;
-    private bool showPresetManager = false;
     private bool showAdvancedOptions = false;
-    private bool showBalanceReport = false;
+    
+    // Separate log areas for each generation tab
+    private Vector2 singleGenerationLogScrollPosition;
+    private List<LogEntry> singleGenerationLogEntries = new List<LogEntry>();
+    private Vector2 batchGenerationLogScrollPosition;
+    private List<LogEntry> batchGenerationLogEntries = new List<LogEntry>();
 
     // Balance Report
     private string balanceReportJsonPath = "";
@@ -144,8 +176,8 @@ public class ItemFactoryWindow : EditorWindow
     private bool showLoadPlanEditor = true;
 
     // Preset options
-    private readonly string[] presetNames = { "Default", "Forest", "Desert", "Coast", "City", "Arctic" };
-    private readonly PresetType[] presetValues = { PresetType.Default, PresetType.Forest, PresetType.Desert, PresetType.Coast, PresetType.City, PresetType.Arctic };
+    private readonly string[] presetNames = { "Default", "Forest", "Desert", "Coast", "City" };
+    private readonly PresetType[] presetValues = { PresetType.Default, PresetType.Forest, PresetType.Desert, PresetType.Coast, PresetType.City };
     
     // Custom Preset Management
     [System.Serializable]
@@ -170,8 +202,8 @@ public class ItemFactoryWindow : EditorWindow
     private readonly ModelType[] modelValues = { ModelType.Llama3, ModelType.Llama2, ModelType.Mistral, ModelType.Gemma, ModelType.Phi3, ModelType.Qwen, ModelType.Custom };
 
     // Item type options
-    private readonly string[] itemTypeNames = { "Food", "Drink", "Material", "Weapon", "Weapon Component", "Ammo", "Armor", "Clothing" };
-    private readonly ItemType[] itemTypeValues = { ItemType.Food, ItemType.Drink, ItemType.Material, ItemType.Weapon, ItemType.WeaponComponent, ItemType.Ammo, ItemType.Armor, ItemType.Clothing };
+    private readonly string[] itemTypeNames = { "Food", "Drink", "Medicine", "Material", "Weapon", "Weapon Component", "Ammo", "Armor", "Clothing" };
+    private readonly ItemType[] itemTypeValues = { ItemType.Food, ItemType.Drink, ItemType.Medicine, ItemType.Material, ItemType.Weapon, ItemType.WeaponComponent, ItemType.Ammo, ItemType.Armor, ItemType.Clothing };
 
     private string GetModelName()
     {
@@ -192,7 +224,7 @@ public class ItemFactoryWindow : EditorWindow
         }
     }
 
-    [MenuItem("Tools/Rundee/Item Factory/Item Factory Window")]
+    [MenuItem("Tools/Rundee/Item Factory/Generation/Item Factory Window", false, 1000)]
     public static void ShowWindow()
     {
         ItemFactoryWindow window = GetWindow<ItemFactoryWindow>("Item Factory");
@@ -203,12 +235,76 @@ public class ItemFactoryWindow : EditorWindow
         window.CheckOllamaStatus();
     }
 
+    /// <summary>
+    /// Public static method to generate items programmatically from other windows
+    /// </summary>
+    public static bool GenerateItemsAsync(ItemType itemType, int count, string outputPath, 
+        string modelName = "llama3", PresetType? preset = null, string customPresetPath = null,
+        Action<bool, string> onComplete = null)
+    {
+        var window = GetWindow<ItemFactoryWindow>("Item Factory", false);
+        if (window == null)
+        {
+            window = CreateInstance<ItemFactoryWindow>();
+        }
+
+        if (window.isGenerating)
+        {
+            UnityEngine.Debug.LogWarning("[ItemFactoryWindow] Generation already in progress.");
+            onComplete?.Invoke(false, "Generation already in progress");
+            return false;
+        }
+
+        // Set parameters
+        window.selectedItemType = itemType;
+        window.itemCount = count;
+        window.outputPath = outputPath;
+        window.customModelName = modelName;
+        window.selectedModel = ModelType.Custom;
+        
+        if (customPresetPath != null)
+        {
+            window.useCustomPreset = true;
+            window.customPresetPath = customPresetPath;
+        }
+        else if (preset.HasValue)
+        {
+            window.useCustomPreset = false;
+            window.selectedPreset = preset.Value;
+        }
+
+        // Find executable
+        window.InitializeExecutablePath();
+
+        if (string.IsNullOrEmpty(window.executablePath) || !File.Exists(window.executablePath))
+        {
+            UnityEngine.Debug.LogError("[ItemFactoryWindow] Executable not found. Please set the path in Item Factory Window.");
+            onComplete?.Invoke(false, "Executable not found");
+            return false;
+        }
+
+        // Store callback
+        window.generationCompleteCallback = onComplete;
+
+        // Start generation
+        window.GenerateItems();
+        return true;
+    }
+
+    private Action<bool, string> generationCompleteCallback = null;
+
     private void OnEnable()
     {
         InitializeExecutablePath();
         InitializeOutputPath();
         InitializeSetupPaths();
         CheckOllamaStatus();
+        LoadSettings();
+    }
+    
+    private void OnDisable()
+    {
+        SaveSettings();
     }
 
     private void InitializeOutputPath()
@@ -228,16 +324,36 @@ public class ItemFactoryWindow : EditorWindow
 
     private void UpdateOutputPathForItemType()
     {
-        // Default to ItemJson folder in project root with a descriptive filename
+        // Default to ItemJson or Test folder in project root with a descriptive filename
         string projectRoot = Application.dataPath.Replace("/Assets", "");
         string defaultFileName = $"items_{selectedItemType.ToString().ToLower()}.json";
-        outputPath = Path.Combine(projectRoot, "ItemJson", defaultFileName);
+        string outputDir = useTestMode ? "Test" : "ItemJson";
+        outputPath = Path.Combine(projectRoot, outputDir, defaultFileName);
+    }
+
+    /// <summary>
+    /// Get default output path for a batch item
+    /// </summary>
+    private string GetDefaultBatchOutputPath(ItemType itemType)
+    {
+        string projectRoot = Application.dataPath.Replace("/Assets", "");
+        string itemTypeName = itemType.ToString().ToLower();
+        
+        // Handle WeaponComponent -> weaponcomponent conversion
+        if (itemType == ItemType.WeaponComponent)
+        {
+            itemTypeName = "weaponcomponent";
+        }
+        
+        string defaultFileName = $"items_{itemTypeName}.json";
+        string outputDir = useTestMode ? "Test" : "ItemJson";
+        return Path.Combine(projectRoot, outputDir, defaultFileName);
     }
 
     private void InitializeExecutablePath()
     {
         // Try to find the executable relative to Unity project
-        AgentLog("H10", "ItemFactoryWindow.InitializeExecutablePath:start", "auto-scan");
+        // Auto-detecting executable path
         string projectRoot = Application.dataPath.Replace("/Assets", "");
         string[] possiblePaths = {
             Path.Combine(projectRoot, "RundeeItemFactory", "x64", "Debug", "RundeeItemFactory.exe"),
@@ -252,7 +368,7 @@ public class ItemFactoryWindow : EditorWindow
             {
                 executablePath = path;
                 defaultExecutablePath = path;
-                AgentLog("H10", "ItemFactoryWindow.InitializeExecutablePath:found", path);
+                // Executable found
                 break;
             }
         }
@@ -260,21 +376,77 @@ public class ItemFactoryWindow : EditorWindow
         if (string.IsNullOrEmpty(executablePath))
         {
             AddLog("[Warning] Executable not found in standard locations.");
-            AgentLog("H10", "ItemFactoryWindow.InitializeExecutablePath:not_found", "none");
+            // Executable not found
         }
     }
 
     private void OnGUI()
     {
+        // Main scroll view for entire window
+        mainScrollPosition = EditorGUILayout.BeginScrollView(mainScrollPosition);
+        
         EditorGUILayout.Space(10);
 
-        // Title
-        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-        titleStyle.fontSize = 18;
-        titleStyle.fontStyle = FontStyle.Bold;
+        // Title with improved styling
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        GUIStyle titleStyle = new GUIStyle(EditorStyles.boldLabel);
+        titleStyle.fontSize = 20;
+        titleStyle.alignment = TextAnchor.MiddleCenter;
         EditorGUILayout.LabelField("Rundee Item Factory", titleStyle);
+        
+        EditorGUILayout.Space(3);
+        EditorGUILayout.LabelField("LLM-Powered Item Generator for Unity", EditorStyles.centeredGreyMiniLabel);
+        EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
 
+        // Tab Selection
+        EditorGUILayout.BeginHorizontal();
+        for (int i = 0; i < tabNames.Length; i++)
+        {
+            TabType tab = (TabType)i;
+            bool isSelected = selectedTab == tab;
+            GUI.backgroundColor = isSelected ? Color.white : Color.grey;
+            if (GUILayout.Button(tabNames[i], GUILayout.Height(25)))
+            {
+                selectedTab = tab;
+            }
+        }
+        GUI.backgroundColor = Color.white;
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.Space(5);
+
+        // Render selected tab content
+        switch (selectedTab)
+        {
+            case TabType.Settings:
+                DrawSettingsTab();
+                break;
+            case TabType.SingleGeneration:
+                DrawSingleGenerationTab();
+                break;
+            case TabType.BatchGeneration:
+                DrawBatchGenerationTab();
+                break;
+            case TabType.BalanceReport:
+                DrawBalanceReportTab();
+                break;
+            case TabType.PresetManager:
+                DrawPresetManagerTab();
+                break;
+        }
+        
+        // End main scroll view
+        EditorGUILayout.EndScrollView();
+    }
+
+    /// <summary>
+    /// Draw Settings tab - Configuration and Generation Parameters
+    /// </summary>
+    private void DrawSettingsTab()
+    {
         // Setup / Ollama installer
         showSetupSection = EditorGUILayout.Foldout(showSetupSection, "Setup (Ollama)", true);
         if (showSetupSection)
@@ -393,16 +565,41 @@ public class ItemFactoryWindow : EditorWindow
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Custom Preset:", GUILayout.Width(120));
+                
+                GUI.SetNextControlName("customPresetPath");
                 customPresetPath = EditorGUILayout.TextField(customPresetPath);
+                
                 if (GUILayout.Button("Browse", GUILayout.Width(60)))
                 {
-                    string path = EditorUtility.OpenFilePanel("Select Custom Preset", Application.dataPath, "json");
+                    string defaultDir = string.IsNullOrEmpty(customPresetPath) 
+                        ? Application.dataPath 
+                        : Path.GetDirectoryName(customPresetPath);
+                    string path = EditorUtility.OpenFilePanel("Select Custom Preset", defaultDir, "json");
                     if (!string.IsNullOrEmpty(path))
                     {
                         customPresetPath = path;
+                        SaveRecentPresetPath(path);
                     }
                 }
                 EditorGUILayout.EndHorizontal();
+                
+                // Show recent presets suggestion
+                if (!string.IsNullOrEmpty(customPresetPath) && GUI.GetNameOfFocusedControl() == "customPresetPath")
+                {
+                    string[] recentPresets = GetRecentPresetPaths();
+                    if (recentPresets.Length > 0)
+                    {
+                        string[] suggestions = recentPresets.Where(p => 
+                            Path.GetFileName(p).IndexOf(customPresetPath, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            p.IndexOf(customPresetPath, StringComparison.OrdinalIgnoreCase) >= 0)
+                            .Take(3).ToArray();
+                        if (suggestions.Length > 0)
+                        {
+                            EditorGUILayout.HelpBox($"Recent: {string.Join(", ", suggestions.Select(Path.GetFileName))}", MessageType.None);
+                        }
+                    }
+                }
+                
                 EditorGUILayout.HelpBox("Select a custom preset JSON file. The file must contain id, displayName, description, and flavorText fields.", MessageType.Info);
             }
             else
@@ -433,6 +630,21 @@ public class ItemFactoryWindow : EditorWindow
             }
             EditorGUILayout.EndHorizontal();
 
+            // Test Mode Toggle
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Test Mode:", GUILayout.Width(120));
+            bool newTestMode = EditorGUILayout.Toggle(useTestMode);
+            if (newTestMode != useTestMode)
+            {
+                useTestMode = newTestMode;
+                UpdateOutputPathForItemType();
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.HelpBox(useTestMode 
+                ? "Test Mode: Outputs will be saved to Test/ folder. Use this for testing and development." 
+                : "Normal Mode: Outputs will be saved to ItemJson/ folder. Use this for production.", 
+                MessageType.Info);
+
             // Count
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Count:", GUILayout.Width(120));
@@ -441,37 +653,104 @@ public class ItemFactoryWindow : EditorWindow
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.HelpBox($"Will generate {itemCount} items. Recommended: 10-20 for testing, 50-100 for production.", MessageType.None);
 
-            // Max Hunger (only for Food/Drink)
-            if (selectedItemType == ItemType.Food || selectedItemType == ItemType.Drink)
+            // Generation Profile
+            EditorGUILayout.Space(5);
+            EditorGUILayout.LabelField("Generation Profile", EditorStyles.boldLabel);
+            useProfile = EditorGUILayout.Toggle("Use Character Profile", useProfile);
+            
+            if (useProfile)
             {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Max Hunger:", GUILayout.Width(120));
-                maxHunger = EditorGUILayout.IntField(maxHunger);
-                maxHunger = Mathf.Clamp(maxHunger, 1, 1000);
-                EditorGUILayout.EndHorizontal();
+                EditorGUI.indentLevel++;
+                selectedProfile = (ItemGenerationProfile)EditorGUILayout.ObjectField(
+                    "Profile", 
+                    selectedProfile, 
+                    typeof(ItemGenerationProfile), 
+                    false);
+                
+                if (selectedProfile != null)
+                {
+                    EditorGUILayout.HelpBox(selectedProfile.GetSummary(), MessageType.Info);
+                    
+                    EditorGUILayout.BeginHorizontal();
+                    if (GUILayout.Button("Create New Profile", GUILayout.Width(150)))
+                    {
+                        CreateNewProfile();
+                    }
+                    if (GUILayout.Button("Edit Profile", GUILayout.Width(100)))
+                    {
+                        Selection.activeObject = selectedProfile;
+                        EditorGUIUtility.PingObject(selectedProfile);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No profile selected. Click 'Create New Profile' to create one.", MessageType.Warning);
+                    if (GUILayout.Button("Create New Profile", GUILayout.Width(150)))
+                    {
+                        CreateNewProfile();
+                    }
+                }
+                EditorGUI.indentLevel--;
+            }
+            else
+            {
+                // Legacy: Max Hunger/Thirst (only for Food/Drink) - shown when profile is not used
+                if (selectedItemType == ItemType.Food || selectedItemType == ItemType.Drink)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Max Hunger:", GUILayout.Width(120));
+                    maxHunger = EditorGUILayout.IntField(maxHunger);
+                    maxHunger = Mathf.Clamp(maxHunger, 1, 1000);
+                    EditorGUILayout.EndHorizontal();
 
-                // Max Thirst
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Max Thirst:", GUILayout.Width(120));
-                maxThirst = EditorGUILayout.IntField(maxThirst);
-                maxThirst = Mathf.Clamp(maxThirst, 1, 1000);
-                EditorGUILayout.EndHorizontal();
+                    // Max Thirst
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("Max Thirst:", GUILayout.Width(120));
+                    maxThirst = EditorGUILayout.IntField(maxThirst);
+                    maxThirst = Mathf.Clamp(maxThirst, 1, 1000);
+                    EditorGUILayout.EndHorizontal();
+                }
             }
 
-            // Output Path
+            // Output Path with autocomplete
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Output File:", GUILayout.Width(120));
+            
+            GUI.SetNextControlName("outputPath");
             outputPath = EditorGUILayout.TextField(outputPath);
+            
             if (GUILayout.Button("Browse", GUILayout.Width(60)))
             {
                 string defaultName = $"items_{selectedItemType.ToString().ToLower()}";
-                string path = EditorUtility.SaveFilePanel("Save JSON File", Application.dataPath, defaultName, "json");
+                string defaultDir = string.IsNullOrEmpty(outputPath) 
+                    ? Application.dataPath 
+                    : Path.GetDirectoryName(outputPath);
+                string path = EditorUtility.SaveFilePanel("Save JSON File", defaultDir, defaultName, "json");
                 if (!string.IsNullOrEmpty(path))
                 {
                     outputPath = path;
+                    SaveRecentOutputPath(path);
                 }
             }
             EditorGUILayout.EndHorizontal();
+            
+            // Show recent paths suggestion
+            if (!string.IsNullOrEmpty(outputPath) && GUI.GetNameOfFocusedControl() == "outputPath")
+            {
+                string[] recentPaths = GetRecentOutputPaths();
+                if (recentPaths.Length > 0)
+                {
+                    string[] suggestions = recentPaths.Where(p => 
+                        Path.GetFileName(p).IndexOf(outputPath, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        p.IndexOf(outputPath, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Take(3).ToArray();
+                    if (suggestions.Length > 0)
+                    {
+                        EditorGUILayout.HelpBox($"Recent: {string.Join(", ", suggestions.Select(Path.GetFileName))}", MessageType.None);
+                    }
+                }
+            }
 
             // Show file status
             if (!string.IsNullOrEmpty(outputPath))
@@ -512,172 +791,6 @@ public class ItemFactoryWindow : EditorWindow
         EditorGUILayout.Space(10);
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-        // Preset Manager Section
-        showPresetManager = EditorGUILayout.Foldout(showPresetManager, "Preset Manager", false);
-        if (showPresetManager)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.HelpBox("Create, edit, and manage custom presets for item generation.", MessageType.Info);
-            
-            presetManagerScrollPosition = EditorGUILayout.BeginScrollView(presetManagerScrollPosition);
-            
-            // Preset List
-            EditorGUILayout.LabelField("Custom Presets", EditorStyles.boldLabel);
-            if (customPresets.Count == 0)
-            {
-                EditorGUILayout.HelpBox("No custom presets. Click 'Create New Preset' to add one.", MessageType.Info);
-            }
-            else
-            {
-                for (int i = 0; i < customPresets.Count; i++)
-                {
-                    var preset = customPresets[i];
-                    EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField($"{preset.displayName} ({preset.id})", EditorStyles.boldLabel);
-                    if (GUILayout.Button("Edit", GUILayout.Width(50)))
-                    {
-                        editingPreset = new CustomPresetData
-                        {
-                            id = preset.id,
-                            displayName = preset.displayName,
-                            description = preset.description,
-                            flavorText = preset.flavorText,
-                            author = preset.author,
-                            version = preset.version,
-                            tags = new List<string>(preset.tags)
-                        };
-                    }
-                    if (GUILayout.Button("Delete", GUILayout.Width(60)))
-                    {
-                        if (EditorUtility.DisplayDialog("Delete Preset", $"Are you sure you want to delete '{preset.displayName}'?", "Yes", "No"))
-                        {
-                            customPresets.RemoveAt(i);
-                            i--;
-                            continue;
-                        }
-                    }
-                    EditorGUILayout.EndHorizontal();
-                    EditorGUILayout.LabelField($"Description: {preset.description}", EditorStyles.wordWrappedLabel);
-                    EditorGUILayout.EndVertical();
-                }
-            }
-            
-            EditorGUILayout.Space(5);
-            if (GUILayout.Button("Create New Preset", GUILayout.Height(25)))
-            {
-                editingPreset = new CustomPresetData();
-            }
-            
-            EditorGUILayout.EndScrollView();
-            
-            // Preset Editor
-            if (editingPreset != null)
-            {
-                EditorGUILayout.Space(10);
-                EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-                EditorGUILayout.LabelField(editingPreset.id == "" ? "New Preset" : $"Editing: {editingPreset.displayName}", EditorStyles.boldLabel);
-                
-                editingPreset.id = EditorGUILayout.TextField("ID (lowercase, underscore):", editingPreset.id);
-                editingPreset.displayName = EditorGUILayout.TextField("Display Name:", editingPreset.displayName);
-                editingPreset.description = EditorGUILayout.TextField("Description:", editingPreset.description);
-                editingPreset.flavorText = EditorGUILayout.TextArea(editingPreset.flavorText, GUILayout.Height(100));
-                EditorGUILayout.HelpBox("Flavor Text: World context description for LLM prompts. This text will be included at the start of generation prompts.", MessageType.Info);
-                
-                editingPreset.author = EditorGUILayout.TextField("Author:", editingPreset.author);
-                editingPreset.version = EditorGUILayout.TextField("Version:", editingPreset.version);
-                
-                EditorGUILayout.LabelField("Tags:");
-                EditorGUI.indentLevel++;
-                for (int i = 0; i < editingPreset.tags.Count; i++)
-                {
-                    EditorGUILayout.BeginHorizontal();
-                    editingPreset.tags[i] = EditorGUILayout.TextField(editingPreset.tags[i]);
-                    if (GUILayout.Button("Remove", GUILayout.Width(60)))
-                    {
-                        editingPreset.tags.RemoveAt(i);
-                        i--;
-                    }
-                    EditorGUILayout.EndHorizontal();
-                }
-                if (GUILayout.Button("Add Tag", GUILayout.Width(80)))
-                {
-                    editingPreset.tags.Add("");
-                }
-                EditorGUI.indentLevel--;
-                
-                EditorGUILayout.Space(5);
-                EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Save", GUILayout.Height(25)))
-                {
-                    SaveCustomPreset(editingPreset);
-                }
-                if (GUILayout.Button("Save As...", GUILayout.Height(25)))
-                {
-                    SaveCustomPresetAs(editingPreset);
-                }
-                if (GUILayout.Button("Cancel", GUILayout.Height(25)))
-                {
-                    editingPreset = null;
-                }
-                EditorGUILayout.EndHorizontal();
-            }
-            
-            EditorGUI.indentLevel--;
-            EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-        }
-
-        // Batch Generation Section
-        showBatchGeneration = EditorGUILayout.Foldout(showBatchGeneration, "Batch Generation", false);
-        if (showBatchGeneration)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.HelpBox("Generate multiple item types in one operation. Each item type will be generated sequentially.", MessageType.Info);
-            
-            if (batchItemsList == null)
-            {
-                SetupBatchItemsList();
-            }
-
-            if (batchItemsList != null)
-            {
-                batchItemsList.DoLayoutList();
-            }
-
-            EditorGUILayout.Space(5);
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Item", GUILayout.Height(25)))
-            {
-                batchItems.Add(new BatchItem { itemType = ItemType.Food, count = 10, outputPath = "" });
-                if (batchItemsList != null)
-                {
-                    batchItemsList.list = batchItems;
-                }
-            }
-            if (GUILayout.Button("Clear All", GUILayout.Height(25)))
-            {
-                batchItems.Clear();
-                if (batchItemsList != null)
-                {
-                    batchItemsList.list = batchItems;
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.Space(5);
-            GUI.enabled = !isGenerating && batchItems.Count > 0 && !string.IsNullOrEmpty(executablePath) && File.Exists(executablePath);
-            if (GUILayout.Button("Generate Batch", GUILayout.Height(30)))
-            {
-                GenerateBatch();
-            }
-            GUI.enabled = true;
-
-            EditorGUI.indentLevel--;
-            EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-        }
-
         // Advanced Options
         showAdvancedOptions = EditorGUILayout.Foldout(showAdvancedOptions, "Advanced Options", false);
         if (showAdvancedOptions)
@@ -696,73 +809,96 @@ public class ItemFactoryWindow : EditorWindow
             EditorGUILayout.Space(10);
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
+    }
 
-        // Balance Report Section
-        showBalanceReport = EditorGUILayout.Foldout(showBalanceReport, "Balance Report", false);
-        if (showBalanceReport)
+    /// <summary>
+    /// Draw Single Generation tab - Settings reference + Generate Items button + Log + Validation
+    /// </summary>
+    private void DrawSingleGenerationTab()
+    {
+        EditorGUILayout.HelpBox("Configure generation settings in the Settings tab, then generate items here.", MessageType.Info);
+        
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.Space(5);
+
+        // Show current settings summary
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.LabelField("Current Settings", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField($"Item Type: {selectedItemType}", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField($"Count: {itemCount}", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField($"Model: {GetModelName()}", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField($"Preset: {(useCustomPreset ? "Custom" : selectedPreset.ToString())}", EditorStyles.miniLabel);
+        EditorGUILayout.LabelField($"Output: {Path.GetFileName(outputPath)}", EditorStyles.miniLabel);
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+        EditorGUILayout.Space(5);
+
+        // Validation
+        bool canGenerate = !isGenerating && !string.IsNullOrEmpty(executablePath) && File.Exists(executablePath);
+        List<string> validationErrors = new List<string>();
+        
+        if (canGenerate)
         {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.HelpBox("Generate a statistical balance report for an existing JSON file. This helps identify balance issues and distribution patterns.", MessageType.Info);
+            // Validate settings using InputValidator
+            var countValidation = InputValidator.ValidateItemCount(itemCount);
+            if (!countValidation.IsValid)
+                validationErrors.Add(countValidation.ErrorMessage);
             
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("JSON File:", GUILayout.Width(120));
-            balanceReportJsonPath = EditorGUILayout.TextField(balanceReportJsonPath);
-            if (GUILayout.Button("Browse", GUILayout.Width(60)))
+            // Validate output path - use ValidateOutputDirectory which auto-creates directories
+            var outputDirValidation = InputValidator.ValidateOutputDirectory(outputPath);
+            if (!outputDirValidation.IsValid)
             {
-                string path = EditorUtility.OpenFilePanel("Select JSON File", Application.dataPath, "json");
-                if (!string.IsNullOrEmpty(path))
+                validationErrors.Add(outputDirValidation.ErrorMessage);
+            }
+            else
+            {
+                // Also validate file path format
+                var outputValidation = InputValidator.ValidateFilePath(outputPath, false, ".json");
+                if (!outputValidation.IsValid && outputValidation.ErrorMessage != "Directory does not exist")
                 {
-                    balanceReportJsonPath = path;
+                    validationErrors.Add(outputValidation.ErrorMessage);
                 }
             }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Item Type:", GUILayout.Width(120));
-            int reportItemTypeIndex = Array.IndexOf(itemTypeValues, balanceReportItemType);
-            if (reportItemTypeIndex < 0) reportItemTypeIndex = 0;
-            int newReportItemTypeIndex = EditorGUILayout.Popup(reportItemTypeIndex, itemTypeNames);
-            balanceReportItemType = itemTypeValues[newReportItemTypeIndex];
-            EditorGUILayout.EndHorizontal();
-
-            GUI.enabled = !string.IsNullOrEmpty(balanceReportJsonPath) && File.Exists(balanceReportJsonPath) && !isGenerating;
-            if (GUILayout.Button("Generate Report", GUILayout.Height(25)))
+            
+            if (selectedModel == ModelType.Custom)
             {
-                GenerateBalanceReport();
+                var modelValidation = InputValidator.ValidateModelName(customModelName);
+                if (!modelValidation.IsValid)
+                    validationErrors.Add(modelValidation.ErrorMessage);
             }
-            GUI.enabled = true;
-
-            if (!string.IsNullOrEmpty(balanceReportText))
+            
+            if (useCustomPreset)
             {
-                EditorGUILayout.Space(5);
-                EditorGUILayout.LabelField("Report Output:", EditorStyles.boldLabel);
-                balanceReportScrollPosition = EditorGUILayout.BeginScrollView(balanceReportScrollPosition, GUILayout.Height(200));
-                EditorGUILayout.TextArea(balanceReportText, GUILayout.ExpandHeight(true));
-                EditorGUILayout.EndScrollView();
-                
-                if (GUILayout.Button("Clear Report", GUILayout.Height(25)))
-                {
-                    balanceReportText = "";
-                    balanceReportScrollPosition = Vector2.zero;
-                }
+                var presetValidation = InputValidator.ValidatePresetPath(customPresetPath);
+                if (!presetValidation.IsValid)
+                    validationErrors.Add(presetValidation.ErrorMessage);
             }
-
-            EditorGUI.indentLevel--;
-            EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            
+            if (validationErrors.Count > 0)
+            {
+                EditorGUILayout.HelpBox("Validation Errors:\n" + string.Join("\n", validationErrors.Select(e => "• " + e)), MessageType.Error);
+            }
         }
-
+        else if (string.IsNullOrEmpty(executablePath) || !File.Exists(executablePath))
+        {
+            EditorGUILayout.HelpBox("Executable not found. Please configure it in the Settings tab.", MessageType.Warning);
+        }
+        
         // Generate Button
+        EditorGUILayout.Space(5);
         EditorGUILayout.BeginHorizontal();
-        GUI.enabled = !isGenerating && !string.IsNullOrEmpty(executablePath) && File.Exists(executablePath);
-        if (GUILayout.Button(isGenerating ? "Generating..." : "Generate Items", GUILayout.Height(35)))
+        GUI.enabled = canGenerate && validationErrors.Count == 0;
+        if (GUILayout.Button(isGenerating && !isBatchGeneration ? "Generating..." : "Generate Items", GUILayout.Height(35)))
         {
             GenerateItems();
         }
         GUI.enabled = true;
 
         // Cancel Button
-        if (isGenerating && currentProcess != null)
+        if (isGenerating && !isBatchGeneration && currentProcess != null)
         {
             if (GUILayout.Button("Cancel", GUILayout.Height(35)))
             {
@@ -772,44 +908,499 @@ public class ItemFactoryWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         // Progress indicator
-        if (isGenerating)
+        if (isGenerating && !isBatchGeneration)
         {
             EditorGUILayout.Space(5);
-            Rect progressRect = EditorGUILayout.GetControlRect(false, 20);
-            EditorGUI.ProgressBar(progressRect, 0.5f, "Generating items... (This may take a while)");
+            Rect progressRect = EditorGUILayout.GetControlRect(false, 25);
+            
+            float progress = 0.5f;
+            string progressText = "Generating items... (This may take a while)";
+            
+            if (targetItemCount > 0)
+            {
+                progress = Mathf.Clamp01((float)generatedItemCount / targetItemCount);
+                progressText = $"Generating items... {generatedItemCount}/{targetItemCount} ({progress * 100:F0}%)";
+            }
+            else
+            {
+                progress = Mathf.PingPong((float)EditorApplication.timeSinceStartup * 0.5f, 1f);
+            }
+            
+            EditorGUI.ProgressBar(progressRect, progress, progressText);
+            
+            var oldColor = GUI.color;
+            GUI.color = new Color(0.2f, 0.8f, 0.2f);
+            EditorGUILayout.LabelField("● Processing...", EditorStyles.miniLabel);
+            GUI.color = oldColor;
+        }
+        else if (!isGenerating && singleGenerationLogEntries.Any(e => e.type == LogType.Success))
+        {
+            var oldColor = GUI.color;
+            GUI.color = new Color(0.2f, 0.8f, 0.2f);
+            EditorGUILayout.LabelField("✓ Generation Complete", EditorStyles.boldLabel);
+            if (generatedItemCount > 0)
+            {
+                EditorGUILayout.LabelField($"Generated {generatedItemCount} items", EditorStyles.miniLabel);
+            }
+            GUI.color = oldColor;
         }
 
         EditorGUILayout.Space(10);
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         // Log Area
-        EditorGUILayout.LabelField("Generation Log", EditorStyles.boldLabel);
+        DrawLogArea(singleGenerationLogEntries, ref singleGenerationLogScrollPosition, "Single Generation Log");
+    }
+
+    /// <summary>
+    /// Draw Batch Generation tab
+    /// </summary>
+    private void DrawBatchGenerationTab()
+    {
+        EditorGUILayout.HelpBox("Generate multiple item types in one operation. Each item type will be generated sequentially.", MessageType.Info);
+        
+        EditorGUILayout.Space(5);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         EditorGUILayout.Space(5);
 
-        logScrollPosition = EditorGUILayout.BeginScrollView(logScrollPosition, GUILayout.Height(200));
-        EditorGUILayout.TextArea(logText, GUILayout.ExpandHeight(true));
-        EditorGUILayout.EndScrollView();
-
-        // Clear Log Button
-        if (GUILayout.Button("Clear Log", GUILayout.Height(25)))
+        // Batch Generation Profile (shared across all batch items)
+        EditorGUILayout.LabelField("Batch Generation Profile", EditorStyles.boldLabel);
+        useProfile = EditorGUILayout.Toggle("Use Character Profile", useProfile);
+        
+        if (useProfile)
         {
-            logText = "";
-            logScrollPosition = Vector2.zero;
+            EditorGUI.indentLevel++;
+            selectedProfile = (ItemGenerationProfile)EditorGUILayout.ObjectField(
+                "Profile", 
+                selectedProfile, 
+                typeof(ItemGenerationProfile), 
+                false);
+            
+            if (selectedProfile != null)
+            {
+                EditorGUILayout.HelpBox(selectedProfile.GetSummary(), MessageType.Info);
+                
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Create New Profile", GUILayout.Width(150)))
+                {
+                    CreateNewProfile();
+                }
+                if (GUILayout.Button("Edit Profile", GUILayout.Width(100)))
+                {
+                    Selection.activeObject = selectedProfile;
+                    EditorGUIUtility.PingObject(selectedProfile);
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("No profile selected. Click 'Create New Profile' to create one.", MessageType.Warning);
+                if (GUILayout.Button("Create New Profile", GUILayout.Width(150)))
+                {
+                    CreateNewProfile();
+                }
+            }
+            EditorGUI.indentLevel--;
+        }
+        
+        EditorGUILayout.Space(5);
+        
+        if (batchItemsList == null)
+        {
+            SetupBatchItemsList();
+        }
+
+        if (batchItemsList != null)
+        {
+            batchItemsList.DoLayoutList();
+        }
+
+        EditorGUILayout.Space(5);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Add Item", GUILayout.Height(25)))
+        {
+            var newItem = new BatchItem { itemType = ItemType.Food, count = 10, outputPath = "" };
+            newItem.outputPath = GetDefaultBatchOutputPath(newItem.itemType);
+            batchItems.Add(newItem);
+            if (batchItemsList != null)
+            {
+                batchItemsList.list = batchItems;
+            }
+        }
+        if (GUILayout.Button("Clear All", GUILayout.Height(25)))
+        {
+            batchItems.Clear();
+            if (batchItemsList != null)
+            {
+                batchItemsList.list = batchItems;
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+        // Validation
+        bool canGenerateBatch = !isGenerating && batchItems.Count > 0 && !string.IsNullOrEmpty(executablePath) && File.Exists(executablePath);
+        List<string> batchValidationErrors = new List<string>();
+        
+        if (canGenerateBatch)
+        {
+            foreach (var batchItem in batchItems)
+            {
+                if (batchItem.count < 1 || batchItem.count > 200)
+                {
+                    batchValidationErrors.Add($"{batchItem.itemType}: Count must be between 1 and 200");
+                }
+                if (string.IsNullOrEmpty(batchItem.outputPath))
+                {
+                    batchValidationErrors.Add($"{batchItem.itemType}: Output path is required");
+                }
+                else
+                {
+                    var outputValidation = InputValidator.ValidateOutputDirectory(batchItem.outputPath);
+                    if (!outputValidation.IsValid)
+                    {
+                        batchValidationErrors.Add($"{batchItem.itemType}: {outputValidation.ErrorMessage}");
+                    }
+                }
+            }
+            
+            if (batchValidationErrors.Count > 0)
+            {
+                EditorGUILayout.HelpBox("Validation Errors:\n" + string.Join("\n", batchValidationErrors.Select(e => "• " + e)), MessageType.Error);
+            }
+        }
+        else if (batchItems.Count == 0)
+        {
+            EditorGUILayout.HelpBox("Add at least one item type to generate.", MessageType.Warning);
+        }
+        else if (string.IsNullOrEmpty(executablePath) || !File.Exists(executablePath))
+        {
+            EditorGUILayout.HelpBox("Executable not found. Please configure it in the Settings tab.", MessageType.Warning);
+        }
+
+        EditorGUILayout.Space(5);
+        GUI.enabled = canGenerateBatch && batchValidationErrors.Count == 0;
+        if (GUILayout.Button(isGenerating && isBatchGeneration ? "Generating Batch..." : "Generate Batch", GUILayout.Height(35)))
+        {
+            GenerateBatch();
+        }
+        GUI.enabled = true;
+
+        // Progress indicator
+        if (isGenerating && isBatchGeneration)
+        {
+            EditorGUILayout.Space(5);
+            Rect progressRect = EditorGUILayout.GetControlRect(false, 25);
+            
+            float progress = 0.5f;
+            string progressText = "Generating batch...";
+            
+            if (batchProgress.Count > 0)
+            {
+                var progressParts = batchProgress.Select(kvp => $"{kvp.Key}: {kvp.Value}").ToArray();
+                progressText = $"Batch: {string.Join(", ", progressParts)}";
+                progress = Mathf.PingPong((float)EditorApplication.timeSinceStartup * 0.5f, 1f);
+            }
+            else
+            {
+                progress = Mathf.PingPong((float)EditorApplication.timeSinceStartup * 0.5f, 1f);
+            }
+            
+            EditorGUI.ProgressBar(progressRect, progress, progressText);
+            
+            var oldColor = GUI.color;
+            GUI.color = new Color(0.2f, 0.8f, 0.2f);
+            EditorGUILayout.LabelField("● Processing...", EditorStyles.miniLabel);
+            GUI.color = oldColor;
+        }
+        else if (!isGenerating && batchGenerationLogEntries.Any(e => e.type == LogType.Success))
+        {
+            var oldColor = GUI.color;
+            GUI.color = new Color(0.2f, 0.8f, 0.2f);
+            EditorGUILayout.LabelField("✓ Batch Generation Complete", EditorStyles.boldLabel);
+            GUI.color = oldColor;
+        }
+
+        EditorGUILayout.Space(10);
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+        // Log Area
+        DrawLogArea(batchGenerationLogEntries, ref batchGenerationLogScrollPosition, "Batch Generation Log");
+    }
+
+    /// <summary>
+    /// Draw Balance Report tab
+    /// </summary>
+    private void DrawBalanceReportTab()
+    {
+        EditorGUILayout.HelpBox("Generate a statistical balance report for an existing JSON file. This helps identify balance issues and distribution patterns.", MessageType.Info);
+        
+        EditorGUILayout.Space(5);
+        
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("JSON File:", GUILayout.Width(120));
+        balanceReportJsonPath = EditorGUILayout.TextField(balanceReportJsonPath);
+        if (GUILayout.Button("Browse", GUILayout.Width(60)))
+        {
+            string path = EditorUtility.OpenFilePanel("Select JSON File", Application.dataPath, "json");
+            if (!string.IsNullOrEmpty(path))
+            {
+                balanceReportJsonPath = path;
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Item Type:", GUILayout.Width(120));
+        int reportItemTypeIndex = Array.IndexOf(itemTypeValues, balanceReportItemType);
+        if (reportItemTypeIndex < 0) reportItemTypeIndex = 0;
+        int newReportItemTypeIndex = EditorGUILayout.Popup(reportItemTypeIndex, itemTypeNames);
+        balanceReportItemType = itemTypeValues[newReportItemTypeIndex];
+        EditorGUILayout.EndHorizontal();
+
+        GUI.enabled = !string.IsNullOrEmpty(balanceReportJsonPath) && File.Exists(balanceReportJsonPath) && !isGenerating;
+        if (GUILayout.Button("Generate Report", GUILayout.Height(25)))
+        {
+            GenerateBalanceReport();
+        }
+        GUI.enabled = true;
+
+        if (!string.IsNullOrEmpty(balanceReportText))
+        {
+            EditorGUILayout.Space(5);
+            EditorGUILayout.LabelField("Report Output:", EditorStyles.boldLabel);
+            balanceReportScrollPosition = EditorGUILayout.BeginScrollView(balanceReportScrollPosition, GUILayout.Height(200));
+            EditorGUILayout.TextArea(balanceReportText, GUILayout.ExpandHeight(true));
+            EditorGUILayout.EndScrollView();
+            
+            if (GUILayout.Button("Clear Report", GUILayout.Height(25)))
+            {
+                balanceReportText = "";
+                balanceReportScrollPosition = Vector2.zero;
+            }
         }
     }
+
+    /// <summary>
+    /// Draw Preset Manager tab
+    /// </summary>
+    private void DrawPresetManagerTab()
+    {
+        EditorGUILayout.HelpBox("Create, edit, and manage custom presets for item generation.", MessageType.Info);
+        
+        presetManagerScrollPosition = EditorGUILayout.BeginScrollView(presetManagerScrollPosition, GUILayout.Height(200));
+        
+        // Preset List
+        EditorGUILayout.LabelField("Custom Presets", EditorStyles.boldLabel);
+        if (customPresets.Count == 0)
+        {
+            EditorGUILayout.HelpBox("No custom presets. Click 'Create New Preset' to add one.", MessageType.Info);
+        }
+        else
+        {
+            for (int i = 0; i < customPresets.Count; i++)
+            {
+                var preset = customPresets[i];
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField($"{preset.displayName} ({preset.id})", EditorStyles.boldLabel);
+                if (GUILayout.Button("Edit", GUILayout.Width(50)))
+                {
+                    editingPreset = new CustomPresetData
+                    {
+                        id = preset.id,
+                        displayName = preset.displayName,
+                        description = preset.description,
+                        flavorText = preset.flavorText,
+                        author = preset.author,
+                        version = preset.version,
+                        tags = new List<string>(preset.tags)
+                    };
+                }
+                if (GUILayout.Button("Delete", GUILayout.Width(60)))
+                {
+                    if (EditorUtility.DisplayDialog("Delete Preset", $"Are you sure you want to delete '{preset.displayName}'?", "Yes", "No"))
+                    {
+                        customPresets.RemoveAt(i);
+                        i--;
+                        continue;
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.LabelField($"Description: {preset.description}", EditorStyles.wordWrappedLabel);
+                EditorGUILayout.EndVertical();
+            }
+        }
+        
+        EditorGUILayout.Space(5);
+        if (GUILayout.Button("Create New Preset", GUILayout.Height(25)))
+        {
+            editingPreset = new CustomPresetData();
+        }
+        
+        EditorGUILayout.EndScrollView();
+        
+        // Preset Editor
+        if (editingPreset != null)
+        {
+            EditorGUILayout.Space(10);
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+            EditorGUILayout.LabelField(editingPreset.id == "" ? "New Preset" : $"Editing: {editingPreset.displayName}", EditorStyles.boldLabel);
+            
+            editingPreset.id = EditorGUILayout.TextField("ID (lowercase, underscore):", editingPreset.id);
+            editingPreset.displayName = EditorGUILayout.TextField("Display Name:", editingPreset.displayName);
+            editingPreset.description = EditorGUILayout.TextField("Description:", editingPreset.description);
+            editingPreset.flavorText = EditorGUILayout.TextArea(editingPreset.flavorText, GUILayout.Height(100));
+            EditorGUILayout.HelpBox("Flavor Text: World context description for LLM prompts. This text will be included at the start of generation prompts.", MessageType.Info);
+            
+            editingPreset.author = EditorGUILayout.TextField("Author:", editingPreset.author);
+            editingPreset.version = EditorGUILayout.TextField("Version:", editingPreset.version);
+            
+            EditorGUILayout.LabelField("Tags:");
+            EditorGUI.indentLevel++;
+            for (int i = 0; i < editingPreset.tags.Count; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                editingPreset.tags[i] = EditorGUILayout.TextField(editingPreset.tags[i]);
+                if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                {
+                    editingPreset.tags.RemoveAt(i);
+                    i--;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("Add Tag", GUILayout.Width(80)))
+            {
+                editingPreset.tags.Add("");
+            }
+            EditorGUI.indentLevel--;
+            
+            EditorGUILayout.Space(5);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Save", GUILayout.Height(25)))
+            {
+                SaveCustomPreset(editingPreset);
+            }
+            if (GUILayout.Button("Save As...", GUILayout.Height(25)))
+            {
+                SaveCustomPresetAs(editingPreset);
+            }
+            if (GUILayout.Button("Cancel", GUILayout.Height(25)))
+            {
+                editingPreset = null;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    /// <summary>
+    /// Draw log area for a specific log entry list
+    /// </summary>
+    private void DrawLogArea(List<LogEntry> logEntries, ref Vector2 scrollPosition, string logTitle)
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.LabelField(logTitle, EditorStyles.boldLabel);
+        
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Clear Log", GUILayout.Width(100), GUILayout.Height(22)))
+        {
+            logEntries.Clear();
+            scrollPosition = Vector2.zero;
+        }
+        GUILayout.FlexibleSpace();
+        if (logEntries.Count > 0)
+        {
+            EditorGUILayout.LabelField($"Entries: {logEntries.Count}", EditorStyles.miniLabel, GUILayout.Width(90));
+        }
+        EditorGUILayout.EndHorizontal();
+        
+        EditorGUILayout.Space(3);
+
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(200));
+        
+        if (logEntries.Count == 0)
+        {
+            EditorGUILayout.HelpBox("No log entries yet. Generation output will appear here.", MessageType.Info);
+        }
+        else
+        {
+            GUIStyle baseStyle = new GUIStyle(EditorStyles.label);
+            baseStyle.fontSize = 10;
+            baseStyle.wordWrap = true;
+            baseStyle.richText = false;
+            
+            foreach (var entry in logEntries)
+            {
+                var oldColor = GUI.color;
+                Color textColor = GetLogColor(entry.type);
+                GUI.color = textColor;
+                
+                GUIStyle entryStyle = new GUIStyle(baseStyle);
+                if (entry.type == LogType.Error)
+                {
+                    entryStyle.fontStyle = FontStyle.Bold;
+                }
+                
+                EditorGUILayout.LabelField(entry.message, entryStyle);
+                GUI.color = oldColor;
+            }
+        }
+        
+        EditorGUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
+    }
+
 
     private void GenerateItems()
     {
         if (isGenerating)
         {
             AddLog("[Error] Generation is already in progress.");
+            ErrorHandler.ShowError("Generation In Progress", "Item generation is already running. Please wait for it to complete.");
             return;
         }
 
-        if (string.IsNullOrEmpty(executablePath) || !File.Exists(executablePath))
+        // Validate inputs
+        var executableValidation = InputValidator.ValidateExecutablePath(executablePath);
+        if (!executableValidation.IsValid)
         {
-            AddLog("[Error] Executable path is not valid.");
+            AddLog($"[Error] {executableValidation.ErrorMessage}");
+            ErrorHandler.ShowError("Invalid Executable", executableValidation.ErrorMessage, executableValidation.Suggestion);
             return;
+        }
+
+        var countValidation = InputValidator.ValidateItemCount(itemCount);
+        if (!countValidation.IsValid)
+        {
+            AddLog($"[Error] {countValidation.ErrorMessage}");
+            ErrorHandler.ShowError("Invalid Item Count", countValidation.ErrorMessage, countValidation.Suggestion);
+            return;
+        }
+
+        var outputValidation = InputValidator.ValidateOutputDirectory(outputPath);
+        if (!outputValidation.IsValid)
+        {
+            AddLog($"[Error] {outputValidation.ErrorMessage}");
+            ErrorHandler.ShowError("Invalid Output Path", outputValidation.ErrorMessage, outputValidation.Suggestion);
+            return;
+        }
+
+        var modelValidation = InputValidator.ValidateModelName(GetModelName());
+        if (!modelValidation.IsValid)
+        {
+            AddLog($"[Error] {modelValidation.ErrorMessage}");
+            ErrorHandler.ShowError("Invalid Model Name", modelValidation.ErrorMessage, modelValidation.Suggestion);
+            return;
+        }
+
+        if (useCustomPreset && !string.IsNullOrEmpty(customPresetPath))
+        {
+            var presetValidation = InputValidator.ValidatePresetPath(customPresetPath);
+            if (!presetValidation.IsValid)
+            {
+                AddLog($"[Error] {presetValidation.ErrorMessage}");
+                ErrorHandler.ShowError("Invalid Preset Path", presetValidation.ErrorMessage, presetValidation.Suggestion);
+                return;
+            }
         }
 
         string actualModelName = GetModelName();
@@ -828,6 +1419,10 @@ public class ItemFactoryWindow : EditorWindow
         AddLog($"Count: {itemCount}");
         AddLog($"Output: {outputPath}");
         AddLog("");
+        
+        // Reset progress tracking
+        generatedItemCount = 0;
+        targetItemCount = itemCount;
 
         // Ensure ItemJson directory exists
         if (!string.IsNullOrEmpty(outputPath))
@@ -852,6 +1447,10 @@ public class ItemFactoryWindow : EditorWindow
             itemTypeName = "weaponcomponent";
         }
         string args = $"--mode llm --itemType {itemTypeName} --model {actualModelName} --count {itemCount}";
+        if (useTestMode)
+        {
+            args += " --test";
+        }
         if (useCustomPreset && !string.IsNullOrEmpty(customPresetPath))
         {
             args += $" --customPreset \"{customPresetPath}\"";
@@ -862,13 +1461,31 @@ public class ItemFactoryWindow : EditorWindow
         }
         args += $" --out \"{outputPath}\"";
         
-        // Add additional prompt if provided
-        if (!string.IsNullOrEmpty(additionalPrompt))
+        // Build combined prompt from profile and additional prompt
+        string combinedPrompt = "";
+        
+        // Add profile context if using profile
+        if (useProfile && selectedProfile != null)
+        {
+            combinedPrompt = selectedProfile.GenerateContextString(selectedItemType);
+            if (!string.IsNullOrEmpty(additionalPrompt))
+            {
+                combinedPrompt += "\n\nAdditional Instructions:\n" + additionalPrompt;
+            }
+        }
+        else if (!string.IsNullOrEmpty(additionalPrompt))
+        {
+            combinedPrompt = additionalPrompt;
+        }
+        
+        // Add combined prompt if provided
+        if (!string.IsNullOrEmpty(combinedPrompt))
         {
             // Escape quotes and newlines for command line
-            string escapedPrompt = additionalPrompt.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
+            string escapedPrompt = combinedPrompt.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
             args += $" --additionalPrompt \"{escapedPrompt}\"";
-            AddLog($"Additional Prompt: {additionalPrompt.Substring(0, Math.Min(50, additionalPrompt.Length))}...");
+            AddLog($"Using Profile: {(useProfile && selectedProfile != null ? selectedProfile.profileName : "None")}");
+            AddLog($"Prompt Preview: {combinedPrompt.Substring(0, Math.Min(100, combinedPrompt.Length))}...");
         }
 
         AddLog($"Command: {executablePath} {args}");
@@ -913,7 +1530,7 @@ public class ItemFactoryWindow : EditorWindow
     private void DrawWeaponComponentEditingSection()
     {
         EditorGUILayout.LabelField("Weapon Component Load Plan Editor", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("Select a generated Magazine ScriptableObject to edit the mixed loading sequence.", MessageType.None);
+        EditorGUILayout.HelpBox("생성된 Magazine ScriptableObject를 바로 선택해서 혼합 장전 순서를 편집할 수 있습니다.", MessageType.None);
 
         WeaponComponentItemDataSO newAsset = (WeaponComponentItemDataSO)EditorGUILayout.ObjectField("Target Component", selectedWeaponComponentAsset, typeof(WeaponComponentItemDataSO), false);
         if (newAsset != selectedWeaponComponentAsset)
@@ -923,14 +1540,14 @@ public class ItemFactoryWindow : EditorWindow
 
         if (selectedWeaponComponentAsset == null)
         {
-            EditorGUILayout.HelpBox("Please select a Weapon Component (Magazine) to edit.", MessageType.Info);
+            EditorGUILayout.HelpBox("편집할 Weapon Component (Magazine)을 선택하세요.", MessageType.Info);
             return;
         }
 
         bool isMagazine = string.Equals(selectedWeaponComponentAsset.componentType, "Magazine", StringComparison.OrdinalIgnoreCase);
         if (!isMagazine)
         {
-            EditorGUILayout.HelpBox("The selected component is not a Magazine type. Only Magazine components have load plans.", MessageType.Warning);
+            EditorGUILayout.HelpBox("선택된 컴포넌트가 Magazine 타입이 아닙니다. Magazine만 로드 플랜을 가집니다.", MessageType.Warning);
             return;
         }
 
@@ -941,7 +1558,7 @@ public class ItemFactoryWindow : EditorWindow
 
         if (weaponComponentSerializedObject == null || loadedRoundsList == null)
         {
-            EditorGUILayout.HelpBox("Failed to initialize SerializedObject.", MessageType.Error);
+            EditorGUILayout.HelpBox("SerializedObject 초기화에 실패했습니다.", MessageType.Error);
             return;
         }
 
@@ -952,7 +1569,7 @@ public class ItemFactoryWindow : EditorWindow
         showLoadPlanEditor = EditorGUILayout.Foldout(showLoadPlanEditor, "Loaded Rounds", true);
         if (showLoadPlanEditor)
         {
-            EditorGUILayout.HelpBox("orderIndex 0 fires first. Ensure the sum of roundCount does not exceed capacity. ammoId must match the Ammo ScriptableObject ID.", MessageType.None);
+            EditorGUILayout.HelpBox("orderIndex 0이 가장 먼저 발사됩니다. roundCount 합계가 용량을 넘지 않도록 하세요. ammoId는 Ammo ScriptableObject ID와 일치해야 합니다.", MessageType.None);
             loadedRoundsList.DoLayoutList();
 
             EditorGUILayout.BeginHorizontal();
@@ -1096,7 +1713,14 @@ public class ItemFactoryWindow : EditorWindow
             int typeIndex = Array.IndexOf(itemTypeValues, item.itemType);
             if (typeIndex < 0) typeIndex = 0;
             int newTypeIndex = EditorGUI.Popup(typeRect, typeIndex, itemTypeNames);
+            ItemType oldType = item.itemType;
             item.itemType = itemTypeValues[newTypeIndex];
+            
+            // Auto-update output path if type changed and path is empty or uses old type name
+            if (oldType != item.itemType && (string.IsNullOrEmpty(item.outputPath) || item.outputPath.Contains(oldType.ToString().ToLower())))
+            {
+                item.outputPath = GetDefaultBatchOutputPath(item.itemType);
+            }
 
             // Count
             Rect countRect = new Rect(typeRect.xMax + spacing, rect.y, rect.width * 0.15f, line);
@@ -1109,13 +1733,32 @@ public class ItemFactoryWindow : EditorWindow
             Rect pathLabelRect = new Rect(rect.x, rect.y + line + spacing, 80, line);
             EditorGUI.LabelField(pathLabelRect, "Output:");
             Rect pathFieldRect = new Rect(pathLabelRect.xMax + spacing, pathLabelRect.y, rect.width - pathLabelRect.width - spacing - 60, line);
-            item.outputPath = EditorGUI.TextField(pathFieldRect, item.outputPath);
+            
+            // Show default path hint if empty
+            string displayPath = item.outputPath;
+            bool isDefaultPath = string.IsNullOrEmpty(item.outputPath);
+            if (isDefaultPath)
+            {
+                displayPath = GetDefaultBatchOutputPath(item.itemType);
+                GUI.color = new Color(1f, 1f, 1f, 0.6f); // Gray out default path hint
+            }
+            
+            string newPath = EditorGUI.TextField(pathFieldRect, displayPath);
+            GUI.color = Color.white;
+            
+            // Update path if user actually changed it
+            if (!isDefaultPath || (!string.IsNullOrEmpty(newPath) && newPath != displayPath))
+            {
+                item.outputPath = newPath;
+            }
             
             Rect browseRect = new Rect(pathFieldRect.xMax + spacing, pathLabelRect.y, 60, line);
             if (GUI.Button(browseRect, "Browse"))
             {
-                string defaultName = $"items_{item.itemType.ToString().ToLower()}";
-                string path = EditorUtility.SaveFilePanel("Save JSON File", Application.dataPath, defaultName, "json");
+                string defaultPath = GetDefaultBatchOutputPath(item.itemType);
+                string directory = Path.GetDirectoryName(defaultPath);
+                string fileName = Path.GetFileName(defaultPath);
+                string path = EditorUtility.SaveFilePanel("Save JSON File", directory, fileName, "json");
                 if (!string.IsNullOrEmpty(path))
                 {
                     item.outputPath = path;
@@ -1125,7 +1768,10 @@ public class ItemFactoryWindow : EditorWindow
 
         batchItemsList.onAddCallback = list =>
         {
-            batchItems.Add(new BatchItem { itemType = ItemType.Food, count = 10, outputPath = "" });
+            var newItem = new BatchItem { itemType = ItemType.Food, count = 10, outputPath = "" };
+            // Auto-generate default output path
+            newItem.outputPath = GetDefaultBatchOutputPath(newItem.itemType);
+            batchItems.Add(newItem);
         };
 
         batchItemsList.onRemoveCallback = list =>
@@ -1166,13 +1812,17 @@ public class ItemFactoryWindow : EditorWindow
         for (int i = 0; i < batchItems.Count; i++)
         {
             var item = batchItems[i];
-            string output = string.IsNullOrEmpty(item.outputPath) ? $"ItemJson/items_{item.itemType.ToString().ToLower()}.json" : item.outputPath;
-            AddLog($"  {i + 1}. {item.itemType} x{item.count} -> {output}");
+            // Auto-generate path if empty
+            if (string.IsNullOrEmpty(item.outputPath))
+            {
+                item.outputPath = GetDefaultBatchOutputPath(item.itemType);
+            }
+            AddLog($"  {i + 1}. {item.itemType} x{item.count} -> {item.outputPath}");
             
             // Ensure ItemJson directory exists for each output path
-            if (!string.IsNullOrEmpty(output))
+            if (!string.IsNullOrEmpty(item.outputPath))
             {
-                string directory = Path.GetDirectoryName(output);
+                string directory = Path.GetDirectoryName(item.outputPath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
@@ -1208,6 +1858,10 @@ public class ItemFactoryWindow : EditorWindow
 
         string presetName = useCustomPreset ? "" : selectedPreset.ToString().ToLower();
         string args = $"--mode batch --batch \"{batchStr}\" --model {actualModelName}";
+        if (useTestMode)
+        {
+            args += " --test";
+        }
         if (useCustomPreset && !string.IsNullOrEmpty(customPresetPath))
         {
             args += $" --customPreset \"{customPresetPath}\"";
@@ -1217,12 +1871,49 @@ public class ItemFactoryWindow : EditorWindow
             args += $" --preset {presetName}";
         }
         
-        // Add additional prompt if provided (applies to all items in batch)
-        if (!string.IsNullOrEmpty(additionalPrompt))
+        // Build combined prompt from profile and additional prompt (applies to all items in batch)
+        string combinedPrompt = "";
+        
+        // Add profile context if using profile
+        if (useProfile && selectedProfile != null)
         {
-            string escapedPrompt = additionalPrompt.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
+            // For batch, we'll use a general context that applies to all types
+            System.Text.StringBuilder profileContext = new System.Text.StringBuilder();
+            profileContext.AppendLine($"Character Profile: {selectedProfile.profileName}");
+            profileContext.AppendLine($"Description: {selectedProfile.description}");
+            profileContext.AppendLine();
+            profileContext.AppendLine("Character Stats:");
+            profileContext.AppendLine($"- Max Hunger: {selectedProfile.maxHunger}");
+            profileContext.AppendLine($"- Max Thirst: {selectedProfile.maxThirst}");
+            profileContext.AppendLine($"- Max Health: {selectedProfile.maxHealth}");
+            profileContext.AppendLine();
+            profileContext.AppendLine("General Constraints:");
+            profileContext.AppendLine($"- Max Weapon Damage: {selectedProfile.maxWeaponDamage}");
+            profileContext.AppendLine($"- Max Armor Value: {selectedProfile.maxArmorValue}");
+            profileContext.AppendLine($"- Max Clothing Warmth: {selectedProfile.maxClothingWarmth}");
+            profileContext.AppendLine($"- Max Material Hardness: {selectedProfile.maxMaterialHardness}");
+            profileContext.AppendLine($"- Max Ammo Damage: {selectedProfile.maxAmmoDamage}");
+            profileContext.AppendLine($"- Max Stack Size: {selectedProfile.maxStackSize}");
+            profileContext.AppendLine($"- Max Item Value: {selectedProfile.maxItemValue}");
+            
+            combinedPrompt = profileContext.ToString();
+            if (!string.IsNullOrEmpty(additionalPrompt))
+            {
+                combinedPrompt += "\n\nAdditional Instructions:\n" + additionalPrompt;
+            }
+        }
+        else if (!string.IsNullOrEmpty(additionalPrompt))
+        {
+            combinedPrompt = additionalPrompt;
+        }
+        
+        // Add combined prompt if provided
+        if (!string.IsNullOrEmpty(combinedPrompt))
+        {
+            string escapedPrompt = combinedPrompt.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "");
             args += $" --additionalPrompt \"{escapedPrompt}\"";
-            AddLog($"Additional Prompt (applies to all batch items): {additionalPrompt.Substring(0, Math.Min(50, additionalPrompt.Length))}...");
+            AddLog($"Using Profile: {(useProfile && selectedProfile != null ? selectedProfile.profileName : "None")}");
+            AddLog($"Prompt Preview: {combinedPrompt.Substring(0, Math.Min(100, combinedPrompt.Length))}...");
         }
 
         AddLog($"Command: {executablePath} {args}");
@@ -1323,28 +2014,43 @@ public class ItemFactoryWindow : EditorWindow
                 AddLog("");
                 AddLog($"=== Generation Complete (Exit Code: {exitCode}) ===");
 
+                // Call completion callback if set
+                if (generationCompleteCallback != null)
+                {
+                    bool success = exitCode == 0;
+                    string message = success ? "Generation completed successfully" : $"Generation failed with exit code {exitCode}";
+                    generationCompleteCallback(success, message);
+                    generationCompleteCallback = null; // Clear callback after use
+                }
+
                 if (exitCode == 0)
                 {
-                    AddLog("[Success] Items generated successfully!");
+                    AddLog("[Success] Items generated successfully!", LogType.Success);
+
+                    // Clean up raw files if enabled
+                    if (autoCleanRawFiles)
+                    {
+                        CleanupRawFiles();
+                    }
 
                     // Auto import if enabled
                     if (autoImportAfterGeneration)
                     {
                         if (isBatchGeneration)
                         {
-                            AddLog("[Auto Import] Starting batch import...");
+                            AddLog("[Auto Import] Starting batch import...", LogType.Info);
                             ImportBatchItems();
                         }
                         else if (File.Exists(outputPath))
                         {
-                            AddLog("[Auto Import] Starting import...");
+                            AddLog("[Auto Import] Starting import...", LogType.Info);
                             ImportGeneratedItems();
                         }
                     }
                 }
                 else
                 {
-                    AddLog($"[Error] Generation failed with exit code {exitCode}.");
+                    AddLog($"[Error] Generation failed with exit code {exitCode}.", LogType.Error);
                 }
 
                 currentProcess.Dispose();
@@ -1371,6 +2077,10 @@ public class ItemFactoryWindow : EditorWindow
             else if (selectedItemType == ItemType.Drink)
             {
                 ItemImporter.ImportDrinkFromJsonPath(outputPath);
+            }
+            else if (selectedItemType == ItemType.Medicine)
+            {
+                ItemImporter.ImportMedicineFromJsonPath(outputPath);
             }
             else if (selectedItemType == ItemType.Material)
             {
@@ -1427,7 +2137,8 @@ public class ItemFactoryWindow : EditorWindow
                 {
                     itemTypeName = "weaponcomponent";
                 }
-                filePath = Path.Combine(Application.dataPath.Replace("/Assets", ""), "ItemJson", $"items_{itemTypeName}.json");
+                string outputDir = useTestMode ? "Test" : "ItemJson";
+                filePath = Path.Combine(Application.dataPath.Replace("/Assets", ""), outputDir, $"items_{itemTypeName}.json");
             }
 
             if (!File.Exists(filePath))
@@ -1448,6 +2159,10 @@ public class ItemFactoryWindow : EditorWindow
                 else if (batchItem.itemType == ItemType.Drink)
                 {
                     ItemImporter.ImportDrinkFromJsonPath(filePath);
+                }
+                else if (batchItem.itemType == ItemType.Medicine)
+                {
+                    ItemImporter.ImportMedicineFromJsonPath(filePath);
                 }
                 else if (batchItem.itemType == ItemType.Material)
                 {
@@ -1503,8 +2218,40 @@ public class ItemFactoryWindow : EditorWindow
         }
     }
 
-    private void AddLog(string message)
+    private void AddLog(string message, LogType type = LogType.Log)
     {
+        // Auto-detect log type from message
+        if (type == LogType.Log)
+        {
+            string lower = message.ToLower();
+            if (lower.Contains("[error]") || lower.Contains("failed") || lower.Contains("exception"))
+                type = LogType.Error;
+            else if (lower.Contains("[warning]") || lower.Contains("warning:"))
+                type = LogType.Warning;
+            else if (lower.Contains("[success]") || lower.Contains("successfully"))
+                type = LogType.Success;
+            else if (lower.Contains("[info]") || lower.StartsWith("==="))
+                type = LogType.Info;
+        }
+        
+        // Add to appropriate log list based on generation mode
+        List<LogEntry> targetLog = isBatchGeneration ? batchGenerationLogEntries : singleGenerationLogEntries;
+        targetLog.Add(new LogEntry(message, type));
+        
+        // Also add to legacy logEntries for backward compatibility
+        logEntries.Add(new LogEntry(message, type));
+        
+        // Keep log entries manageable (max 1000 entries)
+        if (targetLog.Count > 1000)
+        {
+            targetLog.RemoveRange(0, targetLog.Count - 1000);
+        }
+        if (logEntries.Count > 1000)
+        {
+            logEntries.RemoveRange(0, logEntries.Count - 1000);
+        }
+        
+        // Update legacy logText for compatibility
         if (string.IsNullOrEmpty(logText))
         {
             logText = message;
@@ -1513,11 +2260,64 @@ public class ItemFactoryWindow : EditorWindow
         {
             logText += "\n" + message;
         }
-
+        
+        // Parse item count from log
+        ParseItemCountFromLog(message);
+        
         // Auto-scroll to bottom
+        if (isBatchGeneration)
+        {
+            batchGenerationLogScrollPosition.y = float.MaxValue;
+        }
+        else
+        {
+            singleGenerationLogScrollPosition.y = float.MaxValue;
+        }
         logScrollPosition.y = float.MaxValue;
 
         Repaint();
+    }
+    
+    private Color GetLogColor(LogType type)
+    {
+        switch (type)
+        {
+            case LogType.Error:
+                return new Color(0.9f, 0.2f, 0.2f); // Red
+            case LogType.Warning:
+                return new Color(1f, 0.7f, 0.2f); // Orange
+            case LogType.Success:
+                return new Color(0.2f, 0.8f, 0.2f); // Green
+            case LogType.Info:
+                return new Color(0.4f, 0.6f, 1f); // Blue
+            default:
+                return EditorStyles.label.normal.textColor;
+        }
+    }
+    
+    private void ParseItemCountFromLog(string message)
+    {
+        // Parse patterns like "Successfully added 5 new Food items"
+        var match = Regex.Match(message, @"Successfully added (\d+) new (\w+) items");
+        if (match.Success)
+        {
+            int count = int.Parse(match.Groups[1].Value);
+            string itemType = match.Groups[2].Value;
+            generatedItemCount += count;
+        }
+        
+        // Parse batch progress
+        match = Regex.Match(message, @"\[Batch\] (\w+): (\d+)/(\d+)");
+        if (match.Success)
+        {
+            string typeStr = match.Groups[1].Value;
+            if (Enum.TryParse<ItemType>(typeStr, true, out ItemType itemType))
+            {
+                int current = int.Parse(match.Groups[2].Value);
+                int total = int.Parse(match.Groups[3].Value);
+                batchProgress[itemType] = current;
+            }
+        }
     }
 
     private string GetPresetDescription(PresetType preset)
@@ -1532,8 +2332,6 @@ public class ItemFactoryWindow : EditorWindow
                 return "Coastal environment: Seafood, fresh water sources, marine materials.";
             case PresetType.City:
                 return "Urban environment: Processed foods, manufactured items, modern weapons.";
-            case PresetType.Arctic:
-                return "Arctic environment: Frozen tundra, extreme cold, high-calorie foods, warm clothing essential.";
             case PresetType.Default:
             default:
                 return "Generic survival environment with moderate resources.";
@@ -1827,7 +2625,7 @@ public class ItemFactoryWindow : EditorWindow
         if (IsOllamaInstalledInDefaultPaths(out var detectedPath))
         {
             AddLog($"[Setup] Ollama already installed at {detectedPath}. Skipping installer.");
-            AgentLog("H9", "ItemFactoryWindow.RunOllamaInstaller:skip_installed", detectedPath ?? "unknown");
+            // Ollama already installed
             return;
         }
 
@@ -1909,11 +2707,236 @@ public class ItemFactoryWindow : EditorWindow
         return false;
     }
 
+    private void CleanupRawFiles()
+    {
+        try
+        {
+            if (isBatchGeneration)
+            {
+                foreach (var batchItem in batchItems)
+                {
+                    string outputDir = useTestMode ? "Test" : "ItemJson";
+                    string filePath = string.IsNullOrEmpty(batchItem.outputPath) 
+                        ? Path.Combine(Application.dataPath.Replace("/Assets", ""), outputDir, $"items_{batchItem.itemType.ToString().ToLower()}.json")
+                        : batchItem.outputPath;
+                    string rawPath = filePath + ".raw.json";
+                    if (File.Exists(rawPath))
+                    {
+                        File.Delete(rawPath);
+                        AddLog($"[Cleanup] Removed {rawPath}", LogType.Info);
+                    }
+                }
+            }
+            else if (!string.IsNullOrEmpty(outputPath))
+            {
+                string rawPath = outputPath + ".raw.json";
+                if (File.Exists(rawPath))
+                {
+                    File.Delete(rawPath);
+                    AddLog($"[Cleanup] Removed {rawPath}", LogType.Info);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            AddLog($"[Warning] Failed to clean raw files: {e.Message}", LogType.Warning);
+        }
+    }
+    
+    private void LoadSettings()
+    {
+        // Try to load from ScriptableObject settings first
+        var settings = ItemFactorySettings.Instance;
+        
+        // Load from ScriptableObject if available, otherwise fall back to EditorPrefs
+        autoCleanRawFiles = settings != null ? settings.autoCleanRawFiles : EditorPrefs.GetBool(PREFS_KEY_PREFIX + "autoCleanRawFiles", true);
+        autoImportAfterGeneration = settings != null ? settings.autoImportAfterGeneration : EditorPrefs.GetBool(PREFS_KEY_PREFIX + "autoImportAfterGeneration", true);
+        selectedModel = (ModelType)EditorPrefs.GetInt(PREFS_KEY_PREFIX + "selectedModel", (int)ModelType.Llama3);
+        selectedPreset = settings != null ? settings.defaultPreset : (PresetType)EditorPrefs.GetInt(PREFS_KEY_PREFIX + "selectedPreset", (int)PresetType.Default);
+        selectedItemType = (ItemType)EditorPrefs.GetInt(PREFS_KEY_PREFIX + "selectedItemType", (int)ItemType.Food);
+        itemCount = settings != null ? settings.defaultItemCount : EditorPrefs.GetInt(PREFS_KEY_PREFIX + "itemCount", 10);
+        maxHunger = settings != null ? settings.defaultMaxHunger : EditorPrefs.GetInt(PREFS_KEY_PREFIX + "maxHunger", 100);
+        maxThirst = settings != null ? settings.defaultMaxThirst : EditorPrefs.GetInt(PREFS_KEY_PREFIX + "maxThirst", 100);
+        customModelName = settings != null && !string.IsNullOrEmpty(settings.defaultModel) ? settings.defaultModel : EditorPrefs.GetString(PREFS_KEY_PREFIX + "customModelName", "");
+        useCustomPreset = EditorPrefs.GetBool(PREFS_KEY_PREFIX + "useCustomPreset", false);
+        customPresetPath = EditorPrefs.GetString(PREFS_KEY_PREFIX + "customPresetPath", "");
+        useTestMode = settings != null ? settings.useTestMode : EditorPrefs.GetBool(PREFS_KEY_PREFIX + "useTestMode", false);
+        
+        // Load executable path from settings if available
+        if (settings != null && !string.IsNullOrEmpty(settings.GetFullExecutablePath()) && File.Exists(settings.GetFullExecutablePath()))
+        {
+            executablePath = settings.GetFullExecutablePath();
+        }
+        
+        // Update output path after loading test mode setting
+        UpdateOutputPathForItemType();
+    }
+    
+    private void SaveSettings()
+    {
+        // Save to ScriptableObject settings
+        var settings = ItemFactorySettings.Instance;
+        if (settings != null)
+        {
+            settings.autoCleanRawFiles = autoCleanRawFiles;
+            settings.autoImportAfterGeneration = autoImportAfterGeneration;
+            settings.defaultPreset = selectedPreset;
+            settings.defaultItemCount = itemCount;
+            settings.defaultMaxHunger = maxHunger;
+            settings.defaultMaxThirst = maxThirst;
+            if (selectedModel == ModelType.Custom && !string.IsNullOrEmpty(customModelName))
+            {
+                settings.defaultModel = customModelName;
+            }
+            settings.useTestMode = useTestMode;
+            settings.Save();
+        }
+        
+        // Also save to EditorPrefs for backward compatibility and user-specific preferences
+        EditorPrefs.SetBool(PREFS_KEY_PREFIX + "autoCleanRawFiles", autoCleanRawFiles);
+        EditorPrefs.SetBool(PREFS_KEY_PREFIX + "autoImportAfterGeneration", autoImportAfterGeneration);
+        EditorPrefs.SetInt(PREFS_KEY_PREFIX + "selectedModel", (int)selectedModel);
+        EditorPrefs.SetInt(PREFS_KEY_PREFIX + "selectedPreset", (int)selectedPreset);
+        EditorPrefs.SetInt(PREFS_KEY_PREFIX + "selectedItemType", (int)selectedItemType);
+        EditorPrefs.SetInt(PREFS_KEY_PREFIX + "itemCount", itemCount);
+        EditorPrefs.SetInt(PREFS_KEY_PREFIX + "maxHunger", maxHunger);
+        EditorPrefs.SetInt(PREFS_KEY_PREFIX + "maxThirst", maxThirst);
+        EditorPrefs.SetString(PREFS_KEY_PREFIX + "customModelName", customModelName);
+        EditorPrefs.SetBool(PREFS_KEY_PREFIX + "useCustomPreset", useCustomPreset);
+        EditorPrefs.SetString(PREFS_KEY_PREFIX + "customPresetPath", customPresetPath);
+        EditorPrefs.SetBool(PREFS_KEY_PREFIX + "useTestMode", useTestMode);
+    }
+    
+    private void HandleKeyboardShortcuts()
+    {
+        Event e = Event.current;
+        if (e.type == EventType.KeyDown)
+        {
+            // Ctrl+G: Generate items
+            if (e.control && e.keyCode == KeyCode.G)
+            {
+                if (!isGenerating && !string.IsNullOrEmpty(executablePath) && File.Exists(executablePath))
+                {
+                    GenerateItems();
+                    e.Use();
+                }
+            }
+            // Ctrl+R: Refresh
+            else if (e.control && e.keyCode == KeyCode.R)
+            {
+                RefreshWindow();
+                e.Use();
+            }
+            // Ctrl+L: Clear log
+            else if (e.control && e.keyCode == KeyCode.L)
+            {
+                logText = "";
+                logEntries.Clear();
+                generatedItemCount = 0;
+                targetItemCount = 0;
+                batchProgress.Clear();
+                logScrollPosition = Vector2.zero;
+                e.Use();
+            }
+            // Escape: Cancel generation
+            else if (e.keyCode == KeyCode.Escape && isGenerating)
+            {
+                CancelGeneration();
+                e.Use();
+            }
+        }
+    }
+    
+    private void RefreshWindow()
+    {
+        InitializeExecutablePath();
+        CheckOllamaStatus();
+        Repaint();
+    }
+    
+    private string[] GetRecentOutputPaths()
+    {
+        string recentPathsKey = PREFS_KEY_PREFIX + "recentOutputPaths";
+        string pathsStr = EditorPrefs.GetString(recentPathsKey, "");
+        if (string.IsNullOrEmpty(pathsStr))
+            return new string[0];
+        
+        return pathsStr.Split('|').Where(p => !string.IsNullOrEmpty(p) && File.Exists(p) || Directory.Exists(Path.GetDirectoryName(p)))
+            .Take(10).ToArray();
+    }
+    
+    private string[] GetRecentPresetPaths()
+    {
+        string recentPresetsKey = PREFS_KEY_PREFIX + "recentPresetPaths";
+        string pathsStr = EditorPrefs.GetString(recentPresetsKey, "");
+        if (string.IsNullOrEmpty(pathsStr))
+            return new string[0];
+        
+        return pathsStr.Split('|').Where(p => !string.IsNullOrEmpty(p) && File.Exists(p))
+            .Take(10).ToArray();
+    }
+    
+    private void SaveRecentPresetPath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return;
+        
+        string recentPresetsKey = PREFS_KEY_PREFIX + "recentPresetPaths";
+        string pathsStr = EditorPrefs.GetString(recentPresetsKey, "");
+        var paths = new List<string> { path };
+        
+        if (!string.IsNullOrEmpty(pathsStr))
+        {
+            paths.AddRange(pathsStr.Split('|').Where(p => p != path && !string.IsNullOrEmpty(p)));
+        }
+        
+        EditorPrefs.SetString(recentPresetsKey, string.Join("|", paths.Take(10)));
+    }
+    
+    private void SaveRecentOutputPath(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            return;
+        
+        string recentPathsKey = PREFS_KEY_PREFIX + "recentOutputPaths";
+        string pathsStr = EditorPrefs.GetString(recentPathsKey, "");
+        var paths = new List<string> { path };
+        
+        if (!string.IsNullOrEmpty(pathsStr))
+        {
+            paths.AddRange(pathsStr.Split('|').Where(p => p != path && !string.IsNullOrEmpty(p)));
+        }
+        
+        EditorPrefs.SetString(recentPathsKey, string.Join("|", paths.Take(10)));
+    }
+    
+    private void CreateNewProfile()
+    {
+        string path = EditorUtility.SaveFilePanelInProject(
+            "Create Generation Profile",
+            "ItemGenerationProfile",
+            "asset",
+            "Create a new item generation profile");
+        
+        if (!string.IsNullOrEmpty(path))
+        {
+            ItemGenerationProfile profile = ScriptableObject.CreateInstance<ItemGenerationProfile>();
+            profile.profileName = Path.GetFileNameWithoutExtension(path);
+            AssetDatabase.CreateAsset(profile, path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            selectedProfile = profile;
+            useProfile = true;
+            Selection.activeObject = profile;
+            EditorGUIUtility.PingObject(profile);
+        }
+    }
+
     private void CheckOllamaInDefaultPaths()
     {
         try
         {
-            AgentLog("H7", "ItemFactoryWindow.CheckOllamaInDefaultPaths:start", "checking default paths");
+            // Checking default paths
             string programFilesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Ollama", "ollama.exe");
             string localAppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Ollama", "ollama.exe");
             bool existsProgram = File.Exists(programFilesPath);
@@ -1923,21 +2946,21 @@ public class ItemFactoryWindow : EditorWindow
                 ollamaExistsInDefaultPath = true;
                 ollamaDetectedPath = programFilesPath;
                 ollamaDetectMessage = $"Ollama detected at {programFilesPath}";
-                AgentLog("H7", "ItemFactoryWindow.CheckOllamaInDefaultPaths:found", programFilesPath);
+                // Ollama found in Program Files
             }
             else if (existsLocal)
             {
                 ollamaExistsInDefaultPath = true;
                 ollamaDetectedPath = localAppPath;
                 ollamaDetectMessage = $"Ollama detected at {localAppPath}";
-                AgentLog("H7", "ItemFactoryWindow.CheckOllamaInDefaultPaths:found", localAppPath);
+                // Ollama found in Local AppData
             }
             else
             {
                 ollamaExistsInDefaultPath = false;
                 ollamaDetectedPath = "";
                 ollamaDetectMessage = "Ollama not found in default locations.";
-                AgentLog("H7", "ItemFactoryWindow.CheckOllamaInDefaultPaths:not_found", "none");
+                // Ollama not found
             }
         }
         catch (Exception ex)
@@ -1945,7 +2968,7 @@ public class ItemFactoryWindow : EditorWindow
             ollamaExistsInDefaultPath = false;
             ollamaDetectedPath = "";
             ollamaDetectMessage = "Check failed: " + ex.Message;
-            AgentLog("H7", "ItemFactoryWindow.CheckOllamaInDefaultPaths:exception", ex.Message);
+            // Check failed
         }
     }
 

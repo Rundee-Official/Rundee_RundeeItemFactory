@@ -1,0 +1,74 @@
+[
+  {
+    "id": "material_wooden_stick",
+    "displayName": "Wooden Stick",
+    "category": "Material",
+    "rarity": "Common",
+    "maxStack": 20,
+    "materialType": "Wood",
+    "hardness": 10,
+    "flammability": 5,
+    "value": 15,
+    "description": "A simple wooden stick, useful for crafting and building."
+  },
+  {
+    "id": "junk_metal_strip",
+    "displayName": "Metal Strip",
+    "category": "Junk",
+    "rarity": "Common",
+    "maxStack": 50,
+    "materialType": "Metal",
+    "hardness": 30,
+    "flammability": 20,
+    "value": 25,
+    "description": "A thin strip of metal, useful for crafting and scrapping."
+  },
+  {
+    "id": "material_rubber_band",
+    "displayName": "Rubber Band",
+    "category": "Material",
+    "rarity": "Uncommon",
+    "maxStack": 10,
+    "materialType": "Rubber",
+    "hardness": 40,
+    "flammability": 0,
+    "value": 30,
+    "description": "A flexible rubber band, useful for crafting and binding."
+  },
+  {
+    "id": "junk_plastic_capsule",
+    "displayName": "Plastic Capsule",
+    "category": "Junk",
+    "rarity": "Uncommon",
+    "maxStack": 20,
+    "materialType": "Plastic",
+    "hardness": 10,
+    "flammability": 5,
+    "value": 35,
+    "description": "A plastic capsule, often containing scraps or residuals."
+  },
+  {
+    "id": "material_felt_scraps",
+    "displayName": "Felt Scraps",
+    "category": "Material",
+    "rarity": "Common",
+    "maxStack": 15,
+    "materialType": "Fabric",
+    "hardness": 5,
+    "flammability": 0,
+    "value": 20,
+    "description": "Pieces of felt, useful for crafting and padding."
+  },
+  {
+    "id": "junk_iron_nail",
+    "displayName": "Iron Nail",
+    "category": "Junk",
+    "rarity": "Rare",
+    "maxStack": 5,
+    "materialType": "Metal",
+    "hardness": 60,
+    "flammability": 20,
+    "value": 75,
+    "description": "A sturdy iron nail, useful for building and construction."
+  }
+]

@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_component_attachment_slot" kind="struct" language="C++" prot="public">
+    <compoundname>ComponentAttachmentSlot</compoundname>
+    <includes refid="_item_weapon_component_data_8h" local="no">ItemWeaponComponentData.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_component_attachment_slot_1aa8334c228315891c4af4132850b40270" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ComponentAttachmentSlot::slotType</definition>
+        <argsstring></argsstring>
+        <name>slotType</name>
+        <qualifiedname>ComponentAttachmentSlot::slotType</qualifiedname>
+        <briefdescription>
+<para>Slot type identifier. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Examples: &quot;Muzzle&quot;, &quot;Grip&quot;, &quot;Sight&quot;, &quot;Rail&quot;, etc. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" line="32" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" bodystart="32" bodyend="-1"/>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_component_attachment_slot_1a1fa3889a794dbcdcbfb09b7c11a65703" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ComponentAttachmentSlot::slotIndex</definition>
+        <argsstring></argsstring>
+        <name>slotIndex</name>
+        <qualifiedname>ComponentAttachmentSlot::slotIndex</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+<para>Slot index for multiple slots of same type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Used when a component has multiple slots of the same type. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" line="39" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" bodystart="39" bodyend="-1"/>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_component_attachment_slot_1aee0c33f2514bcca47e983b46eb8c4e1b" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ComponentAttachmentSlot::hasBuiltInRail</definition>
+        <argsstring></argsstring>
+        <name>hasBuiltInRail</name>
+        <qualifiedname>ComponentAttachmentSlot::hasBuiltInRail</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+<para>Whether this slot already has a built-in rail. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>If true, the slot already has an integrated rail (e.g., handguard with integrated rail). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" line="46" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" bodystart="46" bodyend="-1"/>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Defines a sub-slot on a component. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Some components can have other components attached to them (e.g., handguard with rail slots). This structure represents such sub-slots. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" line="25" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemWeaponComponentData.h" bodystart="26" bodyend="47"/>
+    <listofallmembers>
+      <member refid="struct_component_attachment_slot_1aee0c33f2514bcca47e983b46eb8c4e1b" prot="public" virt="non-virtual"><scope>ComponentAttachmentSlot</scope><name>hasBuiltInRail</name></member>
+      <member refid="struct_component_attachment_slot_1a1fa3889a794dbcdcbfb09b7c11a65703" prot="public" virt="non-virtual"><scope>ComponentAttachmentSlot</scope><name>slotIndex</name></member>
+      <member refid="struct_component_attachment_slot_1aa8334c228315891c4af4132850b40270" prot="public" virt="non-virtual"><scope>ComponentAttachmentSlot</scope><name>slotType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acaf7c77e1ae40f44986764f7a445adb, type: 3}
+  m_Name: Drink_wildfruitjuice
+  m_EditorClassIdentifier: 
+  id: Drink_wildfruitjuice
+  displayName: Wild Fruit Juice
+  category: Drink
+  rarity: Rare
+  maxStack: 8
+  hungerRestore: 0
+  thirstRestore: 50
+  healthRestore: 15
+  spoils: 1
+  spoilTimeMinutes: 100
+  description: Tart and fruity, with a burst of natural sweetness.

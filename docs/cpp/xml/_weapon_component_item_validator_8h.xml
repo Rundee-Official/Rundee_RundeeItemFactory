@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_weapon_component_item_validator_8h" kind="file" language="C++">
+    <compoundname>WeaponComponentItemValidator.h</compoundname>
+    <includes refid="_item_weapon_component_data_8h" local="yes">Data/ItemWeaponComponentData.h</includes>
+    <includedby refid="_item_json_parser_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Parsers/ItemJsonParser.cpp</includedby>
+    <includedby refid="_weapon_component_item_validator_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Validators/WeaponComponentItemValidator.cpp</includedby>
+    <incdepgraph>
+      <node id="3">
+        <label>Data/ItemDataBase.h</label>
+        <link refid="_item_data_base_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Data/ItemWeaponComponentData.h</label>
+        <link refid="_item_weapon_component_data_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Validators/WeaponComponentItemValidator.h</label>
+        <link refid="_weapon_component_item_validator_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>string</label>
+      </node>
+      <node id="5">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Validators/WeaponComponentItemValidator.h</label>
+        <link refid="_weapon_component_item_validator_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Parsers/ItemJsonParser.cpp</label>
+        <link refid="_item_json_parser_8cpp"/>
+      </node>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Validators/WeaponComponentItemValidator.cpp</label>
+        <link refid="_weapon_component_item_validator_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespace_weapon_component_item_validator">WeaponComponentItemValidator</innernamespace>
+    <briefdescription>
+<para>Validation for <ref refid="struct_item_weapon_component_data" kindref="compound">ItemWeaponComponentData</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>Haneul Lee (Rundee) </para>
+</simplesect>
+<simplesect kind="date"><para>2025-11-15 </para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright (c) 2025 Haneul Lee. All rights reserved.</para>
+</simplesect>
+Provides validation and balancing logic for weapon component items, including:<itemizedlist>
+<listitem><para>ID prefix normalization (ensures &quot;WeaponComponent_&quot; prefix)</para>
+</listitem><listitem><para>Component type validation (scope, grip, magazine, etc.)</para>
+</listitem><listitem><para>Stat modifier validation</para>
+</listitem><listitem><para>Compatibility validation </para>
+</listitem></itemizedlist>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>@file<sp/>WeaponComponentItemValidator.h</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Validation<sp/>for<sp/>ItemWeaponComponentData</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>@author<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>@date<sp/>2025-11-15</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>@copyright<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>Provides<sp/>validation<sp/>and<sp/>balancing<sp/>logic<sp/>for<sp/>weapon<sp/>component<sp/>items,<sp/>including:</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>-<sp/>ID<sp/>prefix<sp/>normalization<sp/>(ensures<sp/>&quot;WeaponComponent_&quot;<sp/>prefix)</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*<sp/>-<sp/>Component<sp/>type<sp/>validation<sp/>(scope,<sp/>grip,<sp/>magazine,<sp/>etc.)</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/>*<sp/>-<sp/>Stat<sp/>modifier<sp/>validation</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>-<sp/>Compatibility<sp/>validation</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_item_weapon_component_data_8h" kindref="compound">Data/ItemWeaponComponentData.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="20" refid="namespace_weapon_component_item_validator" refkind="compound"><highlight class="comment"><sp/>*<sp/>@namespace<sp/>WeaponComponentItemValidator</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Namespace<sp/>for<sp/>weapon<sp/>component<sp/>item<sp/>validation<sp/>functions</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_weapon_component_item_validator" kindref="compound">WeaponComponentItemValidator</ref></highlight></codeline>
+<codeline lineno="24"><highlight class="normal">{</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Validate<sp/>and<sp/>balance<sp/>weapon<sp/>component<sp/>item<sp/>data</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Performs<sp/>comprehensive<sp/>validation<sp/>and<sp/>balancing<sp/>on<sp/>a<sp/>weapon<sp/>component<sp/>item:</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Normalizes<sp/>ID<sp/>prefix<sp/>to<sp/>&quot;WeaponComponent_&quot;</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Validates<sp/>component<sp/>type</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Clamps<sp/>stat<sp/>modifiers<sp/>to<sp/>valid<sp/>ranges</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Generates<sp/>default<sp/>description<sp/>if<sp/>empty</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param[in,out]<sp/>item<sp/>Weapon<sp/>component<sp/>item<sp/>to<sp/>validate<sp/>and<sp/>balance<sp/>(modified<sp/>in-place)</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@note<sp/>This<sp/>function<sp/>modifies<sp/>the<sp/>item<sp/>parameter<sp/>directly</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespace_weapon_component_item_validator_1a792ff08627814903149011744cb15805" kindref="member">Validate</ref>(<ref refid="struct_item_weapon_component_data" kindref="compound">ItemWeaponComponentData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/WeaponComponentItemValidator.h"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd5d9b5b1a68914e82e7ff169e9d131, type: 3}
+  m_Name: Clothing_wool_jacket_rare
+  m_EditorClassIdentifier: 
+  id: Clothing_wool_jacket_rare
+  displayName: Wool Jacket
+  category: Clothing
+  rarity: Rare
+  maxStack: 1
+  warmth: 60
+  style: 55
+  durability: 85
+  weight: 450
+  clothingType: Jacket
+  value: 20
+  description: A thick, high-quality wool jacket with a classic fit.

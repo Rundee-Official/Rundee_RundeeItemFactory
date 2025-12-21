@@ -2,26 +2,17 @@
 // Project Name: RundeeItemFactory
 // File Name: AppConfig.cpp
 // Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
+// Created Date: 2025-12-10
 // Description: Lightweight config loader for shared defaults (Ollama host/port, timeouts, retries).
 // ===============================
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
+#include "Helpers/AppConfig.h"
+#include "json.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-
-// Third-Party Includes
-#include "json.hpp"
-
-// Project Includes
-#include "Helpers/AppConfig.h"
-
-// ============================================================================
-// SECTION 1: Anonymous Namespace - Internal Helpers
-// ============================================================================
 
 namespace
 {
@@ -57,10 +48,6 @@ namespace
         }
     }
 }
-
-// ============================================================================
-// SECTION 2: AppConfig Class Implementation
-// ============================================================================
 
 void AppConfig::EnsureLoaded()
 {

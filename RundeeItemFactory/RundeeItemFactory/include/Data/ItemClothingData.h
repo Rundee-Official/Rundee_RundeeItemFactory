@@ -1,46 +1,77 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: ItemClothingData.h
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: Data structure for clothing items (apparel and outfits).
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
+/**
+ * @file ItemClothingData.h
+ * @brief Data structure for clothing items
+ * @author Haneul Lee (Rundee)
+ * @date 2025-11-15
+ * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
+ * 
+ * Defines the data structure for clothing items that provide warmth and style.
+ * Inherits common item properties from ItemDataBase.
+ */
 
 #pragma once
 
 #include "Data/ItemDataBase.h"
 
+/**
+ * @struct ItemClothingData
+ * @brief Data structure representing a clothing item
+ * 
+ * Contains all properties specific to clothing items, including warmth
+ * and style information.
+ */
 struct ItemClothingData : public ItemDataBase
 {
-    // Clothing category
-    std::string clothingType;    // "Shirt", "Pants", "Jacket", "Hat", "Shoes", "Gloves", "Outfit", etc.
-    
-    // Environmental protection
-    int coldResistance = 0;       // 0-100, protection against cold weather
-    int heatResistance = 0;      // 0-100, protection against hot weather
-    int waterResistance = 0;     // 0-100, protection against water/rain
-    int windResistance = 0;      // 0-100, protection against wind
-    
-    // Comfort and mobility
-    int comfort = 0;              // 0-100, overall comfort level
-    int mobilityBonus = 0;        // -50 to 50, bonus/penalty to movement speed
-    int staminaBonus = 0;         // -50 to 50, bonus/penalty to stamina regeneration
-    
-    // Durability
-    int durability = 100;         // 0-100, clothing condition
-    int material = 0;             // 0-100, material quality (affects durability)
-    
-    // Weight
-    int weight = 0;               // Weight in grams
-    
-    // Special properties
-    bool isInsulated = false;    // Whether clothing provides insulation
-    bool isWaterproof = false;   // Whether clothing is waterproof
-    bool isWindproof = false;    // Whether clothing is windproof
-    
-    // Override base class method
+    /**
+     * @brief Warmth value (0-100)
+     * 
+     * Amount of warmth provided. Higher values indicate better insulation.
+     */
+    int warmth = 0;
+
+    /**
+     * @brief Style value (0-100)
+     * 
+     * Aesthetic appeal of the clothing. Affects social interactions.
+     */
+    int style = 0;
+
+    /**
+     * @brief Clothing durability (0-100)
+     * 
+     * Current condition of the clothing. Decreases with use.
+     */
+    int durability = 100;
+
+    /**
+     * @brief Weight in grams
+     * 
+     * How much the clothing weighs.
+     */
+    int weight = 0;
+
+    /**
+     * @brief Clothing type
+     * 
+     * Examples: "Shirt", "Pants", "Jacket", "Hat", "Shoes"
+     */
+    std::string clothingType;
+
+    /**
+     * @brief Item value
+     * 
+     * Base value for trading and economy.
+     */
+    int value = 0;
+
+    /**
+     * @brief Get the item type name
+     * @return Always returns "Clothing"
+     */
     std::string GetItemTypeName() const override { return "Clothing"; }
 };
+
+
+
+
 

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="namespace_weapon_component_item_validator" kind="namespace" language="C++">
+    <compoundname>WeaponComponentItemValidator</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_weapon_component_item_validator_1a792ff08627814903149011744cb15805" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void WeaponComponentItemValidator::Validate</definition>
+        <argsstring>(ItemWeaponComponentData &amp;item)</argsstring>
+        <name>Validate</name>
+        <qualifiedname>WeaponComponentItemValidator::Validate</qualifiedname>
+        <param>
+          <type><ref refid="struct_item_weapon_component_data" kindref="compound">ItemWeaponComponentData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>Validate and balance weapon component item data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs comprehensive validation and balancing on a weapon component item:<itemizedlist>
+<listitem><para>Normalizes ID prefix to &quot;WeaponComponent_&quot;</para>
+</listitem><listitem><para>Validates component type</para>
+</listitem><listitem><para>Clamps stat modifiers to valid ranges</para>
+</listitem><listitem><para>Generates default description if empty</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Weapon component item to validate and balance (modified in-place)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This function modifies the item parameter directly </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/WeaponComponentItemValidator.cpp" line="198" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/WeaponComponentItemValidator.cpp" bodystart="198" bodyend="418" declfile="RundeeItemFactory/RundeeItemFactory/include/Validators/WeaponComponentItemValidator.h" declline="38" declcolumn="10"/>
+        <references refid="struct_item_weapon_component_data_1a27fe5dd32b98830aca9a00de3d36ff01" compoundref="_item_weapon_component_data_8h" startline="184">ItemWeaponComponentData::accuracyModifier</references>
+        <references refid="struct_item_weapon_component_data_1af439f6d6adfb91169435d3d52e097610" compoundref="_item_weapon_component_data_8h" startline="124">ItemWeaponComponentData::caliber</references>
+        <references refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" compoundref="_item_data_base_8h" startline="46">ItemDataBase::category</references>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="struct_item_weapon_component_data_1a58feff1b8ab1538df976676ba3052adb" compoundref="_item_weapon_component_data_8h" startline="110">ItemWeaponComponentData::componentType</references>
+        <references refid="struct_item_weapon_component_data_1ac52ecf5872f63623fdbc52e957163525" compoundref="_item_weapon_component_data_8h" startline="163">ItemWeaponComponentData::damageModifier</references>
+        <references refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" compoundref="_item_data_base_8h" startline="69">ItemDataBase::description</references>
+        <references refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" compoundref="_item_data_base_8h" startline="38">ItemDataBase::displayName</references>
+        <references refid="struct_item_weapon_component_data_1a4e0a904051d9e1b199172225242664d7" compoundref="_item_weapon_component_data_8h" startline="205">ItemWeaponComponentData::effectiveRangeModifier</references>
+        <references refid="struct_item_weapon_component_data_1a9741c17efc162f9c3ccf7c1f3ce2908c" compoundref="_item_weapon_component_data_8h" startline="177">ItemWeaponComponentData::ergonomicsModifier</references>
+        <references refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" compoundref="_item_data_base_8h" startline="31">ItemDataBase::id</references>
+        <references refid="struct_item_weapon_component_data_1a831cffa9691d611eb1f4f6031c901b7c" compoundref="_item_weapon_component_data_8h" startline="140">ItemWeaponComponentData::loadedRounds</references>
+        <references refid="struct_item_weapon_component_data_1a84d85e60e613eaf46e1e5ecf140db17f" compoundref="_item_weapon_component_data_8h" startline="117">ItemWeaponComponentData::magazineCapacity</references>
+        <references refid="struct_item_weapon_component_data_1a14406e544e3b4502c8fe379285fc28ca" compoundref="_item_weapon_component_data_8h" startline="132">ItemWeaponComponentData::magazineType</references>
+        <references refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" compoundref="_item_data_base_8h" startline="62">ItemDataBase::maxStack</references>
+        <references refid="struct_item_weapon_component_data_1a0fed3199c3d458bdd4466ea8ecd491bd" compoundref="_item_weapon_component_data_8h" startline="198">ItemWeaponComponentData::muzzleVelocityModifier</references>
+        <references refid="struct_item_weapon_component_data_1ab3a4891baa98e6a46b1b6e15cf3bed02" compoundref="_item_weapon_component_data_8h" startline="212">ItemWeaponComponentData::penetrationModifier</references>
+        <references refid="struct_item_weapon_component_data_1a583a38a9f6bded559cfcfca4bf37c955" compoundref="_item_weapon_component_data_8h" startline="170">ItemWeaponComponentData::recoilModifier</references>
+        <references refid="struct_item_weapon_component_data_1a2729bf432d4da4e082a6e58166374498" compoundref="_item_weapon_component_data_8h" startline="191">ItemWeaponComponentData::weightModifier</references>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Namespace for weapon component item validation functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/WeaponComponentItemValidator.h" line="20" column="1"/>
+  </compounddef>
+</doxygen>

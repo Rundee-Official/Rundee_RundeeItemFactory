@@ -1,0 +1,334 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_food_item_validator_8cpp" kind="file" language="C++">
+    <compoundname>FoodItemValidator.cpp</compoundname>
+    <includes refid="_food_item_validator_8h" local="yes">Validators/FoodItemValidator.h</includes>
+    <includes refid="_json_utils_8h" local="yes">Utils/JsonUtils.h</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">algorithm</includes>
+    <includes local="no">cctype</includes>
+    <includes local="no">fstream</includes>
+    <includes local="no">chrono</includes>
+    <incdepgraph>
+      <node id="4">
+        <label>Data/ItemDataBase.h</label>
+        <link refid="_item_data_base_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Data/ItemFoodData.h</label>
+        <link refid="_item_food_data_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Utils/JsonUtils.h</label>
+        <link refid="_json_utils_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Validators/FoodItemValidator.h</label>
+        <link refid="_food_item_validator_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp</label>
+        <link refid="_food_item_validator_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>algorithm</label>
+      </node>
+      <node id="10">
+        <label>cctype</label>
+      </node>
+      <node id="12">
+        <label>chrono</label>
+      </node>
+      <node id="11">
+        <label>fstream</label>
+      </node>
+      <node id="8">
+        <label>iostream</label>
+      </node>
+      <node id="7">
+        <label>json.hpp</label>
+      </node>
+      <node id="5">
+        <label>string</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="_food_item_validator_8cpp_1a4d232440a5bb32757cad5ba1433c8234" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>static float ComputePower</definition>
+        <argsstring>(const ItemFoodData &amp;item)</argsstring>
+        <name>ComputePower</name>
+        <param>
+          <type>const <ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" line="19" column="14" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" bodystart="19" bodyend="25"/>
+        <references refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" compoundref="_item_food_data_8h" startline="46">ItemFoodData::healthRestore</references>
+        <references refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" compoundref="_item_food_data_8h" startline="31">ItemFoodData::hungerRestore</references>
+        <references refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" compoundref="_item_food_data_8h" startline="39">ItemFoodData::thirstRestore</references>
+        <referencedby refid="_food_item_validator_8cpp_1a4fc384a576d7bea37f626f020d810ffa" compoundref="_food_item_validator_8cpp" startline="63" endline="109">EnsureRarity</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="_food_item_validator_8cpp_1a7234707117139fb5e17831ac420e3f57" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void EnsureFoodShape</definition>
+        <argsstring>(ItemFoodData &amp;item)</argsstring>
+        <name>EnsureFoodShape</name>
+        <param>
+          <type><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" line="27" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" bodystart="27" bodyend="46"/>
+        <references refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" compoundref="_item_data_base_8h" startline="46">ItemDataBase::category</references>
+        <references refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" compoundref="_item_food_data_8h" startline="31">ItemFoodData::hungerRestore</references>
+        <references refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" compoundref="_item_food_data_8h" startline="39">ItemFoodData::thirstRestore</references>
+        <referencedby refid="class_food_item_validator_1a7d1ed87de78096b5266978340633a531" compoundref="_food_item_validator_8cpp" startline="111" endline="158">FoodItemValidator::Validate</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="_food_item_validator_8cpp_1a00ce6bf5785b4cd46e1333dcb00fc8fa" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void EnsureSpoilage</definition>
+        <argsstring>(ItemFoodData &amp;item)</argsstring>
+        <name>EnsureSpoilage</name>
+        <param>
+          <type><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" line="48" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" bodystart="48" bodyend="61"/>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="struct_item_food_data_1a4ab4d1b07f3fa96743aa81e706a7419c" compoundref="_item_food_data_8h" startline="53">ItemFoodData::spoils</references>
+        <references refid="struct_item_food_data_1a9b3d111228763b963b5ce87352de9be2" compoundref="_item_food_data_8h" startline="60">ItemFoodData::spoilTimeMinutes</references>
+      </memberdef>
+      <memberdef kind="function" id="_food_item_validator_8cpp_1a4fc384a576d7bea37f626f020d810ffa" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void EnsureRarity</definition>
+        <argsstring>(ItemFoodData &amp;item)</argsstring>
+        <name>EnsureRarity</name>
+        <param>
+          <type><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" line="63" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" bodystart="63" bodyend="109"/>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="_food_item_validator_8cpp_1a4d232440a5bb32757cad5ba1433c8234" compoundref="_food_item_validator_8cpp" startline="19" endline="25">ComputePower</references>
+        <references refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" compoundref="_item_food_data_8h" startline="46">ItemFoodData::healthRestore</references>
+        <references refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" compoundref="_item_food_data_8h" startline="31">ItemFoodData::hungerRestore</references>
+        <references refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" compoundref="_item_data_base_8h" startline="54">ItemDataBase::rarity</references>
+        <references refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" compoundref="_item_food_data_8h" startline="39">ItemFoodData::thirstRestore</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Project<sp/>Name:<sp/>RundeeItemFactory</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>File<sp/>Name:<sp/>FoodItemValidator.cpp</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Author:<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Created<sp/>Date:<sp/>2025-11-14</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Description:<sp/>Implementation<sp/>of<sp/>validation<sp/>and<sp/>balancing<sp/>for<sp/>ItemFoodData.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_food_item_validator_8h" kindref="compound">Validators/FoodItemValidator.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_json_utils_8h" kindref="compound">Utils/JsonUtils.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;algorithm&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cctype&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;fstream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;chrono&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19" refid="_food_item_validator_8cpp_1a4d232440a5bb32757cad5ba1433c8234" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="_food_item_validator_8cpp_1a4d232440a5bb32757cad5ba1433c8234" kindref="member">ComputePower</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>&amp;<sp/>item)</highlight></codeline>
+<codeline lineno="20"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">float</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref><sp/>+</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" kindref="member">thirstRestore</ref><sp/>+</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" kindref="member">healthRestore</ref>);</highlight></codeline>
+<codeline lineno="25"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27" refid="_food_item_validator_8cpp_1a7234707117139fb5e17831ac420e3f57" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_food_item_validator_8cpp_1a7234707117139fb5e17831ac420e3f57" kindref="member">EnsureFoodShape</ref>(<ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>&amp;<sp/>item)</highlight></codeline>
+<codeline lineno="28"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Default<sp/>category:<sp/>Food</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref>.empty())</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Food&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convert<sp/>lowercase<sp/>to<sp/>proper<sp/>case</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref><sp/>==<sp/></highlight><highlight class="stringliteral">&quot;food&quot;</highlight><highlight class="normal"><sp/>||<sp/>item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref><sp/>==<sp/></highlight><highlight class="stringliteral">&quot;FOOD&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Food&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Food<sp/>items<sp/>prioritize<sp/>hungerRestore</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref><sp/>&lt;<sp/>5)</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref><sp/>=<sp/>5;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Food<sp/>items<sp/>should<sp/>have<sp/>hungerRestore<sp/>greater<sp/>than<sp/>thirstRestore</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref><sp/>&lt;<sp/>item.<ref refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" kindref="member">thirstRestore</ref>)</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref><sp/>=<sp/>item.<ref refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" kindref="member">thirstRestore</ref><sp/>+<sp/>5;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="_food_item_validator_8cpp_1a00ce6bf5785b4cd46e1333dcb00fc8fa" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_food_item_validator_8cpp_1a00ce6bf5785b4cd46e1333dcb00fc8fa" kindref="member">EnsureSpoilage</ref>(<ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>&amp;<sp/>item)</highlight></codeline>
+<codeline lineno="49"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>spoils<sp/>==<sp/>false,<sp/>spoilTimeMinutes<sp/>should<sp/>be<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!item.<ref refid="struct_item_food_data_1a4ab4d1b07f3fa96743aa81e706a7419c" kindref="member">spoils</ref>)</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a9b3d111228763b963b5ce87352de9be2" kindref="member">spoilTimeMinutes</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>spoils<sp/>==<sp/>true,<sp/>set<sp/>min/max<sp/>range<sp/>(5<sp/>minutes<sp/>~<sp/>7<sp/>days)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>minMinutes<sp/>=<sp/>5;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>maxMinutes<sp/>=<sp/>7<sp/>*<sp/>24<sp/>*<sp/>60;<sp/></highlight><highlight class="comment">//<sp/>7<sp/>days</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a9b3d111228763b963b5ce87352de9be2" kindref="member">spoilTimeMinutes</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_food_data_1a9b3d111228763b963b5ce87352de9be2" kindref="member">spoilTimeMinutes</ref>,<sp/>minMinutes,<sp/>maxMinutes);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63" refid="_food_item_validator_8cpp_1a4fc384a576d7bea37f626f020d810ffa" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_food_item_validator_8cpp_1a4fc384a576d7bea37f626f020d810ffa" kindref="member">EnsureRarity</ref>(<ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>&amp;<sp/>item)</highlight></codeline>
+<codeline lineno="64"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>power<sp/>=<sp/><ref refid="_food_item_validator_8cpp_1a4d232440a5bb32757cad5ba1433c8234" kindref="member">ComputePower</ref>(item);</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>rarity<sp/>is<sp/>empty<sp/>or<sp/>invalid,<sp/>auto-classify<sp/>based<sp/>on<sp/>power</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref>.empty()<sp/>||</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>!=<sp/></highlight><highlight class="stringliteral">&quot;Common&quot;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>!=<sp/></highlight><highlight class="stringliteral">&quot;Uncommon&quot;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>!=<sp/></highlight><highlight class="stringliteral">&quot;Rare&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(power<sp/>&lt;=<sp/>25.0f)<sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Common&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(power<sp/>&lt;=<sp/>55.0f)<sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Uncommon&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Rare&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Adjust<sp/>to<sp/>match<sp/>rarity<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>maxPower<sp/>=<sp/>999.0f;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>==<sp/></highlight><highlight class="stringliteral">&quot;Common&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maxPower<sp/>=<sp/>40.0f;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>==<sp/></highlight><highlight class="stringliteral">&quot;Uncommon&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maxPower<sp/>=<sp/>65.0f;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>==<sp/></highlight><highlight class="stringliteral">&quot;Rare&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>maxPower<sp/>=<sp/>100.0f;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(power<sp/>&lt;=<sp/>maxPower)</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Already<sp/>within<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>power<sp/>is<sp/>too<sp/>high,<sp/>scale<sp/>down<sp/>while<sp/>maintaining<sp/>ratio</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>scale<sp/>=<sp/>maxPower<sp/>/<sp/>power;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(scale<sp/>&lt;=<sp/>0.0f)</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>scaleAndClamp<sp/>=<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>v)</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>scaled<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(v<sp/>*<sp/>scale<sp/>+<sp/>0.5f);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>v<sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(scaled,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>scaleAndClamp(item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref>);</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/>scaleAndClamp(item.<ref refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" kindref="member">thirstRestore</ref>);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/>scaleAndClamp(item.<ref refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" kindref="member">healthRestore</ref>);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111" refid="class_food_item_validator_1a7d1ed87de78096b5266978340633a531" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="class_food_item_validator_1a7d1ed87de78096b5266978340633a531" kindref="member">FoodItemValidator::Validate</ref>(<ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>&amp;<sp/>item)</highlight></codeline>
+<codeline lineno="112"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/>originalId<sp/>=<sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>0)<sp/>Normalize<sp/>prefix:<sp/>strip<sp/>any<sp/>leading<sp/>food_<sp/>(any<sp/>case,<sp/>repeated),<sp/>then<sp/>add<sp/>canonical<sp/>&quot;Food_&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>.empty())</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>stripPrefix<sp/>=<sp/>[](std::string&amp;<sp/>value,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>prefixLower)</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>lower<sp/>=<sp/>value;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::transform(lower.begin(),<sp/>lower.end(),<sp/>lower.begin(),<sp/>::tolower);</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(lower.rfind(prefixLower,<sp/>0)<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>value<sp/>=<sp/>value.substr(prefixLower.size());</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>lower<sp/>=<sp/>value;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::transform(lower.begin(),<sp/>lower.end(),<sp/>lower.begin(),<sp/>::tolower);</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>stripPrefix(item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>,<sp/></highlight><highlight class="stringliteral">&quot;food_&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Food_&quot;</highlight><highlight class="normal"><sp/>+<sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Debug<sp/>logging<sp/>disabled<sp/>for<sp/>release</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>1)<sp/>Clamp<sp/>basic<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" kindref="member">hungerRestore</ref>,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" kindref="member">thirstRestore</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" kindref="member">thirstRestore</ref>,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" kindref="member">healthRestore</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" kindref="member">healthRestore</ref>,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" kindref="member">maxStack</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" kindref="member">maxStack</ref>,<sp/>1,<sp/>999);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>2)<sp/>Ensure<sp/>Food<sp/>characteristics<sp/>(hungerRestore<sp/>priority)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_food_item_validator_8cpp_1a7234707117139fb5e17831ac420e3f57" kindref="member">EnsureFoodShape</ref>(item);</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>3)<sp/>Handle<sp/>spoilage</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_drink_item_validator_8cpp_1a30171adb821cb312aee79f483fc35b4c" kindref="member">EnsureSpoilage</ref>(item);</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>4)<sp/>Balance<sp/>rarity</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_drink_item_validator_8cpp_1a8d7c3d8bae94f350424c77759496fbd2" kindref="member">EnsureRarity</ref>(item);</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>5)<sp/>Ensure<sp/>description<sp/>is<sp/>not<sp/>empty</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" kindref="member">description</ref>.empty())</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" kindref="member">description</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;A<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>item.<ref refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" kindref="member">displayName</ref><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;<sp/>that<sp/>restores<sp/>hunger.&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;[FoodItemValidator]<sp/>Warning:<sp/>Item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>has<sp/>empty<sp/>description,<sp/>using<sp/>default.\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="158"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp"/>
+  </compounddef>
+</doxygen>

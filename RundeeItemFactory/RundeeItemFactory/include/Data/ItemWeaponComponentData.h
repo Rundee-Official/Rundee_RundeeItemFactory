@@ -1,12 +1,13 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: ItemWeaponComponentData.h
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-11-15
-// Description: Data structure for weapon attachment components.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
+/**
+ * @file ItemWeaponComponentData.h
+ * @brief Data structure for weapon attachment components
+ * @author Haneul Lee (Rundee)
+ * @date 2025-11-15
+ * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
+ * 
+ * Defines the data structure for weapon components that can be attached to weapons.
+ * Includes magazines, scopes, grips, muzzles, and other attachments.
+ */
 
 #pragma once
 
@@ -14,58 +15,220 @@
 #include <vector>
 #include <string>
 
-// Sub-slot definition (for components that can have other components attached)
+/**
+ * @struct ComponentAttachmentSlot
+ * @brief Defines a sub-slot on a component
+ * 
+ * Some components can have other components attached to them (e.g., handguard with rail slots).
+ * This structure represents such sub-slots.
+ */
 struct ComponentAttachmentSlot
 {
-    std::string slotType;        // "Muzzle", "Grip", "Sight", "Rail", etc.
-    int slotIndex = 0;          // For multiple slots of same type
-    bool hasBuiltInRail = false; // If true, this slot already has a rail (e.g., handguard with integrated rail)
+    /**
+     * @brief Slot type identifier
+     * 
+     * Examples: "Muzzle", "Grip", "Sight", "Rail", etc.
+     */
+    std::string slotType;
+
+    /**
+     * @brief Slot index for multiple slots of same type
+     * 
+     * Used when a component has multiple slots of the same type.
+     */
+    int slotIndex = 0;
+
+    /**
+     * @brief Whether this slot already has a built-in rail
+     * 
+     * If true, the slot already has an integrated rail (e.g., handguard with integrated rail).
+     */
+    bool hasBuiltInRail = false;
 };
 
-// Loaded round segment definition for magazines (represents actual load order)
+/**
+ * @struct LoadedRoundSegment
+ * @brief Represents a segment of loaded rounds in a magazine
+ * 
+ * Used for magazines to represent the actual load order of different ammo types.
+ * Allows mixed ammo loads (e.g., AP rounds at top, FMJ at bottom).
+ */
 struct LoadedRoundSegment
 {
-    int orderIndex = 0;          // 0 = first rounds to fire (top of magazine)
-    int roundCount = 0;          // How many consecutive rounds use this ammo type
-    std::string ammoId;          // Reference to Ammo item ID (e.g., "Ammo_762x39_AP")
-    std::string ammoDisplayName; // Optional friendly name (e.g., "7.62x39 AP")
-    std::string ammoNotes;       // Notes such as "AP", "FMJ", "Tracer"
+    /**
+     * @brief Order index (0 = first rounds to fire)
+     * 
+     * Lower values indicate rounds that will be fired first (top of magazine).
+     */
+    int orderIndex = 0;
+
+    /**
+     * @brief Number of consecutive rounds using this ammo type
+     * 
+     * How many rounds in sequence use the specified ammo type.
+     */
+    int roundCount = 0;
+
+    /**
+     * @brief Reference to Ammo item ID
+     * 
+     * Examples: "Ammo_762x39_AP", "Ammo_9mm_FMJ", etc.
+     */
+    std::string ammoId;
+
+    /**
+     * @brief Optional friendly display name
+     * 
+     * Examples: "7.62x39 AP", "9mm FMJ", etc.
+     */
+    std::string ammoDisplayName;
+
+    /**
+     * @brief Notes about the ammo
+     * 
+     * Examples: "AP", "FMJ", "Tracer", etc.
+     */
+    std::string ammoNotes;
 };
 
+/**
+ * @struct ItemWeaponComponentData
+ * @brief Data structure representing a weapon component/attachment
+ * 
+ * Contains all properties for weapon components that can be attached to weapons.
+ * Includes stat modifiers, compatibility information, and special properties.
+ */
 struct ItemWeaponComponentData : public ItemDataBase
 {
-    // Component type (Tarkov-style detailed types)
-    std::string componentType;   // "Muzzle", "Grip", "Sight", "Scope", "Stock", "Barrel", "Handguard", "Rail", 
-                                 // "Flashlight", "Laser", "Magazine", "GasBlock", "ChargingHandle", "PistolGrip", 
-                                 // "Foregrip", "Bipod", "TacticalDevice", "Mount", "Adapter", etc.
-    
-    // For Magazine components only
-    int magazineCapacity = 0;    // Capacity in rounds (only for Magazine type)
-    std::string caliber;         // Compatible caliber (only for Magazine type)
-    std::string magazineType;    // "Standard", "Extended", "Drum", "QuadStack", etc. (only for Magazine type)
-    std::vector<LoadedRoundSegment> loadedRounds; // Actual loaded order preview
+    /**
+     * @brief Component type identifier
+     * 
+     * Examples: "Muzzle", "Grip", "Sight", "Scope", "Stock", "Barrel", "Handguard", "Rail",
+     * "Flashlight", "Laser", "Magazine", "GasBlock", "ChargingHandle", "PistolGrip",
+     * "Foregrip", "Bipod", "TacticalDevice", "Mount", "Adapter", etc.
+     */
+    std::string componentType;
 
-    // Compatibility: which weapon slots can this component attach to
-    std::vector<std::string> compatibleSlots;  // e.g., ["Muzzle", "Barrel"] for a muzzle device
+    /**
+     * @brief Magazine capacity in rounds (Magazine type only)
+     * 
+     * Only used when componentType is "Magazine".
+     */
+    int magazineCapacity = 0;
 
-    // Sub-slots: what can be attached to this component
-    std::vector<ComponentAttachmentSlot> subSlots;  // e.g., Handguard can have Rail slots, Barrel can have Muzzle slot
+    /**
+     * @brief Compatible caliber (Magazine type only)
+     * 
+     * Only used when componentType is "Magazine". Must match weapon caliber.
+     */
+    std::string caliber;
 
-    // Stat modifiers (applied when attached to weapon)
-    int damageModifier = 0;      // Damage bonus/penalty
-    int recoilModifier = 0;     // Recoil reduction (positive = less recoil)
-    int ergonomicsModifier = 0; // Ergonomics bonus/penalty
-    int accuracyModifier = 0;    // Accuracy bonus/penalty
-    int weightModifier = 0;     // Weight change in grams
-    int muzzleVelocityModifier = 0;  // Muzzle velocity modifier (m/s)
-    int effectiveRangeModifier = 0;  // Effective range modifier (meters)
-    int penetrationModifier = 0;     // Penetration power modifier
+    /**
+     * @brief Magazine type (Magazine type only)
+     * 
+     * Examples: "Standard", "Extended", "Drum", "QuadStack", etc.
+     * Only used when componentType is "Magazine".
+     */
+    std::string magazineType;
 
-    // Special properties
-    bool hasBuiltInRail = false; // If true, this component has an integrated rail (e.g., handguard with rail)
-    std::string railType;        // "Picatinny", "M-LOK", "KeyMod", etc. (if hasBuiltInRail is true)
+    /**
+     * @brief Actual loaded round order preview (Magazine type only)
+     * 
+     * Represents the actual load order of different ammo types in the magazine.
+     * Allows mixed ammo loads.
+     */
+    std::vector<LoadedRoundSegment> loadedRounds;
 
-    // Override base class method
+    /**
+     * @brief Compatible weapon slots
+     * 
+     * List of weapon slot types this component can attach to.
+     * Examples: ["Muzzle", "Barrel"] for a muzzle device.
+     */
+    std::vector<std::string> compatibleSlots;
+
+    /**
+     * @brief Sub-slots on this component
+     * 
+     * Components that can be attached to this component.
+     * Examples: Handguard can have Rail slots, Barrel can have Muzzle slot.
+     */
+    std::vector<ComponentAttachmentSlot> subSlots;
+
+    /**
+     * @brief Damage modifier
+     * 
+     * Damage bonus/penalty applied when attached. Can be negative.
+     */
+    int damageModifier = 0;
+
+    /**
+     * @brief Recoil modifier
+     * 
+     * Recoil reduction when attached. Positive values reduce recoil.
+     */
+    int recoilModifier = 0;
+
+    /**
+     * @brief Ergonomics modifier
+     * 
+     * Ergonomics bonus/penalty when attached. Can be negative.
+     */
+    int ergonomicsModifier = 0;
+
+    /**
+     * @brief Accuracy modifier
+     * 
+     * Accuracy bonus/penalty when attached. Can be negative.
+     */
+    int accuracyModifier = 0;
+
+    /**
+     * @brief Weight modifier in grams
+     * 
+     * Weight change when attached. Can be negative (reduces weight).
+     */
+    int weightModifier = 0;
+
+    /**
+     * @brief Muzzle velocity modifier in m/s
+     * 
+     * Muzzle velocity change when attached. Can be negative.
+     */
+    int muzzleVelocityModifier = 0;
+
+    /**
+     * @brief Effective range modifier in meters
+     * 
+     * Effective range change when attached. Can be negative.
+     */
+    int effectiveRangeModifier = 0;
+
+    /**
+     * @brief Penetration power modifier
+     * 
+     * Penetration change when attached. Can be negative.
+     */
+    int penetrationModifier = 0;
+
+    /**
+     * @brief Whether this component has an integrated rail
+     * 
+     * If true, the component has a built-in rail (e.g., handguard with integrated rail).
+     */
+    bool hasBuiltInRail = false;
+
+    /**
+     * @brief Rail type (if hasBuiltInRail is true)
+     * 
+     * Examples: "Picatinny", "M-LOK", "KeyMod", etc.
+     */
+    std::string railType;
+
+    /**
+     * @brief Get the item type name
+     * @return Always returns "WeaponComponent"
+     */
     std::string GetItemTypeName() const override { return "WeaponComponent"; }
 };
 

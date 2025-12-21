@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_balance_reporter_1_1_food_stats" kind="struct" language="C++" prot="public">
+    <compoundname>BalanceReporter::FoodStats</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a4d3459ff7b2805fc95bad168ec6fef4d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <qualifiedname>BalanceReporter::FoodStats::count</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="30" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="30" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a8aa89acf56d169ca923aaa8d0fb35388" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::totalHunger</definition>
+        <argsstring></argsstring>
+        <name>totalHunger</name>
+        <qualifiedname>BalanceReporter::FoodStats::totalHunger</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="31" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="31" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a3d4680243b780c941997b692b73027fd" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::totalThirst</definition>
+        <argsstring></argsstring>
+        <name>totalThirst</name>
+        <qualifiedname>BalanceReporter::FoodStats::totalThirst</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="32" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="32" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a39229b035aa8c06a0c5fd1332f77f17b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::totalHealth</definition>
+        <argsstring></argsstring>
+        <name>totalHealth</name>
+        <qualifiedname>BalanceReporter::FoodStats::totalHealth</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="33" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="33" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1ace0b07eaed0d4f1b68ad09af23c4b6e8" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::minHunger</definition>
+        <argsstring></argsstring>
+        <name>minHunger</name>
+        <qualifiedname>BalanceReporter::FoodStats::minHunger</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="34" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="34" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a95c1a51f6c3d556af9d4f1a92a4dfeba" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::maxHunger</definition>
+        <argsstring></argsstring>
+        <name>maxHunger</name>
+        <qualifiedname>BalanceReporter::FoodStats::maxHunger</qualifiedname>
+        <initializer>= -1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="35" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="35" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a3d92b4cd5d1b94e1d8660ff505ed9ddd" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::minThirst</definition>
+        <argsstring></argsstring>
+        <name>minThirst</name>
+        <qualifiedname>BalanceReporter::FoodStats::minThirst</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="36" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="36" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1ae011a8ad3fe063b5a6c748a6cf3c84eb" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::maxThirst</definition>
+        <argsstring></argsstring>
+        <name>maxThirst</name>
+        <qualifiedname>BalanceReporter::FoodStats::maxThirst</qualifiedname>
+        <initializer>= -1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="37" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="37" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a04ed8a6355a02f74192ddeb1277fe21d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::minHealth</definition>
+        <argsstring></argsstring>
+        <name>minHealth</name>
+        <qualifiedname>BalanceReporter::FoodStats::minHealth</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="38" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="38" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1a6ff25f7e76cc306898c04969675b8355" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::maxHealth</definition>
+        <argsstring></argsstring>
+        <name>maxHealth</name>
+        <qualifiedname>BalanceReporter::FoodStats::maxHealth</qualifiedname>
+        <initializer>= -1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="39" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="39" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1ae4d68a0ce851697feb0ca54efb0b4789" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::FoodStats::spoilingCount</definition>
+        <argsstring></argsstring>
+        <name>spoilingCount</name>
+        <qualifiedname>BalanceReporter::FoodStats::spoilingCount</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="40" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="40" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_food_stats_1aae0e461e42124838e9f2f9392878cfc1" prot="public" static="no" mutable="no">
+        <type>std::map&lt; std::string, int &gt;</type>
+        <definition>std::map&lt;std::string, int&gt; BalanceReporter::FoodStats::rarityCount</definition>
+        <argsstring></argsstring>
+        <name>rarityCount</name>
+        <qualifiedname>BalanceReporter::FoodStats::rarityCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="41" column="18" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="41" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a3f44d7d67865059c1ebebd47611665ad" compoundref="_balance_reporter_8cpp" startline="276" endline="371">BalanceReporter::PrintDrinkReport</referencedby>
+        <referencedby refid="namespace_balance_reporter_1ae374afcf3878c10da33edd142b81ef2e" compoundref="_balance_reporter_8cpp" startline="168" endline="274">BalanceReporter::PrintFoodReport</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="28" column="5" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="29" bodyend="42"/>
+    <listofallmembers>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a4d3459ff7b2805fc95bad168ec6fef4d" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>count</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a6ff25f7e76cc306898c04969675b8355" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>maxHealth</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a95c1a51f6c3d556af9d4f1a92a4dfeba" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>maxHunger</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1ae011a8ad3fe063b5a6c748a6cf3c84eb" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>maxThirst</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a04ed8a6355a02f74192ddeb1277fe21d" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>minHealth</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1ace0b07eaed0d4f1b68ad09af23c4b6e8" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>minHunger</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a3d92b4cd5d1b94e1d8660ff505ed9ddd" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>minThirst</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1aae0e461e42124838e9f2f9392878cfc1" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>rarityCount</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1ae4d68a0ce851697feb0ca54efb0b4789" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>spoilingCount</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a39229b035aa8c06a0c5fd1332f77f17b" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>totalHealth</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a8aa89acf56d169ca923aaa8d0fb35388" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>totalHunger</name></member>
+      <member refid="struct_balance_reporter_1_1_food_stats_1a3d4680243b780c941997b692b73027fd" prot="public" virt="non-virtual"><scope>BalanceReporter::FoodStats</scope><name>totalThirst</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -44,11 +44,6 @@ Balancing:
 - All values must be between 0 and 100.
 - Use only integers for all restore values.
 - thirstRestore should be higher than hungerRestore for drinks.
-- Total restore value (hungerRestore + thirstRestore + healthRestore) should be reasonable:
-  * Common drinks: total 15-35
-  * Uncommon drinks: total 30-60
-  * Rare drinks: total 50-100
-- Avoid creating drinks with extremely high total restore values (>100) as they break game balance.
 
 Output:
 - Output ONLY a JSON array of items.

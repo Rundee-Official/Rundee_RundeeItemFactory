@@ -1,0 +1,15 @@
+[
+  {
+    "id": "food_wildcarrot",
+    "displayName": "Wild Carrot",
+    "category": "Food",
+    "rarity": "Common",
+    "maxStack": 20,
+    "hungerRestore": 10,
+    "thirstRestore": 0,
+    "healthRestore": 0,
+    "spoils": true,
+    "spoilTimeMinutes": 120,
+    "description": "A crunchy, sweet carrot with a hint of earthy flavor."
+  }
+]

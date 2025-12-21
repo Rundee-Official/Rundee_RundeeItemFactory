@@ -8,15 +8,8 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
-#include <algorithm>
-
-// Project Includes
 #include "Utils/JsonUtils.h"
-
-// ============================================================================
-// SECTION 1: JsonUtils Namespace
-// ============================================================================
+#include <algorithm>
 
 namespace JsonUtils
 {

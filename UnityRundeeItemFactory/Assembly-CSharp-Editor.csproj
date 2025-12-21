@@ -63,12 +63,26 @@
   <ItemGroup>
     <Compile Include="Assets\RundeeItemFactory\Editor\ItemManagerWindow.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\VersionManager.cs" />
     <Compile Include="Assets\RundeeItemFactory\Editor\JsonImportWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\DataExporter.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\ItemPreviewWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\ItemFactorySettings.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\InputValidator.cs" />
     <Compile Include="Assets\RundeeItemFactory\Editor\SetupItemFactoryMenu.cs" />
     <Compile Include="Assets\RundeeItemFactory\Editor\JsonImportCli.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\HelpWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\ErrorHandler.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\RegistryManagerWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\BatchJobManager.cs" />
     <Compile Include="Assets\RundeeItemFactory\Editor\WeaponComponentItemDataSOEditor.cs" />
     <Compile Include="Assets\RundeeItemFactory\Editor\ItemImporter.cs" />
     <Compile Include="Assets\RundeeItemFactory\Editor\ItemFactoryWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\JsonImportMCP.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\ItemGenerationProfile.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\StatisticsDashboardWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\PresetManagerWindow.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Editor\QualityCheckWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

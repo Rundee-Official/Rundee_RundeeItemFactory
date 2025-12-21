@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="namespace_item_generator" kind="namespace" language="C++">
+    <compoundname>ItemGenerator</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_item_generator_1a18259c8382f2b43eede484c3eb2b41c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int ItemGenerator::GenerateWithLLM</definition>
+        <argsstring>(const CommandLineArgs &amp;args)</argsstring>
+        <name>GenerateWithLLM</name>
+        <qualifiedname>ItemGenerator::GenerateWithLLM</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_command_line_args" kindref="compound">CommandLineArgs</ref> &amp;</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Generate items of a single type using LLM. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function generates items of the specified type using the configured LLM model. It handles prompt building, LLM communication, JSON parsing, validation, quality checking, and file writing. Supports retry logic and quality-based regeneration.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Command line arguments containing generation parameters:<itemizedlist>
+<listitem><para>itemType: Type of items to generate (Food, Drink, Material, Weapon, WeaponComponent, Ammo)</para>
+</listitem><listitem><para>count: Number of items to generate</para>
+</listitem><listitem><para>modelName: LLM model name (e.g., &quot;llama3&quot;, &quot;mistral&quot;)</para>
+</listitem><listitem><para>preset: Preset type (Default, Forest, Desert, Coast, City) or custom preset</para>
+</listitem><listitem><para>outputPath: Path to output JSON file</para>
+</listitem><listitem><para>params: Item-specific generation parameters (maxHunger, maxThirst, etc.)</para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, non-zero on failure</para>
+</simplesect>
+<simplesect kind="note"><para>The function automatically merges new items with existing items in the output file, skipping duplicates based on item ID.</para>
+</simplesect>
+<simplesect kind="see"><para><ref refid="namespace_item_generator_1a1f5c63542daa1579f8c232333ad856a1" kindref="member">GenerateBatch</ref> for generating multiple item types in one operation </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" line="1531" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" bodystart="1531" bodyend="1805" declfile="RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGenerator.h" declline="47" declcolumn="9"/>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bac92a86ef9dceabc5bf5ec6eb9bfd1318" compoundref="_command_line_parser_8h" startline="40">Ammo</references>
+        <references refid="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" compoundref="_item_generate_params_8h" startline="18">FoodGenerateParams::count</references>
+        <references refid="struct_command_line_args_1a2bb9e52adc6b0269ac66b967e63d6f7c" compoundref="_command_line_parser_8h" startline="71">CommandLineArgs::customPresetPath</references>
+        <references refid="struct_custom_preset_1a7169ba2db551ca89884436475926e982" compoundref="_custom_preset_8h" startline="39">CustomPreset::displayName</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba40491db1043a93d8b94b9d94e3eda532" compoundref="_command_line_parser_8h" startline="36">Drink</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba0a38e7286ebbb560354992b3ce62be67" compoundref="_command_line_parser_8h" startline="35">Food</references>
+        <references refid="namespace_item_generator_1abcd9165612d17e63efd704c0e85b2967" compoundref="_item_generator_8cpp" startline="1808" endline="1920">GenerateWithLLM_SingleBatch</references>
+        <references refid="class_item_json_writer_1a9ea8411277aff97c595592e9980608aa" compoundref="_item_json_writer_8cpp" startline="809" endline="832">ItemJsonWriter::GetExistingAmmoIds</references>
+        <references refid="class_item_json_writer_1a2e1531ee65268bfbb96ae3f5fad8d807" compoundref="_item_json_writer_8cpp" startline="398" endline="422">ItemJsonWriter::GetExistingDrinkIds</references>
+        <references refid="class_item_json_writer_1a27f534cff42cdfea9b5d45c57ce4e2b2" compoundref="_item_json_writer_8cpp" startline="372" endline="396">ItemJsonWriter::GetExistingFoodIds</references>
+        <references refid="class_item_json_writer_1a3aeda0129acf31f1723b449972288311" compoundref="_item_json_writer_8cpp" startline="424" endline="448">ItemJsonWriter::GetExistingMaterialIds</references>
+        <references refid="class_item_json_writer_1a3e94ec3134f965d7435abfcb7c9984a5" compoundref="_item_json_writer_8cpp" startline="700" endline="723">ItemJsonWriter::GetExistingWeaponComponentIds</references>
+        <references refid="class_item_json_writer_1ab97560c649157733319b9e0811db231a" compoundref="_item_json_writer_8cpp" startline="675" endline="698">ItemJsonWriter::GetExistingWeaponIds</references>
+        <references refid="namespace_command_line_parser_1aab0caa17944a729c1209aa361df91f66" compoundref="_command_line_parser_8cpp" startline="147" endline="159">CommandLineParser::GetItemTypeName</references>
+        <references refid="struct_custom_preset_1aac31fc92ad757067de5661c3270ec54c" compoundref="_custom_preset_8h" startline="32">CustomPreset::id</references>
+        <references refid="struct_command_line_args_1a3624aee4bf73cff0f36c5f7394d5860c" compoundref="_command_line_parser_8h" startline="66">CommandLineArgs::itemType</references>
+        <references refid="namespace_custom_preset_manager_1a6e7b98ea03e9879a2c3381164b79e271" compoundref="_custom_preset_8cpp" startline="19" endline="77">CustomPresetManager::LoadPresetFromFile</references>
+        <references refid="_item_generator_8cpp_1a08b20ea70942adc6dc5e735e1367c396" compoundref="_item_generator_8cpp" startline="113" endline="138">LoadRegistryIds</references>
+        <references refid="_item_generator_8cpp_1a3879ac0f5f042d49bb0e854e8f02104e" compoundref="_item_generator_8cpp" startline="156" endline="160">LogRegistryEvent</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bad92a8333dd3ccb895cc65f7455b71206" compoundref="_command_line_parser_8h" startline="37">Material</references>
+        <references refid="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" compoundref="_item_generate_params_8h" startline="21">FoodGenerateParams::outputPath</references>
+        <references refid="struct_command_line_args_1aa9d2d989a48a09ef6243e78e6ff29520" compoundref="_command_line_parser_8h" startline="67">CommandLineArgs::params</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba18c83669920215a818638ad0e5421e4b" compoundref="_command_line_parser_8h" startline="38">Weapon</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bae8d231480034ce9ca04a6bdda22ad321" compoundref="_command_line_parser_8h" startline="39">WeaponComponent</references>
+        <referencedby refid="namespace_item_generator_1a1f5c63542daa1579f8c232333ad856a1" compoundref="_item_generator_8cpp" startline="1922" endline="2175">GenerateBatch</referencedby>
+        <referencedby refid="_rundee_item_factory_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" compoundref="_rundee_item_factory_8cpp" startline="17" endline="71">main</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_item_generator_1a1f5c63542daa1579f8c232333ad856a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int ItemGenerator::GenerateBatch</definition>
+        <argsstring>(const CommandLineArgs &amp;args)</argsstring>
+        <name>GenerateBatch</name>
+        <qualifiedname>ItemGenerator::GenerateBatch</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_command_line_args" kindref="compound">CommandLineArgs</ref> &amp;</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>Generate multiple item types in batch mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Generates items for multiple types sequentially. Each item type is processed independently with its own output file (if specified) or default location.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Command line arguments containing batch configuration:<itemizedlist>
+<listitem><para>batchItems: Vector of <ref refid="struct_batch_item" kindref="compound">BatchItem</ref> structures, each specifying:<itemizedlist>
+<listitem><para>itemType: Type of items to generate</para>
+</listitem><listitem><para>count: Number of items to generate for this type</para>
+</listitem><listitem><para>outputPath: Optional custom output path (empty uses default)</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>modelName: LLM model name (shared across all batch items)</para>
+</listitem><listitem><para>preset: Preset type (shared across all batch items)</para>
+</listitem></itemizedlist>
+</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 if all batch items succeeded, 1 if any failed</para>
+</simplesect>
+<simplesect kind="note"><para>Batch items are processed sequentially, not in parallel. </para>
+</simplesect>
+<simplesect kind="note"><para>Each batch item can have its own output file or use default location.</para>
+</simplesect>
+<simplesect kind="see"><para><ref refid="namespace_item_generator_1a18259c8382f2b43eede484c3eb2b41c0" kindref="member">GenerateWithLLM</ref> for single item type generation </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" line="1922" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" bodystart="1922" bodyend="2175" declfile="RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGenerator.h" declline="70" declcolumn="9"/>
+        <references refid="struct_command_line_args_1aacbf6c900ba033368d804c04835f807f" compoundref="_command_line_parser_8h" startline="70">CommandLineArgs::batchItems</references>
+        <references refid="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" compoundref="_item_generate_params_8h" startline="18">FoodGenerateParams::count</references>
+        <references refid="namespace_item_generator_1a18259c8382f2b43eede484c3eb2b41c0" compoundref="_item_generator_8cpp" startline="1531" endline="1805">GenerateWithLLM</references>
+        <references refid="namespace_command_line_parser_1aab0caa17944a729c1209aa361df91f66" compoundref="_command_line_parser_8cpp" startline="147" endline="159">CommandLineParser::GetItemTypeName</references>
+        <references refid="struct_command_line_args_1a3624aee4bf73cff0f36c5f7394d5860c" compoundref="_command_line_parser_8h" startline="66">CommandLineArgs::itemType</references>
+        <references refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947eab8cc08c142bcf05a92faec2d6ed58b05" compoundref="_command_line_parser_8h" startline="25">LLM</references>
+        <references refid="struct_command_line_args_1a17a3c917eca6876a7ff7758076a24c66" compoundref="_command_line_parser_8h" startline="64">CommandLineArgs::mode</references>
+        <references refid="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" compoundref="_item_generate_params_8h" startline="21">FoodGenerateParams::outputPath</references>
+        <references refid="struct_command_line_args_1aa9d2d989a48a09ef6243e78e6ff29520" compoundref="_command_line_parser_8h" startline="67">CommandLineArgs::params</references>
+        <referencedby refid="_rundee_item_factory_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" compoundref="_rundee_item_factory_8cpp" startline="17" endline="71">main</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_item_generator_1abcd9165612d17e63efd704c0e85b2967" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int ItemGenerator::GenerateWithLLM_SingleBatch</definition>
+        <argsstring>(const CommandLineArgs &amp;args, const std::set&lt; std::string &gt; &amp;existingIds, bool useCustomPreset, const CustomPreset &amp;customPreset)</argsstring>
+        <name>GenerateWithLLM_SingleBatch</name>
+        <qualifiedname>ItemGenerator::GenerateWithLLM_SingleBatch</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_command_line_args" kindref="compound">CommandLineArgs</ref> &amp;</type>
+          <declname>args</declname>
+        </param>
+        <param>
+          <type>const std::set&lt; std::string &gt; &amp;</type>
+          <declname>existingIds</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>useCustomPreset</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_custom_preset" kindref="compound">CustomPreset</ref> &amp;</type>
+          <declname>customPreset</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" line="1808" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" bodystart="1808" bodyend="1920" declfile="RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp" declline="247" declcolumn="9"/>
+        <references refid="struct_command_line_args_1a0597b080789ae76f7b2d4317726bc5f1" compoundref="_command_line_parser_8h" startline="72">CommandLineArgs::additionalPrompt</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bac92a86ef9dceabc5bf5ec6eb9bfd1318" compoundref="_command_line_parser_8h" startline="40">Ammo</references>
+        <references refid="class_prompt_builder_1a13830108797c9c98ad9f6af928bd56bc" compoundref="_prompt_builder_8cpp" startline="1175" endline="1271">PromptBuilder::BuildAmmoJsonPrompt</references>
+        <references refid="class_prompt_builder_1af573636eb2d4440020edd5d56bcbceb7" compoundref="_prompt_builder_8cpp" startline="360" endline="449">PromptBuilder::BuildDrinkJsonPrompt</references>
+        <references refid="class_prompt_builder_1a4dbbfeb85017a5b3692757587170ee1c" compoundref="_prompt_builder_8cpp" startline="177" endline="269">PromptBuilder::BuildFoodJsonPrompt</references>
+        <references refid="class_prompt_builder_1ad764c13df10dd52e205dbb7cc4901c8b" compoundref="_prompt_builder_8cpp" startline="528" endline="608">PromptBuilder::BuildMaterialJsonPrompt</references>
+        <references refid="class_prompt_builder_1a68ca15c2b188625ac36693e471ceb20c" compoundref="_prompt_builder_8cpp" startline="927" endline="1084">PromptBuilder::BuildWeaponComponentJsonPrompt</references>
+        <references refid="class_prompt_builder_1acb3d86d01fad3840d052cc9d262098a5" compoundref="_prompt_builder_8cpp" startline="686" endline="834">PromptBuilder::BuildWeaponJsonPrompt</references>
+        <references refid="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" compoundref="_item_generate_params_8h" startline="18">FoodGenerateParams::count</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba40491db1043a93d8b94b9d94e3eda532" compoundref="_command_line_parser_8h" startline="36">Drink</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba0a38e7286ebbb560354992b3ce62be67" compoundref="_command_line_parser_8h" startline="35">Food</references>
+        <references refid="_item_generator_8cpp_1a8ffa1fa88e58fb61db3e9e7aed2b3a61" compoundref="_item_generator_8cpp" startline="213" endline="225">GetCurrentTimestamp</references>
+        <references refid="struct_command_line_args_1a3624aee4bf73cff0f36c5f7394d5860c" compoundref="_command_line_parser_8h" startline="66">CommandLineArgs::itemType</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bad92a8333dd3ccb895cc65f7455b71206" compoundref="_command_line_parser_8h" startline="37">Material</references>
+        <references refid="struct_command_line_args_1a7b3f9e7603c9938cbf2a804f3431c6c8" compoundref="_command_line_parser_8h" startline="63">CommandLineArgs::modelName</references>
+        <references refid="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" compoundref="_item_generate_params_8h" startline="21">FoodGenerateParams::outputPath</references>
+        <references refid="struct_command_line_args_1aa9d2d989a48a09ef6243e78e6ff29520" compoundref="_command_line_parser_8h" startline="67">CommandLineArgs::params</references>
+        <references refid="struct_command_line_args_1ac475c1798b5dfd29e75add47baa246fb" compoundref="_command_line_parser_8h" startline="65">CommandLineArgs::preset</references>
+        <references refid="_item_generator_8cpp_1aef3c20f7b6d0f2803e617ab0f8fcdcec" compoundref="_item_generator_8cpp" startline="1095" endline="1508">ProcessLLMResponse_Ammo</references>
+        <references refid="_item_generator_8cpp_1ad6600a037ef764de23e1a7d1f46a1136" compoundref="_item_generator_8cpp" startline="576" endline="609">ProcessLLMResponse_Drink</references>
+        <references refid="_item_generator_8cpp_1aa54ca7028352d142a52b0d5d2e241a3f" compoundref="_item_generator_8cpp" startline="541" endline="574">ProcessLLMResponse_Food</references>
+        <references refid="_item_generator_8cpp_1a6499965d95b205d8c7bf6f21bc4c2562" compoundref="_item_generator_8cpp" startline="611" endline="640">ProcessLLMResponse_Material</references>
+        <references refid="_item_generator_8cpp_1a2413d3ed4460d24731cd310734423c2b" compoundref="_item_generator_8cpp" startline="642" endline="679">ProcessLLMResponse_Weapon</references>
+        <references refid="_item_generator_8cpp_1aaea5114ff8a34af218dcdf247cbc3fda" compoundref="_item_generator_8cpp" startline="681" endline="1093">ProcessLLMResponse_WeaponComponent</references>
+        <references refid="class_ollama_client_1a1fea956fd3e63b9df3cb2184731ef692" compoundref="_ollama_client_8cpp" startline="405" endline="479">OllamaClient::RunWithRetry</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba18c83669920215a818638ad0e5421e4b" compoundref="_command_line_parser_8h" startline="38">Weapon</references>
+        <references refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bae8d231480034ce9ca04a6bdda22ad321" compoundref="_command_line_parser_8h" startline="39">WeaponComponent</references>
+        <referencedby refid="namespace_item_generator_1a18259c8382f2b43eede484c3eb2b41c0" compoundref="_item_generator_8cpp" startline="1531" endline="1805">GenerateWithLLM</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Main namespace for item generation functionality. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Provides high-level functions to generate game items (Food, Drink, Material, Weapon, WeaponComponent, Ammo) using local LLM (Ollama) with quality checking and validation. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGenerator.h" line="17" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd5d9b5b1a68914e82e7ff169e9d131, type: 3}
+  m_Name: Clothing_plaid_blanket_wrap
+  m_EditorClassIdentifier: 
+  id: Clothing_plaid_blanket_wrap
+  displayName: Plaid Blanket Wrap
+  category: Clothing
+  rarity: Uncommon
+  maxStack: 1
+  warmth: 40
+  style: 50
+  durability: 80
+  weight: 800
+  clothingType: Wrap
+  value: 12
+  description: A cozy, plaid blanket wrap for cold weather.

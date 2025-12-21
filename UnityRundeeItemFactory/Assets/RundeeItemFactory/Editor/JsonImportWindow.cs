@@ -1,27 +1,18 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: JsonImportWindow.cs
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: Simple one-stop JSON importer window that routes to the existing ItemImporter methods for each item type.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
-
 using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Simple one-stop JSON importer that routes to the existing ItemImporter methods for each item type.
+/// Simple one-stop JSON importer that routes to the existing ItemImporter
+/// methods for each item type.
 /// </summary>
 public class JsonImportWindow : EditorWindow
 {
     private ItemType _selectedType = ItemType.Food;
     private string _jsonPath = string.Empty;
 
-    [MenuItem("Tools/Rundee/Item Factory/JSON Importer")]
+    [MenuItem("Tools/Rundee/Item Factory/Generation/JSON Importer", false, 1010)]
     public static void ShowWindow()
     {
         var window = GetWindow<JsonImportWindow>("JSON Importer");
@@ -82,6 +73,9 @@ public class JsonImportWindow : EditorWindow
                     break;
                 case ItemType.Drink:
                     ItemImporter.ImportDrinkFromJsonPath(_jsonPath);
+                    break;
+                case ItemType.Medicine:
+                    ItemImporter.ImportMedicineFromJsonPath(_jsonPath);
                     break;
                 case ItemType.Material:
                     ItemImporter.ImportMaterialFromJsonPath(_jsonPath);

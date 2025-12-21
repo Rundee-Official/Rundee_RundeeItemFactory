@@ -1,0 +1,44 @@
+[
+  {
+    "id": "clothing_sackcloth_jacket",
+    "displayName": "Sackcloth Jacket",
+    "category": "Clothing",
+    "rarity": "Common",
+    "maxStack": 1,
+    "warmth": 20,
+    "style": 25,
+    "durability": 60,
+    "weight": 500,
+    "clothingType": "Jacket",
+    "value": 10,
+    "description": "A simple, coarse jacket made from rough sackcloth."
+  },
+  {
+    "id": "clothing_burlap_shirt",
+    "displayName": "Burlap Shirt",
+    "category": "Clothing",
+    "rarity": "Uncommon",
+    "maxStack": 1,
+    "warmth": 30,
+    "style": 40,
+    "durability": 75,
+    "weight": 350,
+    "clothingType": "Shirt",
+    "value": 20,
+    "description": "A sturdy, earth-toned shirt made from durable burlap."
+  },
+  {
+    "id": "clothing_cotton_duster_coat",
+    "displayName": "Cotton Duster Coat",
+    "category": "Clothing",
+    "rarity": "Rare",
+    "maxStack": 1,
+    "warmth": 50,
+    "style": 70,
+    "durability": 90,
+    "weight": 800,
+    "clothingType": "Coat",
+    "value": 40,
+    "description": "A long, lightweight coat made from soft cotton for warm weather."
+  }
+]

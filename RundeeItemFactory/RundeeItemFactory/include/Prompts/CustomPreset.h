@@ -1,57 +1,141 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: CustomPreset.h
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-11-17
-// Description: Custom preset data structure and management.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
+/**
+ * @file CustomPreset.h
+ * @brief Custom preset data structure and management
+ * @author Haneul Lee (Rundee)
+ * @date 2025-11-17
+ * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
+ * 
+ * Defines the structure for custom presets that allow users to create
+ * their own world contexts for item generation. Supports loading and saving
+ * presets from JSON files.
+ */
 
 #pragma once
 
-// Standard Library Includes
 #include <string>
 #include <vector>
 
-// ============================================================================
-// SECTION 1: Data Structures
-// ============================================================================
-
+/**
+ * @struct CustomPreset
+ * @brief Data structure for custom world presets
+ * 
+ * Represents a user-defined preset with custom world context and flavor text.
+ * Used instead of built-in presets to provide unique world settings for item generation.
+ */
 struct CustomPreset
 {
-    std::string id;              // Unique identifier (lowercase, underscore)
-    std::string displayName;     // Human-readable name
-    std::string description;      // Description of the preset
-    std::string flavorText;      // World context text for LLM prompts
-    
-    // Optional metadata
+    /**
+     * @brief Unique identifier (lowercase, underscore-separated)
+     * 
+     * Examples: "post_apocalyptic_city", "fantasy_forest"
+     */
+    std::string id;
+
+    /**
+     * @brief Human-readable display name
+     * 
+     * Examples: "Post-Apocalyptic City", "Fantasy Forest"
+     */
+    std::string displayName;
+
+    /**
+     * @brief Description of the preset
+     * 
+     * Explains what this preset represents and when to use it.
+     */
+    std::string description;
+
+    /**
+     * @brief World context text for LLM prompts
+     * 
+     * This text is included in prompts to guide LLM generation with the
+     * appropriate world context and flavor.
+     */
+    std::string flavorText;
+
+    /**
+     * @brief Optional author name
+     * 
+     * Creator of the preset (optional metadata).
+     */
     std::string author;
+
+    /**
+     * @brief Optional version string
+     * 
+     * Version of the preset (optional metadata).
+     */
     std::string version;
-    std::vector<std::string> tags;  // e.g., "survival", "post-apocalyptic", "fantasy"
-    
+
+    /**
+     * @brief Optional tags for categorization
+     * 
+     * Examples: "survival", "post-apocalyptic", "fantasy", "sci-fi"
+     */
+    std::vector<std::string> tags;
+
+    /**
+     * @brief Check if preset is valid
+     * 
+     * A preset is valid if it has a non-empty id, displayName, and flavorText.
+     * 
+     * @return true if preset is valid, false otherwise
+     */
     bool isValid() const
     {
         return !id.empty() && !displayName.empty() && !flavorText.empty();
     }
 };
 
-// ============================================================================
-// SECTION 2: CustomPresetManager Namespace
-// ============================================================================
-
+/**
+ * @namespace CustomPresetManager
+ * @brief Namespace for custom preset management functions
+ */
 namespace CustomPresetManager
 {
-    // Load preset from JSON file
+    /**
+     * @brief Load preset from JSON file
+     * 
+     * Reads a CustomPreset structure from a JSON file.
+     * 
+     * @param filePath Path to JSON file containing preset data
+     * @param[out] preset Preset structure to populate
+     * @return true on success, false on error
+     * 
+     * @note JSON file must contain id, displayName, and flavorText fields
+     */
     bool LoadPresetFromFile(const std::string& filePath, CustomPreset& preset);
     
-    // Save preset to JSON file
+    /**
+     * @brief Save preset to JSON file
+     * 
+     * Writes a CustomPreset structure to a JSON file.
+     * 
+     * @param preset Preset structure to save
+     * @param filePath Path to JSON file to create/overwrite
+     * @return true on success, false on error
+     */
     bool SavePresetToFile(const CustomPreset& preset, const std::string& filePath);
     
-    // Get preset flavor text (for use in prompts)
+    /**
+     * @brief Get preset flavor text
+     * 
+     * Returns the flavor text from a custom preset for use in prompts.
+     * 
+     * @param preset Custom preset structure
+     * @return Flavor text string
+     */
     std::string GetPresetFlavorText(const CustomPreset& preset);
     
-    // Validate preset data
+    /**
+     * @brief Validate preset data
+     * 
+     * Checks if a preset structure is valid and provides error messages.
+     * 
+     * @param preset Preset structure to validate
+     * @param[out] errorMessage Error message if validation fails
+     * @return true if preset is valid, false otherwise
+     */
     bool ValidatePreset(const CustomPreset& preset, std::string& errorMessage);
 }
 

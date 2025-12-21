@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="namespace_material_item_validator" kind="namespace" language="C++">
+    <compoundname>MaterialItemValidator</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void MaterialItemValidator::Validate</definition>
+        <argsstring>(ItemMaterialData &amp;item)</argsstring>
+        <name>Validate</name>
+        <qualifiedname>MaterialItemValidator::Validate</qualifiedname>
+        <param>
+          <type><ref refid="struct_item_material_data" kindref="compound">ItemMaterialData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>Validate and balance material item data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs comprehensive validation and balancing on a material item:<itemizedlist>
+<listitem><para>Normalizes ID prefix to &quot;Material_&quot;</para>
+</listitem><listitem><para>Clamps material properties to valid ranges (hardness, flammability, value: 0-100)</para>
+</listitem><listitem><para>Validates material type</para>
+</listitem><listitem><para>Balances rarity based on item stats</para>
+</listitem><listitem><para>Generates default description if empty</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Material item to validate and balance (modified in-place)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This function modifies the item parameter directly </para>
+</simplesect>
+<simplesect kind="note"><para>Values are clamped to valid ranges automatically </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/MaterialItemValidator.cpp" line="19" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/MaterialItemValidator.cpp" bodystart="19" bodyend="72" declfile="RundeeItemFactory/RundeeItemFactory/include/Validators/MaterialItemValidator.h" declline="40" declcolumn="10"/>
+        <references refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" compoundref="_item_data_base_8h" startline="46">ItemDataBase::category</references>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" compoundref="_item_data_base_8h" startline="69">ItemDataBase::description</references>
+        <references refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" compoundref="_item_data_base_8h" startline="38">ItemDataBase::displayName</references>
+        <references refid="struct_item_material_data_1a0e5bcec3bcf4bf10c04f85983a06cf37" compoundref="_item_material_data_8h" startline="47">ItemMaterialData::flammability</references>
+        <references refid="struct_item_material_data_1a8c20db9b84919f200c399b111f40d127" compoundref="_item_material_data_8h" startline="39">ItemMaterialData::hardness</references>
+        <references refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" compoundref="_item_data_base_8h" startline="31">ItemDataBase::id</references>
+        <references refid="struct_item_material_data_1a56b195346713d3aa60ca770f9f509343" compoundref="_item_material_data_8h" startline="31">ItemMaterialData::materialType</references>
+        <references refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" compoundref="_item_data_base_8h" startline="62">ItemDataBase::maxStack</references>
+        <references refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" compoundref="_item_data_base_8h" startline="54">ItemDataBase::rarity</references>
+        <references refid="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" compoundref="_item_material_data_8h" startline="54">ItemMaterialData::value</references>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Namespace for material item validation functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/MaterialItemValidator.h" line="20" column="1"/>
+  </compounddef>
+</doxygen>

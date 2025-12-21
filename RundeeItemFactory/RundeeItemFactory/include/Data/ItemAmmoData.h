@@ -1,39 +1,104 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: ItemAmmoData.h
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-11-15
-// Description: Data structure for ammunition items.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
+/**
+ * @file ItemAmmoData.h
+ * @brief Data structure for ammunition items
+ * @author Haneul Lee (Rundee)
+ * @date 2025-11-15
+ * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
+ * 
+ * Defines the data structure for ammunition items used by ranged weapons.
+ * Includes combat modifiers and special properties.
+ */
 
 #pragma once
 
 #include "Data/ItemDataBase.h"
 #include <string>
 
+/**
+ * @struct ItemAmmoData
+ * @brief Data structure representing an ammunition item
+ * 
+ * Contains properties for ammunition, including caliber, combat modifiers,
+ * and special properties like armor piercing or tracer rounds.
+ */
 struct ItemAmmoData : public ItemDataBase
 {
-    // Ammo type
-    std::string caliber;         // "9mm", "5.56mm", "7.62mm", "12gauge", ".45ACP", etc. (must match weapon caliber)
+    /**
+     * @brief Caliber identifier
+     * 
+     * Examples: "9mm", "5.56mm", "7.62mm", "12gauge", ".45ACP", etc.
+     * Must match the caliber of compatible weapons.
+     */
+    std::string caliber;
 
-    // Combat stats
-    int damageBonus = 0;         // Damage bonus/penalty (can be negative)
-    int penetration = 0;         // 0-100, armor penetration (higher is better)
-    int accuracyBonus = 0;       // Accuracy bonus/penalty (can be negative)
-    int recoilModifier = 0;      // Recoil modifier (positive = less recoil, can be negative)
+    /**
+     * @brief Damage bonus/penalty
+     * 
+     * Modifies weapon base damage. Can be negative for weaker ammo types.
+     * Actual damage = weapon.baseDamage + damageBonus.
+     */
+    int damageBonus = 0;
 
-    // Special properties
-    bool armorPiercing = false;  // If true, has high penetration
-    bool hollowPoint = false;    // If true, higher damage but lower penetration
-    bool tracer = false;         // If true, visible trajectory
-    bool incendiary = false;     // If true, can cause fire damage
+    /**
+     * @brief Armor penetration (0-100, higher is better)
+     * 
+     * Effectiveness against armored targets. Higher values penetrate better.
+     */
+    int penetration = 0;
 
-    // Value
-    int value = 0;               // 0-100, trade/scrap value
+    /**
+     * @brief Accuracy bonus/penalty
+     * 
+     * Modifies weapon accuracy. Can be negative for less accurate ammo.
+     */
+    int accuracyBonus = 0;
 
-    // Override base class method
+    /**
+     * @brief Recoil modifier
+     * 
+     * Positive values reduce recoil, negative values increase recoil.
+     */
+    int recoilModifier = 0;
+
+    /**
+     * @brief Armor piercing property
+     * 
+     * If true, the ammo has high penetration capability (AP rounds).
+     */
+    bool armorPiercing = false;
+
+    /**
+     * @brief Hollow point property
+     * 
+     * If true, the ammo deals higher damage but has lower penetration (HP rounds).
+     */
+    bool hollowPoint = false;
+
+    /**
+     * @brief Tracer property
+     * 
+     * If true, the bullet trajectory is visible (tracer rounds).
+     */
+    bool tracer = false;
+
+    /**
+     * @brief Incendiary property
+     * 
+     * If true, the ammo can cause fire damage (incendiary rounds).
+     */
+    bool incendiary = false;
+
+    /**
+     * @brief Trade/scrap value (0-100)
+     * 
+     * Economic value of the ammunition.
+     */
+    int value = 0;
+
+    /**
+     * @brief Get the item type name
+     * @return Always returns "Ammo"
+     */
     std::string GetItemTypeName() const override { return "Ammo"; }
 };
 

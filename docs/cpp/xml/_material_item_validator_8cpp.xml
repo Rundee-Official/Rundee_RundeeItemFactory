@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_material_item_validator_8cpp" kind="file" language="C++">
+    <compoundname>MaterialItemValidator.cpp</compoundname>
+    <includes refid="_material_item_validator_8h" local="yes">Validators/MaterialItemValidator.h</includes>
+    <includes refid="_json_utils_8h" local="yes">Utils/JsonUtils.h</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">fstream</includes>
+    <includes local="no">chrono</includes>
+    <incdepgraph>
+      <node id="4">
+        <label>Data/ItemDataBase.h</label>
+        <link refid="_item_data_base_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Data/ItemMaterialData.h</label>
+        <link refid="_item_material_data_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Utils/JsonUtils.h</label>
+        <link refid="_json_utils_8h"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Validators/MaterialItemValidator.h</label>
+        <link refid="_material_item_validator_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Validators/MaterialItemValidator.cpp</label>
+        <link refid="_material_item_validator_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>chrono</label>
+      </node>
+      <node id="9">
+        <label>fstream</label>
+      </node>
+      <node id="8">
+        <label>iostream</label>
+      </node>
+      <node id="7">
+        <label>json.hpp</label>
+      </node>
+      <node id="5">
+        <label>string</label>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespace_material_item_validator">MaterialItemValidator</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Project<sp/>Name:<sp/>RundeeItemFactory</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>File<sp/>Name:<sp/>MaterialItemValidator.cpp</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Author:<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Created<sp/>Date:<sp/>2025-11-15</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Description:<sp/>Implementation<sp/>of<sp/>validation<sp/>for<sp/>ItemMaterialData.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_material_item_validator_8h" kindref="compound">Validators/MaterialItemValidator.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_json_utils_8h" kindref="compound">Utils/JsonUtils.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;fstream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;chrono&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_material_item_validator" kindref="compound">MaterialItemValidator</ref></highlight></codeline>
+<codeline lineno="18"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="19" refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" kindref="member">Validate</ref>(<ref refid="struct_item_material_data" kindref="compound">ItemMaterialData</ref>&amp;<sp/>item)</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>originalId<sp/>=<sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Normalize<sp/>prefix:<sp/>strip<sp/>any<sp/>leading<sp/>material_<sp/>(any<sp/>case,<sp/>repeated),<sp/>then<sp/>add<sp/>canonical<sp/>&quot;Material_&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>.empty())</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>stripPrefix<sp/>=<sp/>[](std::string&amp;<sp/>value,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>prefixLower)</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>lower<sp/>=<sp/>value;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::transform(lower.begin(),<sp/>lower.end(),<sp/>lower.begin(),<sp/>::tolower);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(lower.rfind(prefixLower,<sp/>0)<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>value<sp/>=<sp/>value.substr(prefixLower.size());</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>lower<sp/>=<sp/>value;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::transform(lower.begin(),<sp/>lower.end(),<sp/>lower.begin(),<sp/>::tolower);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>stripPrefix(item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>,<sp/></highlight><highlight class="stringliteral">&quot;material_&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Material_&quot;</highlight><highlight class="normal"><sp/>+<sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Debug<sp/>logging<sp/>disabled<sp/>for<sp/>release</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Default<sp/>category/materialType</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref>.empty())</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" kindref="member">category</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Material&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_material_data_1a56b195346713d3aa60ca770f9f509343" kindref="member">materialType</ref>.empty())</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_material_data_1a56b195346713d3aa60ca770f9f509343" kindref="member">materialType</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Unknown&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>rarity<sp/>validation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>!=<sp/></highlight><highlight class="stringliteral">&quot;Common&quot;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>!=<sp/></highlight><highlight class="stringliteral">&quot;Uncommon&quot;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>!=<sp/></highlight><highlight class="stringliteral">&quot;Rare&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Auto-classify<sp/>based<sp/>on<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" kindref="member">value</ref><sp/>&lt;=<sp/>25)<sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Common&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" kindref="member">value</ref><sp/>&lt;=<sp/>60)<sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Uncommon&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" kindref="member">rarity</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;Rare&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Clamp<sp/>value<sp/>ranges</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" kindref="member">maxStack</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" kindref="member">maxStack</ref>,<sp/>1,<sp/>100);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_material_data_1a8c20db9b84919f200c399b111f40d127" kindref="member">hardness</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_material_data_1a8c20db9b84919f200c399b111f40d127" kindref="member">hardness</ref>,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_material_data_1a0e5bcec3bcf4bf10c04f85983a06cf37" kindref="member">flammability</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_material_data_1a0e5bcec3bcf4bf10c04f85983a06cf37" kindref="member">flammability</ref>,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" kindref="member">value</ref><sp/>=<sp/><ref refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" kindref="member">JsonUtils::ClampInt</ref>(item.<ref refid="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" kindref="member">value</ref>,<sp/>0,<sp/>100);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Ensure<sp/>description<sp/>is<sp/>not<sp/>empty</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(item.<ref refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" kindref="member">description</ref>.empty())</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>item.<ref refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" kindref="member">description</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;A<sp/>&quot;</highlight><highlight class="normal"><sp/>+<sp/>item.<ref refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" kindref="member">displayName</ref><sp/>+<sp/></highlight><highlight class="stringliteral">&quot;<sp/>used<sp/>for<sp/>crafting.&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;[MaterialItemValidator]<sp/>Warning:<sp/>Item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>item.<ref refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" kindref="member">id</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>has<sp/>empty<sp/>description,<sp/>using<sp/>default.\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="73"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/MaterialItemValidator.cpp"/>
+  </compounddef>
+</doxygen>

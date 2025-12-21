@@ -44,8 +44,5 @@ Balancing rules:
 
 Output:
 - Output ONLY a JSON array of items.
-- CRITICAL: Do NOT include ANY comments (// or /* */) in the JSON output.
-- Comments will cause parsing errors and the generation will fail.
 - No comments, no extra text, no Markdown, no explanation.
-- The JSON must be valid and parseable without any comments.
 

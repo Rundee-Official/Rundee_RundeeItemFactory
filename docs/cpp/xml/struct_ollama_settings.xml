@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_ollama_settings" kind="struct" language="C++" prot="public">
+    <compoundname>OllamaSettings</compoundname>
+    <includes refid="_app_config_8h" local="no">AppConfig.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_ollama_settings_1ae133460b157e143a07be3bfc6aeecc95" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string OllamaSettings::host</definition>
+        <argsstring></argsstring>
+        <name>host</name>
+        <qualifiedname>OllamaSettings::host</qualifiedname>
+        <initializer>= &quot;localhost&quot;</initializer>
+        <briefdescription>
+<para>Ollama server hostname. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: &quot;localhost&quot; </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="29" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="29" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1ad910476e1f269b575dc16221dec246ff" compoundref="_ollama_client_8cpp" startline="183" endline="403">OllamaClient::RunSimple</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_ollama_settings_1a0a67dca1971d55fe16b3e7e8543c1df2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int OllamaSettings::port</definition>
+        <argsstring></argsstring>
+        <name>port</name>
+        <qualifiedname>OllamaSettings::port</qualifiedname>
+        <initializer>= 11434</initializer>
+        <briefdescription>
+<para>Ollama server port. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: 11434 (standard Ollama port) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="36" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="36" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1ad910476e1f269b575dc16221dec246ff" compoundref="_ollama_client_8cpp" startline="183" endline="403">OllamaClient::RunSimple</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_ollama_settings_1af7b0acac83343c2b079c9c612b23cc0a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int OllamaSettings::maxRetries</definition>
+        <argsstring></argsstring>
+        <name>maxRetries</name>
+        <qualifiedname>OllamaSettings::maxRetries</qualifiedname>
+        <initializer>= 3</initializer>
+        <briefdescription>
+<para>Maximum number of retry attempts. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: 3 </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="43" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="43" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1a1fea956fd3e63b9df3cb2184731ef692" compoundref="_ollama_client_8cpp" startline="405" endline="479">OllamaClient::RunWithRetry</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_ollama_settings_1a86f734afb09e501f8b7e3f96338b6de8" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int OllamaSettings::requestTimeoutSeconds</definition>
+        <argsstring></argsstring>
+        <name>requestTimeoutSeconds</name>
+        <qualifiedname>OllamaSettings::requestTimeoutSeconds</qualifiedname>
+        <initializer>= 120</initializer>
+        <briefdescription>
+<para>Overall request timeout per attempt in seconds. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: 120 seconds </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="50" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="50" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1ad910476e1f269b575dc16221dec246ff" compoundref="_ollama_client_8cpp" startline="183" endline="403">OllamaClient::RunSimple</referencedby>
+        <referencedby refid="class_ollama_client_1a1fea956fd3e63b9df3cb2184731ef692" compoundref="_ollama_client_8cpp" startline="405" endline="479">OllamaClient::RunWithRetry</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_ollama_settings_1a48de5e10f2a8d2ecad02b9e5828190ba" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int OllamaSettings::connectTimeoutMs</definition>
+        <argsstring></argsstring>
+        <name>connectTimeoutMs</name>
+        <qualifiedname>OllamaSettings::connectTimeoutMs</qualifiedname>
+        <initializer>= 5000</initializer>
+        <briefdescription>
+<para>DNS/connect timeout in milliseconds. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: 5000 ms </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="57" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="57" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1ad910476e1f269b575dc16221dec246ff" compoundref="_ollama_client_8cpp" startline="183" endline="403">OllamaClient::RunSimple</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_ollama_settings_1abd30d9027b9477043fec7697c42c2e13" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int OllamaSettings::sendTimeoutMs</definition>
+        <argsstring></argsstring>
+        <name>sendTimeoutMs</name>
+        <qualifiedname>OllamaSettings::sendTimeoutMs</qualifiedname>
+        <initializer>= 120000</initializer>
+        <briefdescription>
+<para>Upload timeout in milliseconds. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: 120000 ms (120 seconds) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="64" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="64" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1ad910476e1f269b575dc16221dec246ff" compoundref="_ollama_client_8cpp" startline="183" endline="403">OllamaClient::RunSimple</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_ollama_settings_1ad2fe237d5c8721c659f68026c4e419f3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int OllamaSettings::receiveTimeoutMs</definition>
+        <argsstring></argsstring>
+        <name>receiveTimeoutMs</name>
+        <qualifiedname>OllamaSettings::receiveTimeoutMs</qualifiedname>
+        <initializer>= 120000</initializer>
+        <briefdescription>
+<para>Download timeout in milliseconds. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Default: 120000 ms (120 seconds) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="71" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="71" bodyend="-1"/>
+        <referencedby refid="class_ollama_client_1ad910476e1f269b575dc16221dec246ff" compoundref="_ollama_client_8cpp" startline="183" endline="403">OllamaClient::RunSimple</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Configuration structure for Ollama LLM connection. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Contains all settings needed to connect to and communicate with Ollama server. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" line="22" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/AppConfig.h" bodystart="23" bodyend="72"/>
+    <listofallmembers>
+      <member refid="struct_ollama_settings_1a48de5e10f2a8d2ecad02b9e5828190ba" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>connectTimeoutMs</name></member>
+      <member refid="struct_ollama_settings_1ae133460b157e143a07be3bfc6aeecc95" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>host</name></member>
+      <member refid="struct_ollama_settings_1af7b0acac83343c2b079c9c612b23cc0a" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>maxRetries</name></member>
+      <member refid="struct_ollama_settings_1a0a67dca1971d55fe16b3e7e8543c1df2" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>port</name></member>
+      <member refid="struct_ollama_settings_1ad2fe237d5c8721c659f68026c4e419f3" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>receiveTimeoutMs</name></member>
+      <member refid="struct_ollama_settings_1a86f734afb09e501f8b7e3f96338b6de8" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>requestTimeoutSeconds</name></member>
+      <member refid="struct_ollama_settings_1abd30d9027b9477043fec7697c42c2e13" prot="public" virt="non-virtual"><scope>OllamaSettings</scope><name>sendTimeoutMs</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

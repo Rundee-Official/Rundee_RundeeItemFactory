@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="dir_779e1f6b9c8dec574792adb16e3f7a5e" kind="dir">
+    <compoundname>RundeeItemFactory/RundeeItemFactory/src/Helpers</compoundname>
+    <innerfile refid="_app_config_8cpp">AppConfig.cpp</innerfile>
+    <innerfile refid="_balance_reporter_8cpp">BalanceReporter.cpp</innerfile>
+    <innerfile refid="_command_line_parser_8cpp">CommandLineParser.cpp</innerfile>
+    <innerfile refid="_quality_checker_8cpp">QualityChecker.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/"/>
+  </compounddef>
+</doxygen>

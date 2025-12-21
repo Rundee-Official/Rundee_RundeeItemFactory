@@ -8,20 +8,13 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
-#include <cctype>
+#include "Prompts/PromptBuilder.h"
+#include "Prompts/CustomPreset.h"
+#include "Prompts/PromptTemplateLoader.h"
 #include <set>
 #include <sstream>
 #include <vector>
-
-// Project Includes
-#include "Prompts/CustomPreset.h"
-#include "Prompts/PromptBuilder.h"
-#include "Prompts/PromptTemplateLoader.h"
-
-// ============================================================================
-// SECTION 1: Anonymous Namespace - Internal Helper Functions
-// ============================================================================
+#include <cctype>
 
 namespace
 {
@@ -33,7 +26,6 @@ namespace
         case PresetType::Desert: return "Desert";
         case PresetType::Coast:  return "Coast";
         case PresetType::City:   return "City";
-        case PresetType::Arctic: return "Arctic";
         case PresetType::Default:
         default:
             return "Default";
@@ -168,15 +160,6 @@ std::string PromptBuilder::GetPresetFlavorText(PresetType preset)
             "- Drinks are bottled water, soft drinks, and energy drinks with higher thirst restoration.\n"
             "- Many items do not spoil quickly, but some fresh food can still be found.\n\n";
 
-    case PresetType::Arctic:
-        return
-            "World context:\n"
-            "- The setting is a frozen arctic tundra with extreme cold, snow, and ice.\n"
-            "- Food items should provide high warmth and calories: dried meat, pemmican, seal blubber, and preserved fish.\n"
-            "- Drinks are hot beverages, melted snow, and warm soups that restore both hunger and warmth.\n"
-            "- Clothing and armor must provide excellent cold resistance.\n"
-            "- Items should emphasize survival in freezing temperatures and limited resources.\n\n";
-
     case PresetType::Default:
     default:
         return
@@ -271,6 +254,15 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
     prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
     prompt += "  that describes what the food looks like and its taste.\n";
     prompt += "\n";
+    prompt += "CRITICAL - Variety and Uniqueness Requirements:\n";
+    prompt += "- AVOID excessive use of common prefixes like \"Wild\", \"Ripe\", \"Dried\" - use them sparingly (max 20% of items).\n";
+    prompt += "- Each item must have a DISTINCT concept/material/purpose, not just small adjective changes.\n";
+    prompt += "- Do NOT generate near-duplicates (e.g., \"Wild Berry\" and \"Wild Berries\" are too similar - pick one concept).\n";
+    prompt += "- Do NOT generate multiple items with the same displayName (even if IDs differ).\n";
+    prompt += "- Vary food types: fruits, vegetables, grains, meats, nuts, seeds, prepared foods, etc.\n";
+    prompt += "- Avoid clustering too many items of the same type (e.g., don't generate 5+ mushroom variants).\n";
+    prompt += "- Each item should feel unique and serve a different purpose in the game.\n";
+    prompt += "\n";
     prompt += "Balancing:\n";
     prompt += "- Snacks: hungerRestore 5-15, thirstRestore 0-5\n";
     prompt += "- Light meals: hungerRestore 15-30, thirstRestore 0-10\n";
@@ -359,6 +351,15 @@ std::string PromptBuilder::BuildFoodJsonPrompt(const FoodGenerateParams& params,
     prompt += "\n";
     prompt += "  \"description\": string\n";
     prompt += "}\n";
+    prompt += "\n";
+    prompt += "CRITICAL - Variety and Uniqueness Requirements:\n";
+    prompt += "- AVOID excessive use of common prefixes like \"Wild\", \"Ripe\", \"Dried\" - use them sparingly (max 20% of items).\n";
+    prompt += "- Each item must have a DISTINCT concept/material/purpose, not just small adjective changes.\n";
+    prompt += "- Do NOT generate near-duplicates (e.g., \"Wild Berry\" and \"Wild Berries\" are too similar - pick one concept).\n";
+    prompt += "- Do NOT generate multiple items with the same displayName (even if IDs differ).\n";
+    prompt += "- Vary food types: fruits, vegetables, grains, meats, nuts, seeds, prepared foods, etc.\n";
+    prompt += "- Avoid clustering too many items of the same type (e.g., don't generate 5+ mushroom variants).\n";
+    prompt += "- Each item should feel unique and serve a different purpose in the game.\n";
     prompt += "\n";
     prompt += "Balancing rules:\n";
     prompt += "- Common items: hungerRestore 5-25, thirstRestore 0-10, healthRestore 0-5.\n";
@@ -535,6 +536,161 @@ std::string PromptBuilder::BuildDrinkJsonPrompt(const FoodGenerateParams& params
     prompt += "- Items that spoil should have spoilTimeMinutes between 30 and 720.\n";
     prompt += "- Use only integers for all restore values.\n";
     prompt += "- thirstRestore should be higher than hungerRestore for drinks.\n";
+    prompt += "\n";
+    prompt += "Output:\n";
+    prompt += "- Output ONLY a JSON array of items.\n";
+    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
+    return prompt;
+}
+
+std::string PromptBuilder::BuildMedicineJsonPrompt(const FoodGenerateParams& params,
+                                                   PresetType preset,
+                                                   const std::set<std::string>& excludeIds,
+                                                   const std::string& modelName,
+                                                   const std::string& generationTimestamp,
+                                                   int existingCount)
+{
+    std::string presetContext = GetPresetFlavorText(preset);
+    std::string presetName = GetPresetNameString(preset);
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "medicine_" + presetSlug,
+        "medicine"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Medicine",
+        modelName,
+        generationTimestamp,
+        existingCount);
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
+    std::string prompt;
+
+    // 1) Add preset world context
+    prompt += presetContext;
+
+    // 2) Task description
+    prompt += "Task:\n";
+    prompt += "Generate " + std::to_string(params.count) + " medicine items ";
+    prompt += "for an early-game survival setting.\n";
+    
+    // Add exclusion list if provided
+    prompt += BuildExcludeSection(excludeIds);
+    prompt += "\n";
+
+    // 3) JSON Rules/Schema/Output text
+    prompt += "Rules:\n";
+    prompt += "- Use this JSON schema EXACTLY for each item:\n";
+    prompt += "{\n";
+    prompt += "  \"id\": string (unique, lowercase, underscore),\n";
+    prompt += "  \"displayName\": string,\n";
+    prompt += "  \"category\": \"Medicine\",\n";
+    prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
+    prompt += "  \"maxStack\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"healthRestore\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"spoils\": boolean,\n";
+    prompt += "  \"spoilTimeMinutes\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"description\": string\n";
+    prompt += "}\n";
+    prompt += "\n";
+    prompt += "IMPORTANT:\n";
+    prompt += "- category MUST be \"Medicine\".\n";
+    prompt += "- Generate ONLY medicine items that restore health.\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
+    prompt += "  that describes what the medicine looks like and its healing properties.\n";
+    prompt += "\n";
+    prompt += "Balancing:\n";
+    prompt += "- Common medicine: healthRestore 10-30\n";
+    prompt += "- Uncommon medicine: healthRestore 25-50\n";
+    prompt += "- Rare medicine: healthRestore 40-80\n";
+    prompt += "- All values must be between 0 and 100.\n";
+    prompt += "- Items that spoil should have spoilTimeMinutes between 60 and 1440.\n";
+    prompt += "- Use only integers for all restore values.\n";
+    prompt += "\n";
+    prompt += "Output:\n";
+    prompt += "- Output ONLY a JSON array of items.\n";
+    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
+
+    return prompt;
+}
+
+std::string PromptBuilder::BuildMedicineJsonPrompt(const FoodGenerateParams& params,
+                                                   const CustomPreset& customPreset,
+                                                   const std::set<std::string>& excludeIds,
+                                                   const std::string& modelName,
+                                                   const std::string& generationTimestamp,
+                                                   int existingCount)
+{
+    std::string presetContext = GetPresetFlavorText(customPreset);
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
+    std::string presetSlug = ToSlug(presetName);
+
+    std::vector<std::string> templateCandidates =
+    {
+        "medicine_custom_" + presetSlug,
+        "medicine_" + presetSlug,
+        "medicine"
+    };
+
+    std::string templatePrompt = TryLoadTemplateWithFallback(
+        templateCandidates,
+        presetContext,
+        params,
+        excludeIds,
+        presetName,
+        "Medicine",
+        modelName,
+        generationTimestamp,
+        existingCount);
+    if (!templatePrompt.empty())
+    {
+        return templatePrompt;
+    }
+
+    std::string prompt;
+    prompt += presetContext;
+    prompt += "Task:\n";
+    prompt += "Generate " + std::to_string(params.count) + " medicine items ";
+    prompt += "for an early-game survival setting.\n";
+    prompt += BuildExcludeSection(excludeIds);
+    prompt += "\n";
+    prompt += "Rules:\n";
+    prompt += "- Use this JSON schema EXACTLY for each item:\n";
+    prompt += "{\n";
+    prompt += "  \"id\": string (unique, lowercase, underscore),\n";
+    prompt += "  \"displayName\": string,\n";
+    prompt += "  \"category\": \"Medicine\",\n";
+    prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
+    prompt += "  \"maxStack\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"healthRestore\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"spoils\": boolean,\n";
+    prompt += "  \"spoilTimeMinutes\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"description\": string\n";
+    prompt += "}\n";
+    prompt += "\n";
+    prompt += "Balancing rules:\n";
+    prompt += "- Common items: healthRestore 10-30.\n";
+    prompt += "- Uncommon items: healthRestore 25-50.\n";
+    prompt += "- Rare items: healthRestore 40-80.\n";
+    prompt += "- Items that spoil should have spoilTimeMinutes between 60 and 1440.\n";
+    prompt += "- Use only integers for all restore values.\n";
     prompt += "\n";
     prompt += "Output:\n";
     prompt += "- Output ONLY a JSON array of items.\n";
@@ -805,6 +961,11 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
     prompt += "  that describes the weapon's appearance and characteristics.\n";
     prompt += "\n";
+    prompt += "CRITICAL - Melee Weapon Rules:\n";
+    prompt += "- Melee weapons MUST have fireRate = 0 (melee weapons do not have a fire rate).\n";
+    prompt += "- If weaponCategory is \"Melee\", fireRate MUST be 0, not a positive number.\n";
+    prompt += "- Melee weapons use attackSpeed instead of fireRate.\n";
+    prompt += "\n";
     prompt += "Ranged Weapons:\n";
     prompt += "- Use ammo (caliber must match ammo caliber).\n";
     prompt += "- Damage is base damage + ammo.damageBonus (base damage should be low, 5-20).\n";
@@ -816,6 +977,7 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     prompt += "Melee Weapons:\n";
     prompt += "- Do NOT use ammo (caliber should be empty string).\n";
     prompt += "- Damage is actual damage (no ammo modifier, typical: 30-80).\n";
+    prompt += "- MUST have fireRate = 0 (melee weapons do not fire projectiles).\n";
     prompt += "- Must have attackSpeed, reach, staminaCost.\n";
     prompt += "- Set muzzleVelocity, effectiveRange, penetrationPower, recoil to 0.\n";
     prompt += "- attachmentSlots are optional (e.g., Grip, Pommel for swords).\n";
@@ -927,9 +1089,14 @@ std::string PromptBuilder::BuildWeaponJsonPrompt(const FoodGenerateParams& param
     prompt += "  \"description\": string\n";
     prompt += "}\n";
     prompt += "\n";
+    prompt += "CRITICAL - Melee Weapon Rules:\n";
+    prompt += "- Melee weapons MUST have fireRate = 0 (melee weapons do not have a fire rate).\n";
+    prompt += "- If weaponCategory is \"Melee\", fireRate MUST be 0, not a positive number.\n";
+    prompt += "- Melee weapons use attackSpeed instead of fireRate.\n";
+    prompt += "\n";
     prompt += "Balancing rules:\n";
     prompt += "- Ranged weapons: base damage (actual = base + ammo.damageBonus), must have caliber.\n";
-    prompt += "- Melee weapons: actual damage (no ammo modifier), no caliber, no ranged stats.\n";
+    prompt += "- Melee weapons: actual damage (no ammo modifier), no caliber, no ranged stats, fireRate = 0.\n";
     prompt += "- Common: damage 5-15 (Ranged) or 10-20 (Melee), basic stats.\n";
     prompt += "- Uncommon: damage 10-25 (Ranged) or 15-30 (Melee), better stats.\n";
     prompt += "- Rare: damage 15-35 (Ranged) or 20-40 (Melee), excellent stats.\n";
@@ -1178,54 +1345,10 @@ std::string PromptBuilder::BuildWeaponComponentJsonPrompt(const FoodGeneratePara
     prompt += "  \"description\": string\n";
     prompt += "}\n";
     prompt += "\n";
-    prompt += "CRITICAL RULES - MUST FOLLOW:\n";
-    prompt += "1. **EVERY component MUST have at least 2-3 non-zero stat modifiers** (weight alone is NOT enough)\n";
-    prompt += "2. **Component type determines which stats should be affected:**\n";
-    prompt += "   - **Stock**: recoilModifier (-10 to -5), ergonomicsModifier (+3 to +10), weightModifier (200-800)\n";
-    prompt += "   - **Grip**: ergonomicsModifier (+5 to +15), recoilModifier (-3 to -8), weightModifier (50-300)\n";
-    prompt += "   - **Muzzle**: recoilModifier (-15 to -5), accuracyModifier (+3 to +10), weightModifier (100-500)\n";
-    prompt += "   - **Sight/Scope**: accuracyModifier (+5 to +20), effectiveRangeModifier (+10 to +50), weightModifier (50-400)\n";
-    prompt += "   - **Barrel**: accuracyModifier (+3 to +15), muzzleVelocityModifier (+5 to +20), weightModifier (300-1500)\n";
-    prompt += "   - **Magazine**: weightModifier (50-200), capacity affects weight (larger = heavier)\n";
-    prompt += "   - **Receiver**: durabilityBonus (+5 to +20), weightModifier (200-800)\n";
-    prompt += "   - **Trigger**: accuracyModifier (+2 to +10), ergonomicsModifier (+1 to +5), weightModifier (20-100)\n";
-    prompt += "   - **Accessory**: varies by type, but MUST have meaningful modifiers\n";
-    prompt += "3. **Rarity determines modifier strength:**\n";
-    prompt += "   - Common: small bonuses (1-8), may have 1-2 small penalties\n";
-    prompt += "   - Uncommon: medium bonuses (5-15), balanced stats\n";
-    prompt += "   - Rare: large bonuses (10-25), may have trade-offs (e.g., +accuracy but +weight)\n";
-    prompt += "4. **Realistic examples (use EXACTLY this format):**\n";
-    prompt += "   {\n";
-    prompt += "     \"id\": \"tactical_stock\",\n";
-    prompt += "     \"displayName\": \"Tactical Stock\",\n";
-    prompt += "     \"category\": \"WeaponComponent\",\n";
-    prompt += "     \"rarity\": \"Uncommon\",\n";
-    prompt += "     \"componentType\": \"Stock\",\n";
-    prompt += "     \"maxStack\": 1,\n";
-    prompt += "     \"weightModifier\": 450,\n";
-    prompt += "     \"recoilModifier\": -8,\n";
-    prompt += "     \"ergonomicsModifier\": 5,\n";
-    prompt += "     \"accuracyModifier\": 0,\n";
-    prompt += "     \"damageModifier\": 0,\n";
-    prompt += "     \"muzzleVelocityModifier\": 0,\n";
-    prompt += "     \"effectiveRangeModifier\": 0,\n";
-    prompt += "     \"penetrationModifier\": 0,\n";
-    prompt += "     \"description\": \"Adjustable tactical stock for improved stability\"\n";
-    prompt += "   }\n";
-    prompt += "5. **CRITICAL JSON FORMAT RULES:**\n";
-    prompt += "   - ALL modifier values MUST be integers (numbers without + or - signs in the JSON)\n";
-    prompt += "   - Use negative numbers directly: -8, -12, -5 (NOT \"+\" or \"-\" as separate characters)\n";
-    prompt += "   - NEVER write \"ergonomicsModifier\": +5 or \"recoilModifier\": - (these are INVALID JSON)\n";
-    prompt += "   - Valid: \"recoilModifier\": -8, \"ergonomicsModifier\": 5\n";
-    prompt += "   - Invalid: \"recoilModifier\": \"-8\", \"ergonomicsModifier\": \"+5\", \"recoilModifier\": +\n";
-    prompt += "6. **NEVER create components where ALL stat modifiers are 0** - this is unrealistic and useless\n";
-    prompt += "7. **weightModifier MUST be realistic** - components range from 20g (small trigger) to 1500g (heavy barrel)\n";
-    prompt += "8. **recoilModifier is usually NEGATIVE** (reduces recoil), positive values mean INCREASED recoil (bad)\n";
-    prompt += "\n";
     prompt += "Balancing:\n";
-    prompt += "- Common components: small stat bonuses (1-8), basic design, at least 2 modifiers.\n";
-    prompt += "- Uncommon components: medium stat bonuses (5-15), better design, at least 2-3 modifiers.\n";
-    prompt += "- Rare components: large stat bonuses (10-25), advanced design, at least 3 modifiers.\n";
+    prompt += "- Common components: small stat bonuses (0-5), basic design.\n";
+    prompt += "- Uncommon components: medium stat bonuses (5-15), better design.\n";
+    prompt += "- Rare components: large stat bonuses (10-25), advanced design.\n";
     prompt += "\n";
     prompt += "Output:\n";
     prompt += "- Output ONLY a JSON array of components.\n";
@@ -1315,6 +1438,14 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     prompt += "  * Tracer: visible trajectory, usually no stat modifiers.\n";
     prompt += "  * Incendiary: can cause fire damage, usually higher value.\n";
     prompt += "\n";
+    prompt += "IMPORTANT - Variety Requirements:\n";
+    prompt += "- You MUST generate a diverse mix of ammo types:\n";
+    prompt += "  * Some items MUST have accuracyBonus > 0 (precision/target rounds, +1 to +15 range).\n";
+    prompt += "  * Some items MUST have accuracyBonus < 0 (less accurate rounds, -1 to -10 range).\n";
+    prompt += "  * Some items MUST have special properties enabled (armorPiercing, hollowPoint, tracer, or incendiary).\n";
+    prompt += "  * At least 20-30% of generated items should have special properties (AP, HP, Tracer, or Incendiary).\n";
+    prompt += "  * At least 20-30% of generated items should have non-zero accuracyBonus (positive or negative).\n";
+    prompt += "\n";
     prompt += "Balancing:\n";
     prompt += "- Common ammo: standard stats, no special properties, low value (5-20).\n";
     prompt += "- Uncommon ammo: better stats or one special property, medium value (15-40).\n";
@@ -1322,6 +1453,7 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     prompt += "- Standard ammo: damageBonus 0-5, penetration 20-40, no special properties.\n";
     prompt += "- Armor Piercing: penetration 50-100, damageBonus -10 to 5.\n";
     prompt += "- Hollow Point: damageBonus 5-20, penetration 0-30.\n";
+    prompt += "- Precision rounds: accuracyBonus 5-15, usually higher value.\n";
     prompt += "- All stat values must be within their specified ranges.\n";
     prompt += "\n";
     prompt += "Output:\n";
@@ -1394,10 +1526,19 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
     prompt += "  \"description\": string\n";
     prompt += "}\n";
     prompt += "\n";
+    prompt += "IMPORTANT - Variety Requirements:\n";
+    prompt += "- You MUST generate a diverse mix of ammo types:\n";
+    prompt += "  * Some items MUST have accuracyBonus > 0 (precision/target rounds, +1 to +15 range).\n";
+    prompt += "  * Some items MUST have accuracyBonus < 0 (less accurate rounds, -1 to -10 range).\n";
+    prompt += "  * Some items MUST have special properties enabled (armorPiercing, hollowPoint, tracer, or incendiary).\n";
+    prompt += "  * At least 20-30% of generated items should have special properties (AP, HP, Tracer, or Incendiary).\n";
+    prompt += "  * At least 20-30% of generated items should have non-zero accuracyBonus (positive or negative).\n";
+    prompt += "\n";
     prompt += "Balancing rules:\n";
     prompt += "- Common: damageBonus 0-5, penetration 10-30, basic ammo.\n";
     prompt += "- Uncommon: damageBonus 3-10, penetration 25-50, special properties.\n";
     prompt += "- Rare: damageBonus 8-15, penetration 40-70, advanced properties.\n";
+    prompt += "- Precision rounds: accuracyBonus 5-15, usually higher value.\n";
     prompt += "\n";
     prompt += "Output:\n";
     prompt += "- Output ONLY a JSON array of ammo items.\n";
@@ -1406,11 +1547,11 @@ std::string PromptBuilder::BuildAmmoJsonPrompt(const FoodGenerateParams& params,
 }
 
 std::string PromptBuilder::BuildArmorJsonPrompt(const FoodGenerateParams& params,
-                                                PresetType preset,
-                                                const std::set<std::string>& excludeIds,
-                                                const std::string& modelName,
-                                                const std::string& generationTimestamp,
-                                                int existingCount)
+                                               PresetType preset,
+                                               const std::set<std::string>& excludeIds,
+                                               const std::string& modelName,
+                                               const std::string& generationTimestamp,
+                                               int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(preset);
     std::string presetName = GetPresetNameString(preset);
@@ -1438,62 +1579,51 @@ std::string PromptBuilder::BuildArmorJsonPrompt(const FoodGenerateParams& params
     }
 
     std::string prompt;
-
     prompt += presetContext;
-
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " armor items ";
     prompt += "for this survival setting.\n\n";
-
     prompt += BuildExcludeSection(excludeIds);
-
-    prompt += "Use this JSON schema EXACTLY for each armor:\n";
+    prompt += "\n";
+    prompt += "Use this JSON schema EXACTLY for each armor item:\n";
     prompt += "{\n";
     prompt += "  \"id\": string (unique, lowercase, underscore),\n";
     prompt += "  \"displayName\": string,\n";
     prompt += "  \"category\": \"Armor\",\n";
     prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
-    prompt += "  \"maxStack\": integer (usually 1-5 for armor),\n";
+    prompt += "  \"maxStack\": integer,\n";
     prompt += "\n";
-    prompt += "  \"armorType\": string (e.g., \"Helmet\", \"Vest\", \"Armor\", \"Backpack\", \"Rig\", \"FaceCover\", \"EarProtection\"),\n";
-    prompt += "  \"armorClass\": integer,        // 0-6, armor class (higher = better protection)\n";
-    prompt += "  \"durability\": integer,        // 0-100, armor condition\n";
-    prompt += "  \"material\": integer,          // 0-100, material quality\n";
-    prompt += "  \"protectionZones\": string,   // Comma-separated: \"Head\", \"Thorax\", \"Stomach\", \"Arms\", \"Legs\"\n";
-    prompt += "  \"movementSpeedPenalty\": integer,  // 0-100, percentage penalty to movement speed\n";
-    prompt += "  \"ergonomicsPenalty\": integer,    // 0-100, penalty to weapon handling\n";
-    prompt += "  \"turnSpeedPenalty\": integer,     // 0-100, penalty to turning speed\n";
-    prompt += "  \"weight\": integer,           // Weight in grams\n";
-    prompt += "  \"capacity\": integer,         // Storage capacity (for backpacks/rigs, in slots or liters)\n";
-    prompt += "  \"blocksHeadset\": boolean,   // Whether this armor blocks headset/ear protection\n";
-    prompt += "  \"blocksFaceCover\": boolean, // Whether this armor blocks face cover\n";
-    prompt += "\n";
+    prompt += "  \"armorValue\": integer (0-100),\n";
+    prompt += "  \"durability\": integer (0-100),\n";
+    prompt += "  \"weight\": integer (grams),\n";
+    prompt += "  \"armorType\": string (e.g., \"Helmet\", \"Vest\", \"Plate\", \"Light\", \"Heavy\"),\n";
+    prompt += "  \"value\": integer,\n";
     prompt += "  \"description\": string\n";
     prompt += "}\n";
     prompt += "\n";
-    prompt += "IMPORTANT:\n";
-    prompt += "- category MUST be \"Armor\".\n";
-    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words).\n";
-    prompt += "- armorClass: 0-2 for light armor, 3-4 for medium, 5-6 for heavy.\n";
-    prompt += "- Heavier armor has higher penalties but better protection.\n";
-    prompt += "- Balancing: Common armor (AC 0-2), Uncommon (AC 3-4), Rare (AC 5-6).\n";
+    prompt += "Balancing rules:\n";
+    prompt += "- Common: armorValue 10-30, durability 50-70, basic protection.\n";
+    prompt += "- Uncommon: armorValue 25-50, durability 60-80, better protection.\n";
+    prompt += "- Rare: armorValue 40-70, durability 70-100, excellent protection.\n";
+    prompt += "- weight should be realistic (500-5000 grams for most armor).\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
+    prompt += "  that describes the armor's appearance and protection level.\n";
     prompt += "\n";
     prompt += "Output:\n";
     prompt += "- Output ONLY a JSON array of armor items.\n";
     prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
-
     return prompt;
 }
 
 std::string PromptBuilder::BuildArmorJsonPrompt(const FoodGenerateParams& params,
-                                                const CustomPreset& customPreset,
-                                                const std::set<std::string>& excludeIds,
-                                                const std::string& modelName,
-                                                const std::string& generationTimestamp,
-                                                int existingCount)
+                                               const CustomPreset& customPreset,
+                                               const std::set<std::string>& excludeIds,
+                                               const std::string& modelName,
+                                               const std::string& generationTimestamp,
+                                               int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
-    std::string presetName = customPreset.displayName;
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
     std::string presetSlug = ToSlug(presetName);
 
     std::vector<std::string> templateCandidates =
@@ -1518,7 +1648,41 @@ std::string PromptBuilder::BuildArmorJsonPrompt(const FoodGenerateParams& params
         return templatePrompt;
     }
 
-    return BuildArmorJsonPrompt(params, PresetType::Default, excludeIds, modelName, generationTimestamp, existingCount);
+    std::string prompt;
+    prompt += presetContext;
+    prompt += "Task:\n";
+    prompt += "Generate " + std::to_string(params.count) + " armor items ";
+    prompt += "for this survival setting.\n";
+    prompt += BuildExcludeSection(excludeIds);
+    prompt += "\n";
+    prompt += "Use this JSON schema EXACTLY for each armor item:\n";
+    prompt += "{\n";
+    prompt += "  \"id\": string (unique, lowercase, underscore),\n";
+    prompt += "  \"displayName\": string,\n";
+    prompt += "  \"category\": \"Armor\",\n";
+    prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
+    prompt += "  \"maxStack\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"armorValue\": integer (0-100),\n";
+    prompt += "  \"durability\": integer (0-100),\n";
+    prompt += "  \"weight\": integer (grams),\n";
+    prompt += "  \"armorType\": string (e.g., \"Helmet\", \"Vest\", \"Plate\", \"Light\", \"Heavy\"),\n";
+    prompt += "  \"value\": integer,\n";
+    prompt += "  \"description\": string\n";
+    prompt += "}\n";
+    prompt += "\n";
+    prompt += "Balancing rules:\n";
+    prompt += "- Common: armorValue 10-30, durability 50-70, basic protection.\n";
+    prompt += "- Uncommon: armorValue 25-50, durability 60-80, better protection.\n";
+    prompt += "- Rare: armorValue 40-70, durability 70-100, excellent protection.\n";
+    prompt += "- weight should be realistic (500-5000 grams for most armor).\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
+    prompt += "  that describes the armor's appearance and protection level.\n";
+    prompt += "\n";
+    prompt += "Output:\n";
+    prompt += "- Output ONLY a JSON array of armor items.\n";
+    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
+    return prompt;
 }
 
 std::string PromptBuilder::BuildClothingJsonPrompt(const FoodGenerateParams& params,
@@ -1554,51 +1718,49 @@ std::string PromptBuilder::BuildClothingJsonPrompt(const FoodGenerateParams& par
     }
 
     std::string prompt;
-
     prompt += presetContext;
-
     prompt += "Task:\n";
     prompt += "Generate " + std::to_string(params.count) + " clothing items ";
     prompt += "for this survival setting.\n\n";
-
     prompt += BuildExcludeSection(excludeIds);
-
-    prompt += "Use this JSON schema EXACTLY for each clothing:\n";
+    prompt += "\n";
+    prompt += "Use this JSON schema EXACTLY for each clothing item:\n";
     prompt += "{\n";
     prompt += "  \"id\": string (unique, lowercase, underscore),\n";
     prompt += "  \"displayName\": string,\n";
     prompt += "  \"category\": \"Clothing\",\n";
     prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
-    prompt += "  \"maxStack\": integer (usually 1-5 for clothing),\n";
+    prompt += "  \"maxStack\": integer,\n";
     prompt += "\n";
-    prompt += "  \"clothingType\": string (e.g., \"Shirt\", \"Pants\", \"Jacket\", \"Hat\", \"Shoes\", \"Gloves\", \"Outfit\"),\n";
-    prompt += "  \"coldResistance\": integer,   // 0-100, protection against cold weather\n";
-    prompt += "  \"heatResistance\": integer,   // 0-100, protection against hot weather\n";
-    prompt += "  \"waterResistance\": integer,  // 0-100, protection against water/rain\n";
-    prompt += "  \"windResistance\": integer,   // 0-100, protection against wind\n";
-    prompt += "  \"comfort\": integer,          // 0-100, overall comfort level\n";
-    prompt += "  \"mobilityBonus\": integer,    // -50 to 50, bonus/penalty to movement speed\n";
-    prompt += "  \"staminaBonus\": integer,     // -50 to 50, bonus/penalty to stamina regeneration\n";
-    prompt += "  \"durability\": integer,       // 0-100, clothing condition\n";
-    prompt += "  \"material\": integer,         // 0-100, material quality\n";
-    prompt += "  \"weight\": integer,           // Weight in grams\n";
-    prompt += "  \"isInsulated\": boolean,      // Whether clothing provides insulation\n";
-    prompt += "  \"isWaterproof\": boolean,    // Whether clothing is waterproof\n";
-    prompt += "  \"isWindproof\": boolean,      // Whether clothing is windproof\n";
-    prompt += "\n";
+    prompt += "  \"warmth\": integer (0-100),\n";
+    prompt += "  \"style\": integer (0-100),\n";
+    prompt += "  \"durability\": integer (0-100),\n";
+    prompt += "  \"weight\": integer (grams),\n";
+    prompt += "  \"clothingType\": string (e.g., \"Shirt\", \"Pants\", \"Jacket\", \"Hat\", \"Boots\"),\n";
+    prompt += "  \"value\": integer,\n";
     prompt += "  \"description\": string\n";
     prompt += "}\n";
     prompt += "\n";
-    prompt += "IMPORTANT:\n";
-    prompt += "- category MUST be \"Clothing\".\n";
-    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words).\n";
-    prompt += "- Environmental protection should match the preset (e.g., Desert = high heatResistance).\n";
-    prompt += "- Balancing: Common clothing (basic protection), Uncommon (better stats), Rare (excellent protection).\n";
+    prompt += "CRITICAL - Variety and Uniqueness Requirements:\n";
+    prompt += "- AVOID excessive use of common materials like \"Wool\", \"Flannel\", \"Leather\" - use them sparingly (max 30% of items).\n";
+    prompt += "- Each item must have a DISTINCT design/purpose, not just material variations.\n";
+    prompt += "- Do NOT generate near-duplicates (e.g., \"Jeans\" and \"Casual Jeans\" are too similar - pick one concept).\n";
+    prompt += "- Do NOT generate multiple items with the same displayName (even if IDs differ).\n";
+    prompt += "- Vary clothing types: shirts, pants, jackets, coats, hats, boots, gloves, scarves, etc.\n";
+    prompt += "- Avoid clustering too many items of the same material (e.g., don't generate 5+ wool items).\n";
+    prompt += "- Each item should feel unique and serve a different purpose in the game.\n";
+    prompt += "\n";
+    prompt += "Balancing rules:\n";
+    prompt += "- Common: warmth 10-30, style 10-30, durability 50-70, basic clothing.\n";
+    prompt += "- Uncommon: warmth 25-50, style 25-50, durability 60-80, better clothing.\n";
+    prompt += "- Rare: warmth 40-70, style 40-70, durability 70-100, excellent clothing.\n";
+    prompt += "- weight should be realistic (100-2000 grams for most clothing).\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
+    prompt += "  that describes the clothing's appearance and style.\n";
     prompt += "\n";
     prompt += "Output:\n";
     prompt += "- Output ONLY a JSON array of clothing items.\n";
     prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
-
     return prompt;
 }
 
@@ -1610,7 +1772,7 @@ std::string PromptBuilder::BuildClothingJsonPrompt(const FoodGenerateParams& par
                                                   int existingCount)
 {
     std::string presetContext = GetPresetFlavorText(customPreset);
-    std::string presetName = customPreset.displayName;
+    std::string presetName = customPreset.displayName.empty() ? customPreset.id : customPreset.displayName;
     std::string presetSlug = ToSlug(presetName);
 
     std::vector<std::string> templateCandidates =
@@ -1635,7 +1797,51 @@ std::string PromptBuilder::BuildClothingJsonPrompt(const FoodGenerateParams& par
         return templatePrompt;
     }
 
-    return BuildClothingJsonPrompt(params, PresetType::Default, excludeIds, modelName, generationTimestamp, existingCount);
+    std::string prompt;
+    prompt += presetContext;
+    prompt += "Task:\n";
+    prompt += "Generate " + std::to_string(params.count) + " clothing items ";
+    prompt += "for this survival setting.\n";
+    prompt += BuildExcludeSection(excludeIds);
+    prompt += "\n";
+    prompt += "Use this JSON schema EXACTLY for each clothing item:\n";
+    prompt += "{\n";
+    prompt += "  \"id\": string (unique, lowercase, underscore),\n";
+    prompt += "  \"displayName\": string,\n";
+    prompt += "  \"category\": \"Clothing\",\n";
+    prompt += "  \"rarity\": \"Common\" | \"Uncommon\" | \"Rare\",\n";
+    prompt += "  \"maxStack\": integer,\n";
+    prompt += "\n";
+    prompt += "  \"warmth\": integer (0-100),\n";
+    prompt += "  \"style\": integer (0-100),\n";
+    prompt += "  \"durability\": integer (0-100),\n";
+    prompt += "  \"weight\": integer (grams),\n";
+    prompt += "  \"clothingType\": string (e.g., \"Shirt\", \"Pants\", \"Jacket\", \"Hat\", \"Boots\"),\n";
+    prompt += "  \"value\": integer,\n";
+    prompt += "  \"description\": string\n";
+    prompt += "}\n";
+    prompt += "\n";
+    prompt += "CRITICAL - Variety and Uniqueness Requirements:\n";
+    prompt += "- AVOID excessive use of common materials like \"Wool\", \"Flannel\", \"Leather\" - use them sparingly (max 30% of items).\n";
+    prompt += "- Each item must have a DISTINCT design/purpose, not just material variations.\n";
+    prompt += "- Do NOT generate near-duplicates (e.g., \"Jeans\" and \"Casual Jeans\" are too similar - pick one concept).\n";
+    prompt += "- Do NOT generate multiple items with the same displayName (even if IDs differ).\n";
+    prompt += "- Vary clothing types: shirts, pants, jackets, coats, hats, boots, gloves, scarves, etc.\n";
+    prompt += "- Avoid clustering too many items of the same material (e.g., don't generate 5+ wool items).\n";
+    prompt += "- Each item should feel unique and serve a different purpose in the game.\n";
+    prompt += "\n";
+    prompt += "Balancing rules:\n";
+    prompt += "- Common: warmth 10-30, style 10-30, durability 50-70, basic clothing.\n";
+    prompt += "- Uncommon: warmth 25-50, style 25-50, durability 60-80, better clothing.\n";
+    prompt += "- Rare: warmth 40-70, style 40-70, durability 70-100, excellent clothing.\n";
+    prompt += "- weight should be realistic (100-2000 grams for most clothing).\n";
+    prompt += "- description must NOT be empty and should be 1 short sentence (5-20 words)\n";
+    prompt += "  that describes the clothing's appearance and style.\n";
+    prompt += "\n";
+    prompt += "Output:\n";
+    prompt += "- Output ONLY a JSON array of clothing items.\n";
+    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
+    return prompt;
 }
 
 

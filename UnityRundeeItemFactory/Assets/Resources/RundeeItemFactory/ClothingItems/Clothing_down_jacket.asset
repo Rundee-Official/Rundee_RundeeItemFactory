@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd5d9b5b1a68914e82e7ff169e9d131, type: 3}
+  m_Name: Clothing_down_jacket
+  m_EditorClassIdentifier: 
+  id: Clothing_down_jacket
+  displayName: Down Jacket
+  category: Clothing
+  rarity: Rare
+  maxStack: 1
+  warmth: 70
+  style: 60
+  durability: 100
+  weight: 500
+  clothingType: Jacket
+  value: 60
+  description: Lightweight, water-resistant down jacket with a sleek design and adjustable
+    cuffs.

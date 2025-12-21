@@ -1,44 +1,54 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: MaterialItemDataSO.cs
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: ScriptableObject data structure for Material items.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
-
 using UnityEngine;
 
 /// <summary>
-/// ScriptableObject representing a Material item with all its properties.
+/// ScriptableObject representing a material item in Unity
 /// </summary>
+/// <remarks>
+/// This class mirrors the C++ ItemMaterialData structure and is used to import
+/// material items from JSON into Unity as ScriptableObjects. Material items are
+/// used for crafting and trading.
+/// </remarks>
 [CreateAssetMenu(
     fileName = "MaterialItemData",
     menuName = "Rundee/Items/Material Item Data",
     order = 1)]
 public class MaterialItemDataSO : ScriptableObject
 {
+    /// <summary>Unique item identifier (JSON: id)</summary>
     [Header("Identity")]
-    public string id;              // JSON: id
-    public string displayName;     // JSON: displayName
+    public string id;
 
+    /// <summary>User-facing display name (JSON: displayName)</summary>
+    public string displayName;
+
+    /// <summary>Item category: "Material", "Junk", or "Component" (JSON: category)</summary>
     [Header("Classification")]
-    public string category;        // JSON: category (Material, Junk, Component)
-    public string rarity;          // JSON: rarity
+    public string category;
 
+    /// <summary>Item rarity: "Common", "Uncommon", or "Rare" (JSON: rarity)</summary>
+    public string rarity;
+
+    /// <summary>Maximum stack size in inventory (JSON: maxStack)</summary>
     [Header("Stacking")]
-    public int maxStack;           // JSON: maxStack
+    public int maxStack;
 
+    /// <summary>Material type: "Wood", "Metal", "Plastic", etc. (JSON: materialType)</summary>
     [Header("Material Properties")]
-    public string materialType;   // JSON: materialType (Wood, Metal, Plastic, etc.)
-    public int hardness;          // JSON: hardness (0-100)
-    public int flammability;      // JSON: flammability (0-100)
-    public int value;             // JSON: value (0-100)
+    public string materialType;
 
+    /// <summary>Structural strength (0-100) (JSON: hardness)</summary>
+    public int hardness;
+
+    /// <summary>Flammability rating (0-100) (JSON: flammability)</summary>
+    public int flammability;
+
+    /// <summary>Trade/scrap value (0-100) (JSON: value)</summary>
+    public int value;
+
+    /// <summary>Item description text (JSON: description)</summary>
     [Header("Description")]
     [TextArea(2, 4)]
-    public string description;     // JSON: description
+    public string description;
 }
 
 

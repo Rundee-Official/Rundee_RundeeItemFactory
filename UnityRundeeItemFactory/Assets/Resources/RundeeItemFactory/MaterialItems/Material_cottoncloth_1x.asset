@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f1723faf21138c44b3053834530f464, type: 3}
+  m_Name: Material_cottoncloth_1x
+  m_EditorClassIdentifier: 
+  id: Material_cottoncloth_1x
+  displayName: Cotton Cloth (1x)
+  category: Material
+  rarity: Uncommon
+  maxStack: 100
+  materialType: Fabric
+  hardness: 5
+  flammability: 0
+  value: 15
+  description: A piece of cotton cloth, suitable for crafting and sewing.

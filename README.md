@@ -34,10 +34,7 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
       "host": "localhost",
       "port": 11434,
       "maxRetries": 3,
-      "requestTimeoutSeconds": 120,
-      "connectTimeoutMs": 5000,
-      "sendTimeoutMs": 120000,
-      "receiveTimeoutMs": 120000
+      "requestTimeoutSeconds": 120
     }
   }
   ```
@@ -135,9 +132,9 @@ Feel free to embed additional narrative instructions, balancing notes, or format
 | `--out` | Output JSON file path | `items_food.json` |
 | `--report` | Generate balance report for existing JSON file | - |
 
-### Batch Mode (Parallel Processing)
+### Batch Mode
 
-Run multiple generation jobs **in parallel** with one command:
+Run multiple generation jobs sequentially with one command:
 
 ```bash
 RundeeItemFactory.exe ^
@@ -149,21 +146,7 @@ RundeeItemFactory.exe ^
 
 - Use `--batch "itemType:count[:outputPath],..."`.
 - Each entry inherits global arguments (model, preset, maxHunger, etc.) but can override the output path.
-- **All item types are generated in parallel** for maximum performance (2-3x faster than sequential).
 - Batch logs show per-job progress, elapsed time, and a final summary table. Failures do not stop the rest of the jobs, so you can re-run only the ones that failed.
-
-### Automatic Parallel Processing
-
-**Single-type generation** also uses parallel processing automatically:
-- When generating **more than 10 items**, the request is automatically split into parallel batches (10 items per batch, max 3 concurrent).
-- This provides significant speedup for large requests (e.g., generating 50 items takes ~2.6x less time than sequential processing).
-- No configuration needed - it works automatically!
-
-**Example:**
-```bash
-# This will automatically use parallel processing (5 batches of 10 items each)
-RundeeItemFactory.exe --mode llm --itemType food --model llama3 --count 50 --preset default --out items_food.json
-```
 
 ### Unity Integration
 
@@ -215,10 +198,30 @@ RundeeItemFactory.exe --mode llm --itemType food --model llama3 --count 50 --pre
 
 #### Available Unity Menu Items
 
-- `Tools/Rundee/Item Factory/Item Factory Window` - GUI for generating/importing items (auto-import optional)
-- `Tools/Rundee/Item Factory/JSON Importer` - Single window for all manual JSON imports
-- `Tools/Rundee/Item Factory/Item Manager` - Item overview, selection, and cleanup
-- `Tools/Rundee/Item Factory/Setup Item Factory` - Runs bundled Ollama installer batch
+**Generation:**
+- `Tools/Rundee/Item Factory/Generation/Item Factory Window` - GUI for generating/importing items (auto-import optional)
+- `Tools/Rundee/Item Factory/Generation/JSON Importer` - Single window for all manual JSON imports
+
+**Management:**
+- `Tools/Rundee/Item Factory/Management/Item Manager` - Item overview, selection, and cleanup
+- `Tools/Rundee/Item Factory/Management/Registry Manager` - Manage item ID registries
+- `Tools/Rundee/Item Factory/Management/Version Manager` - Backup and restore item data
+
+**Tools:**
+- `Tools/Rundee/Item Factory/Tools/Item Preview` - Preview and edit generated items
+- `Tools/Rundee/Item Factory/Tools/Batch Job Manager` - Queue and manage batch generation jobs
+- `Tools/Rundee/Item Factory/Tools/Preset Manager` - Create and manage custom presets
+- `Tools/Rundee/Item Factory/Tools/Data Exporter` - Export items to CSV/YAML formats
+
+**Analysis:**
+- `Tools/Rundee/Item Factory/Analysis/Statistics Dashboard` - View generation statistics and trends
+- `Tools/Rundee/Item Factory/Analysis/Quality Check` - Quality control and validation
+
+**Help:**
+- `Tools/Rundee/Item Factory/Help/Help & Tutorial` - User guides and documentation
+
+**Setup:**
+- `Tools/Rundee/Item Factory/Setup/Setup Item Factory` - Runs bundled Ollama installer batch
 
 #### Item Manager Window
 
@@ -565,118 +568,9 @@ Total Items: 25
 - Check file path
 - Verify Unity Editor console for errors
 
-## Release Notes
-
-### Version 1.0.0 (Initial Release)
-
-**Release Date**: 2025-12-16
-
-#### 주요 기능
-- ✅ 6가지 아이템 타입 지원 (Food, Drink, Material, Weapon, WeaponComponent, Ammo)
-- ✅ Unity 통합 완료 (Editor Windows, ScriptableObject 자동 생성)
-- ✅ 밸런스 리포트 기능
-- ✅ 배치 모드 지원
-- ✅ 프롬프트 템플릿 시스템
-- ✅ 자동 재시도 및 오류 처리
-
-#### 성능
-- 생성 속도: 평균 2.25초/아이템 (331개 아이템 기준 745초)
-- 테스트 결과: 각 타입 50개씩 총 331개 아이템 생성 성공
-
-#### 알려진 이슈
-- Unity 2020.3 이하 버전에서는 일부 기능이 제한될 수 있습니다.
-- 매우 큰 배치 작업 시 메모리 사용량이 증가할 수 있습니다.
-
-#### 다음 버전 계획
-- Unreal Engine 지원
-- 웹 UI 추가
-- 더 많은 프리셋
-- 아이템 이미지 생성 연동
-- 성능 최적화 (병렬 처리)
-
----
-
-## Dependencies
-
-### 필수 의존성
-
-#### Ollama (로컬 LLM 서버)
-- **다운로드**: https://ollama.ai/download
-- **설치**: Windows용 설치 프로그램 실행
-- **모델 다운로드**: `ollama pull llama3`
-- **확인**: `ollama list` 또는 `ollama run llama3 "test"`
-
-**문제 해결:**
-- 연결 오류: `config/rundee_config.json`에서 host/port 확인
-- 모델 없음: `ollama pull <model_name>`으로 다운로드
-- 타임아웃: 설정 파일에서 `requestTimeoutSeconds` 증가
-
-#### Visual C++ Redistributable
-- **다운로드**: https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
-- **설치**: Microsoft 공식 사이트에서 최신 버전 다운로드 및 설치
-- **확인**: 실행 파일이 정상 작동하면 설치 완료
-
-### 선택적 의존성
-
-#### Unity (Unity 통합 사용 시)
-- **버전**: Unity 2020.3 이상
-- **설치**: Unity Hub에서 설치 후 `UnityRundeeItemFactory` 폴더를 프로젝트에 복사
-
-### 의존성 버전 호환성
-
-| 구성 요소 | 최소 버전 | 권장 버전 | 테스트된 버전 |
-|----------|----------|----------|--------------|
-| Ollama | 0.1.0 | 최신 | 0.1.x |
-| Visual C++ Redistributable | 2015-2022 | 최신 | 2015-2022 |
-| Unity | 2020.3 | 2021.3 LTS | 2020.3, 2021.3, 2022.3 |
-| Windows | 10 | 11 | 10, 11 |
-
----
-
 ## License
 
-**PROPRIETARY LICENSE**
-
 Copyright (c) 2025 Haneul Lee. All rights reserved.
-
-### Ownership
-All rights, title, and interest in and to this software, including all source code, documentation, generated content, and output files, are and will remain the exclusive property of Haneul Lee.
-
-### Restrictions
-This software is proprietary and confidential. You may NOT:
-1. **Copy, modify, or distribute** the software without explicit written permission
-2. **Create derivative works** based on this software
-3. **Reverse engineer, decompile, or disassemble** the software
-4. **Remove or alter** any copyright notices or proprietary markings
-5. **Use commercially** without a license agreement
-
-### Permitted Use
-Personal use is permitted for evaluation and testing purposes only, subject to the restrictions above.
-
-### Disclaimer
-This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
-
-**For licensing inquiries, please contact the author.**
-
-See `LICENSE` file for full license terms.
-
-### 서드파티 라이선스
-
-#### nlohmann/json
-- **라이선스**: MIT License
-- **저작권**: Copyright (c) 2013-2023 Niels Lohmann
-- **원본**: https://github.com/nlohmann/json
-- **라이선스 파일**: `LICENCES/nlohmann_json_LICENSE.txt`
-
-#### Ollama
-- Ollama는 별도의 소프트웨어입니다. 라이선스는 Ollama 공식 문서를 참조하세요.
-- **다운로드**: https://ollama.ai
-
-#### Unity
-- Unity 통합 기능을 사용하려면 Unity Editor가 필요합니다.
-- **Unity EULA**: https://unity3d.com/legal/terms-of-service
-
----
 
 ## Contributing
 

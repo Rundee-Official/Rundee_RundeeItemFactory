@@ -1,0 +1,358 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_command_line_parser_8h" kind="file" language="C++">
+    <compoundname>CommandLineParser.h</compoundname>
+    <includes local="no">string</includes>
+    <includes local="no">vector</includes>
+    <includes refid="_item_generate_params_8h" local="yes">Helpers/ItemGenerateParams.h</includes>
+    <includes refid="_prompt_builder_8h" local="yes">Prompts/PromptBuilder.h</includes>
+    <includedby refid="_item_generator_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGenerator.h</includedby>
+    <includedby refid="_balance_reporter_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Helpers/BalanceReporter.h</includedby>
+    <includedby refid="_item_generator_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</includedby>
+    <includedby refid="_command_line_parser_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Helpers/CommandLineParser.cpp</includedby>
+    <includedby refid="_rundee_item_factory_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/RundeeItemFactory.cpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h</label>
+        <link refid="_command_line_parser_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>Helpers/ItemGenerateParams.h</label>
+        <link refid="_item_generate_params_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>Prompts/PromptBuilder.h</label>
+        <link refid="_prompt_builder_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>set</label>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+      <node id="3">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGenerator.h</label>
+        <link refid="_item_generator_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/BalanceReporter.h</label>
+        <link refid="_balance_reporter_8h"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h</label>
+        <link refid="_command_line_parser_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</label>
+        <link refid="_item_generator_8cpp"/>
+      </node>
+      <node id="6">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp</label>
+        <link refid="_balance_reporter_8cpp"/>
+      </node>
+      <node id="7">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Helpers/CommandLineParser.cpp</label>
+        <link refid="_command_line_parser_8cpp"/>
+      </node>
+      <node id="4">
+        <label>RundeeItemFactory/RundeeItemFactory/src/RundeeItemFactory.cpp</label>
+        <link refid="_rundee_item_factory_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="struct_batch_item" prot="public">BatchItem</innerclass>
+    <innerclass refid="struct_command_line_args" prot="public">CommandLineArgs</innerclass>
+    <innernamespace refid="namespace_command_line_parser">CommandLineParser</innernamespace>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947e" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>RunMode</name>
+        <enumvalue id="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947eab8cc08c142bcf05a92faec2d6ed58b05" prot="public">
+          <name>LLM</name>
+          <briefdescription>
+<para>Single item type generation mode. </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947ea51ffe9dd1b1e143c1b9f1144d040e454" prot="public">
+          <name>Batch</name>
+          <briefdescription>
+<para>Batch generation mode (multiple item types). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Execution mode for the item generator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" line="23" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" bodystart="24" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="enum" id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>ItemType</name>
+        <enumvalue id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba0a38e7286ebbb560354992b3ce62be67" prot="public">
+          <name>Food</name>
+          <briefdescription>
+<para>Food items (restore hunger). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba40491db1043a93d8b94b9d94e3eda532" prot="public">
+          <name>Drink</name>
+          <briefdescription>
+<para>Drink items (restore thirst). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bad92a8333dd3ccb895cc65f7455b71206" prot="public">
+          <name>Material</name>
+          <briefdescription>
+<para>Material items (crafting resources). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba18c83669920215a818638ad0e5421e4b" prot="public">
+          <name>Weapon</name>
+          <briefdescription>
+<para>Weapon items (combat equipment). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bae8d231480034ce9ca04a6bdda22ad321" prot="public">
+          <name>WeaponComponent</name>
+          <briefdescription>
+<para>Weapon component items (attachments). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bac92a86ef9dceabc5bf5ec6eb9bfd1318" prot="public">
+          <name>Ammo</name>
+          <briefdescription>
+<para>Ammunition items (weapon ammo). </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Supported item types for generation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" line="33" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" bodystart="34" bodyend="41"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Command line argument parsing helpers. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>Haneul Lee (Rundee) </para>
+</simplesect>
+<simplesect kind="date"><para>2025-11-15 </para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright (c) 2025 Haneul Lee. All rights reserved.</para>
+</simplesect>
+Provides structures and functions for parsing command line arguments and converting between string and enum representations. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>@file<sp/>CommandLineParser.h</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Command<sp/>line<sp/>argument<sp/>parsing<sp/>helpers</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>@author<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>@date<sp/>2025-11-15</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>@copyright<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>Provides<sp/>structures<sp/>and<sp/>functions<sp/>for<sp/>parsing<sp/>command<sp/>line<sp/>arguments</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>and<sp/>converting<sp/>between<sp/>string<sp/>and<sp/>enum<sp/>representations.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_item_generate_params_8h" kindref="compound">Helpers/ItemGenerateParams.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_prompt_builder_8h" kindref="compound">Prompts/PromptBuilder.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/>*<sp/>@enum<sp/>RunMode</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Execution<sp/>mode<sp/>for<sp/>the<sp/>item<sp/>generator</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947e" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">enum<sp/>class</highlight><highlight class="normal"><sp/><ref refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947e" kindref="member">RunMode</ref></highlight></codeline>
+<codeline lineno="24"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="25" refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947eab8cc08c142bcf05a92faec2d6ed58b05" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947eab8cc08c142bcf05a92faec2d6ed58b05" kindref="member">LLM</ref>,<sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Single<sp/>item<sp/>type<sp/>generation<sp/>mode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26" refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947ea51ffe9dd1b1e143c1b9f1144d040e454" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947ea51ffe9dd1b1e143c1b9f1144d040e454" kindref="member">Batch</ref><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Batch<sp/>generation<sp/>mode<sp/>(multiple<sp/>item<sp/>types)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="29"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/>*<sp/>@enum<sp/>ItemType</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Supported<sp/>item<sp/>types<sp/>for<sp/>generation</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">enum<sp/>class</highlight><highlight class="normal"><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref></highlight></codeline>
+<codeline lineno="34"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="35" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba0a38e7286ebbb560354992b3ce62be67" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba0a38e7286ebbb560354992b3ce62be67" kindref="member">Food</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Food<sp/>items<sp/>(restore<sp/>hunger)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba40491db1043a93d8b94b9d94e3eda532" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba40491db1043a93d8b94b9d94e3eda532" kindref="member">Drink</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Drink<sp/>items<sp/>(restore<sp/>thirst)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bad92a8333dd3ccb895cc65f7455b71206" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bad92a8333dd3ccb895cc65f7455b71206" kindref="member">Material</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Material<sp/>items<sp/>(crafting<sp/>resources)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba18c83669920215a818638ad0e5421e4b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba18c83669920215a818638ad0e5421e4b" kindref="member">Weapon</ref>,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Weapon<sp/>items<sp/>(combat<sp/>equipment)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bae8d231480034ce9ca04a6bdda22ad321" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bae8d231480034ce9ca04a6bdda22ad321" kindref="member">WeaponComponent</ref>,<sp/></highlight><highlight class="comment">///&lt;<sp/>Weapon<sp/>component<sp/>items<sp/>(attachments)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bac92a86ef9dceabc5bf5ec6eb9bfd1318" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66bac92a86ef9dceabc5bf5ec6eb9bfd1318" kindref="member">Ammo</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Ammunition<sp/>items<sp/>(weapon<sp/>ammo)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="43"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/>*<sp/>@struct<sp/>BatchItem</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Configuration<sp/>for<sp/>a<sp/>single<sp/>item<sp/>type<sp/>in<sp/>batch<sp/>generation</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47" refid="struct_batch_item" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_batch_item" kindref="compound">BatchItem</ref></highlight></codeline>
+<codeline lineno="48"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="49" refid="struct_batch_item_1aa210e4446f0e44e55600b2949afcc589" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref><sp/><ref refid="struct_batch_item_1aa210e4446f0e44e55600b2949afcc589" kindref="member">itemType</ref>;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Type<sp/>of<sp/>items<sp/>to<sp/>generate</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="struct_batch_item_1aba921d5c408b27e3d2285189a8b5c3a0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_batch_item_1aba921d5c408b27e3d2285189a8b5c3a0" kindref="member">count</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Number<sp/>of<sp/>items<sp/>to<sp/>generate</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51" refid="struct_batch_item_1a667897047581f018107178188030626d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_batch_item_1a667897047581f018107178188030626d" kindref="member">outputPath</ref>;<sp/></highlight><highlight class="comment">///&lt;<sp/>Optional:<sp/>custom<sp/>output<sp/>path<sp/>for<sp/>this<sp/>item<sp/>type<sp/>(empty<sp/>=<sp/>default)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/>*<sp/>@struct<sp/>CommandLineArgs</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Parsed<sp/>command<sp/>line<sp/>arguments<sp/>structure</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/>*<sp/>Contains<sp/>all<sp/>configuration<sp/>needed<sp/>for<sp/>item<sp/>generation,<sp/>including</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/>*<sp/>model<sp/>selection,<sp/>preset<sp/>type,<sp/>item<sp/>type,<sp/>generation<sp/>parameters,<sp/>and<sp/>output<sp/>paths.</highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="struct_command_line_args" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_command_line_args" kindref="compound">CommandLineArgs</ref></highlight></codeline>
+<codeline lineno="62"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="63" refid="struct_command_line_args_1a7b3f9e7603c9938cbf2a804f3431c6c8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_command_line_args_1a7b3f9e7603c9938cbf2a804f3431c6c8" kindref="member">modelName</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;llama3&quot;</highlight><highlight class="normal">;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>LLM<sp/>model<sp/>name<sp/>(e.g.,<sp/>&quot;llama3&quot;,<sp/>&quot;mistral&quot;)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="struct_command_line_args_1a17a3c917eca6876a7ff7758076a24c66" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947e" kindref="member">RunMode</ref><sp/><ref refid="struct_command_line_args_1a17a3c917eca6876a7ff7758076a24c66" kindref="member">mode</ref><sp/>=<sp/><ref refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947eab8cc08c142bcf05a92faec2d6ed58b05" kindref="member">RunMode::LLM</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Execution<sp/>mode<sp/>(LLM<sp/>or<sp/>Batch)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="struct_command_line_args_1ac475c1798b5dfd29e75add47baa246fb" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_prompt_builder_8h_1a2f25755adcf9a7606dba09cd6e7eb52c" kindref="member">PresetType</ref><sp/><ref refid="struct_command_line_args_1ac475c1798b5dfd29e75add47baa246fb" kindref="member">preset</ref><sp/>=<sp/><ref refid="_prompt_builder_8h_1a2f25755adcf9a7606dba09cd6e7eb52ca7a1920d61156abc05a60135aefe8bc67" kindref="member">PresetType::Default</ref>;<sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Preset<sp/>type<sp/>(Default,<sp/>Forest,<sp/>Desert,<sp/>etc.)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66" refid="struct_command_line_args_1a3624aee4bf73cff0f36c5f7394d5860c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref><sp/><ref refid="struct_command_line_args_1a3624aee4bf73cff0f36c5f7394d5860c" kindref="member">itemType</ref><sp/>=<sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66ba0a38e7286ebbb560354992b3ce62be67" kindref="member">ItemType::Food</ref>;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Item<sp/>type<sp/>to<sp/>generate</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67" refid="struct_command_line_args_1aa9d2d989a48a09ef6243e78e6ff29520" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_food_generate_params" kindref="compound">FoodGenerateParams</ref><sp/><ref refid="struct_command_line_args_1aa9d2d989a48a09ef6243e78e6ff29520" kindref="member">params</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Item-specific<sp/>generation<sp/>parameters</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68" refid="struct_command_line_args_1a506c89aebf8d553d7218dd0d3838a1e8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_command_line_args_1a506c89aebf8d553d7218dd0d3838a1e8" kindref="member">reportPath</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Path<sp/>to<sp/>JSON<sp/>file<sp/>for<sp/>balance<sp/>report<sp/>(empty<sp/>if<sp/>not<sp/>reporting)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="70" refid="struct_command_line_args_1aacbf6c900ba033368d804c04835f807f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;BatchItem&gt;<sp/><ref refid="struct_command_line_args_1aacbf6c900ba033368d804c04835f807f" kindref="member">batchItems</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>For<sp/>batch<sp/>mode:<sp/>multiple<sp/>item<sp/>types<sp/>to<sp/>generate</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="struct_command_line_args_1a2bb9e52adc6b0269ac66b967e63d6f7c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_command_line_args_1a2bb9e52adc6b0269ac66b967e63d6f7c" kindref="member">customPresetPath</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Path<sp/>to<sp/>custom<sp/>preset<sp/>JSON<sp/>file<sp/>(empty<sp/>if<sp/>using<sp/>built-in<sp/>preset)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72" refid="struct_command_line_args_1a0597b080789ae76f7b2d4317726bc5f1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_command_line_args_1a0597b080789ae76f7b2d4317726bc5f1" kindref="member">additionalPrompt</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">///&lt;<sp/>Additional<sp/>user-defined<sp/>prompt<sp/>text<sp/>to<sp/>append</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="75"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="76" refid="namespace_command_line_parser" refkind="compound"><highlight class="comment"><sp/>*<sp/>@namespace<sp/>CommandLineParser</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Namespace<sp/>for<sp/>command<sp/>line<sp/>parsing<sp/>utilities</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_command_line_parser" kindref="compound">CommandLineParser</ref></highlight></codeline>
+<codeline lineno="80"><highlight class="normal">{</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Parse<sp/>command<sp/>line<sp/>arguments</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Parses<sp/>argc/argv<sp/>into<sp/>a<sp/>CommandLineArgs<sp/>structure.<sp/>Supports:</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Model<sp/>selection:<sp/>--model<sp/>&lt;name&gt;</highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Item<sp/>type:<sp/>--type<sp/>&lt;food|drink|material|weapon|weaponcomponent|ammo&gt;</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Count:<sp/>--count<sp/>&lt;number&gt;</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Preset:<sp/>--preset<sp/>&lt;default|forest|desert|coast|city&gt;</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Output<sp/>path:<sp/>--output<sp/>&lt;path&gt;</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Batch<sp/>mode:<sp/>--batch<sp/>&lt;type1:count1,type2:count2,...&gt;</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Custom<sp/>preset:<sp/>--custom-preset<sp/>&lt;path&gt;</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>-<sp/>Additional<sp/>prompt:<sp/>--additional-prompt<sp/>&lt;text&gt;</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>argc<sp/>Number<sp/>of<sp/>command<sp/>line<sp/>arguments</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>argv<sp/>Array<sp/>of<sp/>command<sp/>line<sp/>argument<sp/>strings</highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>Parsed<sp/>CommandLineArgs<sp/>structure</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_command_line_args" kindref="compound">CommandLineArgs</ref><sp/><ref refid="namespace_command_line_parser_1a9e2046f3809300959bbdb66db298a3af" kindref="member">ParseArguments</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">**<sp/>argv);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="100"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Parse<sp/>batch<sp/>string<sp/>into<sp/>BatchItem<sp/>vector</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Parses<sp/>a<sp/>comma-separated<sp/>batch<sp/>string<sp/>like<sp/>&quot;food:10,weapon:5,ammo:20&quot;</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>into<sp/>a<sp/>vector<sp/>of<sp/>BatchItem<sp/>structures.</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>batchStr<sp/>Batch<sp/>string<sp/>in<sp/>format<sp/>&quot;type1:count1,type2:count2,...&quot;</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>Vector<sp/>of<sp/>BatchItem<sp/>structures</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="109"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@note<sp/>Item<sp/>type<sp/>names<sp/>are<sp/>case-insensitive</highlight></codeline>
+<codeline lineno="110"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@note<sp/>Invalid<sp/>item<sp/>types<sp/>are<sp/>skipped<sp/>with<sp/>a<sp/>warning</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;BatchItem&gt;<sp/><ref refid="namespace_command_line_parser_1acb4dc2c671a7d876704e79a8af3fb7fe" kindref="member">ParseBatchString</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>batchStr);</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Convert<sp/>PresetType<sp/>enum<sp/>to<sp/>string</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>preset<sp/>Preset<sp/>type<sp/>enum<sp/>value</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>String<sp/>representation<sp/>(e.g.,<sp/>&quot;Default&quot;,<sp/>&quot;Forest&quot;)</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="namespace_command_line_parser_1a430b1f149450d19d8be43583bb606095" kindref="member">GetPresetName</ref>(<ref refid="_prompt_builder_8h_1a2f25755adcf9a7606dba09cd6e7eb52c" kindref="member">PresetType</ref><sp/>preset);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Convert<sp/>ItemType<sp/>enum<sp/>to<sp/>string</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>itemType<sp/>Item<sp/>type<sp/>enum<sp/>value</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>String<sp/>representation<sp/>(e.g.,<sp/>&quot;Food&quot;,<sp/>&quot;Weapon&quot;)</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="namespace_command_line_parser_1aab0caa17944a729c1209aa361df91f66" kindref="member">GetItemTypeName</ref>(<ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref><sp/>itemType);</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Convert<sp/>RunMode<sp/>enum<sp/>to<sp/>string</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>mode<sp/>Run<sp/>mode<sp/>enum<sp/>value</highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>String<sp/>representation<sp/>(&quot;LLM&quot;<sp/>or<sp/>&quot;Batch&quot;)</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="namespace_command_line_parser_1abfa8b8c9fde1dacf3f4fca579ec8e438" kindref="member">GetRunModeName</ref>(<ref refid="_command_line_parser_8h_1a3dfe11cf1a3a8121f6cd7fec4bf5947e" kindref="member">RunMode</ref><sp/>mode);</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Convert<sp/>string<sp/>to<sp/>ItemType<sp/>enum</highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Parses<sp/>a<sp/>string<sp/>(case-insensitive)<sp/>into<sp/>an<sp/>ItemType<sp/>enum<sp/>value.</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="140"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>typeStr<sp/>String<sp/>representation<sp/>of<sp/>item<sp/>type</highlight></codeline>
+<codeline lineno="141"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>ItemType<sp/>enum<sp/>value,<sp/>or<sp/>ItemType::Food<sp/>if<sp/>parsing<sp/>fails</highlight></codeline>
+<codeline lineno="142"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="143"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@note<sp/>Valid<sp/>strings:<sp/>&quot;food&quot;,<sp/>&quot;drink&quot;,<sp/>&quot;material&quot;,<sp/>&quot;weapon&quot;,<sp/>&quot;weaponcomponent&quot;,<sp/>&quot;ammo&quot;</highlight></codeline>
+<codeline lineno="144"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref><sp/><ref refid="namespace_command_line_parser_1a34d13d1bc43cdc2dc7d39fcf6dade7fd" kindref="member">ParseItemType</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>typeStr);</highlight></codeline>
+<codeline lineno="146"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h"/>
+  </compounddef>
+</doxygen>

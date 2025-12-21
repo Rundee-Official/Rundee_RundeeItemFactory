@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_batch_item" kind="struct" language="C++" prot="public">
+    <compoundname>BatchItem</compoundname>
+    <includes refid="_command_line_parser_8h" local="no">CommandLineParser.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_batch_item_1aa210e4446f0e44e55600b2949afcc589" prot="public" static="no" mutable="no">
+        <type><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref></type>
+        <definition>ItemType BatchItem::itemType</definition>
+        <argsstring></argsstring>
+        <name>itemType</name>
+        <qualifiedname>BatchItem::itemType</qualifiedname>
+        <briefdescription>
+<para>Type of items to generate. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" line="49" column="14" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" bodystart="49" bodyend="-1"/>
+        <referencedby refid="namespace_command_line_parser_1acb4dc2c671a7d876704e79a8af3fb7fe" compoundref="_command_line_parser_8cpp" startline="192" endline="258">CommandLineParser::ParseBatchString</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_batch_item_1aba921d5c408b27e3d2285189a8b5c3a0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BatchItem::count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <qualifiedname>BatchItem::count</qualifiedname>
+        <briefdescription>
+<para>Number of items to generate. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" line="50" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" bodystart="50" bodyend="-1"/>
+        <referencedby refid="namespace_command_line_parser_1acb4dc2c671a7d876704e79a8af3fb7fe" compoundref="_command_line_parser_8cpp" startline="192" endline="258">CommandLineParser::ParseBatchString</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_batch_item_1a667897047581f018107178188030626d" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string BatchItem::outputPath</definition>
+        <argsstring></argsstring>
+        <name>outputPath</name>
+        <qualifiedname>BatchItem::outputPath</qualifiedname>
+        <briefdescription>
+<para>Optional: custom output path for this item type (empty = default). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" line="51" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" bodystart="51" bodyend="-1"/>
+        <referencedby refid="namespace_command_line_parser_1acb4dc2c671a7d876704e79a8af3fb7fe" compoundref="_command_line_parser_8cpp" startline="192" endline="258">CommandLineParser::ParseBatchString</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Configuration for a single item type in batch generation. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" line="47" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h" bodystart="48" bodyend="52"/>
+    <listofallmembers>
+      <member refid="struct_batch_item_1aba921d5c408b27e3d2285189a8b5c3a0" prot="public" virt="non-virtual"><scope>BatchItem</scope><name>count</name></member>
+      <member refid="struct_batch_item_1aa210e4446f0e44e55600b2949afcc589" prot="public" virt="non-virtual"><scope>BatchItem</scope><name>itemType</name></member>
+      <member refid="struct_batch_item_1a667897047581f018107178188030626d" prot="public" virt="non-virtual"><scope>BatchItem</scope><name>outputPath</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -8,26 +8,18 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <thread>
-
-// Windows Platform Includes
-#include <windows.h>
-#include <winhttp.h>
-#pragma comment(lib, "winhttp.lib")
-
-// Project Includes
 #include "Clients/OllamaClient.h"
 #include "Helpers/AppConfig.h"
 #include "Utils/StringUtils.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <sstream>
+#include <iomanip>
+#include <windows.h>
+#include <winhttp.h>
 
-// ============================================================================
-// SECTION 1: Anonymous Namespace - Internal Helpers
-// ============================================================================
+#pragma comment(lib, "winhttp.lib")
 
 namespace
 {

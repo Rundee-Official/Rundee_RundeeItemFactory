@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_balance_reporter_8h" kind="file" language="C++">
+    <compoundname>BalanceReporter.h</compoundname>
+    <includes local="no">string</includes>
+    <includes refid="_command_line_parser_8h" local="yes">Helpers/CommandLineParser.h</includes>
+    <includedby refid="_balance_reporter_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp</includedby>
+    <includedby refid="_rundee_item_factory_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/RundeeItemFactory.cpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/BalanceReporter.h</label>
+        <link refid="_balance_reporter_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Helpers/CommandLineParser.h</label>
+        <link refid="_command_line_parser_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>Helpers/ItemGenerateParams.h</label>
+        <link refid="_item_generate_params_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>Prompts/PromptBuilder.h</label>
+        <link refid="_prompt_builder_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>set</label>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+      <node id="4">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/BalanceReporter.h</label>
+        <link refid="_balance_reporter_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp</label>
+        <link refid="_balance_reporter_8cpp"/>
+      </node>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/src/RundeeItemFactory.cpp</label>
+        <link refid="_rundee_item_factory_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespace_balance_reporter">BalanceReporter</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Project<sp/>Name:<sp/>RundeeItemFactory</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>File<sp/>Name:<sp/>BalanceReporter.h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Author:<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Created<sp/>Date:<sp/>2025-11-15</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Description:<sp/>Balance<sp/>report<sp/>generator<sp/>for<sp/>generated<sp/>items.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_command_line_parser_8h" kindref="compound">Helpers/CommandLineParser.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="namespace_balance_reporter" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_balance_reporter" kindref="compound">BalanceReporter</ref></highlight></codeline>
+<codeline lineno="17"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Generate<sp/>balance<sp/>report<sp/>for<sp/>a<sp/>JSON<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>0<sp/>on<sp/>success,<sp/>1<sp/>on<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="namespace_balance_reporter_1a224837cbade7417df77432b12e5f4cd3" kindref="member">GenerateReport</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>jsonFilePath,<sp/><ref refid="_command_line_parser_8h_1a443f647757dde85043b49343f5cbe66b" kindref="member">ItemType</ref><sp/>itemType);</highlight></codeline>
+<codeline lineno="21"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/BalanceReporter.h"/>
+  </compounddef>
+</doxygen>

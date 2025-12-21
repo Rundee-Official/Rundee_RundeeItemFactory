@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="class_drink_item_validator" kind="class" language="C++" prot="public">
+    <compoundname>DrinkItemValidator</compoundname>
+    <includes refid="_drink_item_validator_8h" local="no">DrinkItemValidator.h</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_drink_item_validator_1ade2d94323858cc5484e4bab9e7c63e7e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void DrinkItemValidator::Validate</definition>
+        <argsstring>(ItemDrinkData &amp;item)</argsstring>
+        <name>Validate</name>
+        <qualifiedname>DrinkItemValidator::Validate</qualifiedname>
+        <param>
+          <type><ref refid="struct_item_drink_data" kindref="compound">ItemDrinkData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>Validate and balance drink item data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs comprehensive validation and balancing on a drink item:<itemizedlist>
+<listitem><para>Normalizes ID prefix to &quot;Drink_&quot;</para>
+</listitem><listitem><para>Clamps values to valid ranges (hungerRestore, thirstRestore, healthRestore: 0-100)</para>
+</listitem><listitem><para>Ensures drink characteristics (thirstRestore takes priority over hungerRestore)</para>
+</listitem><listitem><para>Handles spoilage logic</para>
+</listitem><listitem><para>Balances rarity based on item stats</para>
+</listitem><listitem><para>Generates default description if empty</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Drink item to validate and balance (modified in-place)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This function modifies the item parameter directly </para>
+</simplesect>
+<simplesect kind="note"><para>Values are clamped to valid ranges automatically </para>
+</simplesect>
+<simplesect kind="note"><para>Empty descriptions are replaced with default text </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/DrinkItemValidator.h" line="47" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/DrinkItemValidator.cpp" bodystart="109" bodyend="156"/>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" compoundref="_item_data_base_8h" startline="69">ItemDataBase::description</references>
+        <references refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" compoundref="_item_data_base_8h" startline="38">ItemDataBase::displayName</references>
+        <references refid="_drink_item_validator_8cpp_1aa6770984211107bbf5aae0686396eec0" compoundref="_drink_item_validator_8cpp" startline="25" endline="44">EnsureDrinkShape</references>
+        <references refid="_drink_item_validator_8cpp_1a8d7c3d8bae94f350424c77759496fbd2" compoundref="_drink_item_validator_8cpp" startline="61" endline="107">EnsureRarity</references>
+        <references refid="_drink_item_validator_8cpp_1a30171adb821cb312aee79f483fc35b4c" compoundref="_drink_item_validator_8cpp" startline="46" endline="59">EnsureSpoilage</references>
+        <references refid="struct_item_drink_data_1a711dc421d5ebdee6ae7c04c3d75efb58" compoundref="_item_drink_data_8h" startline="46">ItemDrinkData::healthRestore</references>
+        <references refid="struct_item_drink_data_1a227c40b6bd3b35dd7761162641299dd0" compoundref="_item_drink_data_8h" startline="31">ItemDrinkData::hungerRestore</references>
+        <references refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" compoundref="_item_data_base_8h" startline="31">ItemDataBase::id</references>
+        <references refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" compoundref="_item_data_base_8h" startline="62">ItemDataBase::maxStack</references>
+        <references refid="struct_item_drink_data_1a04fff567353fc058555d4231e847c1a6" compoundref="_item_drink_data_8h" startline="39">ItemDrinkData::thirstRestore</references>
+        <referencedby refid="class_item_json_parser_1acfc4971135f1980cef659f32e2e348db" compoundref="_item_json_parser_8cpp" startline="150" endline="226">ItemJsonParser::ParseDrinkFromJsonText</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Static validator class for drink item data. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Validates and balances drink item data to ensure consistency and game balance. Modifies the item in-place to fix issues and normalize values. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/DrinkItemValidator.h" line="27" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Validators/DrinkItemValidator.h" bodystart="28" bodyend="48"/>
+    <listofallmembers>
+      <member refid="class_drink_item_validator_1ade2d94323858cc5484e4bab9e7c63e7e" prot="public" virt="non-virtual"><scope>DrinkItemValidator</scope><name>Validate</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

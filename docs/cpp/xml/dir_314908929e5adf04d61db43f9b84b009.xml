@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="dir_314908929e5adf04d61db43f9b84b009" kind="dir">
+    <compoundname>RundeeItemFactory/RundeeItemFactory/src/Validators</compoundname>
+    <innerfile refid="_ammo_item_validator_8cpp">AmmoItemValidator.cpp</innerfile>
+    <innerfile refid="_drink_item_validator_8cpp">DrinkItemValidator.cpp</innerfile>
+    <innerfile refid="_food_item_validator_8cpp">FoodItemValidator.cpp</innerfile>
+    <innerfile refid="_material_item_validator_8cpp">MaterialItemValidator.cpp</innerfile>
+    <innerfile refid="_weapon_component_item_validator_8cpp">WeaponComponentItemValidator.cpp</innerfile>
+    <innerfile refid="_weapon_item_validator_8cpp">WeaponItemValidator.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/"/>
+  </compounddef>
+</doxygen>

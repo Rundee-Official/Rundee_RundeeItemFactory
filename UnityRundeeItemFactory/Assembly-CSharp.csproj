@@ -70,6 +70,7 @@
     <Compile Include="Assets\RundeeItemFactory\Runtime\FoodItemDataSO.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\RundeeItemFactory\Runtime\AmmoItemDataSO.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Runtime\MedicineItemDataSO.cs" />
     <Compile Include="Assets\RundeeItemFactory\Runtime\WeaponComponentItemDataSO.cs" />
   </ItemGroup>
   <ItemGroup>

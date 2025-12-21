@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1a07d6af0b8c5a4faef12ca15312997, type: 3}
+  m_Name: Medicine_wildcherry_root
+  m_EditorClassIdentifier: 
+  id: Medicine_wildcherry_root
+  displayName: Wild Cherry Root Tonic
+  category: Medicine
+  rarity: Uncommon
+  maxStack: 10
+  healthRestore: 35
+  spoils: 0
+  spoilTimeMinutes: 0
+  description: A murky liquid extract from the roots of wild cherry trees, known
+    for its soothing properties.

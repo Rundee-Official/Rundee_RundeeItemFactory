@@ -1,0 +1,623 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_balance_reporter_1_1_weapon_component_stats" kind="struct" language="C++" prot="public">
+    <compoundname>BalanceReporter::WeaponComponentStats</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1abbec6411c9a4a1d3606f0b64e55d3742" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::count</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="104" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="104" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a0d36641139388bb092156b303059cbb8" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalDamageModifier</definition>
+        <argsstring></argsstring>
+        <name>totalDamageModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalDamageModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="105" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="105" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1ac826b7a3ca88ac9a569b210954320151" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalRecoilModifier</definition>
+        <argsstring></argsstring>
+        <name>totalRecoilModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalRecoilModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="106" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="106" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a9808941663d05017935698a24cdb7e47" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalErgonomicsModifier</definition>
+        <argsstring></argsstring>
+        <name>totalErgonomicsModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalErgonomicsModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="107" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="107" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a88f9ea60d528c2628477c33ccbcf5312" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalAccuracyModifier</definition>
+        <argsstring></argsstring>
+        <name>totalAccuracyModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalAccuracyModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="108" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="108" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1af39f641550036e24f719ebc873916d10" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalWeightModifier</definition>
+        <argsstring></argsstring>
+        <name>totalWeightModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalWeightModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="109" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="109" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a97c910386d7609e9376701854561e91f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalMuzzleVelocityModifier</definition>
+        <argsstring></argsstring>
+        <name>totalMuzzleVelocityModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalMuzzleVelocityModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="110" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="110" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1ac5961a97c663519fdd48e56745a94454" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalEffectiveRangeModifier</definition>
+        <argsstring></argsstring>
+        <name>totalEffectiveRangeModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalEffectiveRangeModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="111" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="111" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a7d1ee0a07cce148b73e7664e89e934e6" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalPenetrationModifier</definition>
+        <argsstring></argsstring>
+        <name>totalPenetrationModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalPenetrationModifier</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="112" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="112" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a0fd5a17d487c3ebc1dd2e64829eaa548" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minDamageModifier</definition>
+        <argsstring></argsstring>
+        <name>minDamageModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minDamageModifier</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="113" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="113" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1af4b19d053ae00560c54152df89256dbd" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxDamageModifier</definition>
+        <argsstring></argsstring>
+        <name>maxDamageModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxDamageModifier</qualifiedname>
+        <initializer>= -1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="114" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="114" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1aa6bb6f589c8804dc204ce21444105bb6" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minRecoilModifier</definition>
+        <argsstring></argsstring>
+        <name>minRecoilModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minRecoilModifier</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="115" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="115" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a4693f6c4873ef2f50c51e7435f64dc36" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxRecoilModifier</definition>
+        <argsstring></argsstring>
+        <name>maxRecoilModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxRecoilModifier</qualifiedname>
+        <initializer>= -1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="116" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="116" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1abed74f0f007621ec4426a3a5a471a58a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minErgonomicsModifier</definition>
+        <argsstring></argsstring>
+        <name>minErgonomicsModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minErgonomicsModifier</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="117" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="117" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a10b68fdd663a627fbe8d33dbdbc621a5" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxErgonomicsModifier</definition>
+        <argsstring></argsstring>
+        <name>maxErgonomicsModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxErgonomicsModifier</qualifiedname>
+        <initializer>= -1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="118" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="118" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a6b0ad667add43e2b1cc16e93e92f162b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minAccuracyModifier</definition>
+        <argsstring></argsstring>
+        <name>minAccuracyModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minAccuracyModifier</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="119" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="119" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a0d200a390f822cb44ec3c8220d099fa0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxAccuracyModifier</definition>
+        <argsstring></argsstring>
+        <name>maxAccuracyModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxAccuracyModifier</qualifiedname>
+        <initializer>= -1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="120" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="120" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1af25fed44a8661ff492749ea9e52111bc" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minWeightModifier</definition>
+        <argsstring></argsstring>
+        <name>minWeightModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minWeightModifier</qualifiedname>
+        <initializer>= 100000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="121" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="121" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a1c5f8505d40a6522f586eed081d6473c" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxWeightModifier</definition>
+        <argsstring></argsstring>
+        <name>maxWeightModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxWeightModifier</qualifiedname>
+        <initializer>= -100000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="122" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="122" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1ae2f9245891c0f877c0a85e15cbbea5d2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minMuzzleVelocityModifier</definition>
+        <argsstring></argsstring>
+        <name>minMuzzleVelocityModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minMuzzleVelocityModifier</qualifiedname>
+        <initializer>= 10000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="123" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="123" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1af0fe6471703be529eaab5ad2ed51906e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxMuzzleVelocityModifier</definition>
+        <argsstring></argsstring>
+        <name>maxMuzzleVelocityModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxMuzzleVelocityModifier</qualifiedname>
+        <initializer>= -10000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="124" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="124" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1ab8e3ab74ef2c632965d1bfbbfa04365f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minEffectiveRangeModifier</definition>
+        <argsstring></argsstring>
+        <name>minEffectiveRangeModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minEffectiveRangeModifier</qualifiedname>
+        <initializer>= 10000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="125" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="125" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a4a031b2940f1d10497457846beaca4c2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxEffectiveRangeModifier</definition>
+        <argsstring></argsstring>
+        <name>maxEffectiveRangeModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxEffectiveRangeModifier</qualifiedname>
+        <initializer>= -10000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="126" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="126" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1ace76bc7c5adb172014a590777d78bd79" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minPenetrationModifier</definition>
+        <argsstring></argsstring>
+        <name>minPenetrationModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minPenetrationModifier</qualifiedname>
+        <initializer>= 1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="127" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="127" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1af9290a31749ba1a552dd4fb318d77c5a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxPenetrationModifier</definition>
+        <argsstring></argsstring>
+        <name>maxPenetrationModifier</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxPenetrationModifier</qualifiedname>
+        <initializer>= -1000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="128" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="128" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a12c39d0023a6284e0f2326ce09ba79f7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::magazineCount</definition>
+        <argsstring></argsstring>
+        <name>magazineCount</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::magazineCount</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="129" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="129" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a6fc37704a11b2d96957e9ca904cbe77b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalMagazineCapacity</definition>
+        <argsstring></argsstring>
+        <name>totalMagazineCapacity</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalMagazineCapacity</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="130" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="130" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1adf54c9978ad32267fb95442b1c4f1804" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::minMagazineCapacity</definition>
+        <argsstring></argsstring>
+        <name>minMagazineCapacity</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::minMagazineCapacity</qualifiedname>
+        <initializer>= 10000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="131" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="131" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a18a6581f294483acd1897ed6e1a51527" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::maxMagazineCapacity</definition>
+        <argsstring></argsstring>
+        <name>maxMagazineCapacity</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::maxMagazineCapacity</qualifiedname>
+        <initializer>= -1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="132" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="132" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a63f55d967dc3c0fc3e935a63cb257a3b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::magazinesWithLoadPlan</definition>
+        <argsstring></argsstring>
+        <name>magazinesWithLoadPlan</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::magazinesWithLoadPlan</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="133" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="133" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a12321570e110d06439368e455f4298ef" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::mixedAmmoMagazineCount</definition>
+        <argsstring></argsstring>
+        <name>mixedAmmoMagazineCount</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::mixedAmmoMagazineCount</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="134" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="134" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1adffd25d97347bd63eb3c933968239910" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int BalanceReporter::WeaponComponentStats::totalPlannedRounds</definition>
+        <argsstring></argsstring>
+        <name>totalPlannedRounds</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::totalPlannedRounds</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="135" column="13" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="135" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a07801b7c60529e3c5e38b2a092a427c6" prot="public" static="no" mutable="no">
+        <type>std::map&lt; std::string, int &gt;</type>
+        <definition>std::map&lt;std::string, int&gt; BalanceReporter::WeaponComponentStats::rarityCount</definition>
+        <argsstring></argsstring>
+        <name>rarityCount</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::rarityCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="136" column="18" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="136" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a568990a5a0eeb4d7cd72891094757f7d" prot="public" static="no" mutable="no">
+        <type>std::map&lt; std::string, int &gt;</type>
+        <definition>std::map&lt;std::string, int&gt; BalanceReporter::WeaponComponentStats::componentTypeCount</definition>
+        <argsstring></argsstring>
+        <name>componentTypeCount</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::componentTypeCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="137" column="18" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="137" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a516011a5419dc196e6dc898131a24103" prot="public" static="no" mutable="no">
+        <type>std::map&lt; std::string, int &gt;</type>
+        <definition>std::map&lt;std::string, int&gt; BalanceReporter::WeaponComponentStats::magazineTypeCount</definition>
+        <argsstring></argsstring>
+        <name>magazineTypeCount</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::magazineTypeCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="138" column="18" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="138" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_balance_reporter_1_1_weapon_component_stats_1a38a9be8825bef95d5faff934c74be90e" prot="public" static="no" mutable="no">
+        <type>std::map&lt; std::string, int &gt;</type>
+        <definition>std::map&lt;std::string, int&gt; BalanceReporter::WeaponComponentStats::caliberCount</definition>
+        <argsstring></argsstring>
+        <name>caliberCount</name>
+        <qualifiedname>BalanceReporter::WeaponComponentStats::caliberCount</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="139" column="18" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="139" bodyend="-1"/>
+        <referencedby refid="namespace_balance_reporter_1a1b4dc083b01a0ecfd3126ec105b5d429" compoundref="_balance_reporter_8cpp" startline="672" endline="891">BalanceReporter::PrintWeaponComponentReport</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" line="102" column="5" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp" bodystart="103" bodyend="140"/>
+    <listofallmembers>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a38a9be8825bef95d5faff934c74be90e" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>caliberCount</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a568990a5a0eeb4d7cd72891094757f7d" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>componentTypeCount</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1abbec6411c9a4a1d3606f0b64e55d3742" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>count</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a12c39d0023a6284e0f2326ce09ba79f7" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>magazineCount</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a63f55d967dc3c0fc3e935a63cb257a3b" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>magazinesWithLoadPlan</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a516011a5419dc196e6dc898131a24103" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>magazineTypeCount</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a0d200a390f822cb44ec3c8220d099fa0" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxAccuracyModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1af4b19d053ae00560c54152df89256dbd" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxDamageModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a4a031b2940f1d10497457846beaca4c2" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxEffectiveRangeModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a10b68fdd663a627fbe8d33dbdbc621a5" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxErgonomicsModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a18a6581f294483acd1897ed6e1a51527" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxMagazineCapacity</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1af0fe6471703be529eaab5ad2ed51906e" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxMuzzleVelocityModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1af9290a31749ba1a552dd4fb318d77c5a" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxPenetrationModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a4693f6c4873ef2f50c51e7435f64dc36" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxRecoilModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a1c5f8505d40a6522f586eed081d6473c" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>maxWeightModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a6b0ad667add43e2b1cc16e93e92f162b" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minAccuracyModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a0fd5a17d487c3ebc1dd2e64829eaa548" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minDamageModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1ab8e3ab74ef2c632965d1bfbbfa04365f" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minEffectiveRangeModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1abed74f0f007621ec4426a3a5a471a58a" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minErgonomicsModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1adf54c9978ad32267fb95442b1c4f1804" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minMagazineCapacity</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1ae2f9245891c0f877c0a85e15cbbea5d2" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minMuzzleVelocityModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1ace76bc7c5adb172014a590777d78bd79" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minPenetrationModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1aa6bb6f589c8804dc204ce21444105bb6" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minRecoilModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1af25fed44a8661ff492749ea9e52111bc" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>minWeightModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a12321570e110d06439368e455f4298ef" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>mixedAmmoMagazineCount</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a07801b7c60529e3c5e38b2a092a427c6" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>rarityCount</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a88f9ea60d528c2628477c33ccbcf5312" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalAccuracyModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a0d36641139388bb092156b303059cbb8" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalDamageModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1ac5961a97c663519fdd48e56745a94454" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalEffectiveRangeModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a9808941663d05017935698a24cdb7e47" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalErgonomicsModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a6fc37704a11b2d96957e9ca904cbe77b" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalMagazineCapacity</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a97c910386d7609e9376701854561e91f" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalMuzzleVelocityModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1a7d1ee0a07cce148b73e7664e89e934e6" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalPenetrationModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1adffd25d97347bd63eb3c933968239910" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalPlannedRounds</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1ac826b7a3ca88ac9a569b210954320151" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalRecoilModifier</name></member>
+      <member refid="struct_balance_reporter_1_1_weapon_component_stats_1af39f641550036e24f719ebc873916d10" prot="public" virt="non-virtual"><scope>BalanceReporter::WeaponComponentStats</scope><name>totalWeightModifier</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

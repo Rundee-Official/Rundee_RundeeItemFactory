@@ -1,0 +1,12 @@
+var searchData=
+[
+  ['caliber_0',['caliber',['../struct_item_ammo_data.html#a60826a1bc4c54bbeab9adb520340ae10',1,'ItemAmmoData::caliber'],['../struct_item_weapon_component_data.html#af439f6d6adfb91169435d3d52e097610',1,'ItemWeaponComponentData::caliber'],['../struct_item_weapon_data.html#ae816b2800dececc9d23c9f5d8f760333',1,'ItemWeaponData::caliber']]],
+  ['calibercount_1',['caliberCount',['../struct_balance_reporter_1_1_weapon_stats.html#a850d06660c1a69ac53a1ab11632507e9',1,'BalanceReporter::WeaponStats::caliberCount'],['../struct_balance_reporter_1_1_weapon_component_stats.html#a38a9be8825bef95d5faff934c74be90e',1,'BalanceReporter::WeaponComponentStats::caliberCount'],['../struct_balance_reporter_1_1_ammo_stats.html#aefbaca2a4b45a7341234dfc58887ff19',1,'BalanceReporter::AmmoStats::caliberCount']]],
+  ['category_2',['category',['../struct_item_data_base.html#a9a4f3e1ac06f297356433aa4c1beb7fb',1,'ItemDataBase']]],
+  ['compatibleslots_3',['compatibleSlots',['../struct_item_weapon_component_data.html#ac0801cfb12c9fdb1e1adb52e3b8d0833',1,'ItemWeaponComponentData']]],
+  ['componenttype_4',['componentType',['../struct_item_weapon_component_data.html#a58feff1b8ab1538df976676ba3052adb',1,'ItemWeaponComponentData']]],
+  ['componenttypecount_5',['componentTypeCount',['../struct_balance_reporter_1_1_weapon_component_stats.html#a568990a5a0eeb4d7cd72891094757f7d',1,'BalanceReporter::WeaponComponentStats']]],
+  ['connecttimeoutms_6',['connectTimeoutMs',['../struct_ollama_settings.html#a48de5e10f2a8d2ecad02b9e5828190ba',1,'OllamaSettings']]],
+  ['count_7',['count',['../struct_batch_item.html#aba921d5c408b27e3d2285189a8b5c3a0',1,'BatchItem::count'],['../struct_food_generate_params.html#a7254056f520c27e1852d50ef8df32203',1,'FoodGenerateParams::count'],['../struct_balance_reporter_1_1_food_stats.html#a4d3459ff7b2805fc95bad168ec6fef4d',1,'BalanceReporter::FoodStats::count'],['../struct_balance_reporter_1_1_material_stats.html#a9eb876475e04cd3f430ec1172a53361c',1,'BalanceReporter::MaterialStats::count'],['../struct_balance_reporter_1_1_weapon_stats.html#a8f49bbb51540a9c13907df724fe9f93c',1,'BalanceReporter::WeaponStats::count'],['../struct_balance_reporter_1_1_weapon_component_stats.html#abbec6411c9a4a1d3606f0b64e55d3742',1,'BalanceReporter::WeaponComponentStats::count'],['../struct_balance_reporter_1_1_ammo_stats.html#ac074ddc3dc0ef7f0fd89bdd5b6546e70',1,'BalanceReporter::AmmoStats::count']]],
+  ['custompresetpath_8',['customPresetPath',['../struct_command_line_args.html#a2bb9e52adc6b0269ac66b967e63d6f7c',1,'CommandLineArgs']]]
+];

@@ -58,12 +58,6 @@
     <Filter Include="Source Files\Helpers">
       <UniqueIdentifier>{E7F8A9B0-C1D2-3456-0123-567890123456}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Generators">
-      <UniqueIdentifier>{F8A9B0C1-D2E3-4567-1234-678901234567}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Generators">
-      <UniqueIdentifier>{A9B0C1D2-E3F4-5678-2345-789012345678}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RundeeItemFactory.cpp">
@@ -85,12 +79,6 @@
       <Filter>Source Files\Validators</Filter>
     </ClCompile>
     <ClCompile Include="src\Validators\AmmoItemValidator.cpp">
-      <Filter>Source Files\Validators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Validators\ArmorItemValidator.cpp">
-      <Filter>Source Files\Validators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Validators\ClothingItemValidator.cpp">
       <Filter>Source Files\Validators</Filter>
     </ClCompile>
     <ClCompile Include="src\Parsers\ItemJsonParser.cpp">
@@ -117,8 +105,8 @@
     <ClCompile Include="src\Helpers\CommandLineParser.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Generators\ItemGenerator.cpp">
-      <Filter>Source Files\Generators</Filter>
+    <ClCompile Include="src\Helpers\ItemGenerator.cpp">
+      <Filter>Source Files\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="src\Helpers\BalanceReporter.cpp">
       <Filter>Source Files\Helpers</Filter>
@@ -155,12 +143,6 @@
     <ClInclude Include="include\Data\ItemAmmoData.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\Data\ItemArmorData.h">
-      <Filter>Header Files\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Data\ItemClothingData.h">
-      <Filter>Header Files\Data</Filter>
-    </ClInclude>
     <ClInclude Include="include\Validators\FoodItemValidator.h">
       <Filter>Header Files\Validators</Filter>
     </ClInclude>
@@ -177,12 +159,6 @@
       <Filter>Header Files\Validators</Filter>
     </ClInclude>
     <ClInclude Include="include\Validators\AmmoItemValidator.h">
-      <Filter>Header Files\Validators</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Validators\ArmorItemValidator.h">
-      <Filter>Header Files\Validators</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Validators\ClothingItemValidator.h">
       <Filter>Header Files\Validators</Filter>
     </ClInclude>
     <ClInclude Include="include\Parsers\ItemJsonParser.h">
@@ -209,8 +185,8 @@
     <ClInclude Include="include\Helpers\CommandLineParser.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Generators\ItemGenerator.h">
-      <Filter>Header Files\Generators</Filter>
+    <ClInclude Include="include\Helpers\ItemGenerator.h">
+      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="include\Helpers\ItemGenerateParams.h">
       <Filter>Header Files\Helpers</Filter>

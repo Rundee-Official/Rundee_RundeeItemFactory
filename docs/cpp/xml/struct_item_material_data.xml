@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_item_material_data" kind="struct" language="C++" prot="public">
+    <compoundname>ItemMaterialData</compoundname>
+    <basecompoundref refid="struct_item_data_base" prot="public" virt="non-virtual">ItemDataBase</basecompoundref>
+    <includes refid="_item_material_data_8h" local="no">ItemMaterialData.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_item_material_data_1a56b195346713d3aa60ca770f9f509343" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ItemMaterialData::materialType</definition>
+        <argsstring></argsstring>
+        <name>materialType</name>
+        <qualifiedname>ItemMaterialData::materialType</qualifiedname>
+        <briefdescription>
+<para>Material type identifier. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Examples: &quot;Wood&quot;, &quot;Metal&quot;, &quot;Plastic&quot;, &quot;Fabric&quot;, &quot;Glass&quot;, &quot;Electronic&quot;, etc. Used for crafting recipes and material compatibility. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" line="31" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" bodystart="31" bodyend="-1"/>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+        <referencedby refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" compoundref="_material_item_validator_8cpp" startline="19" endline="72">MaterialItemValidator::Validate</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_item_material_data_1a8c20db9b84919f200c399b111f40d127" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ItemMaterialData::hardness</definition>
+        <argsstring></argsstring>
+        <name>hardness</name>
+        <qualifiedname>ItemMaterialData::hardness</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+<para>Structural strength (0-100). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Higher values indicate stronger materials. Affects durability and suitability for structural crafting. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" line="39" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" bodystart="39" bodyend="-1"/>
+        <referencedby refid="namespace_quality_checker_1ac7960d9bf95807016f108f8d86071f7a" compoundref="_quality_checker_8cpp" startline="362" endline="386">QualityChecker::CheckMaterialQuality</referencedby>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+        <referencedby refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" compoundref="_material_item_validator_8cpp" startline="19" endline="72">MaterialItemValidator::Validate</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_item_material_data_1a0e5bcec3bcf4bf10c04f85983a06cf37" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ItemMaterialData::flammability</definition>
+        <argsstring></argsstring>
+        <name>flammability</name>
+        <qualifiedname>ItemMaterialData::flammability</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+<para>Flammability rating (0-100). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Higher values indicate more flammable materials. Affects fire behavior and combustion properties. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" line="47" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" bodystart="47" bodyend="-1"/>
+        <referencedby refid="namespace_quality_checker_1ac7960d9bf95807016f108f8d86071f7a" compoundref="_quality_checker_8cpp" startline="362" endline="386">QualityChecker::CheckMaterialQuality</referencedby>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+        <referencedby refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" compoundref="_material_item_validator_8cpp" startline="19" endline="72">MaterialItemValidator::Validate</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ItemMaterialData::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>ItemMaterialData::value</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+<para>Trade/scrap value (0-100). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Economic value of the material. Used for trading and scrap calculations. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" line="54" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" bodystart="54" bodyend="-1"/>
+        <referencedby refid="namespace_quality_checker_1ac7960d9bf95807016f108f8d86071f7a" compoundref="_quality_checker_8cpp" startline="362" endline="386">QualityChecker::CheckMaterialQuality</referencedby>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+        <referencedby refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" compoundref="_material_item_validator_8cpp" startline="19" endline="72">MaterialItemValidator::Validate</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="struct_item_material_data_1a882e0e4affc14bdb261c7c31d929728c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string ItemMaterialData::GetItemTypeName</definition>
+        <argsstring>() const override</argsstring>
+        <name>GetItemTypeName</name>
+        <qualifiedname>ItemMaterialData::GetItemTypeName</qualifiedname>
+        <reimplements refid="struct_item_data_base_1aa6c02b9b42d7dda7d24f0aac0a3a6d65">GetItemTypeName</reimplements>
+        <briefdescription>
+<para>Get the item type name. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Always returns &quot;Material&quot; </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" line="60" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" bodystart="60" bodyend="60"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Data structure representing a material item. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Contains properties specific to material items, including material type, physical properties, and trade value. Used for crafting resources and junk items. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>ItemDataBase</label>
+        <link refid="struct_item_data_base"/>
+      </node>
+      <node id="1">
+        <label>ItemMaterialData</label>
+        <link refid="struct_item_material_data"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>ItemDataBase</label>
+        <link refid="struct_item_data_base"/>
+      </node>
+      <node id="1">
+        <label>ItemMaterialData</label>
+        <link refid="struct_item_material_data"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" line="23" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemMaterialData.h" bodystart="24" bodyend="61"/>
+    <listofallmembers>
+      <member refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>category</name></member>
+      <member refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>description</name></member>
+      <member refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>displayName</name></member>
+      <member refid="struct_item_material_data_1a0e5bcec3bcf4bf10c04f85983a06cf37" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>flammability</name></member>
+      <member refid="struct_item_material_data_1a882e0e4affc14bdb261c7c31d929728c" prot="public" virt="virtual"><scope>ItemMaterialData</scope><name>GetItemTypeName</name></member>
+      <member refid="struct_item_material_data_1a8c20db9b84919f200c399b111f40d127" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>hardness</name></member>
+      <member refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>id</name></member>
+      <member refid="struct_item_material_data_1a56b195346713d3aa60ca770f9f509343" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>materialType</name></member>
+      <member refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>maxStack</name></member>
+      <member refid="struct_item_data_base_1ae6e6ccfcbe4a998f647bee3880efbc0c" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>rarity</name></member>
+      <member refid="struct_item_material_data_1a1e0034aa6bfc73180a356f8b7e4e740d" prot="public" virt="non-virtual"><scope>ItemMaterialData</scope><name>value</name></member>
+      <member refid="struct_item_data_base_1af62ee1b0875692a8e945d9abb16a82ef" prot="public" virt="virtual"><scope>ItemMaterialData</scope><name>~ItemDataBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

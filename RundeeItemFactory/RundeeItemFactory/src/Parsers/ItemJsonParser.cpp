@@ -8,60 +8,33 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
-#include <algorithm>
-#include <cctype>
-#include <chrono>
-#include <fstream>
-#include <iostream>
-
-// Third-Party Includes
-#include "json.hpp"
-using nlohmann::json;
-
-// Project Includes
 #include "Parsers/ItemJsonParser.h"
-#include "Utils/JsonUtils.h"
 #include "Utils/StringUtils.h"
+#include "Utils/JsonUtils.h"
+#include "Validators/FoodItemValidator.h"
+#include "Validators/DrinkItemValidator.h"
+#include "Validators/MedicineItemValidator.h"
+#include "Validators/MaterialItemValidator.h"
+#include "Validators/WeaponItemValidator.h"
+#include "Validators/WeaponComponentItemValidator.h"
 #include "Validators/AmmoItemValidator.h"
 #include "Validators/ArmorItemValidator.h"
 #include "Validators/ClothingItemValidator.h"
-#include "Validators/DrinkItemValidator.h"
-#include "Validators/FoodItemValidator.h"
-#include "Validators/MaterialItemValidator.h"
-#include "Validators/WeaponComponentItemValidator.h"
-#include "Validators/WeaponItemValidator.h"
+#include <fstream>
+#include <chrono>
+#include <iostream>
+#include <algorithm>
+#include <cctype>
 
-// ============================================================================
-// SECTION 1: Anonymous Namespace - Internal Helpers
-// ============================================================================
+using nlohmann::json;
 
+// Name shape logging (disabled for release)
 namespace
 {
-    static int gNameLogCount = 0;
-    static const int kNameLogMax = 25;
-
-    std::string SanitizeForLog(const std::string& s)
-    {
-        std::string out = s;
-        for (char& c : out)
-        {
-            if (c == '"') c = '\'';
-        }
-        return out;
-    }
-
     void LogNameShape(const char* typeName, const std::string& id, const std::string& displayName)
     {
-        if (gNameLogCount >= kNameLogMax) return;
-        ++gNameLogCount;
-        auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
-        std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-        if (!dbg.is_open()) return;
-        dbg << R"({"sessionId":"debug-session","runId":"display-debug","hypothesisId":"H3","location":"ItemJsonParser.cpp","message":"name shape","data":{"type":")"
-            << typeName << R"(","id":")" << SanitizeForLog(id) << R"(","display":")" << SanitizeForLog(displayName) << R"("},"timestamp":)"
-            << ts << "})" << "\n";
+        // Debug logging disabled for release
+        // Can be re-enabled for debugging if needed
     }
 }
 
@@ -100,32 +73,6 @@ bool ItemJsonParser::ParseFoodFromJsonText(const std::string& jsonText, std::vec
     }
     catch (const std::exception& e)
     {
-        // #region agent log
-        static int dbgCountWeapon = 0;
-        if (dbgCountWeapon < 10)
-        {
-            ++dbgCountWeapon;
-            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count();
-            auto sanitize = [](std::string v)
-            {
-                for (char& ch : v)
-                {
-                    if (ch == '"') ch = '\'';
-                    else if (ch == '\\') ch = '/';
-                }
-                return v;
-            };
-            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-            if (dbg.is_open())
-            {
-                dbg << R"({"sessionId":"debug-session","runId":"parse-error","hypothesisId":"H1","location":"ItemJsonParser.cpp","message":"weapon parse fail","data":{"lenOriginal":)"
-                    << jsonText.size() << R"(,"lenCleaned":)" << cleaned.size() << R"(,"error":")" << sanitize(e.what() ? std::string(e.what()) : std::string("n/a"))
-                    << R"(","firstClean":")" << sanitize(cleaned.substr(0, std::min<size_t>(200, cleaned.size())))
-                    << R"("},"timestamp":)" << ts << "})" << "\n";
-            }
-        }
-        // #endregion
         std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
             << e.what() << "\n";
         return false;
@@ -217,32 +164,6 @@ bool ItemJsonParser::ParseDrinkFromJsonText(const std::string& jsonText, std::ve
     }
     catch (const std::exception& e)
     {
-        // #region agent log
-        static int dbgCountWc = 0;
-        if (dbgCountWc < 10)
-        {
-            ++dbgCountWc;
-            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count();
-            auto sanitize = [](std::string v)
-            {
-                for (char& ch : v)
-                {
-                    if (ch == '"') ch = '\'';
-                    else if (ch == '\\') ch = '/';
-                }
-                return v;
-            };
-            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-            if (dbg.is_open())
-            {
-                dbg << R"({"sessionId":"debug-session","runId":"parse-error","hypothesisId":"H1","location":"ItemJsonParser.cpp","message":"weaponcomponent parse fail","data":{"lenOriginal":)"
-                    << jsonText.size() << R"(,"lenCleaned":)" << cleaned.size() << R"(,"error":")" << sanitize(e.what() ? std::string(e.what()) : std::string("n/a"))
-                    << R"(","firstClean":")" << sanitize(cleaned.substr(0, std::min<size_t>(200, cleaned.size())))
-                    << R"("},"timestamp":)" << ts << "})" << "\n";
-            }
-        }
-        // #endregion
         std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
             << e.what() << "\n";
         return false;
@@ -303,6 +224,82 @@ bool ItemJsonParser::ParseDrinkFromJsonText(const std::string& jsonText, std::ve
 
     std::cout << "[ItemJsonParser] Parsed " << outItems.size()
         << " drink items from JSON.\n";
+
+    return !outItems.empty();
+}
+
+bool ItemJsonParser::ParseMedicineFromJsonText(const std::string& jsonText, std::vector<ItemMedicineData>& outItems)
+{
+    outItems.clear();
+
+    // Clean LLM response string
+    std::string cleaned = StringUtils::CleanJsonArrayText(jsonText);
+
+    json root;
+    try
+    {
+        root = json::parse(cleaned);
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
+            << e.what() << "\n";
+        return false;
+    }
+
+    if (!root.is_array())
+    {
+        std::cerr << "[ItemJsonParser] Root JSON is not an array.\n";
+        return false;
+    }
+
+    for (size_t i = 0; i < root.size(); ++i)
+    {
+        const json& jItem = root[i];
+        if (!jItem.is_object())
+        {
+            std::cerr << "[ItemJsonParser] Element " << i << " is not an object.\n";
+            continue;
+        }
+
+        ItemMedicineData item;
+        item.id = JsonUtils::GetStringSafe(jItem, "id");
+        item.displayName = JsonUtils::GetStringSafe(jItem, "displayName");
+        item.category = JsonUtils::GetStringSafe(jItem, "category");
+        item.rarity = JsonUtils::GetStringSafe(jItem, "rarity");
+
+        item.maxStack = JsonUtils::GetIntSafe(jItem, "maxStack", 1);
+        item.healthRestore = JsonUtils::GetIntSafe(jItem, "healthRestore", 0);
+        item.spoils = JsonUtils::GetBoolSafe(jItem, "spoils", false);
+        item.spoilTimeMinutes = JsonUtils::GetIntSafe(jItem, "spoilTimeMinutes", 0);
+        item.description = JsonUtils::GetStringSafe(jItem, "description");
+
+        // Minimum validation: id/displayName must exist
+        if (item.id.empty() || item.displayName.empty())
+        {
+            std::cerr << "[ItemJsonParser] Skipping item at index " << i
+                << " (missing id/displayName)\n";
+            continue;
+        }
+
+        // Category validation: only accept "Medicine"
+        if (item.category != "Medicine" && item.category != "medicine" && item.category != "MEDICINE")
+        {
+            std::cerr << "[ItemJsonParser] Skipping item at index " << i
+                << " (category is \"" << item.category << "\", expected \"Medicine\")\n";
+            continue;
+        }
+
+        LogNameShape("Medicine", item.id, item.displayName);
+
+        // Validation/balancing
+        MedicineItemValidator::Validate(item);
+
+        outItems.push_back(item);
+    }
+
+    std::cout << "[ItemJsonParser] Parsed " << outItems.size()
+        << " medicine items from JSON.\n";
 
     return !outItems.empty();
 }
@@ -384,32 +381,6 @@ bool ItemJsonParser::ParseWeaponFromJsonText(const std::string& jsonText, std::v
     }
     catch (const std::exception& e)
     {
-        // #region agent log
-        static int dbgCountAmmo = 0;
-        if (dbgCountAmmo < 10)
-        {
-            ++dbgCountAmmo;
-            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count();
-            auto sanitize = [](std::string v)
-            {
-                for (char& ch : v)
-                {
-                    if (ch == '"') ch = '\'';
-                    else if (ch == '\\') ch = '/';
-                }
-                return v;
-            };
-            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-            if (dbg.is_open())
-            {
-                dbg << R"({"sessionId":"debug-session","runId":"parse-error","hypothesisId":"H1","location":"ItemJsonParser.cpp","message":"ammo parse fail","data":{"lenOriginal":)"
-                    << jsonText.size() << R"(,"lenCleaned":)" << cleaned.size() << R"(,"error":")" << sanitize(e.what() ? std::string(e.what()) : std::string("n/a"))
-                    << R"(","firstClean":")" << sanitize(cleaned.substr(0, std::min<size_t>(200, cleaned.size())))
-                    << R"("},"timestamp":)" << ts << "})" << "\n";
-            }
-        }
-        // #endregion
         std::cerr << "[ItemJsonParser] JSON parse error even after cleanup: "
             << e.what() << "\n";
         return false;
@@ -715,7 +686,12 @@ bool ItemJsonParser::ParseAmmoFromJsonText(const std::string& jsonText, std::vec
         item.caliber = JsonUtils::GetStringSafe(jItem, "caliber");
         item.damageBonus = JsonUtils::GetIntSafe(jItem, "damageBonus", 0);
         item.penetration = JsonUtils::GetIntSafe(jItem, "penetration", 0);
+        // Support both "accuracyBonus" and "accuracyModifier" field names (LLM sometimes uses "accuracyModifier")
         item.accuracyBonus = JsonUtils::GetIntSafe(jItem, "accuracyBonus", 0);
+        if (item.accuracyBonus == 0 && jItem.find("accuracyModifier") != jItem.end())
+        {
+            item.accuracyBonus = JsonUtils::GetIntSafe(jItem, "accuracyModifier", 0);
+        }
         item.recoilModifier = JsonUtils::GetIntSafe(jItem, "recoilModifier", 0);
         item.armorPiercing = JsonUtils::GetBoolSafe(jItem, "armorPiercing", false);
         item.hollowPoint = JsonUtils::GetBoolSafe(jItem, "hollowPoint", false);
@@ -755,68 +731,46 @@ bool ItemJsonParser::ParseArmorFromJsonText(const std::string& jsonText, std::ve
 {
     outItems.clear();
 
-    if (jsonText.empty() || jsonText.find_first_not_of(" \t\r\n") == std::string::npos)
-    {
-        std::cerr << "[ItemJsonParser] Error: Input JSON text is empty or contains only whitespace.\n";
-        return false;
-    }
-
     std::string cleaned = StringUtils::CleanJsonArrayText(jsonText);
-    
-    if (cleaned.empty() || cleaned.find_first_not_of(" \t\r\n") == std::string::npos)
-    {
-        std::cerr << "[ItemJsonParser] Error: JSON text became empty after cleaning.\n";
-        return false;
-    }
 
     json root;
     try
     {
         root = json::parse(cleaned);
     }
-    catch (const json::parse_error& e)
+    catch (const std::exception& e)
     {
-        std::cerr << "[ItemJsonParser] JSON parse error (position " << e.byte << "): "
-            << e.what() << "\n";
+        std::cerr << "[ItemJsonParser] JSON parse error: " << e.what() << "\n";
         return false;
     }
 
     if (!root.is_array())
     {
-        std::cerr << "[ItemJsonParser] Error: Root JSON is not an array.\n";
+        std::cerr << "[ItemJsonParser] Root JSON is not an array.\n";
         return false;
     }
 
     for (size_t i = 0; i < root.size(); ++i)
     {
-        const auto& jItem = root[i];
+        const json& jItem = root[i];
         if (!jItem.is_object())
         {
-            std::cerr << "[ItemJsonParser] Skipping non-object at index " << i << "\n";
+            std::cerr << "[ItemJsonParser] Element " << i << " is not an object.\n";
             continue;
         }
 
         ItemArmorData item;
-
         item.id = JsonUtils::GetStringSafe(jItem, "id");
         item.displayName = JsonUtils::GetStringSafe(jItem, "displayName");
         item.category = JsonUtils::GetStringSafe(jItem, "category");
         item.rarity = JsonUtils::GetStringSafe(jItem, "rarity");
         item.maxStack = JsonUtils::GetIntSafe(jItem, "maxStack", 1);
-        item.description = JsonUtils::GetStringSafe(jItem, "description");
-
-        item.armorType = JsonUtils::GetStringSafe(jItem, "armorType");
-        item.armorClass = JsonUtils::GetIntSafe(jItem, "armorClass", 0);
+        item.armorValue = JsonUtils::GetIntSafe(jItem, "armorValue", 0);
         item.durability = JsonUtils::GetIntSafe(jItem, "durability", 100);
-        item.material = JsonUtils::GetIntSafe(jItem, "material", 0);
-        item.protectionZones = JsonUtils::GetStringSafe(jItem, "protectionZones");
-        item.movementSpeedPenalty = JsonUtils::GetIntSafe(jItem, "movementSpeedPenalty", 0);
-        item.ergonomicsPenalty = JsonUtils::GetIntSafe(jItem, "ergonomicsPenalty", 0);
-        item.turnSpeedPenalty = JsonUtils::GetIntSafe(jItem, "turnSpeedPenalty", 0);
         item.weight = JsonUtils::GetIntSafe(jItem, "weight", 0);
-        item.capacity = JsonUtils::GetIntSafe(jItem, "capacity", 0);
-        item.blocksHeadset = JsonUtils::GetBoolSafe(jItem, "blocksHeadset", false);
-        item.blocksFaceCover = JsonUtils::GetBoolSafe(jItem, "blocksFaceCover", false);
+        item.armorType = JsonUtils::GetStringSafe(jItem, "armorType");
+        item.value = JsonUtils::GetIntSafe(jItem, "value", 0);
+        item.description = JsonUtils::GetStringSafe(jItem, "description");
 
         if (item.id.empty() || item.displayName.empty())
         {
@@ -849,70 +803,47 @@ bool ItemJsonParser::ParseClothingFromJsonText(const std::string& jsonText, std:
 {
     outItems.clear();
 
-    if (jsonText.empty() || jsonText.find_first_not_of(" \t\r\n") == std::string::npos)
-    {
-        std::cerr << "[ItemJsonParser] Error: Input JSON text is empty or contains only whitespace.\n";
-        return false;
-    }
-
     std::string cleaned = StringUtils::CleanJsonArrayText(jsonText);
-    
-    if (cleaned.empty() || cleaned.find_first_not_of(" \t\r\n") == std::string::npos)
-    {
-        std::cerr << "[ItemJsonParser] Error: JSON text became empty after cleaning.\n";
-        return false;
-    }
 
     json root;
     try
     {
         root = json::parse(cleaned);
     }
-    catch (const json::parse_error& e)
+    catch (const std::exception& e)
     {
-        std::cerr << "[ItemJsonParser] JSON parse error (position " << e.byte << "): "
-            << e.what() << "\n";
+        std::cerr << "[ItemJsonParser] JSON parse error: " << e.what() << "\n";
         return false;
     }
 
     if (!root.is_array())
     {
-        std::cerr << "[ItemJsonParser] Error: Root JSON is not an array.\n";
+        std::cerr << "[ItemJsonParser] Root JSON is not an array.\n";
         return false;
     }
 
     for (size_t i = 0; i < root.size(); ++i)
     {
-        const auto& jItem = root[i];
+        const json& jItem = root[i];
         if (!jItem.is_object())
         {
-            std::cerr << "[ItemJsonParser] Skipping non-object at index " << i << "\n";
+            std::cerr << "[ItemJsonParser] Element " << i << " is not an object.\n";
             continue;
         }
 
         ItemClothingData item;
-
         item.id = JsonUtils::GetStringSafe(jItem, "id");
         item.displayName = JsonUtils::GetStringSafe(jItem, "displayName");
         item.category = JsonUtils::GetStringSafe(jItem, "category");
         item.rarity = JsonUtils::GetStringSafe(jItem, "rarity");
         item.maxStack = JsonUtils::GetIntSafe(jItem, "maxStack", 1);
-        item.description = JsonUtils::GetStringSafe(jItem, "description");
-
-        item.clothingType = JsonUtils::GetStringSafe(jItem, "clothingType");
-        item.coldResistance = JsonUtils::GetIntSafe(jItem, "coldResistance", 0);
-        item.heatResistance = JsonUtils::GetIntSafe(jItem, "heatResistance", 0);
-        item.waterResistance = JsonUtils::GetIntSafe(jItem, "waterResistance", 0);
-        item.windResistance = JsonUtils::GetIntSafe(jItem, "windResistance", 0);
-        item.comfort = JsonUtils::GetIntSafe(jItem, "comfort", 0);
-        item.mobilityBonus = JsonUtils::GetIntSafe(jItem, "mobilityBonus", 0);
-        item.staminaBonus = JsonUtils::GetIntSafe(jItem, "staminaBonus", 0);
+        item.warmth = JsonUtils::GetIntSafe(jItem, "warmth", 0);
+        item.style = JsonUtils::GetIntSafe(jItem, "style", 0);
         item.durability = JsonUtils::GetIntSafe(jItem, "durability", 100);
-        item.material = JsonUtils::GetIntSafe(jItem, "material", 0);
         item.weight = JsonUtils::GetIntSafe(jItem, "weight", 0);
-        item.isInsulated = JsonUtils::GetBoolSafe(jItem, "isInsulated", false);
-        item.isWaterproof = JsonUtils::GetBoolSafe(jItem, "isWaterproof", false);
-        item.isWindproof = JsonUtils::GetBoolSafe(jItem, "isWindproof", false);
+        item.clothingType = JsonUtils::GetStringSafe(jItem, "clothingType");
+        item.value = JsonUtils::GetIntSafe(jItem, "value", 0);
+        item.description = JsonUtils::GetStringSafe(jItem, "description");
 
         if (item.id.empty() || item.displayName.empty())
         {

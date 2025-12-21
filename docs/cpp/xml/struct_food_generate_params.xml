@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_food_generate_params" kind="struct" language="C++" prot="public">
+    <compoundname>FoodGenerateParams</compoundname>
+    <includes refid="_item_generate_params_8h" local="no">ItemGenerateParams.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int FoodGenerateParams::count</definition>
+        <argsstring></argsstring>
+        <name>count</name>
+        <qualifiedname>FoodGenerateParams::count</qualifiedname>
+        <initializer>= 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" line="18" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" bodystart="18" bodyend="-1"/>
+        <referencedby refid="class_prompt_builder_1aa6a610449869cad03e8df42ce530b7c5" compoundref="_prompt_builder_8cpp" startline="1273" endline="1345">PromptBuilder::BuildAmmoJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a13830108797c9c98ad9f6af928bd56bc" compoundref="_prompt_builder_8cpp" startline="1175" endline="1271">PromptBuilder::BuildAmmoJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a4f1cd1654f392aee4fc652f356b29606" compoundref="_prompt_builder_8cpp" startline="451" endline="526">PromptBuilder::BuildDrinkJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1af573636eb2d4440020edd5d56bcbceb7" compoundref="_prompt_builder_8cpp" startline="360" endline="449">PromptBuilder::BuildDrinkJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1afe0067d892f157d55b58de9e7476533a" compoundref="_prompt_builder_8cpp" startline="271" endline="358">PromptBuilder::BuildFoodJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a4dbbfeb85017a5b3692757587170ee1c" compoundref="_prompt_builder_8cpp" startline="177" endline="269">PromptBuilder::BuildFoodJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a1dc224aa11da8f0102d10759c30fae15" compoundref="_prompt_builder_8cpp" startline="610" endline="684">PromptBuilder::BuildMaterialJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1ad764c13df10dd52e205dbb7cc4901c8b" compoundref="_prompt_builder_8cpp" startline="528" endline="608">PromptBuilder::BuildMaterialJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a1a7f98037c3eb1016f26fbbb49f8c427" compoundref="_prompt_builder_8cpp" startline="1086" endline="1173">PromptBuilder::BuildWeaponComponentJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a68ca15c2b188625ac36693e471ceb20c" compoundref="_prompt_builder_8cpp" startline="927" endline="1084">PromptBuilder::BuildWeaponComponentJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a5c0d0a723489fe4e135a7eab31e0d565" compoundref="_prompt_builder_8cpp" startline="836" endline="925">PromptBuilder::BuildWeaponJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1acb3d86d01fad3840d052cc9d262098a5" compoundref="_prompt_builder_8cpp" startline="686" endline="834">PromptBuilder::BuildWeaponJsonPrompt</referencedby>
+        <referencedby refid="namespace_item_generator_1a1f5c63542daa1579f8c232333ad856a1" compoundref="_item_generator_8cpp" startline="1922" endline="2175">ItemGenerator::GenerateBatch</referencedby>
+        <referencedby refid="namespace_item_generator_1a18259c8382f2b43eede484c3eb2b41c0" compoundref="_item_generator_8cpp" startline="1531" endline="1805">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_item_generator_1abcd9165612d17e63efd704c0e85b2967" compoundref="_item_generator_8cpp" startline="1808" endline="1920">ItemGenerator::GenerateWithLLM_SingleBatch</referencedby>
+        <referencedby refid="_rundee_item_factory_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" compoundref="_rundee_item_factory_8cpp" startline="17" endline="71">main</referencedby>
+        <referencedby refid="namespace_command_line_parser_1a9e2046f3809300959bbdb66db298a3af" compoundref="_command_line_parser_8cpp" startline="19" endline="133">CommandLineParser::ParseArguments</referencedby>
+        <referencedby refid="_item_generator_8cpp_1aef3c20f7b6d0f2803e617ab0f8fcdcec" compoundref="_item_generator_8cpp" startline="1095" endline="1508">ProcessLLMResponse_Ammo</referencedby>
+        <referencedby refid="_item_generator_8cpp_1aaea5114ff8a34af218dcdf247cbc3fda" compoundref="_item_generator_8cpp" startline="681" endline="1093">ProcessLLMResponse_WeaponComponent</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_food_generate_params_1aab329af04e5297b3b3867bc01ac00f64" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int FoodGenerateParams::maxHunger</definition>
+        <argsstring></argsstring>
+        <name>maxHunger</name>
+        <qualifiedname>FoodGenerateParams::maxHunger</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" line="19" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" bodystart="19" bodyend="-1"/>
+        <referencedby refid="class_prompt_builder_1a4f1cd1654f392aee4fc652f356b29606" compoundref="_prompt_builder_8cpp" startline="451" endline="526">PromptBuilder::BuildDrinkJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1af573636eb2d4440020edd5d56bcbceb7" compoundref="_prompt_builder_8cpp" startline="360" endline="449">PromptBuilder::BuildDrinkJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1afe0067d892f157d55b58de9e7476533a" compoundref="_prompt_builder_8cpp" startline="271" endline="358">PromptBuilder::BuildFoodJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a4dbbfeb85017a5b3692757587170ee1c" compoundref="_prompt_builder_8cpp" startline="177" endline="269">PromptBuilder::BuildFoodJsonPrompt</referencedby>
+        <referencedby refid="namespace_command_line_parser_1a9e2046f3809300959bbdb66db298a3af" compoundref="_command_line_parser_8cpp" startline="19" endline="133">CommandLineParser::ParseArguments</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_food_generate_params_1a0c2d76f873e095ddde37c8d4932af2c7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int FoodGenerateParams::maxThirst</definition>
+        <argsstring></argsstring>
+        <name>maxThirst</name>
+        <qualifiedname>FoodGenerateParams::maxThirst</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" line="20" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" bodystart="20" bodyend="-1"/>
+        <referencedby refid="class_prompt_builder_1a4f1cd1654f392aee4fc652f356b29606" compoundref="_prompt_builder_8cpp" startline="451" endline="526">PromptBuilder::BuildDrinkJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1af573636eb2d4440020edd5d56bcbceb7" compoundref="_prompt_builder_8cpp" startline="360" endline="449">PromptBuilder::BuildDrinkJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1afe0067d892f157d55b58de9e7476533a" compoundref="_prompt_builder_8cpp" startline="271" endline="358">PromptBuilder::BuildFoodJsonPrompt</referencedby>
+        <referencedby refid="class_prompt_builder_1a4dbbfeb85017a5b3692757587170ee1c" compoundref="_prompt_builder_8cpp" startline="177" endline="269">PromptBuilder::BuildFoodJsonPrompt</referencedby>
+        <referencedby refid="namespace_command_line_parser_1a9e2046f3809300959bbdb66db298a3af" compoundref="_command_line_parser_8cpp" startline="19" endline="133">CommandLineParser::ParseArguments</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string FoodGenerateParams::outputPath</definition>
+        <argsstring></argsstring>
+        <name>outputPath</name>
+        <qualifiedname>FoodGenerateParams::outputPath</qualifiedname>
+        <initializer>= &quot;ItemJson/items_food.json&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" line="21" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" bodystart="21" bodyend="-1"/>
+        <referencedby refid="namespace_item_generator_1a1f5c63542daa1579f8c232333ad856a1" compoundref="_item_generator_8cpp" startline="1922" endline="2175">ItemGenerator::GenerateBatch</referencedby>
+        <referencedby refid="namespace_item_generator_1a18259c8382f2b43eede484c3eb2b41c0" compoundref="_item_generator_8cpp" startline="1531" endline="1805">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_item_generator_1abcd9165612d17e63efd704c0e85b2967" compoundref="_item_generator_8cpp" startline="1808" endline="1920">ItemGenerator::GenerateWithLLM_SingleBatch</referencedby>
+        <referencedby refid="_rundee_item_factory_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" compoundref="_rundee_item_factory_8cpp" startline="17" endline="71">main</referencedby>
+        <referencedby refid="namespace_command_line_parser_1a9e2046f3809300959bbdb66db298a3af" compoundref="_command_line_parser_8cpp" startline="19" endline="133">CommandLineParser::ParseArguments</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" line="16" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h" bodystart="17" bodyend="22"/>
+    <listofallmembers>
+      <member refid="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" prot="public" virt="non-virtual"><scope>FoodGenerateParams</scope><name>count</name></member>
+      <member refid="struct_food_generate_params_1aab329af04e5297b3b3867bc01ac00f64" prot="public" virt="non-virtual"><scope>FoodGenerateParams</scope><name>maxHunger</name></member>
+      <member refid="struct_food_generate_params_1a0c2d76f873e095ddde37c8d4932af2c7" prot="public" virt="non-virtual"><scope>FoodGenerateParams</scope><name>maxThirst</name></member>
+      <member refid="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" prot="public" virt="non-virtual"><scope>FoodGenerateParams</scope><name>outputPath</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

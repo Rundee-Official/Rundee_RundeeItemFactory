@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_item_generate_params_8h" kind="file" language="C++">
+    <compoundname>ItemGenerateParams.h</compoundname>
+    <includes local="no">string</includes>
+    <includedby refid="_command_line_parser_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h</includedby>
+    <includedby refid="_prompt_builder_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Prompts/PromptBuilder.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h</label>
+        <link refid="_item_generate_params_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGenerator.h</label>
+        <link refid="_item_generator_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/BalanceReporter.h</label>
+        <link refid="_balance_reporter_8h"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/CommandLineParser.h</label>
+        <link refid="_command_line_parser_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h</label>
+        <link refid="_item_generate_params_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Prompts/PromptBuilder.h</label>
+        <link refid="_prompt_builder_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</label>
+        <link refid="_item_generator_8cpp"/>
+      </node>
+      <node id="7">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Helpers/BalanceReporter.cpp</label>
+        <link refid="_balance_reporter_8cpp"/>
+      </node>
+      <node id="8">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Helpers/CommandLineParser.cpp</label>
+        <link refid="_command_line_parser_8cpp"/>
+      </node>
+      <node id="10">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Prompts/PromptBuilder.cpp</label>
+        <link refid="_prompt_builder_8cpp"/>
+      </node>
+      <node id="5">
+        <label>RundeeItemFactory/RundeeItemFactory/src/RundeeItemFactory.cpp</label>
+        <link refid="_rundee_item_factory_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="struct_food_generate_params" prot="public">FoodGenerateParams</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Project<sp/>Name:<sp/>RundeeItemFactory</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/>File<sp/>Name:<sp/>ItemGenerateParams.h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Author:<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Created<sp/>Date:<sp/>2025-11-15</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Description:<sp/>Parameters<sp/>for<sp/>item<sp/>generation.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">//<sp/>===============================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Parameters<sp/>for<sp/>item<sp/>generation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16" refid="struct_food_generate_params" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_food_generate_params" kindref="compound">FoodGenerateParams</ref></highlight></codeline>
+<codeline lineno="17"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="18" refid="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_food_generate_params_1a7254056f520c27e1852d50ef8df32203" kindref="member">count</ref><sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="19" refid="struct_food_generate_params_1aab329af04e5297b3b3867bc01ac00f64" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_food_generate_params_1aab329af04e5297b3b3867bc01ac00f64" kindref="member">maxHunger</ref><sp/>=<sp/>100;</highlight></codeline>
+<codeline lineno="20" refid="struct_food_generate_params_1a0c2d76f873e095ddde37c8d4932af2c7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_food_generate_params_1a0c2d76f873e095ddde37c8d4932af2c7" kindref="member">maxThirst</ref><sp/>=<sp/>100;</highlight></codeline>
+<codeline lineno="21" refid="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_food_generate_params_1a9d2ea1a0d0c7f621e4a4116618b153f7" kindref="member">outputPath</ref><sp/>=<sp/></highlight><highlight class="stringliteral">&quot;ItemJson/items_food.json&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/ItemGenerateParams.h"/>
+  </compounddef>
+</doxygen>

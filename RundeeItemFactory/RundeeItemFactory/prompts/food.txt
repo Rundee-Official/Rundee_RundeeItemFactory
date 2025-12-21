@@ -45,14 +45,6 @@ Balancing:
 - All values must be between 0 and 100.
 - Use only integers for all restore values.
 
-Spoilage rules:
-- If spoils is true, spoilTimeMinutes must be at least 60 (1 hour minimum)
-- Common perishable food: spoilTimeMinutes 60-240 (1-4 hours)
-- Uncommon perishable food: spoilTimeMinutes 240-720 (4-12 hours)
-- Rare perishable food: spoilTimeMinutes 720-1440 (12-24 hours)
-- Non-perishable food (spoils = false) should not have spoilTimeMinutes set
-- Very short spoil times (< 60 minutes) are unrealistic and should be avoided
-
 Output:
 - Output ONLY a JSON array of items.
 - No comments, no extra text, no Markdown, no explanation.

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="class_food_item_validator" kind="class" language="C++" prot="public">
+    <compoundname>FoodItemValidator</compoundname>
+    <includes refid="_food_item_validator_8h" local="no">FoodItemValidator.h</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_food_item_validator_1a7d1ed87de78096b5266978340633a531" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void FoodItemValidator::Validate</definition>
+        <argsstring>(ItemFoodData &amp;item)</argsstring>
+        <name>Validate</name>
+        <qualifiedname>FoodItemValidator::Validate</qualifiedname>
+        <param>
+          <type><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>Validate and balance food item data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs comprehensive validation and balancing on a food item:<itemizedlist>
+<listitem><para>Normalizes ID prefix to &quot;Food_&quot;</para>
+</listitem><listitem><para>Clamps values to valid ranges (hungerRestore, thirstRestore, healthRestore: 0-100)</para>
+</listitem><listitem><para>Ensures food characteristics (hungerRestore takes priority over thirstRestore)</para>
+</listitem><listitem><para>Handles spoilage logic</para>
+</listitem><listitem><para>Balances rarity based on item stats</para>
+</listitem><listitem><para>Generates default description if empty</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Food item to validate and balance (modified in-place)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This function modifies the item parameter directly </para>
+</simplesect>
+<simplesect kind="note"><para>Values are clamped to valid ranges automatically </para>
+</simplesect>
+<simplesect kind="note"><para>Empty descriptions are replaced with default text </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/FoodItemValidator.h" line="47" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/FoodItemValidator.cpp" bodystart="111" bodyend="158"/>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" compoundref="_item_data_base_8h" startline="69">ItemDataBase::description</references>
+        <references refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" compoundref="_item_data_base_8h" startline="38">ItemDataBase::displayName</references>
+        <references refid="_food_item_validator_8cpp_1a7234707117139fb5e17831ac420e3f57" compoundref="_food_item_validator_8cpp" startline="27" endline="46">EnsureFoodShape</references>
+        <references refid="_drink_item_validator_8cpp_1a8d7c3d8bae94f350424c77759496fbd2" compoundref="_drink_item_validator_8cpp" startline="61" endline="107">EnsureRarity</references>
+        <references refid="_drink_item_validator_8cpp_1a30171adb821cb312aee79f483fc35b4c" compoundref="_drink_item_validator_8cpp" startline="46" endline="59">EnsureSpoilage</references>
+        <references refid="struct_item_food_data_1af51862c534a6bd1271b019097a168dcc" compoundref="_item_food_data_8h" startline="46">ItemFoodData::healthRestore</references>
+        <references refid="struct_item_food_data_1a9dbe590e5cfbf06187225371fec5eb2b" compoundref="_item_food_data_8h" startline="31">ItemFoodData::hungerRestore</references>
+        <references refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" compoundref="_item_data_base_8h" startline="31">ItemDataBase::id</references>
+        <references refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" compoundref="_item_data_base_8h" startline="62">ItemDataBase::maxStack</references>
+        <references refid="struct_item_food_data_1a95fa7d13a69126901aa11540dadfd036" compoundref="_item_food_data_8h" startline="39">ItemFoodData::thirstRestore</references>
+        <referencedby refid="class_item_json_parser_1ad42e122447389fa6d419f2731929d5fd" compoundref="_item_json_parser_8cpp" startline="38" endline="148">ItemJsonParser::ParseFoodFromJsonText</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Static validator class for food item data. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Validates and balances food item data to ensure consistency and game balance. Modifies the item in-place to fix issues and normalize values. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/FoodItemValidator.h" line="27" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Validators/FoodItemValidator.h" bodystart="28" bodyend="48"/>
+    <listofallmembers>
+      <member refid="class_food_item_validator_1a7d1ed87de78096b5266978340633a531" prot="public" virt="non-virtual"><scope>FoodItemValidator</scope><name>Validate</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

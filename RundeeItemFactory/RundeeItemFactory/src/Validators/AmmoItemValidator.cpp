@@ -8,18 +8,11 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
-#include <chrono>
-#include <fstream>
-#include <iostream>
-
-// Project Includes
 #include "Validators/AmmoItemValidator.h"
 #include "Utils/JsonUtils.h"
-
-// ============================================================================
-// SECTION 1: AmmoItemValidator Namespace
-// ============================================================================
+#include <iostream>
+#include <fstream>
+#include <chrono>
 
 namespace AmmoItemValidator
 {
@@ -46,21 +39,7 @@ namespace AmmoItemValidator
             item.id = "Ammo_" + item.id;
         }
 
-        // #region agent log
-        static int dbgCount = 0;
-        if (dbgCount < 50)
-        {
-            ++dbgCount;
-            auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count();
-            std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-            if (dbg.is_open())
-            {
-                dbg << R"({"sessionId":"debug-session","runId":"prefix-debug","hypothesisId":"H1","location":"AmmoItemValidator.cpp:Validate","message":"id prefix normalization","data":{"before":")"
-                    << originalId << R"(","after":")" << item.id << R"("},"timestamp":)" << ts << "})" << "\n";
-            }
-        }
-        // #endregion
+        // Debug logging disabled for release
 
         // Default category
         if (item.category.empty())

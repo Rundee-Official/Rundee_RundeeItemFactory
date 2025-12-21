@@ -1,13 +1,3 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: SetupItemFactoryMenu.cs
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: Initial setup menu for Item Factory, including Ollama installation check.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
-
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -15,52 +5,29 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// Setup menu for initial Item Factory configuration.
-/// </summary>
 public static class SetupItemFactoryMenu
 {
-    // #region agent log helper
-    private static void AgentLog(string hypothesisId, string location, string message)
-    {
-        var payload = $"{{\"sessionId\":\"debug-session\",\"runId\":\"run3\",\"hypothesisId\":\"{hypothesisId}\",\"location\":\"{location}\",\"message\":\"{message}\",\"timestamp\":{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}}}\n";
-        TryWriteLog(@"d:\_VisualStudioProjects\_Rundee_RundeeItemFactory\.cursor\debug.log", payload);
-        TryWriteLog(Path.Combine(Application.dataPath.Replace("/Assets", ""), ".cursor", "debug_fallback.log"), payload);
-    }
+    // Debug logging disabled for release
 
-    private static void TryWriteLog(string path, string payload)
-    {
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            File.AppendAllText(path, payload);
-        }
-        catch
-        {
-            // swallow logging errors
-        }
-    }
-    // #endregion
-
-    [MenuItem("Tools/Rundee/Item Factory/Setup Item Factory", false, 0)]
+    [MenuItem("Tools/Rundee/Item Factory/Setup/Setup Item Factory", false, 6000)]
     public static void RunSetup()
     {
-        AgentLog("H0", "SetupItemFactoryMenu.RunSetup:entry", "menu clicked");
+        // Setup menu clicked
         string projectRoot = Application.dataPath.Replace("/Assets", "");
         string batPath = Path.Combine(projectRoot, "Assets", "RundeeItemFactory", "Editor", "OllamaSetup", "install_ollama_windows.bat");
 
-        AgentLog("H1", "SetupItemFactoryMenu.RunSetup:entry", $"batPath={batPath}");
+        // Batch file path determined
 
         if (IsOllamaInstalledInDefaultPaths(out var foundPath))
         {
-            AgentLog("H8", "SetupItemFactoryMenu.RunSetup:already_installed", foundPath ?? "unknown");
+            // Ollama already installed
             EditorUtility.DisplayDialog("Setup Item Factory", $"Ollama already detected at:\n{foundPath}\nInstaller skipped.", "OK");
             return;
         }
 
         if (!File.Exists(batPath))
         {
-            AgentLog("H1", "SetupItemFactoryMenu.RunSetup:bat_missing", "bat file not found");
+            // Batch file not found
             EditorUtility.DisplayDialog("Setup Item Factory", $"Batch file not found:\n{batPath}", "OK");
             return;
         }
@@ -80,21 +47,21 @@ public static class SetupItemFactoryMenu
             var proc = Process.Start(psi);
             if (proc == null)
             {
-                AgentLog("H6", "SetupItemFactoryMenu.RunSetup:process_null", "Process.Start returned null");
+                // Process start failed
             }
             else
             {
-                AgentLog("H2", "SetupItemFactoryMenu.RunSetup:process_started", $"pid={proc.Id}");
+                // Process started successfully
                 proc.EnableRaisingEvents = true;
                 proc.Exited += (_, __) =>
                 {
                     try
                     {
-                        AgentLog("H5", "SetupItemFactoryMenu.RunSetup:process_exited", $"pid={proc.Id}, exitCode={proc.ExitCode}");
+                        // Process exited
                     }
                     catch
                     {
-                        AgentLog("H5", "SetupItemFactoryMenu.RunSetup:process_exited", "exit logging failed");
+                        // Exit logging failed
                     }
                 };
             }
@@ -106,7 +73,7 @@ public static class SetupItemFactoryMenu
         }
         catch (System.Exception ex)
         {
-            AgentLog("H3", "SetupItemFactoryMenu.RunSetup:exception", ex.Message);
+            // Exception occurred
             EditorUtility.DisplayDialog("Setup Item Factory", $"An error occurred while running the installer:\n{ex.Message}", "OK");
         }
     }

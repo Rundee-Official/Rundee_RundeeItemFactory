@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_quality_checker_8h" kind="file" language="C++">
+    <compoundname>QualityChecker.h</compoundname>
+    <includes local="no">string</includes>
+    <includes local="no">vector</includes>
+    <includedby refid="_item_generator_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</includedby>
+    <includedby refid="_quality_checker_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Helpers/QualityChecker.cpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/QualityChecker.h</label>
+        <link refid="_quality_checker_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+      <node id="3">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Helpers/QualityChecker.h</label>
+        <link refid="_quality_checker_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</label>
+        <link refid="_item_generator_8cpp"/>
+      </node>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Helpers/QualityChecker.cpp</label>
+        <link refid="_quality_checker_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="struct_quality_checker_1_1_quality_result" prot="public">QualityChecker::QualityResult</innerclass>
+    <innernamespace refid="namespace_quality_checker">QualityChecker</innernamespace>
+    <briefdescription>
+<para>Quality and realism checking for generated items. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>Haneul Lee (Rundee) </para>
+</simplesect>
+<simplesect kind="date"><para>2025-11-17 </para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright (c) 2025 Haneul Lee. All rights reserved.</para>
+</simplesect>
+Provides quality checking functionality to validate generated items for realism, balance, and consistency. Flags items with warnings or errors. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>@file<sp/>QualityChecker.h</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Quality<sp/>and<sp/>realism<sp/>checking<sp/>for<sp/>generated<sp/>items</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>@author<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>@date<sp/>2025-11-17</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>@copyright<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>Provides<sp/>quality<sp/>checking<sp/>functionality<sp/>to<sp/>validate<sp/>generated<sp/>items<sp/>for</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>realism,<sp/>balance,<sp/>and<sp/>consistency.<sp/>Flags<sp/>items<sp/>with<sp/>warnings<sp/>or<sp/>errors.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Forward<sp/>declarations</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_weapon_data" kindref="compound">ItemWeaponData</ref>;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_weapon_component_data" kindref="compound">ItemWeaponComponentData</ref>;</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_ammo_data" kindref="compound">ItemAmmoData</ref>;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_drink_data" kindref="compound">ItemDrinkData</ref>;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_material_data" kindref="compound">ItemMaterialData</ref>;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="25"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="26" refid="namespace_quality_checker" refkind="compound"><highlight class="comment"><sp/>*<sp/>@namespace<sp/>QualityChecker</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Namespace<sp/>for<sp/>quality<sp/>checking<sp/>functions</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_quality_checker" kindref="compound">QualityChecker</ref></highlight></codeline>
+<codeline lineno="30"><highlight class="normal">{</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@struct<sp/>QualityResult</highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Result<sp/>of<sp/>a<sp/>quality<sp/>check<sp/>operation</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Contains<sp/>validation<sp/>results<sp/>including<sp/>validity<sp/>status,<sp/>warnings,<sp/>errors,</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>and<sp/>a<sp/>quality<sp/>score.</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="struct_quality_checker_1_1_quality_result" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Whether<sp/>the<sp/>item<sp/>is<sp/>valid</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="43"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>If<sp/>false,<sp/>the<sp/>item<sp/>should<sp/>be<sp/>filtered<sp/>out<sp/>or<sp/>regenerated.</highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>Set<sp/>to<sp/>false<sp/>when<sp/>critical<sp/>errors<sp/>are<sp/>found.</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46" refid="struct_quality_checker_1_1_quality_result_1a2ac7a39a57b0e83ae6f8d7316b4287ba" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="struct_quality_checker_1_1_quality_result_1a2ac7a39a57b0e83ae6f8d7316b4287ba" kindref="member">isValid</ref><sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>List<sp/>of<sp/>warning<sp/>messages</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>Non-critical<sp/>issues<sp/>that<sp/>don&apos;t<sp/>prevent<sp/>the<sp/>item<sp/>from<sp/>being<sp/>used.</highlight></codeline>
+<codeline lineno="52"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="struct_quality_checker_1_1_quality_result_1a3a02bfe7bce5a339cc32473549434b0c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::string&gt;<sp/><ref refid="struct_quality_checker_1_1_quality_result_1a3a02bfe7bce5a339cc32473549434b0c" kindref="member">warnings</ref>;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>List<sp/>of<sp/>error<sp/>messages</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>Critical<sp/>issues<sp/>that<sp/>may<sp/>cause<sp/>the<sp/>item<sp/>to<sp/>be<sp/>invalid.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60" refid="struct_quality_checker_1_1_quality_result_1a6c247761914a48ab08e9a596e0231c54" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::string&gt;<sp/><ref refid="struct_quality_checker_1_1_quality_result_1a6c247761914a48ab08e9a596e0231c54" kindref="member">errors</ref>;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Quality<sp/>score<sp/>(0-100,<sp/>higher<sp/>is<sp/>better)</highlight></codeline>
+<codeline lineno="64"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="65"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>Overall<sp/>quality<sp/>rating<sp/>of<sp/>the<sp/>item.<sp/>Used<sp/>for<sp/>filtering<sp/>and<sp/>ranking.</highlight></codeline>
+<codeline lineno="66"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67" refid="struct_quality_checker_1_1_quality_result_1a73faa5faa0f80d9d84e20e78195dc297" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="struct_quality_checker_1_1_quality_result_1a73faa5faa0f80d9d84e20e78195dc297" kindref="member">qualityScore</ref><sp/>=<sp/>100.0f;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Check<sp/>weapon<sp/>item<sp/>quality</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Validates<sp/>weapon<sp/>items<sp/>for<sp/>realism,<sp/>balance,<sp/>and<sp/>consistency.</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Checks<sp/>combat<sp/>stats,<sp/>weapon<sp/>type<sp/>compatibility,<sp/>and<sp/>attachment<sp/>slots.</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>item<sp/>Weapon<sp/>item<sp/>to<sp/>check</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>QualityResult<sp/>with<sp/>validation<sp/>results</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref><sp/><ref refid="namespace_quality_checker_1ac03077b11866ceff4b2bfe07ada11ad2" kindref="member">CheckWeaponQuality</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_weapon_data" kindref="compound">ItemWeaponData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="81"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="82"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Check<sp/>weapon<sp/>component<sp/>item<sp/>quality</highlight></codeline>
+<codeline lineno="83"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="84"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Validates<sp/>weapon<sp/>component<sp/>items<sp/>for<sp/>compatibility<sp/>and<sp/>stat<sp/>balance.</highlight></codeline>
+<codeline lineno="85"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="86"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>item<sp/>Weapon<sp/>component<sp/>item<sp/>to<sp/>check</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>QualityResult<sp/>with<sp/>validation<sp/>results</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref><sp/><ref refid="namespace_quality_checker_1aee226ac53ccf944cac49da0675363066" kindref="member">CheckWeaponComponentQuality</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_weapon_component_data" kindref="compound">ItemWeaponComponentData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Check<sp/>ammo<sp/>item<sp/>quality</highlight></codeline>
+<codeline lineno="93"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="94"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Validates<sp/>ammo<sp/>items<sp/>for<sp/>caliber<sp/>consistency<sp/>and<sp/>stat<sp/>balance.</highlight></codeline>
+<codeline lineno="95"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="96"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>item<sp/>Ammo<sp/>item<sp/>to<sp/>check</highlight></codeline>
+<codeline lineno="97"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>QualityResult<sp/>with<sp/>validation<sp/>results</highlight></codeline>
+<codeline lineno="98"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref><sp/><ref refid="namespace_quality_checker_1a3eddf0952f3515e96519386a59a54110" kindref="member">CheckAmmoQuality</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_ammo_data" kindref="compound">ItemAmmoData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Check<sp/>food<sp/>item<sp/>quality</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Validates<sp/>food<sp/>items<sp/>for<sp/>restoration<sp/>values<sp/>and<sp/>spoilage<sp/>logic.</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="106"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>item<sp/>Food<sp/>item<sp/>to<sp/>check</highlight></codeline>
+<codeline lineno="107"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>QualityResult<sp/>with<sp/>validation<sp/>results</highlight></codeline>
+<codeline lineno="108"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref><sp/><ref refid="namespace_quality_checker_1ad7fbf277ff023b85feac7ce8f2ed9bbf" kindref="member">CheckFoodQuality</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_food_data" kindref="compound">ItemFoodData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Check<sp/>drink<sp/>item<sp/>quality</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Validates<sp/>drink<sp/>items<sp/>for<sp/>restoration<sp/>values<sp/>and<sp/>spoilage<sp/>logic.</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>item<sp/>Drink<sp/>item<sp/>to<sp/>check</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>QualityResult<sp/>with<sp/>validation<sp/>results</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref><sp/><ref refid="namespace_quality_checker_1a9561527ff52b3e0a9d38635efa84177f" kindref="member">CheckDrinkQuality</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_drink_data" kindref="compound">ItemDrinkData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="121"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="122"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Check<sp/>material<sp/>item<sp/>quality</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Validates<sp/>material<sp/>items<sp/>for<sp/>material<sp/>properties<sp/>and<sp/>value<sp/>balance.</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>item<sp/>Material<sp/>item<sp/>to<sp/>check</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>QualityResult<sp/>with<sp/>validation<sp/>results</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref><sp/><ref refid="namespace_quality_checker_1ac7960d9bf95807016f108f8d86071f7a" kindref="member">CheckMaterialQuality</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_item_material_data" kindref="compound">ItemMaterialData</ref>&amp;<sp/>item);</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="131"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="132"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Print<sp/>quality<sp/>result<sp/>to<sp/>console</highlight></codeline>
+<codeline lineno="133"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="134"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Outputs<sp/>the<sp/>quality<sp/>check<sp/>results<sp/>in<sp/>a<sp/>human-readable<sp/>format.</highlight></codeline>
+<codeline lineno="135"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>Shows<sp/>warnings,<sp/>errors,<sp/>and<sp/>quality<sp/>score.</highlight></codeline>
+<codeline lineno="136"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight></codeline>
+<codeline lineno="137"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>result<sp/>QualityResult<sp/>to<sp/>print</highlight></codeline>
+<codeline lineno="138"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>itemId<sp/>Item<sp/>ID<sp/>for<sp/>identification<sp/>in<sp/>output</highlight></codeline>
+<codeline lineno="139"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespace_quality_checker_1aab676471a9866dc05fcf078f415d22cb" kindref="member">PrintQualityResult</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="struct_quality_checker_1_1_quality_result" kindref="compound">QualityResult</ref>&amp;<sp/>result,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>itemId);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Helpers/QualityChecker.h"/>
+  </compounddef>
+</doxygen>

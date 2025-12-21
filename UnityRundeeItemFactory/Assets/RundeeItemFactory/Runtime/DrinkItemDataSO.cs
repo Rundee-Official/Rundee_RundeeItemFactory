@@ -1,45 +1,57 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: DrinkItemDataSO.cs
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: ScriptableObject data structure for Drink items.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
-
 using UnityEngine;
 
 /// <summary>
-/// ScriptableObject representing a Drink item with all its properties.
+/// ScriptableObject representing a drink item in Unity
 /// </summary>
+/// <remarks>
+/// This class mirrors the C++ ItemDrinkData structure and is used to import
+/// drink items from JSON into Unity as ScriptableObjects. Drink items restore
+/// thirst, hunger, and health when consumed.
+/// </remarks>
 [CreateAssetMenu(
     fileName = "DrinkItemData",
     menuName = "Rundee/Items/Drink Item Data",
     order = 0)]
 public class DrinkItemDataSO : ScriptableObject
 {
+    /// <summary>Unique item identifier (JSON: id)</summary>
     [Header("Identity")]
-    public string id;              // JSON: id
-    public string displayName;     // JSON: displayName
-    public string category;        // JSON: category (Drink)
-    public string rarity;          // JSON: rarity
+    public string id;
 
+    /// <summary>User-facing display name (JSON: displayName)</summary>
+    public string displayName;
+
+    /// <summary>Item category, typically "Drink" (JSON: category)</summary>
+    public string category;
+
+    /// <summary>Item rarity: "Common", "Uncommon", or "Rare" (JSON: rarity)</summary>
+    public string rarity;
+
+    /// <summary>Maximum stack size in inventory (JSON: maxStack)</summary>
     [Header("Stacking")]
-    public int maxStack;           // JSON: maxStack
+    public int maxStack;
 
+    /// <summary>Hunger restoration value (0-100) (JSON: hungerRestore)</summary>
     [Header("Effects")]
-    public int hungerRestore;      // JSON: hungerRestore
-    public int thirstRestore;      // JSON: thirstRestore
-    public int healthRestore;      // JSON: healthRestore
+    public int hungerRestore;
 
+    /// <summary>Thirst restoration value (0-100) (JSON: thirstRestore)</summary>
+    public int thirstRestore;
+
+    /// <summary>Health restoration value (0-100) (JSON: healthRestore)</summary>
+    public int healthRestore;
+
+    /// <summary>Whether this drink item spoils over time (JSON: spoils)</summary>
     [Header("Spoilage")]
-    public bool spoils;            // JSON: spoils
-    public int spoilTimeMinutes;   // JSON: spoilTimeMinutes
+    public bool spoils;
 
+    /// <summary>Time until spoilage in minutes (JSON: spoilTimeMinutes)</summary>
+    public int spoilTimeMinutes;
+
+    /// <summary>Item description text (JSON: description)</summary>
     [Header("Description")]
     [TextArea(2, 4)]
-    public string description;     // JSON: description
+    public string description;
 }
 
 

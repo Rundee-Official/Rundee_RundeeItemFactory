@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="dir_87e6b02aee894260294b2e415c396559" kind="dir">
+    <compoundname>RundeeItemFactory/RundeeItemFactory/include/Utils</compoundname>
+    <innerfile refid="_json_utils_8h">JsonUtils.h</innerfile>
+    <innerfile refid="_string_utils_8h">StringUtils.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Utils/"/>
+  </compounddef>
+</doxygen>

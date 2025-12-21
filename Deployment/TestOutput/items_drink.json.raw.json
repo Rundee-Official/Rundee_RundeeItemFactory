@@ -1,0 +1,15 @@
+[
+  {
+    "id": "drink_meadowbrook",
+    "displayName": "Meadowbrook Spring Water",
+    "category": "Drink",
+    "rarity": "Common",
+    "maxStack": 1,
+    "hungerRestore": 0,
+    "thirstRestore": 20,
+    "healthRestore": 5,
+    "spoils": false,
+    "spoilTimeMinutes": 0,
+    "description": "A refreshing spring water with a hint of earthy taste"
+  }
+]

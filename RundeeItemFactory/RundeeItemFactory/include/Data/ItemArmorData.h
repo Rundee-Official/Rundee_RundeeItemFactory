@@ -1,44 +1,70 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: ItemArmorData.h
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: Data structure for armor items (combat protection gear).
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
+/**
+ * @file ItemArmorData.h
+ * @brief Data structure for armor items
+ * @author Haneul Lee (Rundee)
+ * @date 2025-11-15
+ * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
+ * 
+ * Defines the data structure for armor items that provide protection.
+ * Inherits common item properties from ItemDataBase.
+ */
 
 #pragma once
 
 #include "Data/ItemDataBase.h"
 
+/**
+ * @struct ItemArmorData
+ * @brief Data structure representing an armor item
+ * 
+ * Contains all properties specific to armor items, including protection values
+ * and durability information.
+ */
 struct ItemArmorData : public ItemDataBase
 {
-    // Armor category
-    std::string armorType;      // "Helmet", "Vest", "Armor", "Backpack", "Rig", "FaceCover", "EarProtection", etc.
-    
-    // Protection stats
-    int armorClass = 0;          // 0-6, armor class (higher = better protection)
-    int durability = 100;        // 0-100, armor condition
-    int material = 0;            // 0-100, material quality (affects durability and protection)
-    
-    // Protection zones (what body parts are protected)
-    std::string protectionZones; // Comma-separated: "Head", "Thorax", "Stomach", "Arms", "Legs"
-    
-    // Mobility impact
-    int movementSpeedPenalty = 0;  // 0-100, percentage penalty to movement speed
-    int ergonomicsPenalty = 0;     // 0-100, penalty to weapon handling
-    int turnSpeedPenalty = 0;      // 0-100, penalty to turning speed
-    
-    // Weight and capacity
-    int weight = 0;              // Weight in grams
-    int capacity = 0;             // Storage capacity (for backpacks/rigs, in slots or liters)
-    
-    // Special properties
-    bool blocksHeadset = false;  // Whether this armor blocks headset/ear protection
-    bool blocksFaceCover = false; // Whether this armor blocks face cover
-    
-    // Override base class method
+    /**
+     * @brief Armor protection value (0-100)
+     * 
+     * Amount of damage reduction provided. Higher values indicate better protection.
+     */
+    int armorValue = 0;
+
+    /**
+     * @brief Armor durability (0-100)
+     * 
+     * Current condition of the armor. Decreases with use.
+     */
+    int durability = 100;
+
+    /**
+     * @brief Weight in grams
+     * 
+     * How much the armor weighs. Affects movement speed.
+     */
+    int weight = 0;
+
+    /**
+     * @brief Armor type
+     * 
+     * Examples: "Helmet", "Vest", "Plate", "Light", "Heavy"
+     */
+    std::string armorType;
+
+    /**
+     * @brief Item value
+     * 
+     * Base value for trading and economy.
+     */
+    int value = 0;
+
+    /**
+     * @brief Get the item type name
+     * @return Always returns "Armor"
+     */
     std::string GetItemTypeName() const override { return "Armor"; }
 };
+
+
+
+
 

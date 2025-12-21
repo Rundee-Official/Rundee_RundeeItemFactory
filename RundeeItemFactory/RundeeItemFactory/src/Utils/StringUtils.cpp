@@ -8,23 +8,12 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
+#include "Utils/StringUtils.h"
 #include <chrono>
 #include <fstream>
 
-// Project Includes
-#include "Utils/StringUtils.h"
-
-// ============================================================================
-// SECTION 1: JSON Processing Functions
-// ============================================================================
-
 namespace StringUtils
 {
-    // ========================================================================
-    // String Manipulation Functions
-    // ========================================================================
-    
     void TrimString(std::string& str)
     {
         size_t start = str.find_first_not_of(" \t\r\n");
@@ -37,10 +26,6 @@ namespace StringUtils
         str = str.substr(start, end - start + 1);
     }
 
-    // ========================================================================
-    // JSON Processing Functions
-    // ========================================================================
-    
     std::string FixCommonJsonErrors(const std::string& input)
     {
         std::string s = input;
@@ -140,96 +125,6 @@ namespace StringUtils
         // Fix common JSON errors first
         s = FixCommonJsonErrors(s);
 
-        // Remove comments (both // and /* */ style)
-        // This must be done before other processing to avoid parsing errors
-        auto removeComments = [](std::string& text)
-        {
-            std::string result;
-            result.reserve(text.size());
-            bool inString = false;
-            bool escapeNext = false;
-            size_t i = 0;
-            
-            while (i < text.size())
-            {
-                char c = text[i];
-                
-                if (escapeNext)
-                {
-                    result += c;
-                    escapeNext = false;
-                    ++i;
-                    continue;
-                }
-                
-                if (c == '\\')
-                {
-                    escapeNext = true;
-                    result += c;
-                    ++i;
-                    continue;
-                }
-                
-                if (c == '"')
-                {
-                    inString = !inString;
-                    result += c;
-                    ++i;
-                    continue;
-                }
-                
-                // Only process comments outside of strings
-                if (!inString)
-                {
-                    // Check for // style comment
-                    if (c == '/' && i + 1 < text.size() && text[i + 1] == '/')
-                    {
-                        // Skip to end of line
-                        while (i < text.size() && text[i] != '\n' && text[i] != '\r')
-                        {
-                            ++i;
-                        }
-                        // Keep the newline if present
-                        if (i < text.size() && (text[i] == '\n' || text[i] == '\r'))
-                        {
-                            result += text[i];
-                            ++i;
-                            // Handle \r\n
-                            if (i < text.size() && text[i - 1] == '\r' && text[i] == '\n')
-                            {
-                                result += text[i];
-                                ++i;
-                            }
-                        }
-                        continue;
-                    }
-                    
-                    // Check for /* */ style comment
-                    if (c == '/' && i + 1 < text.size() && text[i + 1] == '*')
-                    {
-                        // Skip to end of comment
-                        i += 2; // Skip /*
-                        while (i + 1 < text.size())
-                        {
-                            if (text[i] == '*' && text[i + 1] == '/')
-                            {
-                                i += 2; // Skip */
-                                break;
-                            }
-                            ++i;
-                        }
-                        continue;
-                    }
-                }
-                
-                result += c;
-                ++i;
-            }
-            
-            text = result;
-        };
-        removeComments(s);
-
         // Strip text before first '[' and after last ']'
         size_t first = s.find('[');
         size_t last = s.find_last_of(']');
@@ -315,34 +210,7 @@ namespace StringUtils
 
         if (minBalance < 0 || bracketBalance != 0)
         {
-            // #region agent log
-            static int dbgCount = 0;
-            if (dbgCount < 20)
-            {
-                ++dbgCount;
-                auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch()).count();
-                auto sanitize = [](std::string v)
-                {
-                    for (char& ch : v)
-                    {
-                        if (ch == '"') ch = '\'';
-                        else if (ch == '\\') ch = '/';
-                    }
-                    return v;
-                };
-                std::string first = sanitize(s.substr(0, std::min<size_t>(120, s.size())));
-                std::string last = (s.size() > 120) ? sanitize(s.substr(s.size() - 120)) : first;
-                std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-                if (dbg.is_open())
-                {
-                    dbg << R"({"sessionId":"debug-session","runId":"json-clean","hypothesisId":"H1","location":"StringUtils.cpp","message":"bracket-balance","data":{"open":)"
-                        << openCount << R"(,"close":)" << closeCount << R"(,"minBalance":)" << minBalance
-                        << R"(,"balance":)" << bracketBalance << R"(,"len":)" << s.size()
-                        << R"(,"first":")" << first << R"(","last":")" << last << R"("},"timestamp":)" << ts << "})" << "\n";
-                }
-            }
-            // #endregion
+            // Debug logging disabled for release
         }
 
         if (bracketBalance > 0)
@@ -356,23 +224,6 @@ namespace StringUtils
             }
         }
 
-        // Also check for unclosed braces in objects
-        int braceBalance = 0;
-        for (char c : s)
-        {
-            if (c == '{')
-                ++braceBalance;
-            else if (c == '}')
-                --braceBalance;
-        }
-        
-        // Close unclosed braces
-        while (braceBalance > 0)
-        {
-            s += "}";
-            --braceBalance;
-        }
-        
         while (bracketBalance > 0)
         {
             s += "\n]";
@@ -382,10 +233,6 @@ namespace StringUtils
         return s;
     }
 
-    // ========================================================================
-    // Escape Functions
-    // ========================================================================
-    
     std::string EscapeForCmd(const std::string& s)
     {
         std::string out;
@@ -416,10 +263,6 @@ namespace StringUtils
         return out;
     }
 
-    // ========================================================================
-    // String Manipulation Functions (continued)
-    // ========================================================================
-    
     std::string NormalizeWhitespace(const std::string& s)
     {
         std::string out;
@@ -435,10 +278,6 @@ namespace StringUtils
         return out;
     }
 
-    // ========================================================================
-    // Control Character Removal Functions
-    // ========================================================================
-    
     std::string StripAnsiEscapeCodes(const std::string& s)
     {
         std::string out;

@@ -1,0 +1,25 @@
+var struct_balance_reporter_1_1_ammo_stats =
+[
+    [ "armorPiercingCount", "struct_balance_reporter_1_1_ammo_stats.html#a4addcbd26ae87327a2ddc4242d69b824", null ],
+    [ "caliberCount", "struct_balance_reporter_1_1_ammo_stats.html#aefbaca2a4b45a7341234dfc58887ff19", null ],
+    [ "count", "struct_balance_reporter_1_1_ammo_stats.html#ac074ddc3dc0ef7f0fd89bdd5b6546e70", null ],
+    [ "hollowPointCount", "struct_balance_reporter_1_1_ammo_stats.html#a871868a81dec568ce474a67069ffd111", null ],
+    [ "incendiaryCount", "struct_balance_reporter_1_1_ammo_stats.html#a14462e597354e681afa2e009760c18eb", null ],
+    [ "maxAccuracyBonus", "struct_balance_reporter_1_1_ammo_stats.html#a80938cf9a344f1395143b1b9a494a25e", null ],
+    [ "maxDamageBonus", "struct_balance_reporter_1_1_ammo_stats.html#a6a425d5c6dc2357118e2dc349b2bd52b", null ],
+    [ "maxPenetration", "struct_balance_reporter_1_1_ammo_stats.html#a0757140e44f3ca3f04d54e9e0217c828", null ],
+    [ "maxRecoilModifier", "struct_balance_reporter_1_1_ammo_stats.html#a0804b0510c282b0d74d86aec74d8426f", null ],
+    [ "maxValue", "struct_balance_reporter_1_1_ammo_stats.html#af09443c305910a21d8e9f518fbad0cac", null ],
+    [ "minAccuracyBonus", "struct_balance_reporter_1_1_ammo_stats.html#a5a28c6581f8b644b037536458676a6ba", null ],
+    [ "minDamageBonus", "struct_balance_reporter_1_1_ammo_stats.html#a5ecbb377140e97d58d1edc8556103ccc", null ],
+    [ "minPenetration", "struct_balance_reporter_1_1_ammo_stats.html#a104983c6b544e1ab736b9d7ad910ba17", null ],
+    [ "minRecoilModifier", "struct_balance_reporter_1_1_ammo_stats.html#a5c1a270f558ff670deda49f803d10266", null ],
+    [ "minValue", "struct_balance_reporter_1_1_ammo_stats.html#a8055bea879a67989b21ab3a573de53c0", null ],
+    [ "rarityCount", "struct_balance_reporter_1_1_ammo_stats.html#a6d953fe5d13e2281f106c186a33104a4", null ],
+    [ "totalAccuracyBonus", "struct_balance_reporter_1_1_ammo_stats.html#a1b411cb92a5bd0db62fe024e735af727", null ],
+    [ "totalDamageBonus", "struct_balance_reporter_1_1_ammo_stats.html#af343d20571a2335913a64dfbc5aad351", null ],
+    [ "totalPenetration", "struct_balance_reporter_1_1_ammo_stats.html#acbb07fa621324fe15a65659d39d92ad5", null ],
+    [ "totalRecoilModifier", "struct_balance_reporter_1_1_ammo_stats.html#a5f10635c043ba31764fba0bd1c043754", null ],
+    [ "totalValue", "struct_balance_reporter_1_1_ammo_stats.html#a652cd07a02036fc81672de9f089f2292", null ],
+    [ "tracerCount", "struct_balance_reporter_1_1_ammo_stats.html#a2307e2a014e3283ea277211daa36b158", null ]
+];

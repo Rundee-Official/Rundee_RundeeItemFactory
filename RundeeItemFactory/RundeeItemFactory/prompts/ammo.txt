@@ -17,7 +17,6 @@ Use this JSON schema EXACTLY for each ammo entry:
   "category": "Ammo",
   "rarity": "Common" | "Uncommon" | "Rare",
   "caliber": string,
-  "maxStack": integer,        // 10-50 (typically 20-30)
 
   "damageBonus": integer,     // -10 to +30
   "penetration": integer,     // 0-100
@@ -26,7 +25,6 @@ Use this JSON schema EXACTLY for each ammo entry:
   "recoilModifier": integer,  // -20 to +15
   "fragmentationChance": integer, // 0-100
   "tracerColor": string,      // "None" if not tracer
-  "value": integer,           // 0-100, trade/scrap value (MUST be set based on performance)
 
   "description": string
 }
@@ -38,49 +36,6 @@ Guidelines:
 - accuracyModifier/recoilModifier use negative numbers for penalties, positive for bonuses.
 - fragmentionChance: probability (0-100) of fragmenting after impact.
 - description must be 1 short sentence (5-20 words) describing construction or effect.
-
-CRITICAL BALANCING RULES - MUST FOLLOW (VIOLATION = REJECTION):
-1. **Rarity determines stat ranges (STRICTLY ENFORCED - NO EXCEPTIONS):**
-   - Common ammo: damageBonus -5 to +5, penetration 10-40, muzzleVelocity 200-600 m/s, value 1-5
-   - Uncommon ammo: damageBonus +5 to +15, penetration 40-70, muzzleVelocity 600-900 m/s, value 5-15
-   - Rare ammo: damageBonus +15 to +30, penetration 70-100, muzzleVelocity 900-1200 m/s, value 15-50
-   - If you violate these ranges, the item will be REJECTED and the batch may be regenerated
-
-2. **ABSOLUTELY FORBIDDEN: Common ammo with high stats**
-   - Common ammo with damageBonus > 5 OR penetration > 40 will be REJECTED
-   - If you want high stats, you MUST use Uncommon or Rare rarity
-   - Before outputting JSON, VERIFY that Common ammo has damageBonus <= 5 AND penetration <= 40
-   - Example of FORBIDDEN Common ammo (DO NOT CREATE - will be REJECTED):
-     {
-       "rarity": "Common",
-       "damageBonus": 10,
-       "penetration": 50,
-       "value": 20
-     }
-   - Example of REQUIRED Common ammo format:
-     {
-       "rarity": "Common",
-       "damageBonus": 0,
-       "penetration": 25,
-       "muzzleVelocity": 400,
-       "value": 3
-     }
-
-3. **Value MUST match performance (MANDATORY):**
-   - Common ammo: value 1-5 (low performance = low value)
-   - Uncommon ammo: value 5-15 (medium performance = medium value)
-   - Rare ammo: value 15-50 (high performance = high value)
-   - High-performance ammo (damageBonus > 10 OR penetration > 50) MUST have value >= 10
-   - High-performance ammo with value < 10 will be REJECTED and NOT saved
-   - Before outputting JSON, CALCULATE value based on performance:
-     * If damageBonus > 10 OR penetration > 50: value MUST be at least 10
-     * If damageBonus > 15 OR penetration > 70: value MUST be at least 20
-     * Example: If damageBonus = 20 and penetration = 80, value MUST be 20-30 (NOT 5 or 10)
-
-4. **High-performance ammo MUST be Rare or Uncommon (NO EXCEPTIONS):**
-   - If damageBonus > 10 OR penetration > 50 OR muzzleVelocity > 900, rarity MUST be Uncommon or Rare
-   - Common ammo MUST have moderate or low stats to maintain game balance
-   - Before outputting JSON, VERIFY that high-performance ammo is NOT Common rarity
 
 Output:
 - Output ONLY a JSON array of items.

@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="namespace_ammo_item_validator" kind="namespace" language="C++">
+    <compoundname>AmmoItemValidator</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_ammo_item_validator_1ab0bc74de0c4c675b80349c0c3a1ffe21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void AmmoItemValidator::Validate</definition>
+        <argsstring>(ItemAmmoData &amp;item)</argsstring>
+        <name>Validate</name>
+        <qualifiedname>AmmoItemValidator::Validate</qualifiedname>
+        <param>
+          <type><ref refid="struct_item_ammo_data" kindref="compound">ItemAmmoData</ref> &amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>Validate and balance ammo item data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Performs comprehensive validation and balancing on an ammo item:<itemizedlist>
+<listitem><para>Normalizes ID prefix to &quot;Ammo_&quot;</para>
+</listitem><listitem><para>Validates caliber format</para>
+</listitem><listitem><para>Clamps combat stats to valid ranges (damage bonus, penetration, accuracy, recoil)</para>
+</listitem><listitem><para>Validates special properties</para>
+</listitem><listitem><para>Balances rarity based on combat effectiveness</para>
+</listitem><listitem><para>Generates default description if empty</para>
+</listitem></itemizedlist>
+</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Ammo item to validate and balance (modified in-place)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>This function modifies the item parameter directly </para>
+</simplesect>
+<simplesect kind="note"><para>Combat stats are balanced relative to each other </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Validators/AmmoItemValidator.cpp" line="19" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Validators/AmmoItemValidator.cpp" bodystart="19" bodyend="79" declfile="RundeeItemFactory/RundeeItemFactory/include/Validators/AmmoItemValidator.h" declline="41" declcolumn="10"/>
+        <references refid="struct_item_ammo_data_1a8e37e8c306ec68ac2e157133cb3ac472" compoundref="_item_ammo_data_8h" startline="54">ItemAmmoData::accuracyBonus</references>
+        <references refid="struct_item_ammo_data_1ac0c27da7151c7a15127b59ada290a9e9" compoundref="_item_ammo_data_8h" startline="68">ItemAmmoData::armorPiercing</references>
+        <references refid="struct_item_data_base_1a9a4f3e1ac06f297356433aa4c1beb7fb" compoundref="_item_data_base_8h" startline="46">ItemDataBase::category</references>
+        <references refid="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" compoundref="_json_utils_8cpp" startline="47" endline="50">JsonUtils::ClampInt</references>
+        <references refid="struct_item_ammo_data_1a4e9fabb2604510f2897b14bbb2996638" compoundref="_item_ammo_data_8h" startline="40">ItemAmmoData::damageBonus</references>
+        <references refid="struct_item_data_base_1adf2d4b05cfdee61bccd9a8543c473cb3" compoundref="_item_data_base_8h" startline="69">ItemDataBase::description</references>
+        <references refid="struct_item_data_base_1a2edf3b6a97437a495b5003bbf618cce9" compoundref="_item_data_base_8h" startline="38">ItemDataBase::displayName</references>
+        <references refid="struct_item_ammo_data_1a16d793572051dafe9f79832b5fe7e417" compoundref="_item_ammo_data_8h" startline="75">ItemAmmoData::hollowPoint</references>
+        <references refid="struct_item_data_base_1a617a0b1bd547639799f3ddab0cbc9dc4" compoundref="_item_data_base_8h" startline="31">ItemDataBase::id</references>
+        <references refid="struct_item_data_base_1aa2a22289da008f255609acbe888676af" compoundref="_item_data_base_8h" startline="62">ItemDataBase::maxStack</references>
+        <references refid="struct_item_ammo_data_1aee846fb871c1842d39656cf1bbe54959" compoundref="_item_ammo_data_8h" startline="47">ItemAmmoData::penetration</references>
+        <references refid="struct_item_ammo_data_1a2c60d95079bd97be9b855030347f0c9d" compoundref="_item_ammo_data_8h" startline="61">ItemAmmoData::recoilModifier</references>
+        <references refid="struct_item_ammo_data_1a81b5320195ec3cec2ee312ad1e19f052" compoundref="_item_ammo_data_8h" startline="96">ItemAmmoData::value</references>
+        <referencedby refid="class_item_json_parser_1aaaf8ed40256149df460a0878f8ca84eb" compoundref="_item_json_parser_8cpp" startline="566" endline="644">ItemJsonParser::ParseAmmoFromJsonText</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Namespace for ammo item validation functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Validators/AmmoItemValidator.h" line="20" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,13 +1,3 @@
-// ===============================
-// Project Name: RundeeItemFactory
-// File Name: ItemManagerWindow.cs
-// Author: Haneul Lee (Rundee)
-// Created Date: 2025-12-16
-// Description: Unity Editor window for managing and viewing all imported item ScriptableObjects.
-// ===============================
-// Copyright (c) 2025 Haneul Lee. All rights reserved.
-// ===============================
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,19 +5,37 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Editor window for managing and viewing all imported item ScriptableObjects.
+/// Unity Editor window for managing imported item ScriptableObjects
 /// </summary>
+/// <remarks>
+/// Provides functionality to:
+/// - Browse items by type (Food, Drink, Material, Weapon, WeaponComponent, Ammo)
+/// - Filter items by rarity (Common, Uncommon, Rare)
+/// - Search items by name or ID
+/// - Sort items by name, rarity, or ID
+/// - View item statistics and rarity distribution
+/// - Select and delete items
+/// </remarks>
 public class ItemManagerWindow : EditorWindow
 {
     private ItemType selectedType = ItemType.Food;
     private string searchText = "";
     private string rarityFilter = "All";
     private Vector2 scrollPosition;
+    private SortMode sortMode = SortMode.Name;
+    private bool sortAscending = true;
 
     private readonly List<ItemRecord> _items = new();
     private readonly HashSet<string> _selectedPaths = new();
 
     private static readonly string[] RarityOptions = { "All", "Common", "Uncommon", "Rare" };
+
+    private enum SortMode
+    {
+        Name,
+        Rarity,
+        ID
+    }
 
     private class ItemRecord
     {
@@ -39,7 +47,7 @@ public class ItemManagerWindow : EditorWindow
         public string AssetPath;
     }
 
-    [MenuItem("Tools/Rundee/Item Factory/Item Manager")]
+    [MenuItem("Tools/Rundee/Item Factory/Management/Item Manager", false, 2000)]
     public static void ShowWindow()
     {
         var window = GetWindow<ItemManagerWindow>("Item Manager");
@@ -62,87 +70,239 @@ public class ItemManagerWindow : EditorWindow
 
     private void DrawToolbar()
     {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        
         using (new EditorGUILayout.HorizontalScope())
         {
             EditorGUI.BeginChangeCheck();
-            selectedType = (ItemType)EditorGUILayout.EnumPopup("Item Type", selectedType);
+            EditorGUILayout.LabelField("Item Type:", GUILayout.Width(80));
+            selectedType = (ItemType)EditorGUILayout.EnumPopup(selectedType, GUILayout.Width(150));
             if (EditorGUI.EndChangeCheck())
             {
                 RefreshItems();
             }
 
+            GUILayout.FlexibleSpace();
+            
             if (GUILayout.Button("Refresh", GUILayout.Width(80)))
             {
                 RefreshItems();
             }
         }
 
+        EditorGUILayout.Space(3);
+
         using (new EditorGUILayout.HorizontalScope())
         {
-            searchText = EditorGUILayout.TextField("Search", searchText);
+            EditorGUILayout.LabelField("Search:", GUILayout.Width(80));
+            searchText = EditorGUILayout.TextField(searchText);
+            
+            EditorGUILayout.LabelField("Rarity:", GUILayout.Width(60));
             int rarityIndex = Array.IndexOf(RarityOptions, rarityFilter);
             if (rarityIndex < 0) rarityIndex = 0;
-            int newIndex = EditorGUILayout.Popup("Rarity", rarityIndex, RarityOptions);
+            int newIndex = EditorGUILayout.Popup(rarityIndex, RarityOptions, GUILayout.Width(100));
             rarityFilter = RarityOptions[Mathf.Clamp(newIndex, 0, RarityOptions.Length - 1)];
         }
+
+        EditorGUILayout.Space(3);
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            EditorGUILayout.LabelField("Sort By:", GUILayout.Width(80));
+            sortMode = (SortMode)EditorGUILayout.EnumPopup(sortMode, GUILayout.Width(100));
+            sortAscending = EditorGUILayout.Toggle("Ascending", sortAscending, GUILayout.Width(100));
+        }
+
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawSummary()
     {
-        EditorGUILayout.HelpBox(
-            $"{_items.Count} assets found in {GetFolderForType(selectedType)}. " +
-            $"{_selectedPaths.Count} selected.",
-            MessageType.Info);
+        var filteredItems = _items.Where(PassesFilter).ToList();
+        var rarityStats = filteredItems.GroupBy(r => r.Rarity)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        
+        // Title
+        GUIStyle titleStyle = new GUIStyle(EditorStyles.boldLabel);
+        titleStyle.fontSize = 14;
+        EditorGUILayout.LabelField($"Item Manager - {selectedType}", titleStyle);
+        EditorGUILayout.Space(5);
+
+        // Statistics
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField($"Total Items:", GUILayout.Width(100));
+        EditorGUILayout.LabelField($"{_items.Count}", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField($"Filtered:", GUILayout.Width(80));
+        EditorGUILayout.LabelField($"{filteredItems.Count}", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField($"Selected:", GUILayout.Width(80));
+        EditorGUILayout.LabelField($"{_selectedPaths.Count}", EditorStyles.boldLabel);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space(3);
+
+        // Rarity Distribution
+        EditorGUILayout.LabelField("Rarity Distribution:", EditorStyles.miniLabel);
+        EditorGUILayout.BeginHorizontal();
+        foreach (var rarity in new[] { "Common", "Uncommon", "Rare" })
+        {
+            int count = rarityStats.ContainsKey(rarity) ? rarityStats[rarity] : 0;
+            float percentage = filteredItems.Count > 0 ? (count * 100f / filteredItems.Count) : 0f;
+            Color rarityColor = GetRarityColor(rarity);
+            
+            var oldColor = GUI.color;
+            GUI.color = rarityColor;
+            EditorGUILayout.LabelField($"{rarity}: {count} ({percentage:F1}%)", EditorStyles.miniLabel, GUILayout.Width(140));
+            GUI.color = oldColor;
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.EndVertical();
+    }
+
+    private Color GetRarityColor(string rarity)
+    {
+        switch (rarity)
+        {
+            case "Common":
+                return new Color(0.7f, 0.7f, 0.7f); // Gray
+            case "Uncommon":
+                return new Color(0.2f, 0.8f, 0.2f); // Green
+            case "Rare":
+                return new Color(1f, 0.84f, 0f); // Gold
+            default:
+                return Color.white;
+        }
     }
 
     private void DrawItemList()
     {
+        var filteredItems = _items.Where(PassesFilter).ToList();
+        SortItems(filteredItems);
+
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
-        foreach (var record in _items)
+        if (filteredItems.Count == 0)
         {
-            if (!PassesFilter(record))
-                continue;
+            EditorGUILayout.HelpBox("No items found matching the current filters.", MessageType.Info);
+            EditorGUILayout.EndScrollView();
+            return;
+        }
 
-            using (new EditorGUILayout.VerticalScope("box"))
-            {
-                bool isSelected = _selectedPaths.Contains(record.AssetPath);
-                bool newSelected = EditorGUILayout.ToggleLeft(
-                    $"{record.DisplayName} ({record.Id})",
-                    isSelected);
-
-                if (newSelected != isSelected)
-                {
-                    if (newSelected)
-                        _selectedPaths.Add(record.AssetPath);
-                    else
-                        _selectedPaths.Remove(record.AssetPath);
-                }
-
-                EditorGUILayout.LabelField("Rarity", record.Rarity);
-                EditorGUILayout.LabelField("Description",
-                    string.IsNullOrEmpty(record.Description)
-                        ? "(no description)"
-                        : record.Description, EditorStyles.wordWrappedLabel);
-                EditorGUILayout.LabelField("Asset Path", record.AssetPath);
-
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Select", GUILayout.Width(70)))
-                    {
-                        EditorGUIUtility.PingObject(record.Asset);
-                        Selection.activeObject = record.Asset;
-                    }
-                    if (GUILayout.Button("Delete", GUILayout.Width(70)))
-                    {
-                        DeleteAsset(record);
-                    }
-                }
-            }
+        foreach (var record in filteredItems)
+        {
+            DrawItemCard(record);
         }
 
         EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawItemCard(ItemRecord record)
+    {
+        bool isSelected = _selectedPaths.Contains(record.AssetPath);
+        Color rarityColor = GetRarityColor(record.Rarity);
+
+        // Card background
+        var oldBgColor = GUI.backgroundColor;
+        if (isSelected)
+        {
+            GUI.backgroundColor = new Color(0.3f, 0.5f, 0.8f, 0.3f);
+        }
+
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        GUI.backgroundColor = oldBgColor;
+
+        // Header row with checkbox, name, and rarity badge
+        EditorGUILayout.BeginHorizontal();
+        
+        bool newSelected = EditorGUILayout.Toggle(isSelected, GUILayout.Width(20));
+        if (newSelected != isSelected)
+        {
+            if (newSelected)
+                _selectedPaths.Add(record.AssetPath);
+            else
+                _selectedPaths.Remove(record.AssetPath);
+        }
+
+        // Item name
+        GUIStyle nameStyle = new GUIStyle(EditorStyles.boldLabel);
+        nameStyle.fontSize = 12;
+        EditorGUILayout.LabelField(record.DisplayName, nameStyle, GUILayout.ExpandWidth(true));
+
+        // Rarity badge
+        var oldColor = GUI.color;
+        GUI.color = rarityColor;
+        GUIStyle badgeStyle = new GUIStyle(EditorStyles.miniButton);
+        badgeStyle.normal.textColor = Color.white;
+        badgeStyle.fontStyle = FontStyle.Bold;
+        EditorGUILayout.LabelField(record.Rarity, badgeStyle, GUILayout.Width(80));
+        GUI.color = oldColor;
+
+        EditorGUILayout.EndHorizontal();
+
+        // ID
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("ID:", GUILayout.Width(30));
+        EditorGUILayout.LabelField(record.Id, EditorStyles.miniLabel);
+        EditorGUILayout.EndHorizontal();
+
+        // Description
+        if (!string.IsNullOrEmpty(record.Description))
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Description:", GUILayout.Width(80));
+            EditorGUILayout.LabelField(record.Description, EditorStyles.wordWrappedMiniLabel);
+            EditorGUILayout.EndHorizontal();
+        }
+
+        // Action buttons
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        
+        if (GUILayout.Button("Select", GUILayout.Width(70)))
+        {
+            EditorGUIUtility.PingObject(record.Asset);
+            Selection.activeObject = record.Asset;
+        }
+        
+        var oldButtonColor = GUI.backgroundColor;
+        GUI.backgroundColor = new Color(0.8f, 0.3f, 0.3f);
+        if (GUILayout.Button("Delete", GUILayout.Width(70)))
+        {
+            DeleteAsset(record);
+        }
+        GUI.backgroundColor = oldButtonColor;
+        
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.EndVertical();
+    }
+
+    private void SortItems(List<ItemRecord> items)
+    {
+        switch (sortMode)
+        {
+            case SortMode.Name:
+                items.Sort((a, b) => sortAscending 
+                    ? string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase)
+                    : string.Compare(b.DisplayName, a.DisplayName, StringComparison.OrdinalIgnoreCase));
+                break;
+            case SortMode.Rarity:
+                var rarityOrder = new Dictionary<string, int> { { "Common", 1 }, { "Uncommon", 2 }, { "Rare", 3 } };
+                items.Sort((a, b) =>
+                {
+                    int aOrder = rarityOrder.ContainsKey(a.Rarity) ? rarityOrder[a.Rarity] : 0;
+                    int bOrder = rarityOrder.ContainsKey(b.Rarity) ? rarityOrder[b.Rarity] : 0;
+                    return sortAscending ? aOrder.CompareTo(bOrder) : bOrder.CompareTo(aOrder);
+                });
+                break;
+            case SortMode.ID:
+                items.Sort((a, b) => sortAscending
+                    ? string.Compare(a.Id, b.Id, StringComparison.OrdinalIgnoreCase)
+                    : string.Compare(b.Id, a.Id, StringComparison.OrdinalIgnoreCase));
+                break;
+        }
     }
 
     private void DrawFooter()
@@ -213,7 +373,7 @@ public class ItemManagerWindow : EditorWindow
             }
         }
 
-        _items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+        // Sorting will be done in DrawItemList based on sortMode
     }
 
     private ItemRecord CreateRecordFromAsset(UnityEngine.Object asset, string path)
@@ -224,6 +384,8 @@ public class ItemManagerWindow : EditorWindow
                 return CreateRecord(asset as FoodItemDataSO, path, so => so.rarity);
             case ItemType.Drink:
                 return CreateRecord(asset as DrinkItemDataSO, path, so => so.rarity);
+            case ItemType.Medicine:
+                return CreateRecord(asset as MedicineItemDataSO, path, so => so.rarity);
             case ItemType.Material:
                 return CreateRecord(asset as MaterialItemDataSO, path, so => so.rarity);
             case ItemType.Weapon:
@@ -232,10 +394,6 @@ public class ItemManagerWindow : EditorWindow
                 return CreateRecord(asset as WeaponComponentItemDataSO, path, so => so.rarity);
             case ItemType.Ammo:
                 return CreateRecord(asset as AmmoItemDataSO, path, so => so.rarity);
-            case ItemType.Armor:
-                return CreateRecord(asset as ArmorItemDataSO, path, so => so.rarity);
-            case ItemType.Clothing:
-                return CreateRecord(asset as ClothingItemDataSO, path, so => so.rarity);
             default:
                 return null;
         }
@@ -298,12 +456,11 @@ public class ItemManagerWindow : EditorWindow
         {
             ItemType.Food => "Assets/Resources/RundeeItemFactory/FoodItems",
             ItemType.Drink => "Assets/Resources/RundeeItemFactory/DrinkItems",
+            ItemType.Medicine => "Assets/Resources/RundeeItemFactory/MedicineItems",
             ItemType.Material => "Assets/Resources/RundeeItemFactory/MaterialItems",
             ItemType.Weapon => "Assets/Resources/RundeeItemFactory/WeaponItems",
             ItemType.WeaponComponent => "Assets/Resources/RundeeItemFactory/WeaponComponentItems",
             ItemType.Ammo => "Assets/Resources/RundeeItemFactory/AmmoItems",
-            ItemType.Armor => "Assets/Resources/RundeeItemFactory/ArmorItems",
-            ItemType.Clothing => "Assets/Resources/RundeeItemFactory/ClothingItems",
             _ => "Assets/Resources/RundeeItemFactory"
         };
     }
@@ -314,12 +471,11 @@ public class ItemManagerWindow : EditorWindow
         {
             ItemType.Food => typeof(FoodItemDataSO),
             ItemType.Drink => typeof(DrinkItemDataSO),
+            ItemType.Medicine => typeof(MedicineItemDataSO),
             ItemType.Material => typeof(MaterialItemDataSO),
             ItemType.Weapon => typeof(WeaponItemDataSO),
             ItemType.WeaponComponent => typeof(WeaponComponentItemDataSO),
             ItemType.Ammo => typeof(AmmoItemDataSO),
-            ItemType.Armor => typeof(ArmorItemDataSO),
-            ItemType.Clothing => typeof(ClothingItemDataSO),
             _ => null
         };
     }

@@ -17,118 +17,17 @@ Use this JSON schema EXACTLY for each component:
   "category": "WeaponComponent",
   "rarity": "Common" | "Uncommon" | "Rare",
   "componentType": "Barrel" | "Receiver" | "Stock" | "Grip" | "Magazine" | "Sight" | "Muzzle" | "Trigger" | "Internal" | "Accessory",
-  "maxStack": 1,
 
-  "weightModifier": integer,         // grams (20-2000, MUST be > 0)
-  "recoilModifier": integer,         // -30 to +10 (negative reduces recoil, positive increases)
-  "accuracyModifier": integer,       // -10 to +25
-  "ergonomicsModifier": integer,     // -15 to +20
-  "damageModifier": integer,         // -10 to +20 (most components don't affect damage, usually 0)
-  "muzzleVelocityModifier": integer, // -5 to +20 (for barrels, usually 0 for others)
-  "effectiveRangeModifier": integer, // -5 to +50 (for sights/scopes, usually 0 for others)
-  "penetrationModifier": integer,    // -5 to +15 (rare, usually 0)
+  "weight": integer,         // grams (0-2000)
+  "stabilityBonus": integer, // -20 to +30
+  "recoilBonus": integer,    // -30 to +10 (negative reduces recoil)
+  "accuracyBonus": integer,  // -10 to +25
+  "ergonomicsBonus": integer,// -15 to +20
+  "durabilityBonus": integer,// -10 to +25
 
+  "rarityScore": integer,    // 0-100 scale for drop rates
   "description": string
 }
-
-CRITICAL RULES - MUST FOLLOW:
-1. **EVERY component MUST have at least 2-3 non-zero stat modifiers** (weightModifier alone is NOT enough)
-2. **Component type determines which stats should be affected:**
-   - **Stock**: recoilModifier (-10 to -5), ergonomicsModifier (+3 to +10), weightModifier (200-800)
-   - **Grip**: ergonomicsModifier (+5 to +15), recoilModifier (-3 to -8), weightModifier (50-300)
-   - **Muzzle**: recoilModifier (-15 to -5), accuracyModifier (+3 to +10), weightModifier (100-500)
-   - **Sight/Scope**: accuracyModifier (+5 to +20), effectiveRangeModifier (+10 to +50), weightModifier (50-400)
-   - **Barrel**: accuracyModifier (+3 to +15), muzzleVelocityModifier (+5 to +20), weightModifier (300-1500)
-   - **Magazine**: weightModifier (50-200), capacity affects weight (larger = heavier)
-   - **Receiver**: weightModifier (200-800), may have small ergonomicsModifier
-   - **Trigger**: accuracyModifier (+2 to +10), ergonomicsModifier (+1 to +5), weightModifier (20-100)
-   - **Accessory**: varies by type, but MUST have meaningful modifiers
-
-3. **Rarity determines modifier strength:**
-   - Common: small bonuses (1-8), may have 1-2 small penalties
-   - Uncommon: medium bonuses (5-15), balanced stats
-   - Rare: large bonuses (10-25), may have trade-offs (e.g., +accuracyModifier but +weightModifier)
-
-4. **Realistic examples (use EXACTLY this format):**
-   {
-     "id": "tactical_stock",
-     "displayName": "Tactical Stock",
-     "category": "WeaponComponent",
-     "rarity": "Uncommon",
-     "componentType": "Stock",
-     "maxStack": 1,
-     "weightModifier": 450,
-     "recoilModifier": -8,
-     "ergonomicsModifier": 5,
-     "accuracyModifier": 0,
-     "damageModifier": 0,
-     "muzzleVelocityModifier": 0,
-     "effectiveRangeModifier": 0,
-     "penetrationModifier": 0,
-     "description": "Adjustable tactical stock for improved stability"
-   },
-   {
-     "id": "suppressor",
-     "displayName": "Suppressor",
-     "category": "WeaponComponent",
-     "rarity": "Rare",
-     "componentType": "Muzzle",
-     "maxStack": 1,
-     "weightModifier": 380,
-     "recoilModifier": -12,
-     "accuracyModifier": 3,
-     "ergonomicsModifier": 0,
-     "damageModifier": 0,
-     "muzzleVelocityModifier": 0,
-     "effectiveRangeModifier": 0,
-     "penetrationModifier": 0,
-     "description": "Sound suppressor for reduced noise"
-   }
-
-5. **CRITICAL JSON FORMAT RULES:**
-   - ALL modifier values MUST be integers (numbers without + or - signs in the JSON)
-   - Use negative numbers directly: -8, -12, -5 (NOT "+" or "-" as separate characters)
-   - NEVER write "ergonomicsModifier": +5 or "recoilModifier": - (these are INVALID JSON)
-   - Valid: "recoilModifier": -8, "ergonomicsModifier": 5
-   - Invalid: "recoilModifier": "-8", "ergonomicsModifier": "+5", "recoilModifier": +
-
-6. **CRITICAL: NEVER create components where ALL stat modifiers are 0** - this is unrealistic and useless
-   - If you create a component with all stat modifiers at 0, it will be REJECTED
-   - EVERY component MUST have at least 2-3 non-zero stat modifiers
-   - Even Magazine components need modifiers (e.g., effectiveRangeModifier for extended magazines, weightModifier for capacity)
-   - Example of BAD component (DO NOT CREATE):
-     {
-       "id": "useless_magazine",
-       "componentType": "Magazine",
-       "weightModifier": 150,
-       "recoilModifier": 0,
-       "ergonomicsModifier": 0,
-       "accuracyModifier": 0,
-       "damageModifier": 0,
-       "muzzleVelocityModifier": 0,
-       "effectiveRangeModifier": 0,
-       "penetrationModifier": 0
-     }
-   - Example of GOOD Magazine component:
-     {
-       "id": "extended_magazine",
-       "componentType": "Magazine",
-       "weightModifier": 200,
-       "effectiveRangeModifier": 5,
-       "recoilModifier": 0,
-       "ergonomicsModifier": -2,
-       "accuracyModifier": 0,
-       "damageModifier": 0,
-       "muzzleVelocityModifier": 0,
-       "penetrationModifier": 0
-     }
-
-7. **weightModifier MUST be realistic** - components range from 20g (small trigger) to 1500g (heavy barrel)
-8. **recoilModifier is usually NEGATIVE** (reduces recoil), positive values mean INCREASED recoil (bad)
-9. **Magazine components MUST have at least one non-weight modifier**:
-   - Extended magazines: effectiveRangeModifier (+5 to +15) or ergonomicsModifier (-2 to -5)
-   - Drum magazines: effectiveRangeModifier (+10 to +20), ergonomicsModifier (-5 to -10)
-   - Lightweight magazines: weightModifier (50-100), ergonomicsModifier (+2 to +5)
 
 Guidelines:
 - Describe real-world inspired components (e.g., "Carbon Fiber Skeleton Stock", "Polymer Foregrip").

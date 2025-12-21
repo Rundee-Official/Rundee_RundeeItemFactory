@@ -8,20 +8,13 @@
 // Copyright (c) 2025 Haneul Lee. All rights reserved.
 // ===============================
 
-// Standard Library Includes
-#include <algorithm>
-#include <cctype>
-#include <chrono>
-#include <fstream>
-#include <iostream>
-
-// Project Includes
 #include "Validators/FoodItemValidator.h"
 #include "Utils/JsonUtils.h"
-
-// ============================================================================
-// SECTION 1: Anonymous Namespace - Internal Helper Functions
-// ============================================================================
+#include <iostream>
+#include <algorithm>
+#include <cctype>
+#include <fstream>
+#include <chrono>
 
 static float ComputePower(const ItemFoodData& item)
 {
@@ -115,10 +108,6 @@ static void EnsureRarity(ItemFoodData& item)
     scaleAndClamp(item.healthRestore);
 }
 
-// ============================================================================
-// SECTION 2: FoodItemValidator Class Implementation
-// ============================================================================
-
 void FoodItemValidator::Validate(ItemFoodData& item)
 {
     std::string originalId = item.id;
@@ -142,21 +131,7 @@ void FoodItemValidator::Validate(ItemFoodData& item)
         item.id = "Food_" + item.id;
     }
 
-    // #region agent log
-    static int dbgCount = 0;
-    if (dbgCount < 50)
-    {
-        ++dbgCount;
-        auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
-        std::ofstream dbg("d:\\_VisualStudioProjects\\_Rundee_RundeeItemFactory\\.cursor\\debug.log", std::ios::app);
-        if (dbg.is_open())
-        {
-            dbg << R"({"sessionId":"debug-session","runId":"prefix-debug","hypothesisId":"H2","location":"FoodItemValidator.cpp:Validate","message":"id prefix normalization","data":{"before":")"
-                << originalId << R"(","after":")" << item.id << R"("},"timestamp":)" << ts << "})" << "\n";
-        }
-    }
-    // #endregion
+    // Debug logging disabled for release
 
     // 1) Clamp basic values
     item.hungerRestore = JsonUtils::ClampInt(item.hungerRestore, 0, 100);

@@ -1,0 +1,269 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="namespace_json_utils" kind="namespace" language="C++">
+    <compoundname>JsonUtils</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_json_utils_1a5e4479c069e7a8334bc828d98a5a7750" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int JsonUtils::GetIntSafe</definition>
+        <argsstring>(const json &amp;j, const char *key, int defaultValue=0)</argsstring>
+        <name>GetIntSafe</name>
+        <qualifiedname>JsonUtils::GetIntSafe</qualifiedname>
+        <param>
+          <type>const json &amp;</type>
+          <declname>j</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>defaultValue</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Safely get integer value from JSON object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Attempts to retrieve an integer value from a JSON object by key. Returns the default value if the key doesn&apos;t exist, the value is not a number, or any other error occurs.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>j</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object to query </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Key to look up </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>defaultValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value to return on error (default: 0) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Integer value from JSON, or defaultValue on error </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" line="16" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" bodystart="16" bodyend="25" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/JsonUtils.h" declline="37" declcolumn="9"/>
+        <referencedby refid="class_item_json_parser_1aaaf8ed40256149df460a0878f8ca84eb" compoundref="_item_json_parser_8cpp" startline="566" endline="644">ItemJsonParser::ParseAmmoFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1acfc4971135f1980cef659f32e2e348db" compoundref="_item_json_parser_8cpp" startline="150" endline="226">ItemJsonParser::ParseDrinkFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1ad42e122447389fa6d419f2731929d5fd" compoundref="_item_json_parser_8cpp" startline="38" endline="148">ItemJsonParser::ParseFoodFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a066f8d4935ec6e4cec76f46aa761411e" compoundref="_item_json_parser_8cpp" startline="292" endline="431">ItemJsonParser::ParseWeaponFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_json_utils_1a7c3111287d85e8027fc5480bc5dcdf9a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool JsonUtils::GetBoolSafe</definition>
+        <argsstring>(const json &amp;j, const char *key, bool defaultValue=false)</argsstring>
+        <name>GetBoolSafe</name>
+        <qualifiedname>JsonUtils::GetBoolSafe</qualifiedname>
+        <param>
+          <type>const json &amp;</type>
+          <declname>j</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>defaultValue</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Safely get boolean value from JSON object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Attempts to retrieve a boolean value from a JSON object by key. Returns the default value if the key doesn&apos;t exist, the value is not a boolean, or any other error occurs.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>j</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object to query </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Key to look up </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>defaultValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value to return on error (default: false) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Boolean value from JSON, or defaultValue on error </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" line="27" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" bodystart="27" bodyend="36" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/JsonUtils.h" declline="51" declcolumn="10"/>
+        <referencedby refid="class_item_json_parser_1aaaf8ed40256149df460a0878f8ca84eb" compoundref="_item_json_parser_8cpp" startline="566" endline="644">ItemJsonParser::ParseAmmoFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1acfc4971135f1980cef659f32e2e348db" compoundref="_item_json_parser_8cpp" startline="150" endline="226">ItemJsonParser::ParseDrinkFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1ad42e122447389fa6d419f2731929d5fd" compoundref="_item_json_parser_8cpp" startline="38" endline="148">ItemJsonParser::ParseFoodFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a066f8d4935ec6e4cec76f46aa761411e" compoundref="_item_json_parser_8cpp" startline="292" endline="431">ItemJsonParser::ParseWeaponFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_json_utils_1a63ab0b151fb963a4788b94eda68e905f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string JsonUtils::GetStringSafe</definition>
+        <argsstring>(const json &amp;j, const char *key, const std::string &amp;defaultValue=&quot;&quot;)</argsstring>
+        <name>GetStringSafe</name>
+        <qualifiedname>JsonUtils::GetStringSafe</qualifiedname>
+        <param>
+          <type>const json &amp;</type>
+          <declname>j</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>key</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>defaultValue</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+<para>Safely get string value from JSON object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Attempts to retrieve a string value from a JSON object by key. Returns the default value if the key doesn&apos;t exist, the value is not a string, or any other error occurs.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>j</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object to query </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>key</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Key to look up </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>defaultValue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value to return on error (default: empty string) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>String value from JSON, or defaultValue on error </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" line="38" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" bodystart="38" bodyend="45" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/JsonUtils.h" declline="65" declcolumn="17"/>
+        <referencedby refid="namespace_custom_preset_manager_1a6e7b98ea03e9879a2c3381164b79e271" compoundref="_custom_preset_8cpp" startline="19" endline="77">CustomPresetManager::LoadPresetFromFile</referencedby>
+        <referencedby refid="class_item_json_parser_1aaaf8ed40256149df460a0878f8ca84eb" compoundref="_item_json_parser_8cpp" startline="566" endline="644">ItemJsonParser::ParseAmmoFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1acfc4971135f1980cef659f32e2e348db" compoundref="_item_json_parser_8cpp" startline="150" endline="226">ItemJsonParser::ParseDrinkFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1ad42e122447389fa6d419f2731929d5fd" compoundref="_item_json_parser_8cpp" startline="38" endline="148">ItemJsonParser::ParseFoodFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a48161b426e3006d39d902c3f3bd3efb8" compoundref="_item_json_parser_8cpp" startline="228" endline="290">ItemJsonParser::ParseMaterialFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a58d99e3f8b8cfcda49aef6177c91586d" compoundref="_item_json_parser_8cpp" startline="433" endline="564">ItemJsonParser::ParseWeaponComponentFromJsonText</referencedby>
+        <referencedby refid="class_item_json_parser_1a066f8d4935ec6e4cec76f46aa761411e" compoundref="_item_json_parser_8cpp" startline="292" endline="431">ItemJsonParser::ParseWeaponFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_json_utils_1ae94bbf94a4a700f61c95240c9f259aa3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int JsonUtils::ClampInt</definition>
+        <argsstring>(int v, int minV, int maxV)</argsstring>
+        <name>ClampInt</name>
+        <qualifiedname>JsonUtils::ClampInt</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>minV</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>maxV</declname>
+        </param>
+        <briefdescription>
+<para>Clamp integer value between min and max. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Ensures an integer value is within the specified range. Values below min are set to min, values above max are set to max.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value to clamp </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>minV</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Minimum allowed value </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>maxV</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum allowed value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Clamped value (guaranteed to be between minV and maxV) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" line="47" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/JsonUtils.cpp" bodystart="47" bodyend="50" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/JsonUtils.h" declline="78" declcolumn="9"/>
+        <referencedby refid="_drink_item_validator_8cpp_1a8d7c3d8bae94f350424c77759496fbd2" compoundref="_drink_item_validator_8cpp" startline="61" endline="107">EnsureRarity</referencedby>
+        <referencedby refid="_food_item_validator_8cpp_1a4fc384a576d7bea37f626f020d810ffa" compoundref="_food_item_validator_8cpp" startline="63" endline="109">EnsureRarity</referencedby>
+        <referencedby refid="_drink_item_validator_8cpp_1a30171adb821cb312aee79f483fc35b4c" compoundref="_drink_item_validator_8cpp" startline="46" endline="59">EnsureSpoilage</referencedby>
+        <referencedby refid="_food_item_validator_8cpp_1a00ce6bf5785b4cd46e1333dcb00fc8fa" compoundref="_food_item_validator_8cpp" startline="48" endline="61">EnsureSpoilage</referencedby>
+        <referencedby refid="namespace_ammo_item_validator_1ab0bc74de0c4c675b80349c0c3a1ffe21" compoundref="_ammo_item_validator_8cpp" startline="19" endline="79">AmmoItemValidator::Validate</referencedby>
+        <referencedby refid="class_drink_item_validator_1ade2d94323858cc5484e4bab9e7c63e7e" compoundref="_drink_item_validator_8cpp" startline="109" endline="156">DrinkItemValidator::Validate</referencedby>
+        <referencedby refid="class_food_item_validator_1a7d1ed87de78096b5266978340633a531" compoundref="_food_item_validator_8cpp" startline="111" endline="158">FoodItemValidator::Validate</referencedby>
+        <referencedby refid="namespace_material_item_validator_1ad5262fc0cbf77021caf71261126d48d9" compoundref="_material_item_validator_8cpp" startline="19" endline="72">MaterialItemValidator::Validate</referencedby>
+        <referencedby refid="namespace_weapon_component_item_validator_1a792ff08627814903149011744cb15805" compoundref="_weapon_component_item_validator_8cpp" startline="198" endline="418">WeaponComponentItemValidator::Validate</referencedby>
+        <referencedby refid="namespace_weapon_item_validator_1a4b8b5093ea058f78b1a3b625be00aae3" compoundref="_weapon_item_validator_8cpp" startline="21" endline="155">WeaponItemValidator::Validate</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Namespace for JSON utility functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Utils/JsonUtils.h" line="20" column="1"/>
+  </compounddef>
+</doxygen>

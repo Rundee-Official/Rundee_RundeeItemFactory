@@ -23,8 +23,7 @@
     <ClCompile Include="src\Helpers\AppConfig.cpp" />
     <ClCompile Include="src\Validators\FoodItemValidator.cpp" />
     <ClCompile Include="src\Validators\DrinkItemValidator.cpp" />
-    <ClCompile Include="src\Validators\ArmorItemValidator.cpp" />
-    <ClCompile Include="src\Validators\ClothingItemValidator.cpp" />
+    <ClCompile Include="src\Validators\MedicineItemValidator.cpp" />
     <ClCompile Include="src\Validators\MaterialItemValidator.cpp" />
     <ClCompile Include="src\Validators\WeaponItemValidator.cpp" />
     <ClCompile Include="src\Validators\WeaponComponentItemValidator.cpp" />
