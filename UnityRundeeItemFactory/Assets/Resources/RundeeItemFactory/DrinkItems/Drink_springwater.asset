@@ -16,10 +16,11 @@ MonoBehaviour:
   displayName: Spring Water
   category: Drink
   rarity: Common
-  maxStack: 12
+  maxStack: 10
   hungerRestore: 0
-  thirstRestore: 30
-  healthRestore: 8
-  spoils: 0
-  spoilTimeMinutes: 0
-  description: Cold, crystal-clear water with a hint of mineral flavor.
+  thirstRestore: 20
+  healthRestore: 5
+  spoils: 1
+  spoilTimeMinutes: 60
+  description: Fresh, bubbling water from a natural spring, crisp and clean with
+    a hint of minerals.

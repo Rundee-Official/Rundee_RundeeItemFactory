@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: Herbal Paste
   category: Medicine
   rarity: Uncommon
-  maxStack: 10
+  maxStack: 5
   healthRestore: 35
-  spoils: 0
-  spoilTimeMinutes: 0
-  description: A paste made from crushed herbs, offering moderate health restoration.
+  spoils: 1
+  spoilTimeMinutes: 360
+  description: A paste made from crushed herbs, offering moderate healing.

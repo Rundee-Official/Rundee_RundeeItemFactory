@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: A wooden stock for added grip and stability
+  description: A simple wooden stock for added stability

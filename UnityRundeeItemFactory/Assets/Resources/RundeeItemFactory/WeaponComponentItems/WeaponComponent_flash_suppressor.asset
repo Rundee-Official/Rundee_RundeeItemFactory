@@ -15,7 +15,7 @@ MonoBehaviour:
   id: WeaponComponent_flash_suppressor
   displayName: Flash Suppressor
   category: WeaponComponent
-  rarity: Uncommon
+  rarity: Common
   maxStack: 1
   componentType: Muzzle
   compatibleSlots: []
@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: Reduces muzzle flash and improves concealment
+  description: Flash suppressor for reduced muzzle flash

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acaf7c77e1ae40f44986764f7a445adb, type: 3}
+  m_Name: Drink_dewdrop
+  m_EditorClassIdentifier: 
+  id: Drink_dewdrop
+  displayName: Dew Drop
+  category: Drink
+  rarity: Rare
+  maxStack: 1
+  hungerRestore: 0
+  thirstRestore: 40
+  healthRestore: 20
+  spoils: 0
+  spoilTimeMinutes: 0
+  description: A single, dew-kissed drop of water, sweet and refreshing with a hint
+    of morning mist.

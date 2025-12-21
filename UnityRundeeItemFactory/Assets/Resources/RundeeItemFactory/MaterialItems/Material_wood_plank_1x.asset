@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: Common
   maxStack: 100
   materialType: Wood
-  hardness: 30
-  flammability: 0
-  value: 10
-  description: Basic wooden plank for construction and crafting
+  hardness: 20
+  flammability: 10
+  value: 5
+  description: A single wooden plank for building and crafting.

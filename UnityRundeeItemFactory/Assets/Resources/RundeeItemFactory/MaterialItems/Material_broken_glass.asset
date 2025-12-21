@@ -16,9 +16,9 @@ MonoBehaviour:
   displayName: Broken Glass
   category: Junk
   rarity: Uncommon
-  maxStack: 10
+  maxStack: 5
   materialType: Glass
-  hardness: 20
-  flammability: 50
-  value: 15
-  description: Shards of broken glass used for crafting or repairing
+  hardness: 10
+  flammability: 20
+  value: 25
+  description: Shattered glass fragments used for crafting and building

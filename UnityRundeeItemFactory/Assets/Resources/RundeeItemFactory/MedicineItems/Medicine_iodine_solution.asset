@@ -15,10 +15,9 @@ MonoBehaviour:
   id: Medicine_iodine_solution
   displayName: Iodine Solution
   category: Medicine
-  rarity: Rare
-  maxStack: 1
-  healthRestore: 60
+  rarity: Common
+  maxStack: 10
+  healthRestore: 20
   spoils: 0
   spoilTimeMinutes: 0
-  description: A concentrated iodine solution for disinfecting wounds and promoting
-    healing.
+  description: A solution of iodine, effective in disinfecting and promoting healing.

@@ -16,9 +16,9 @@ MonoBehaviour:
   displayName: Copper Wire
   category: Component
   rarity: Uncommon
-  maxStack: 20
-  materialType: Electronic
-  hardness: 40
-  flammability: 10
+  maxStack: 10
+  materialType: Metal
+  hardness: 25
+  flammability: 15
   value: 30
-  description: A flexible copper wire for electrical connections and crafting
+  description: A flexible copper conductor used for electrical purposes

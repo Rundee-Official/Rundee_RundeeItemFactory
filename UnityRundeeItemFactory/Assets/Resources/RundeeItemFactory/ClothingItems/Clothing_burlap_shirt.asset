@@ -15,12 +15,12 @@ MonoBehaviour:
   id: Clothing_burlap_shirt
   displayName: Burlap Shirt
   category: Clothing
-  rarity: Common
+  rarity: Uncommon
   maxStack: 1
-  warmth: 18
-  style: 23
-  durability: 55
+  warmth: 30
+  style: 40
+  durability: 75
   weight: 350
   clothingType: Shirt
-  value: 5
-  description: A plain, earthy shirt made from burlap fibers.
+  value: 20
+  description: A sturdy, earth-toned shirt made from durable burlap.

@@ -15,12 +15,12 @@ MonoBehaviour:
   id: Clothing_wool_sweater
   displayName: Wool Sweater
   category: Clothing
-  rarity: Uncommon
+  rarity: Rare
   maxStack: 1
-  warmth: 40
-  style: 35
-  durability: 75
-  weight: 600
+  warmth: 50
+  style: 40
+  durability: 90
+  weight: 250
   clothingType: Sweater
-  value: 15
-  description: A cozy, chunky-knit wool sweater with a relaxed fit
+  value: 30
+  description: A warm and cozy wool sweater with a soft texture.

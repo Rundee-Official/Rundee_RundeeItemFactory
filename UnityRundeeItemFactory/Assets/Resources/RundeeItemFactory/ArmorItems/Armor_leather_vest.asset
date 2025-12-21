@@ -18,8 +18,8 @@ MonoBehaviour:
   rarity: Common
   maxStack: 1
   armorValue: 20
-  durability: 60
-  weight: 1000
+  durability: 55
+  weight: 1500
   armorType: Vest
   value: 50
-  description: Basic leather vest provides moderate protection
+  description: A simple leather vest providing basic protection.

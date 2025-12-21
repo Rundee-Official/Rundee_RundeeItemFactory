@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Clothing_wool_jacket
   m_EditorClassIdentifier: 
   id: Clothing_wool_jacket
-  displayName: Wool Jacket
+  displayName: Woolen Jacket
   category: Clothing
   rarity: Uncommon
   maxStack: 1
-  warmth: 40
-  style: 30
-  durability: 80
-  weight: 400
+  warmth: 45
+  style: 40
+  durability: 75
+  weight: 800
   clothingType: Jacket
-  value: 20
-  description: Warm, thick wool jacket with a classic design and button-up front.
+  value: 25
+  description: Warm and sturdy woolen jacket with a natural texture

@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Clothing_wool_hat
   m_EditorClassIdentifier: 
   id: Clothing_wool_hat
-  displayName: Wool Hat
+  displayName: Woolen Hat
   category: Clothing
   rarity: Common
   maxStack: 1
   warmth: 24
   style: 14
-  durability: 70
-  weight: 200
+  durability: 50
+  weight: 100
   clothingType: Hat
   value: 3
-  description: A simple, knitted wool hat with a classic design
+  description: Warm and soft woolen hat with a simple design

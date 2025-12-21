@@ -16,9 +16,9 @@ MonoBehaviour:
   displayName: Wood Plank
   category: Material
   rarity: Common
-  maxStack: 10
+  maxStack: 20
   materialType: Wood
   hardness: 30
-  flammability: 20
-  value: 15
+  flammability: 10
+  value: 5
   description: A simple wooden plank for building and crafting

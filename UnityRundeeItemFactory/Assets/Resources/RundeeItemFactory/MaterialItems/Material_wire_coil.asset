@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: Uncommon
   maxStack: 10
   materialType: Electronic
-  hardness: 50
-  flammability: 20
-  value: 30
-  description: A spiral coil of copper wire for electrical connections and crafting
+  hardness: 25
+  flammability: 5
+  value: 40
+  description: A coil of wire for electronic projects and repairs

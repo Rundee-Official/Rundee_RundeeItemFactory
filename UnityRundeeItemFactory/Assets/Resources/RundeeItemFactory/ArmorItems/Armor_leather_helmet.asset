@@ -17,9 +17,9 @@ MonoBehaviour:
   category: Armor
   rarity: Common
   maxStack: 1
-  armorValue: 20
-  durability: 60
+  armorValue: 15
+  durability: 55
   weight: 1200
   armorType: Helmet
-  value: 30
-  description: Simple leather helmet provides basic protection for the head.
+  value: 10
+  description: Simple leather helmet provides basic head protection

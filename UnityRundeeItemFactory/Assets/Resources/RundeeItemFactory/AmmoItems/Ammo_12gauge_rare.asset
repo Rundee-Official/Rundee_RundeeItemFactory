@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Ammo_12gauge_rare
   m_EditorClassIdentifier: 
   id: Ammo_12gauge_rare
-  displayName: Specialized 12-Gauge Ammo
+  displayName: Slug Round
   category: Ammo
   rarity: Rare
   maxStack: 10
-  caliber: 12-gauge
-  damageBonus: 20
-  penetration: 70
-  accuracyBonus: 0
-  recoilModifier: -5
+  caliber: 12gauge
+  damageBonus: 25
+  penetration: 90
+  accuracyBonus: -15
+  recoilModifier: 5
   armorPiercing: 0
   hollowPoint: 0
   tracer: 0
   incendiary: 0
-  value: 35
-  description: Specialized ammo designed for increased damage and accuracy.
+  value: 50
+  description: A high-performance round designed for long-range engagements.

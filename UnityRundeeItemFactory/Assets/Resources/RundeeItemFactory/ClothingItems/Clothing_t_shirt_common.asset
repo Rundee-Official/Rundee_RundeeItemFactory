@@ -17,10 +17,10 @@ MonoBehaviour:
   category: Clothing
   rarity: Common
   maxStack: 1
-  warmth: 18
-  style: 23
+  warmth: 20
+  style: 20
   durability: 60
   weight: 150
   clothingType: Shirt
-  value: 5
-  description: A basic cotton t-shirt with a relaxed fit.
+  value: 10
+  description: Simple white t-shirt with a relaxed fit.

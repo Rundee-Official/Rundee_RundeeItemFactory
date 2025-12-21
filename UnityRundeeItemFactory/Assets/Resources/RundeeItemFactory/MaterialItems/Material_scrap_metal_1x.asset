@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: Common
   maxStack: 100
   materialType: Metal
-  hardness: 0
-  flammability: 70
-  value: 5
-  description: Useful scraps of metal for repairing and crafting
+  hardness: 30
+  flammability: 20
+  value: 10
+  description: A piece of scrap metal, can be used for various projects

@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Clothing_jeans
   m_EditorClassIdentifier: 
   id: Clothing_jeans
-  displayName: Jeans
+  displayName: Rough Jeans
   category: Clothing
   rarity: Common
   maxStack: 1
   warmth: 15
   style: 20
   durability: 60
-  weight: 450
+  weight: 400
   clothingType: Pants
-  value: 5
-  description: Classic blue jeans with a worn, comfortable fit.
+  value: 8
+  description: Rugged and worn-in jeans with frayed hems

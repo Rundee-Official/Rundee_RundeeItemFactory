@@ -16,9 +16,8 @@ MonoBehaviour:
   displayName: Antihistamine Pills
   category: Medicine
   rarity: Uncommon
-  maxStack: 10
-  healthRestore: 25
-  spoils: 0
-  spoilTimeMinutes: 0
-  description: A pack of antihistamine pills to reduce allergic reactions and promote
-    comfort.
+  maxStack: 5
+  healthRestore: 30
+  spoils: 1
+  spoilTimeMinutes: 480
+  description: Small pills, offering relief from allergic reactions and minor inflammation.

@@ -18,18 +18,18 @@ MonoBehaviour:
   rarity: Common
   maxStack: 1
   weaponType: Spear
-  caliber: Small
+  caliber: 
   minDamage: 10
   maxDamage: 20
-  fireRate: 1200
-  accuracy: 50
-  recoil: 40
+  fireRate: 0
+  accuracy: 40
+  recoil: 0
   ergonomics: 60
   weight: 1500
-  durability: 70
-  muzzleVelocity: 200
-  effectiveRange: 10
-  penetrationPower: 30
+  durability: 90
+  muzzleVelocity: 0
+  effectiveRange: 0
+  penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: A sturdy wooden spear for hunting small game.
+  description: A simple wooden spear for hunting and defense.

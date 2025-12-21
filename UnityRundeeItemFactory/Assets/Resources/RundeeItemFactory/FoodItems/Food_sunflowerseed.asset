@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Food_sunflowerseed
   m_EditorClassIdentifier: 
   id: Food_sunflowerseed
-  displayName: Sunflower Seed
+  displayName: Sunflower Seeds
   category: Food
-  rarity: Common
-  maxStack: 20
-  hungerRestore: 10
+  rarity: Rare
+  maxStack: 10
+  hungerRestore: 30
   thirstRestore: 0
   healthRestore: 0
   spoils: 0
   spoilTimeMinutes: 0
-  description: A handful of nutritious, sunflower seeds
+  description: Nutty and slightly sweet sunflower seeds, a perfect snack

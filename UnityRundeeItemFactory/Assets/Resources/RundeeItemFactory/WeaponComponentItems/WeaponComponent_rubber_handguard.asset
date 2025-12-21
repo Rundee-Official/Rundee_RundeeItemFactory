@@ -17,7 +17,7 @@ MonoBehaviour:
   category: WeaponComponent
   rarity: Common
   maxStack: 1
-  componentType: Stock
+  componentType: Accessory
   compatibleSlots: []
   magazineCapacity: 0
   caliber: 
@@ -25,13 +25,13 @@ MonoBehaviour:
   loadedRounds: []
   subSlots: []
   damageModifier: 0
-  recoilModifier: 5
+  recoilModifier: 0
   ergonomicsModifier: 0
   accuracyModifier: 0
-  weightModifier: 150
+  weightModifier: 0
   muzzleVelocityModifier: 0
   effectiveRangeModifier: 0
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: A rubber handguard for improved grip and accuracy
+  description: Soft-touch rubber handguard for improved grip and comfort.

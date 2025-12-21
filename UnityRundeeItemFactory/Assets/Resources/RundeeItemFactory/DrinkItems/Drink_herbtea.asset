@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Drink_herbtea
   m_EditorClassIdentifier: 
   id: Drink_herbtea
-  displayName: Herbal Tea
+  displayName: Herb Tea
   category: Drink
   rarity: Uncommon
-  maxStack: 10
+  maxStack: 5
   hungerRestore: 0
-  thirstRestore: 35
-  healthRestore: 12
+  thirstRestore: 30
+  healthRestore: 10
   spoils: 1
-  spoilTimeMinutes: 90
-  description: Warm, soothing tea with a blend of herbal spices.
+  spoilTimeMinutes: 60
+  description: Warm and soothing, with a hint of herbal undertones.

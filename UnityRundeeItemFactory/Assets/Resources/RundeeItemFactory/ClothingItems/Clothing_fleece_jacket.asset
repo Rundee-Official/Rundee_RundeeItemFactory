@@ -17,10 +17,10 @@ MonoBehaviour:
   category: Clothing
   rarity: Uncommon
   maxStack: 1
-  warmth: 35
+  warmth: 45
   style: 40
-  durability: 75
-  weight: 400
+  durability: 85
+  weight: 220
   clothingType: Jacket
   value: 25
-  description: Soft, warm fleece jacket with a brushed texture.
+  description: A lightweight and warm fleece jacket with a soft texture.

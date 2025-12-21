@@ -15,11 +15,11 @@ MonoBehaviour:
   id: Armor_steel_helmet
   displayName: Steel Helmet
   category: Armor
-  rarity: Uncommon
+  rarity: Rare
   maxStack: 1
-  armorValue: 25
-  durability: 65
-  weight: 1500
+  armorValue: 55
+  durability: 85
+  weight: 3000
   armorType: Helmet
-  value: 70
-  description: Simple steel helmet protects the head and face
+  value: 45
+  description: Strong steel helmet offers top-notch head protection

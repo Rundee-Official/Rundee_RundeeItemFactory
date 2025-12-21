@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Armor_chainmail_coat
   m_EditorClassIdentifier: 
   id: Armor_chainmail_coat
-  displayName: Chain Mail Coat
+  displayName: Chainmail Coat
   category: Armor
   rarity: Uncommon
   maxStack: 1
-  armorValue: 35
+  armorValue: 40
   durability: 75
-  weight: 2500
-  armorType: Coat
-  value: 100
-  description: Medieval-inspired chain mail coat offers decent protection
+  weight: 4000
+  armorType: Vest
+  value: 120
+  description: A lightweight chainmail coat offering moderate protection.

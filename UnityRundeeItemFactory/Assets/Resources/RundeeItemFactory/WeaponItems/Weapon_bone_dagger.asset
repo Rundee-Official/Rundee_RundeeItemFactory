@@ -15,21 +15,21 @@ MonoBehaviour:
   id: Weapon_bone_dagger
   displayName: Bone Dagger
   category: Weapon
-  rarity: Uncommon
+  rarity: Common
   maxStack: 1
-  weaponType: Dagger
+  weaponType: MeleeGeneric
   caliber: 
-  minDamage: 20
-  maxDamage: 35
-  fireRate: 50
-  accuracy: 40
+  minDamage: 5
+  maxDamage: 10
+  fireRate: 0
+  accuracy: 45
   recoil: 0
-  ergonomics: 70
+  ergonomics: 30
   weight: 1500
-  durability: 90
+  durability: 50
   muzzleVelocity: 0
   effectiveRange: 0
   penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: A crude but effective bone dagger for close combat.
+  description: A makeshift dagger for close combat.

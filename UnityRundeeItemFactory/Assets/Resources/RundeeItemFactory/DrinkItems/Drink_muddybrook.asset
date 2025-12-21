@@ -16,10 +16,10 @@ MonoBehaviour:
   displayName: Muddy Brook Water
   category: Drink
   rarity: Common
-  maxStack: 1
+  maxStack: 20
   hungerRestore: 0
   thirstRestore: 25
-  healthRestore: 5
+  healthRestore: 0
   spoils: 1
   spoilTimeMinutes: 60
-  description: Cool, clear water from a muddy brook stream.
+  description: Murky water with a hint of earthy taste

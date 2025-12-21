@@ -19,8 +19,8 @@ MonoBehaviour:
   maxStack: 1
   warmth: 18
   style: 22
-  durability: 65
-  weight: 400
+  durability: 55
+  weight: 300
   clothingType: Shirt
   value: 10
-  description: A soft, woven flannel shirt with a casual button-front design
+  description: Warm and soft flannel shirt with a rustic design

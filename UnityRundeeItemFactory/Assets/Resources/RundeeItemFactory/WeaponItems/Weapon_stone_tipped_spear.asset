@@ -17,19 +17,19 @@ MonoBehaviour:
   category: Weapon
   rarity: Uncommon
   maxStack: 1
-  weaponType: Spear
+  weaponType: MeleeGeneric
   caliber: 
-  minDamage: 35
-  maxDamage: 50
+  minDamage: 30
+  maxDamage: 60
   fireRate: 0
-  accuracy: 60
+  accuracy: 90
   recoil: 0
-  ergonomics: 80
+  ergonomics: 85
   weight: 1500
-  durability: 96
+  durability: 10
   muzzleVelocity: 0
   effectiveRange: 0
   penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: A sturdy spear with a sharp stone tip
+  description: A sturdy spear for piercing enemies.

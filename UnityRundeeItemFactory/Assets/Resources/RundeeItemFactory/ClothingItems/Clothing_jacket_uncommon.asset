@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd5d9b5b1a68914e82e7ff169e9d131, type: 3}
+  m_Name: Clothing_jacket_uncommon
+  m_EditorClassIdentifier: 
+  id: Clothing_jacket_uncommon
+  displayName: Leather Jacket
+  category: Clothing
+  rarity: Uncommon
+  maxStack: 1
+  warmth: 35
+  style: 40
+  durability: 75
+  weight: 400
+  clothingType: Jacket
+  value: 25
+  description: Brown leather jacket with a fitted silhouette.

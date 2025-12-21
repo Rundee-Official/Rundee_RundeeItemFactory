@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Ammo_12gauge_common
   m_EditorClassIdentifier: 
   id: Ammo_12gauge_common
-  displayName: Standard 12-Gauge Ammo
+  displayName: Standard Shotgun Shell
   category: Ammo
   rarity: Common
   maxStack: 10
-  caliber: 12-gauge
+  caliber: 12gauge
   damageBonus: 0
-  penetration: 25
-  accuracyBonus: 0
-  recoilModifier: -10
+  penetration: 20
+  accuracyBonus: -15
+  recoilModifier: 5
   armorPiercing: 0
   hollowPoint: 0
   tracer: 0
   incendiary: 0
-  value: 2
-  description: Basic, reliable ammo for your shotgun.
+  value: 1
+  description: A versatile and common shotgun shell.

@@ -17,10 +17,10 @@ MonoBehaviour:
   category: Clothing
   rarity: Uncommon
   maxStack: 1
-  warmth: 30
-  style: 40
-  durability: 75
-  weight: 600
-  clothingType: Jacket
-  value: 10
-  description: A rugged leather vest with a classic design.
+  warmth: 15
+  style: 30
+  durability: 65
+  weight: 500
+  clothingType: Vest
+  value: 25
+  description: Sturdy leather vest for added protection.

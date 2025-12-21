@@ -15,12 +15,12 @@ MonoBehaviour:
   id: Clothing_boots
   displayName: Boots
   category: Clothing
-  rarity: Common
+  rarity: Uncommon
   maxStack: 1
-  warmth: 15
-  style: 25
-  durability: 65
-  weight: 700
-  clothingType: Footwear
-  value: 20
-  description: Sturdy, ankle-high boots with a rugged sole.
+  warmth: 20
+  style: 30
+  durability: 85
+  weight: 800
+  clothingType: Boots
+  value: 40
+  description: Tough, rugged boots for trekking and outdoor adventures.

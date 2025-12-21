@@ -21,10 +21,10 @@ MonoBehaviour:
   caliber: 
   minDamage: 15
   maxDamage: 25
-  fireRate: 100
-  accuracy: 30
+  fireRate: 0
+  accuracy: 50
   recoil: 0
-  ergonomics: 40
+  ergonomics: 70
   weight: 1500
   durability: 80
   muzzleVelocity: 0
@@ -32,4 +32,4 @@ MonoBehaviour:
   penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: A simple stone axe for chopping wood and clearing brush.
+  description: A crude stone axe for chopping down trees and fending off predators.

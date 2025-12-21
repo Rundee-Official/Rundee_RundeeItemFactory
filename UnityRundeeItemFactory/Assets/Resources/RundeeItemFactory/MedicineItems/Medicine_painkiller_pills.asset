@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: Painkiller Pills
   category: Medicine
   rarity: Common
-  maxStack: 10
+  maxStack: 20
   healthRestore: 25
-  spoils: 1
-  spoilTimeMinutes: 240
-  description: A standard pain relief medication in a compact pill form.
+  spoils: 0
+  spoilTimeMinutes: 0
+  description: A pack of pills designed to reduce pain and discomfort.

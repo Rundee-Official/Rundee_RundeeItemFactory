@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: Common
   maxStack: 100
   materialType: Metal
-  hardness: 10
-  flammability: 0
-  value: 5
-  description: A single nail, used for fastening and building.
+  hardness: 40
+  flammability: 5
+  value: 10
+  description: A pack of nails, great for building and repairs

@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: Simple, rugged iron sight for improved accuracy
+  description: Simple iron sight for improved accuracy

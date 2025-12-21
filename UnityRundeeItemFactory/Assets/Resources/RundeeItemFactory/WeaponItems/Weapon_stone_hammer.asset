@@ -19,17 +19,17 @@ MonoBehaviour:
   maxStack: 1
   weaponType: Hammer
   caliber: 
-  minDamage: 25
-  maxDamage: 40
-  fireRate: 50
-  accuracy: 30
+  minDamage: 20
+  maxDamage: 30
+  fireRate: 0
+  accuracy: 40
   recoil: 0
   ergonomics: 60
   weight: 1500
-  durability: 95
+  durability: 85
   muzzleVelocity: 0
   effectiveRange: 0
   penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: A sturdy stone hammer for breaking and smashing.
+  description: A heavy stone hammer for crushing rocks and breaking wood.

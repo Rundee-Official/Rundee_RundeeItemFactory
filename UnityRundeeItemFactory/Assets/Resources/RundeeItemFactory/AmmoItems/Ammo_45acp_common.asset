@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Ammo_45acp_common
   m_EditorClassIdentifier: 
   id: Ammo_45acp_common
-  displayName: Standard .45 ACP
+  displayName: Standard Round
   category: Ammo
   rarity: Common
   maxStack: 20
-  caliber: .45 ACP
-  damageBonus: 0
+  caliber: .45acp
+  damageBonus: -2
   penetration: 25
-  accuracyBonus: 0
-  recoilModifier: -10
+  accuracyBonus: -10
+  recoilModifier: 5
   armorPiercing: 0
   hollowPoint: 0
   tracer: 0
   incendiary: 0
-  value: 3
-  description: Standard, reliable, and accurate
+  value: 4
+  description: A reliable and accurate round for most handguns.

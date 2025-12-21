@@ -17,10 +17,10 @@ MonoBehaviour:
   category: Clothing
   rarity: Rare
   maxStack: 1
-  warmth: 60
-  style: 55
-  durability: 85
-  weight: 450
+  warmth: 70
+  style: 60
+  durability: 95
+  weight: 300
   clothingType: Jacket
-  value: 20
-  description: A thick, high-quality wool jacket with a classic fit.
+  value: 60
+  description: A warm, high-quality wool jacket for cold weather wear.

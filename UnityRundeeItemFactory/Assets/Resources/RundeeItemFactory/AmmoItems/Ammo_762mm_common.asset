@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Ammo_762mm_common
   m_EditorClassIdentifier: 
   id: Ammo_762mm_common
-  displayName: Common 7.62mm
+  displayName: Full Metal Jacket Round
   category: Ammo
   rarity: Common
   maxStack: 20
   caliber: 7.62mm
   damageBonus: -5
   penetration: 25
-  accuracyBonus: 0
+  accuracyBonus: -10
   recoilModifier: 5
   armorPiercing: 0
   hollowPoint: 0
   tracer: 0
   incendiary: 0
-  value: 2
-  description: AK-47 standard issue
+  value: 3
+  description: A reliable and accurate round for most rifles.

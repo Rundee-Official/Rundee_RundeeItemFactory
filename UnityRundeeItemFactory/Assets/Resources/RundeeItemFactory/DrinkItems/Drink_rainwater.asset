@@ -16,10 +16,10 @@ MonoBehaviour:
   displayName: Rain Water
   category: Drink
   rarity: Rare
-  maxStack: 16
+  maxStack: 1
   hungerRestore: 0
-  thirstRestore: 40
-  healthRestore: 10
-  spoils: 1
-  spoilTimeMinutes: 90
-  description: Pure and clean, with a refreshing acidity.
+  thirstRestore: 50
+  healthRestore: 30
+  spoils: 0
+  spoilTimeMinutes: 0
+  description: Fresh, clean rainwater, cool and refreshing with a hint of ozone.

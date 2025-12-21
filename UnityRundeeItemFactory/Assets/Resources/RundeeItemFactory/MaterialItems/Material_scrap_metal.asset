@@ -16,9 +16,9 @@ MonoBehaviour:
   displayName: Scrap Metal
   category: Junk
   rarity: Common
-  maxStack: 10
+  maxStack: 50
   materialType: Metal
-  hardness: 60
-  flammability: 80
-  value: 20
-  description: A piece of discarded metal for recycling or crafting
+  hardness: 20
+  flammability: 30
+  value: 10
+  description: A piece of scrap metal for melting and recycling

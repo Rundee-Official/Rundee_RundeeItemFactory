@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: Basic Bandage
   category: Medicine
   rarity: Common
-  maxStack: 20
-  healthRestore: 15
+  maxStack: 10
+  healthRestore: 20
   spoils: 0
   spoilTimeMinutes: 0
-  description: A simple bandage wrapped in gauze, providing minor health restoration.
+  description: A simple bandage wrapped in gauze, providing gentle healing.

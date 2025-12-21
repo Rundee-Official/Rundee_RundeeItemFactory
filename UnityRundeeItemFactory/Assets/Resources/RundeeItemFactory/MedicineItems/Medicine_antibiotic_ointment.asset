@@ -19,5 +19,5 @@ MonoBehaviour:
   maxStack: 5
   healthRestore: 40
   spoils: 1
-  spoilTimeMinutes: 720
-  description: A topical cream containing antibiotics to treat infected wounds.
+  spoilTimeMinutes: 960
+  description: A topical ointment, fighting bacterial infections and promoting healing.

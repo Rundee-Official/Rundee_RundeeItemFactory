@@ -15,10 +15,10 @@ MonoBehaviour:
   id: Material_nails
   displayName: Nails
   category: Material
-  rarity: Common
+  rarity: Uncommon
   maxStack: 50
   materialType: Metal
-  hardness: 80
+  hardness: 30
   flammability: 0
-  value: 10
-  description: Thin metal strips for fastening and joining materials
+  value: 20
+  description: Small metal fasteners used for building and repairing

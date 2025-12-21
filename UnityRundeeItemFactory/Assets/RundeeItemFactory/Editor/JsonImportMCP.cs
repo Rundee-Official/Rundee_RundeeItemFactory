@@ -79,7 +79,7 @@ public static class JsonImportMCP
     [MenuItem("Tools/Rundee/Item Factory/Import All Test Files")]
     public static void ImportAllTestFiles()
     {
-        string testOutputDir = "D:/_VisualStudioProjects/_Rundee_RundeeItemFactory/TestOutput";
+        string testOutputDir = "D:/_VisualStudioProjects/_Rundee_RundeeItemFactory/Deployment/TestOutput";
         
         var imports = new[]
         {

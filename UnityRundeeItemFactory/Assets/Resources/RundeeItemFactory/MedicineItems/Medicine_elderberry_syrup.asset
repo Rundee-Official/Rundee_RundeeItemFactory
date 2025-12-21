@@ -16,8 +16,9 @@ MonoBehaviour:
   displayName: Elderberry Syrup
   category: Medicine
   rarity: Uncommon
-  maxStack: 15
-  healthRestore: 40
+  maxStack: 10
+  healthRestore: 50
   spoils: 0
   spoilTimeMinutes: 0
-  description: A sweet syrup made from elderberries, providing minor health restoration.
+  description: A sweet, dark liquid made from elderberry extract, offering moderate
+    healing properties.

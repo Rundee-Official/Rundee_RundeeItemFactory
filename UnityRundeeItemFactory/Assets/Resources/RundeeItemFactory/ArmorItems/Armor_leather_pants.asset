@@ -15,11 +15,11 @@ MonoBehaviour:
   id: Armor_leather_pants
   displayName: Leather Pants
   category: Armor
-  rarity: Common
+  rarity: Uncommon
   maxStack: 1
-  armorValue: 15
-  durability: 55
-  weight: 800
+  armorValue: 20
+  durability: 60
+  weight: 1500
   armorType: Pants
-  value: 30
-  description: Simple leather pants provide basic protection for legs
+  value: 15
+  description: Sturdy leather pants offer moderate leg protection

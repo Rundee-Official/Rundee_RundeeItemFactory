@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Ammo_9mm_common
   m_EditorClassIdentifier: 
   id: Ammo_9mm_common
-  displayName: Standard 9mm Ammo
+  displayName: Standard 9mm Round
   category: Ammo
   rarity: Common
   maxStack: 20
   caliber: 9mm
   damageBonus: 0
   penetration: 25
-  accuracyBonus: 0
-  recoilModifier: -10
+  accuracyBonus: -5
+  recoilModifier: 10
   armorPiercing: 0
   hollowPoint: 0
-  tracer: 0
+  tracer: 1
   incendiary: 0
   value: 2
-  description: Basic, reliable ammo for your sidearm.
+  description: A standard issue round for most pistols and carbines.

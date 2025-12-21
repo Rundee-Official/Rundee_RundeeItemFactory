@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Ammo_45acp_uncommon
   m_EditorClassIdentifier: 
   id: Ammo_45acp_uncommon
-  displayName: Specialized .45 ACP Ammo
+  displayName: Jacketed Hollow Point
   category: Ammo
   rarity: Uncommon
   maxStack: 20
-  caliber: .45 ACP
+  caliber: .45acp
   damageBonus: 10
-  penetration: 40
-  accuracyBonus: 0
-  recoilModifier: -5
+  penetration: 50
+  accuracyBonus: -5
+  recoilModifier: 10
   armorPiercing: 0
   hollowPoint: 0
   tracer: 0
   incendiary: 0
   value: 15
-  description: Specialized ammo designed for increased penetration and accuracy.
+  description: A high-velocity round with increased penetration.

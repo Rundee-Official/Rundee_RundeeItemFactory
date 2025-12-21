@@ -17,10 +17,10 @@ MonoBehaviour:
   category: Clothing
   rarity: Common
   maxStack: 1
-  warmth: 21
-  style: 18
-  durability: 65
+  warmth: 23
+  style: 15
+  durability: 55
   weight: 200
-  clothingType: Top
-  value: 7
-  description: A soft, chunky-knit sweater with a relaxed fit.
+  clothingType: Jacket
+  value: 15
+  description: Warm, thick-knitted sweater with a crew neck.

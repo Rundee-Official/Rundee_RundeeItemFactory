@@ -15,9 +15,9 @@ MonoBehaviour:
   id: Medicine_ginger_tonic
   displayName: Ginger Tonic
   category: Medicine
-  rarity: Uncommon
-  maxStack: 15
-  healthRestore: 30
+  rarity: Common
+  maxStack: 20
+  healthRestore: 25
   spoils: 0
   spoilTimeMinutes: 0
-  description: A spicy tonic made from fresh ginger, offering moderate health restoration.
+  description: A spicy tonic made from fresh ginger, providing moderate healing properties.

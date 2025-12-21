@@ -18,9 +18,9 @@ MonoBehaviour:
   rarity: Common
   maxStack: 1
   warmth: 15
-  style: 20
+  style: 25
   durability: 65
-  weight: 300
+  weight: 250
   clothingType: Pants
-  value: 8
-  description: Classic five-pocket jeans with a straight leg.
+  value: 12
+  description: Classic blue jeans with a straight fit.

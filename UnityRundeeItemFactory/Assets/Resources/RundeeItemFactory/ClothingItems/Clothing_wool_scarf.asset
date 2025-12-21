@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Clothing_wool_scarf
   m_EditorClassIdentifier: 
   id: Clothing_wool_scarf
-  displayName: Wool Scarf
+  displayName: Woolen Scarf
   category: Clothing
-  rarity: Rare
+  rarity: Uncommon
   maxStack: 1
-  warmth: 40
-  style: 50
-  durability: 95
-  weight: 300
+  warmth: 30
+  style: 25
+  durability: 65
+  weight: 150
   clothingType: Accessories
-  value: 30
-  description: A luxurious, soft wool scarf with a elegant design
+  value: 15
+  description: Soft and warm woolen scarf with a simple texture

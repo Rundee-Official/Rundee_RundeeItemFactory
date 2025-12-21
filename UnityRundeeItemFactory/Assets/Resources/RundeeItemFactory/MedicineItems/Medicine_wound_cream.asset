@@ -15,9 +15,9 @@ MonoBehaviour:
   id: Medicine_wound_cream
   displayName: Wound Cream
   category: Medicine
-  rarity: Rare
-  maxStack: 5
-  healthRestore: 55
-  spoils: 0
-  spoilTimeMinutes: 0
-  description: A rich cream that moisturizes and promotes wound healing.
+  rarity: Common
+  maxStack: 15
+  healthRestore: 15
+  spoils: 1
+  spoilTimeMinutes: 240
+  description: A topical cream for minor wounds, promoting healing and reducing inflammation.

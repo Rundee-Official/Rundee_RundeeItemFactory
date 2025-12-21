@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: Muzzle brake reduces recoil and improves control
+  description: Muzzle brake for reduced recoil

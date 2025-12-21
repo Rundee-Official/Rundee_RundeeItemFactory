@@ -18,8 +18,8 @@ MonoBehaviour:
   rarity: Common
   maxStack: 1
   armorValue: 15
-  durability: 55
-  weight: 800
+  durability: 65
+  weight: 1200
   armorType: Vest
-  value: 25
-  description: Canvas vest offers lightweight, basic protection for the torso.
+  value: 30
+  description: Lightweight canvas vest offers moderate torso protection.

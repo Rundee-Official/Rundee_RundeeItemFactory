@@ -17,7 +17,8 @@ MonoBehaviour:
   category: Medicine
   rarity: Common
   maxStack: 10
-  healthRestore: 25
+  healthRestore: 20
   spoils: 0
   spoilTimeMinutes: 0
-  description: Sterile pads for cleaning and dressing wounds.
+  description: Soft, absorbent pads made from gauze cloth, providing basic wound
+    care and healing.

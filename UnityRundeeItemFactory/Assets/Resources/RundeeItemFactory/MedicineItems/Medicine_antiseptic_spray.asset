@@ -15,9 +15,9 @@ MonoBehaviour:
   id: Medicine_antiseptic_spray
   displayName: Antiseptic Spray
   category: Medicine
-  rarity: Rare
-  maxStack: 3
-  healthRestore: 50
-  spoils: 1
-  spoilTimeMinutes: 1080
-  description: A spray that disinfects and cleans wounds.
+  rarity: Common
+  maxStack: 10
+  healthRestore: 25
+  spoils: 0
+  spoilTimeMinutes: 0
+  description: A gentle antiseptic spray, cleansing wounds and promoting healing.

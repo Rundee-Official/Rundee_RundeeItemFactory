@@ -15,7 +15,7 @@ MonoBehaviour:
   id: WeaponComponent_metal_sight
   displayName: Metal Sight
   category: WeaponComponent
-  rarity: Uncommon
+  rarity: Common
   maxStack: 1
   componentType: Sight
   compatibleSlots: []
@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: Simple, durable metal sight for improved aiming
+  description: A simple metal sight for improved accuracy

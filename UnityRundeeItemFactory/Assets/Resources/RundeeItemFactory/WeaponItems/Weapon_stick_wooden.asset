@@ -17,19 +17,19 @@ MonoBehaviour:
   category: Weapon
   rarity: Common
   maxStack: 1
-  weaponType: Stick
+  weaponType: Club
   caliber: 
-  minDamage: 5
-  maxDamage: 10
+  minDamage: 10
+  maxDamage: 15
   fireRate: 0
-  accuracy: 20
+  accuracy: 50
   recoil: 0
-  ergonomics: 30
+  ergonomics: 70
   weight: 1500
-  durability: 60
+  durability: 80
   muzzleVelocity: 0
   effectiveRange: 0
   penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: Simple, yet effective club
+  description: A sturdy club for close combat.

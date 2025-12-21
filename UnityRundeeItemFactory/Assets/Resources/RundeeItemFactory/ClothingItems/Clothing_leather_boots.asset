@@ -15,12 +15,12 @@ MonoBehaviour:
   id: Clothing_leather_boots
   displayName: Leather Boots
   category: Clothing
-  rarity: Uncommon
+  rarity: Rare
   maxStack: 1
-  warmth: 10
-  style: 40
-  durability: 75
-  weight: 800
+  warmth: 40
+  style: 50
+  durability: 85
+  weight: 1200
   clothingType: Boots
-  value: 30
-  description: Sturdy leather boots with a rugged design and sturdy soles.
+  value: 35
+  description: Strong and durable leather boots with a rugged design

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: WeaponComponent_magazine_extension
   displayName: Magazine Extension
   category: WeaponComponent
-  rarity: Common
+  rarity: Uncommon
   maxStack: 1
   componentType: Magazine
   compatibleSlots: []
@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: Quick-detachable magazine extension for increased capacity
+  description: Adds extra rounds to the magazine for extended firefights.

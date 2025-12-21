@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Armor_chainmail_common
   m_EditorClassIdentifier: 
   id: Armor_chainmail_common
-  displayName: Chainmail Vest
+  displayName: Chain Mail Vest
   category: Armor
   rarity: Common
   maxStack: 1
-  armorValue: 22
-  durability: 70
+  armorValue: 20
+  durability: 60
   weight: 2500
   armorType: Vest
   value: 15
-  description: Light chainmail vest with moderate protection
+  description: A chain mail vest providing basic protection and flexibility.

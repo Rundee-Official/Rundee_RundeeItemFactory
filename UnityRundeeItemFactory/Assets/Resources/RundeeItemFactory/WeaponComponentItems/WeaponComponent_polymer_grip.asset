@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: WeaponComponent_polymer_grip
   m_EditorClassIdentifier: 
   id: WeaponComponent_polymer_grip
-  displayName: Polymer Grip
+  displayName: Polymer Foregrip
   category: WeaponComponent
-  rarity: Uncommon
+  rarity: Common
   maxStack: 1
   componentType: Grip
   compatibleSlots: []
@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: A textured polymer grip for improved handling and control.
+  description: Textured polymer grip for improved traction.

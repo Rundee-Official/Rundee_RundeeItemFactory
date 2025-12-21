@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f1723faf21138c44b3053834530f464, type: 3}
+  m_Name: Material_spring_steel
+  m_EditorClassIdentifier: 
+  id: Material_spring_steel
+  displayName: Spring Steel
+  category: Material
+  rarity: Rare
+  maxStack: 5
+  materialType: Metal
+  hardness: 40
+  flammability: 0
+  value: 75
+  description: A strong and flexible metal alloy used for springs and other components

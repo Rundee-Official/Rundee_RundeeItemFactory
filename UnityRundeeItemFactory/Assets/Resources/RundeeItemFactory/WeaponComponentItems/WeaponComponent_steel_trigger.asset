@@ -15,7 +15,7 @@ MonoBehaviour:
   id: WeaponComponent_steel_trigger
   displayName: Steel Trigger
   category: WeaponComponent
-  rarity: Common
+  rarity: Uncommon
   maxStack: 1
   componentType: Trigger
   compatibleSlots: []
@@ -34,4 +34,4 @@ MonoBehaviour:
   penetrationModifier: 0
   hasBuiltInRail: 0
   railType: 
-  description: A rugged steel trigger for improved accuracy and reliability.
+  description: A rugged steel trigger for improved durability

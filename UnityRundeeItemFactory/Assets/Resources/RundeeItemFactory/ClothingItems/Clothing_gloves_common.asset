@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Clothing_gloves_common
   m_EditorClassIdentifier: 
   id: Clothing_gloves_common
-  displayName: Gloves
+  displayName: Insulated Gloves
   category: Clothing
   rarity: Common
   maxStack: 1
-  warmth: 10
-  style: 15
-  durability: 65
+  warmth: 23
+  style: 14
+  durability: 60
   weight: 100
   clothingType: Accessories
-  value: 6
-  description: A pair of durable, woolen gloves for cold weather.
+  value: 12
+  description: Warm, insulated gloves for cold weather.

@@ -17,9 +17,9 @@ MonoBehaviour:
   category: Armor
   rarity: Uncommon
   maxStack: 1
-  armorValue: 20
-  durability: 70
-  weight: 1200
+  armorValue: 25
+  durability: 65
+  weight: 2200
   armorType: Boots
-  value: 60
-  description: Sturdy leather boots protect the feet and legs
+  value: 20
+  description: Sturdy leather boots offer moderate foot protection

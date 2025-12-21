@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4be4f53d00887eb4db54424ac2be1d2c, type: 3}
+  m_Name: Weapon_bow_stone_tipped
+  m_EditorClassIdentifier: 
+  id: Weapon_bow_stone_tipped
+  displayName: Stone-Tipped Bow
+  category: Weapon
+  rarity: Uncommon
+  maxStack: 1
+  weaponType: Bow
+  caliber: Stone
+  minDamage: 5
+  maxDamage: 15
+  fireRate: 100
+  accuracy: 70
+  recoil: 20
+  ergonomics: 80
+  weight: 1500
+  durability: 95
+  muzzleVelocity: 300
+  effectiveRange: 50
+  penetrationPower: 10
+  moddingSlots: 0
+  attachmentSlots: []
+  description: A simple bow with a stone-tipped arrow for hunting and self-defense.

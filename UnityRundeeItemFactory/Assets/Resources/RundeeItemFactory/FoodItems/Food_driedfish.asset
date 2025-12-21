@@ -15,11 +15,11 @@ MonoBehaviour:
   id: Food_driedfish
   displayName: Dried Fish
   category: Food
-  rarity: Uncommon
-  maxStack: 10
-  hungerRestore: 20
+  rarity: Rare
+  maxStack: 5
+  hungerRestore: 40
   thirstRestore: 0
-  healthRestore: 5
+  healthRestore: 10
   spoils: 1
-  spoilTimeMinutes: 360
-  description: Thinly sliced and dried fish, slightly salty
+  spoilTimeMinutes: 720
+  description: A dried and preserved fish with a smoky flavor and chewy texture.

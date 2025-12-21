@@ -15,11 +15,11 @@ MonoBehaviour:
   id: Armor_wooden_shield
   displayName: Wooden Shield
   category: Armor
-  rarity: Uncommon
+  rarity: Common
   maxStack: 1
-  armorValue: 35
-  durability: 75
-  weight: 2500
+  armorValue: 15
+  durability: 65
+  weight: 2000
   armorType: Shield
-  value: 50
-  description: Wooden shield provides decent protection for the arms and torso.
+  value: 18
+  description: A lightweight wooden shield providing minimal protection.

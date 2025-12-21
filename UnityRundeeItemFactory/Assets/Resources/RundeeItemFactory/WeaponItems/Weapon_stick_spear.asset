@@ -13,23 +13,23 @@ MonoBehaviour:
   m_Name: Weapon_stick_spear
   m_EditorClassIdentifier: 
   id: Weapon_stick_spear
-  displayName: Spear
+  displayName: Stick Spear
   category: Weapon
-  rarity: Common
+  rarity: Uncommon
   maxStack: 1
-  weaponType: Spear
-  caliber: Wooden
-  minDamage: 10
-  maxDamage: 15
-  fireRate: 100
-  accuracy: 60
+  weaponType: MeleeGeneric
+  caliber: 
+  minDamage: 15
+  maxDamage: 30
+  fireRate: 0
+  accuracy: 55
   recoil: 0
-  ergonomics: 70
+  ergonomics: 50
   weight: 1500
-  durability: 40
-  muzzleVelocity: 400
+  durability: 45
+  muzzleVelocity: 0
   effectiveRange: 0
   penetrationPower: 0
   moddingSlots: 0
   attachmentSlots: []
-  description: A makeshift spear for hunting small game
+  description: A makeshift spear for poking and prodding.

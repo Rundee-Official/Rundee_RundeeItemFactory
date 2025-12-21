@@ -17,10 +17,10 @@ MonoBehaviour:
   category: Clothing
   rarity: Uncommon
   maxStack: 1
-  warmth: 30
-  style: 45
+  warmth: 40
+  style: 50
   durability: 80
-  weight: 1200
+  weight: 450
   clothingType: Jacket
-  value: 20
-  description: A rugged, biker-style leather jacket with a bold, edgy look
+  value: 30
+  description: A rugged leather jacket for added protection and style.

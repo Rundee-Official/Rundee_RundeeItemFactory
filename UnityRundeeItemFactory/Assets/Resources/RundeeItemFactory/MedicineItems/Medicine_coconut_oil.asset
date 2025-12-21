@@ -20,4 +20,5 @@ MonoBehaviour:
   healthRestore: 25
   spoils: 0
   spoilTimeMinutes: 0
-  description: A vial of pure coconut oil, offering moderate health restoration.
+  description: A clear, odorless oil extracted from coconut meat, providing gentle
+    wound care.
