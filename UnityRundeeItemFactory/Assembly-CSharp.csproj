@@ -61,17 +61,9 @@
     <Analyzer Include="D:\Program Files\Unity\Hub\Editor\6000.1.4f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\RundeeItemFactory\Runtime\WeaponItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\ArmorItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\ClothingItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\ItemDatabase.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\DrinkItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\MaterialItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\FoodItemDataSO.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Runtime\DynamicItemDataSO.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\AmmoItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\MedicineItemDataSO.cs" />
-    <Compile Include="Assets\RundeeItemFactory\Runtime\WeaponComponentItemDataSO.cs" />
+    <Compile Include="Assets\RundeeItemFactory\Runtime\ItemProfile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

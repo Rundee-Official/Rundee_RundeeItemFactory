@@ -39,41 +39,15 @@ namespace CommandLineParser
                 {
                     args.mode = RunMode::LLM;
                 }
-                else if (m == "batch")
-                {
-                    args.mode = RunMode::Batch;
-                }
                 else
                 {
                     std::cout << "[Warning] Unknown mode: " << m
-                        << " (use 'llm' or 'batch')\n";
-                }
-            }
-            else if (arg == "--batch" && i + 1 < argc)
-            {
-                std::string batchStr = argv[++i];
-                args.batchItems = ParseBatchString(batchStr);
-                if (!args.batchItems.empty())
-                {
-                    args.mode = RunMode::Batch;
+                        << " (use 'llm')\n";
                 }
             }
             else if (arg == "--preset" && i + 1 < argc)
             {
-                std::string p = argv[++i];
-                if (p == "forest")
-                    args.preset = PresetType::Forest;
-                else if (p == "desert")
-                    args.preset = PresetType::Desert;
-                else if (p == "coast")
-                    args.preset = PresetType::Coast;
-                else if (p == "city")
-                    args.preset = PresetType::City;
-                else if (p == "default")
-                    args.preset = PresetType::Default;
-                else
-                    std::cout << "[Warning] Unknown preset: " << p
-                    << " (use default/forest/desert/coast/city)\n";
+                args.presetName = argv[++i];
             }
             else if (arg == "--itemType" && i + 1 < argc)
             {
@@ -133,6 +107,10 @@ namespace CommandLineParser
             {
                 args.useTestMode = true;
             }
+            else if (arg == "--profile" && i + 1 < argc)
+            {
+                args.profileId = argv[++i];
+            }
             else
             {
                 std::cout << "[Warning] Unknown or incomplete argument: " << arg << "\n";
@@ -140,18 +118,6 @@ namespace CommandLineParser
         }
 
         return args;
-    }
-
-    std::string GetPresetName(PresetType preset)
-    {
-        switch (preset)
-        {
-        case PresetType::Forest:  return "forest";
-        case PresetType::Desert:  return "desert";
-        case PresetType::Coast:   return "coast";
-        case PresetType::City:    return "city";
-        default:                  return "default";
-        }
     }
 
     std::string GetItemTypeName(ItemType itemType)
@@ -176,7 +142,6 @@ namespace CommandLineParser
         switch (mode)
         {
         case RunMode::LLM: return "LLM";
-        case RunMode::Batch: return "Batch";
         default: return "LLM";
         }
     }
@@ -208,73 +173,6 @@ namespace CommandLineParser
             return ItemType::Food; // Default
     }
 
-    std::vector<BatchItem> ParseBatchString(const std::string& batchStr)
-    {
-        std::vector<BatchItem> result;
-        
-        if (batchStr.empty())
-        {
-            std::cerr << "[CommandLineParser] Error: Batch string is empty.\n";
-            return result;
-        }
-
-        std::istringstream iss(batchStr);
-        std::string token;
-        
-        while (std::getline(iss, token, ','))
-        {
-            // Trim whitespace
-            token.erase(0, token.find_first_not_of(" \t"));
-            token.erase(token.find_last_not_of(" \t") + 1);
-            
-            if (token.empty())
-                continue;
-
-            // Parse format: "itemtype:count" or "itemtype:count:outputpath"
-            size_t colon1 = token.find(':');
-            if (colon1 == std::string::npos)
-            {
-                std::cerr << "[CommandLineParser] Warning: Invalid batch item format: " << token
-                    << " (expected 'itemtype:count' or 'itemtype:count:outputpath')\n";
-                continue;
-            }
-
-            std::string typeStr = token.substr(0, colon1);
-            std::string rest = token.substr(colon1 + 1);
-            
-            size_t colon2 = rest.find(':');
-            std::string countStr = (colon2 == std::string::npos) ? rest : rest.substr(0, colon2);
-            std::string outputPath = (colon2 == std::string::npos) ? "" : rest.substr(colon2 + 1);
-
-            ItemType itemType = ParseItemType(typeStr);
-            int count = std::atoi(countStr.c_str());
-            
-            if (count <= 0)
-            {
-                std::cerr << "[CommandLineParser] Warning: Invalid count for " << typeStr
-                    << ": " << countStr << "\n";
-                continue;
-            }
-
-            BatchItem batchItem;
-            batchItem.itemType = itemType;
-            batchItem.count = count;
-            batchItem.outputPath = outputPath;
-            
-            result.push_back(batchItem);
-        }
-
-        if (result.empty())
-        {
-            std::cerr << "[CommandLineParser] Error: No valid batch items parsed from: " << batchStr << "\n";
-        }
-        else
-        {
-            std::cout << "[CommandLineParser] Parsed " << result.size() << " batch items.\n";
-        }
-
-        return result;
-    }
 }
 
 

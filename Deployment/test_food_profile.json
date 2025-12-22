@@ -1,0 +1,28 @@
+[
+  {
+    "category": "Food",
+    "description": "Sweet and tart wild berries with a hint of earthy flavor.",
+    "displayName": "Wild Berry",
+    "healthRestore": 0,
+    "hungerRestore": 15,
+    "id": "Food_wildberry",
+    "maxStack": 10,
+    "rarity": "Common",
+    "spoilTimeMinutes": 120,
+    "spoils": true,
+    "thirstRestore": 5
+  },
+  {
+    "category": "Food",
+    "description": "Dried and chewy root with a nutty, earthy flavor.",
+    "displayName": "Dried Root",
+    "healthRestore": 0,
+    "hungerRestore": 30,
+    "id": "Food_driedroot",
+    "maxStack": 5,
+    "rarity": "Uncommon",
+    "spoilTimeMinutes": 0,
+    "spoils": false,
+    "thirstRestore": 0
+  }
+]

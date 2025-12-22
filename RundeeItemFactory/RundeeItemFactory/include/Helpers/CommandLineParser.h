@@ -14,7 +14,6 @@
 #include <string>
 #include <vector>
 #include "Helpers/ItemGenerateParams.h"
-#include "Prompts/PromptBuilder.h"
 
 /**
  * @enum RunMode
@@ -22,8 +21,7 @@
  */
 enum class RunMode
 {
-    LLM,    ///< Single item type generation mode
-    Batch   ///< Batch generation mode (multiple item types)
+    LLM    ///< Single item type generation mode
 };
 
 /**
@@ -44,17 +42,6 @@ enum class ItemType
 };
 
 /**
- * @struct BatchItem
- * @brief Configuration for a single item type in batch generation
- */
-struct BatchItem
-{
-    ItemType itemType;      ///< Type of items to generate
-    int count;              ///< Number of items to generate
-    std::string outputPath; ///< Optional: custom output path for this item type (empty = default)
-};
-
-/**
  * @struct CommandLineArgs
  * @brief Parsed command line arguments structure
  * 
@@ -64,16 +51,16 @@ struct BatchItem
 struct CommandLineArgs
 {
     std::string modelName = "llama3";        ///< LLM model name (e.g., "llama3", "mistral")
-    RunMode mode = RunMode::LLM;             ///< Execution mode (LLM or Batch)
-    PresetType preset = PresetType::Default;  ///< Preset type (Default, Forest, Desert, etc.)
+    RunMode mode = RunMode::LLM;             ///< Execution mode (LLM)
+    std::string presetName = "";             ///< User-defined preset name (empty = use customPresetPath or profile customContext)
     ItemType itemType = ItemType::Food;      ///< Item type to generate
     FoodGenerateParams params;               ///< Item-specific generation parameters
     std::string reportPath;                  ///< Path to JSON file for balance report (empty if not reporting)
     
-    std::vector<BatchItem> batchItems;       ///< For batch mode: multiple item types to generate
     std::string customPresetPath;            ///< Path to custom preset JSON file (empty if using built-in preset)
     std::string additionalPrompt;           ///< Additional user-defined prompt text to append
     bool useTestMode = false;                ///< If true, outputs go to Test/ folder instead of ItemJson/
+    std::string profileId;                   ///< Item profile ID to use for generation (empty = use default profile for item type)
 };
 
 /**
@@ -89,10 +76,9 @@ namespace CommandLineParser
      * - Model selection: --model <name>
      * - Item type: --type <food|drink|material|weapon|weaponcomponent|ammo>
      * - Count: --count <number>
-     * - Preset: --preset <default|forest|desert|coast|city>
+     * - Preset: --preset <preset_name> (user-defined preset name)
      * - Output path: --output <path>
-     * - Batch mode: --batch <type1:count1,type2:count2,...>
-     * - Custom preset: --custom-preset <path>
+     * - Custom preset: --custom-preset <path> (path to custom preset JSON file)
      * - Additional prompt: --additional-prompt <text>
      * 
      * @param argc Number of command line arguments
@@ -100,27 +86,6 @@ namespace CommandLineParser
      * @return Parsed CommandLineArgs structure
      */
     CommandLineArgs ParseArguments(int argc, char** argv);
-
-    /**
-     * @brief Parse batch string into BatchItem vector
-     * 
-     * Parses a comma-separated batch string like "food:10,weapon:5,ammo:20"
-     * into a vector of BatchItem structures.
-     * 
-     * @param batchStr Batch string in format "type1:count1,type2:count2,..."
-     * @return Vector of BatchItem structures
-     * 
-     * @note Item type names are case-insensitive
-     * @note Invalid item types are skipped with a warning
-     */
-    std::vector<BatchItem> ParseBatchString(const std::string& batchStr);
-
-    /**
-     * @brief Convert PresetType enum to string
-     * @param preset Preset type enum value
-     * @return String representation (e.g., "Default", "Forest")
-     */
-    std::string GetPresetName(PresetType preset);
 
     /**
      * @brief Convert ItemType enum to string
@@ -132,7 +97,7 @@ namespace CommandLineParser
     /**
      * @brief Convert RunMode enum to string
      * @param mode Run mode enum value
-     * @return String representation ("LLM" or "Batch")
+     * @return String representation ("LLM")
      */
     std::string GetRunModeName(RunMode mode);
     

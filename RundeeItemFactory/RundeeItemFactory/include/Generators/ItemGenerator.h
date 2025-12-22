@@ -42,31 +42,7 @@ namespace ItemGenerator
      * @note The function automatically merges new items with existing items in the output file,
      *       skipping duplicates based on item ID.
      * 
-     * @see GenerateBatch for generating multiple item types in one operation
      */
     int GenerateWithLLM(const CommandLineArgs& args);
-
-    /**
-     * @brief Generate multiple item types in batch mode
-     * 
-     * Generates items for multiple types sequentially. Each item type is processed independently
-     * with its own output file (if specified) or default location.
-     * 
-     * @param args Command line arguments containing batch configuration:
-     *   - batchItems: Vector of BatchItem structures, each specifying:
-     *     * itemType: Type of items to generate
-     *     * count: Number of items to generate for this type
-     *     * outputPath: Optional custom output path (empty uses default)
-     *   - modelName: LLM model name (shared across all batch items)
-     *   - preset: Preset type (shared across all batch items)
-     * 
-     * @return 0 if all batch items succeeded, 1 if any failed
-     * 
-     * @note Batch items are processed sequentially, not in parallel.
-     * @note Each batch item can have its own output file or use default location.
-     * 
-     * @see GenerateWithLLM for single item type generation
-     */
-    int GenerateBatch(const CommandLineArgs& args);
 }
 

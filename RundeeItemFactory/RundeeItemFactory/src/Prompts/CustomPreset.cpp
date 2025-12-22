@@ -189,6 +189,57 @@ namespace CustomPresetManager
 
         return true;
     }
+    
+    bool CreatePresetFromName(const std::string& presetName, CustomPreset& preset)
+    {
+        if (presetName.empty())
+        {
+            // Create default preset
+            preset.id = "default";
+            preset.displayName = "Default";
+            preset.description = "Generic survival environment";
+            preset.flavorText = "World context:\n- Generic early-game survival environment with moderate resources.\n- Items should feel simple and grounded, not magical or high-tech.\n\n";
+            return true;
+        }
+        
+        // Generate ID from name (lowercase, underscore-separated)
+        std::string id;
+        id.reserve(presetName.size());
+        bool lastWasUnderscore = false;
+        for (char c : presetName)
+        {
+            unsigned char uc = static_cast<unsigned char>(c);
+            if (std::isalnum(uc))
+            {
+                id += static_cast<char>(std::tolower(uc));
+                lastWasUnderscore = false;
+            }
+            else if (c == ' ' || c == '-' || c == '_' || c == '.')
+            {
+                if (!lastWasUnderscore)
+                {
+                    id += '_';
+                    lastWasUnderscore = true;
+                }
+            }
+        }
+        if (!id.empty() && id.back() == '_')
+        {
+            id.pop_back();
+        }
+        if (id.empty())
+        {
+            id = "default";
+        }
+        
+        // Create preset with user-provided name
+        preset.id = id;
+        preset.displayName = presetName;
+        preset.description = "User-defined preset: " + presetName;
+        preset.flavorText = "World context:\n- " + presetName + " setting.\n- Items should be appropriate for this world environment.\n\n";
+        
+        return true;
+    }
 }
 
 

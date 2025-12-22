@@ -1,0 +1,15 @@
+[
+  {
+    "category": "Food",
+    "description": "A soft, earthy cap with a subtle nutty flavor",
+    "displayName": "Mushroom Cap",
+    "healthRestore": 5,
+    "hungerRestore": 10,
+    "id": "Food_mushroomcap",
+    "maxStack": 20,
+    "rarity": "Common",
+    "spoilTimeMinutes": 120,
+    "spoils": true,
+    "thirstRestore": 0
+  }
+]

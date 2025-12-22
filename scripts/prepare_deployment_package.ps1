@@ -40,22 +40,7 @@ if (Test-Path $exePath) {
     Write-Host "✗ 실행 파일을 찾을 수 없습니다: $exePath" -ForegroundColor Red
 }
 
-# 2. prompts 폴더 확인
-$promptsSource = Join-Path $buildDir "prompts"
-$promptsDest = Join-Path $deployDir "prompts"
-if (Test-Path $promptsSource) {
-    Copy-Item -Path $promptsSource -Destination $promptsDest -Recurse
-    $promptFiles = Get-ChildItem -Path $promptsSource -File
-    foreach ($file in $promptFiles) {
-        $packageInfo.Files += "prompts/$($file.Name)"
-    }
-    Write-Host "✓ prompts 폴더 복사 완료 ($($promptFiles.Count)개 파일)" -ForegroundColor Green
-} else {
-    $packageInfo.MissingFiles += "prompts/"
-    Write-Host "⚠ prompts 폴더를 찾을 수 없습니다: $promptsSource" -ForegroundColor Yellow
-}
-
-# 3. config 폴더 확인
+# 2. config 폴더 확인
 $configSource = Join-Path $buildDir "config"
 $configDest = Join-Path $deployDir "config"
 if (Test-Path $configSource) {
@@ -104,14 +89,7 @@ $checklistContent = @"
 - [ ] RundeeItemFactory.exe 존재
 
 ### 설정 파일
-- [ ] config/rundee_config.json 존재
-- [ ] prompts/ 폴더 및 모든 프롬프트 파일 존재
-  - [ ] prompts/food.txt
-  - [ ] prompts/drink.txt
-  - [ ] prompts/material.txt
-  - [ ] prompts/weapon.txt
-  - [ ] prompts/weapon_component.txt
-  - [ ] prompts/ammo.txt
+- [ ] config/rundee_config.json 존재 (선택사항)
 
 ### 문서
 - [ ] README.md 존재

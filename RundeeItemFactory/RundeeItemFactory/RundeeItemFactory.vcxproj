@@ -21,52 +21,25 @@
   <ItemGroup>
     <ClCompile Include="src\RundeeItemFactory.cpp" />
     <ClCompile Include="src\Helpers\AppConfig.cpp" />
-    <ClCompile Include="src\Validators\FoodItemValidator.cpp" />
-    <ClCompile Include="src\Validators\DrinkItemValidator.cpp" />
-    <ClCompile Include="src\Validators\MedicineItemValidator.cpp" />
-    <ClCompile Include="src\Validators\MaterialItemValidator.cpp" />
-    <ClCompile Include="src\Validators\WeaponItemValidator.cpp" />
-    <ClCompile Include="src\Validators\WeaponComponentItemValidator.cpp" />
-    <ClCompile Include="src\Validators\AmmoItemValidator.cpp" />
-    <ClCompile Include="src\Validators\ArmorItemValidator.cpp" />
-    <ClCompile Include="src\Validators\ClothingItemValidator.cpp" />
-    <ClCompile Include="src\Parsers\ItemJsonParser.cpp" />
-    <ClCompile Include="src\Writers\ItemJsonWriter.cpp" />
+    <ClCompile Include="src\Writers\DynamicItemJsonWriter.cpp" />
     <ClCompile Include="src\Clients\OllamaClient.cpp" />
-    <ClCompile Include="src\Prompts\PromptBuilder.cpp" />
     <ClCompile Include="src\Prompts\CustomPreset.cpp" />
     <ClCompile Include="src\Prompts\PromptTemplateLoader.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\Utils\JsonUtils.cpp" />
     <ClCompile Include="src\Helpers\CommandLineParser.cpp" />
     <ClCompile Include="src\Generators\ItemGenerator.cpp" />
-    <ClCompile Include="src\Helpers\BalanceReporter.cpp" />
-    <ClCompile Include="src\Helpers\QualityChecker.cpp" />
+    <ClCompile Include="src\Generators\ItemGeneratorRegistry.cpp" />
+    <ClCompile Include="src\Data\ItemProfileManager.cpp" />
+    <ClCompile Include="src\Prompts\DynamicPromptBuilder.cpp" />
+    <ClCompile Include="src\Parsers\DynamicItemJsonParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\Data\ItemDataBase.h" />
-    <ClInclude Include="include\Data\ItemFoodData.h" />
-    <ClInclude Include="include\Data\ItemDrinkData.h" />
-    <ClInclude Include="include\Data\ItemMaterialData.h" />
-    <ClInclude Include="include\Data\ItemWeaponData.h" />
-    <ClInclude Include="include\Data\ItemWeaponComponentData.h" />
-    <ClInclude Include="include\Data\ItemAmmoData.h" />
-    <ClInclude Include="include\Data\ItemArmorData.h" />
-    <ClInclude Include="include\Data\ItemClothingData.h" />
-    <ClInclude Include="include\Validators\FoodItemValidator.h" />
-    <ClInclude Include="include\Validators\DrinkItemValidator.h" />
-    <ClInclude Include="include\Validators\MaterialItemValidator.h" />
-    <ClInclude Include="include\Validators\WeaponItemValidator.h" />
-    <ClInclude Include="include\Validators\WeaponComponentItemValidator.h" />
-    <ClInclude Include="include\Validators\AmmoItemValidator.h" />
-    <ClInclude Include="include\Validators\ArmorItemValidator.h" />
-    <ClInclude Include="include\Validators\ClothingItemValidator.h" />
-    <ClInclude Include="include\Parsers\ItemJsonParser.h" />
-    <ClInclude Include="include\Writers\ItemJsonWriter.h" />
+    <ClInclude Include="include\Writers\DynamicItemJsonWriter.h" />
     <ClInclude Include="include\Clients\OllamaClient.h" />
     <ClInclude Include="include\Helpers\ItemGenerateParams.h" />
-    <ClInclude Include="include\Prompts\PromptBuilder.h" />
     <ClInclude Include="include\Prompts\CustomPreset.h" />
     <ClInclude Include="include\Prompts\PromptTemplateLoader.h" />
     <ClInclude Include="include\Utils\StringUtils.h" />
@@ -74,8 +47,11 @@
     <ClInclude Include="include\Helpers\AppConfig.h" />
     <ClInclude Include="include\Helpers\CommandLineParser.h" />
     <ClInclude Include="include\Generators\ItemGenerator.h" />
-    <ClInclude Include="include\Helpers\BalanceReporter.h" />
-    <ClInclude Include="include\Helpers\QualityChecker.h" />
+    <ClInclude Include="include\Generators\ItemGeneratorRegistry.h" />
+    <ClInclude Include="include\Data\ItemProfile.h" />
+    <ClInclude Include="include\Data\ItemProfileManager.h" />
+    <ClInclude Include="include\Prompts\DynamicPromptBuilder.h" />
+    <ClInclude Include="include\Parsers\DynamicItemJsonParser.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="prompts\food.txt">

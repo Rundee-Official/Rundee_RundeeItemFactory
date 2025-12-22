@@ -12,7 +12,6 @@
 #include "Helpers/AppConfig.h"
 #include "Helpers/CommandLineParser.h"
 #include "Generators/ItemGenerator.h"
-#include "Helpers/BalanceReporter.h"
 
 int main(int argc, char** argv)
 {
@@ -22,50 +21,21 @@ int main(int argc, char** argv)
     // Parse command line arguments
     CommandLineArgs args = CommandLineParser::ParseArguments(argc, argv);
 
-    // Check if report mode
-    if (!args.reportPath.empty())
-    {
-        std::cout << "[Main] Generating balance report for: " << args.reportPath << "\n";
-        return BalanceReporter::GenerateReport(args.reportPath, args.itemType);
-    }
-
     // Print configuration
-    if (args.mode == RunMode::Batch)
+    std::cout << "[Main] Mode = " << CommandLineParser::GetRunModeName(args.mode)
+        << ", itemType = " << CommandLineParser::GetItemTypeName(args.itemType)
+        << ", model = " << args.modelName
+        << ", count = " << args.params.count
+        << ", out = " << args.params.outputPath << "\n";
+    if (!args.presetName.empty())
     {
-        std::cout << "[Main] Mode = Batch\n";
-        std::cout << "[Main] Model = " << args.modelName << "\n";
-        std::cout << "[Main] Preset = " << CommandLineParser::GetPresetName(args.preset) << "\n";
-        std::cout << "[Main] Batch Items: " << args.batchItems.size() << "\n";
-        for (size_t i = 0; i < args.batchItems.size(); ++i)
-        {
-            const auto& item = args.batchItems[i];
-            std::cout << "  " << (i + 1) << ". " << CommandLineParser::GetItemTypeName(item.itemType)
-                << " x" << item.count;
-            if (!item.outputPath.empty())
-            {
-                std::cout << " -> " << item.outputPath;
-            }
-            std::cout << "\n";
-        }
+        std::cout << "[Main] Preset = " << args.presetName << "\n";
     }
-    else
+    if (!args.customPresetPath.empty())
     {
-        std::cout << "[Main] Mode = " << CommandLineParser::GetRunModeName(args.mode)
-            << ", itemType = " << CommandLineParser::GetItemTypeName(args.itemType)
-            << ", model = " << args.modelName
-            << ", count = " << args.params.count
-            << ", out = " << args.params.outputPath << "\n";
-        std::cout << "[Main] Preset = " << CommandLineParser::GetPresetName(args.preset) << "\n";
+        std::cout << "[Main] Custom Preset = " << args.customPresetPath << "\n";
     }
 
-    // Generate items based on mode
-    if (args.mode == RunMode::Batch)
-    {
-        return ItemGenerator::GenerateBatch(args);
-    }
-    else
-    {
-        // Default to LLM for non-batch generation
-        return ItemGenerator::GenerateWithLLM(args);
-    }
+    // Generate items
+    return ItemGenerator::GenerateWithLLM(args);
 }

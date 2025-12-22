@@ -4,6 +4,19 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
+/// Built-in preset types for item generation
+/// Each preset provides different world context and flavor text for LLM prompts.
+/// </summary>
+public enum PresetType
+{
+    Default,  ///< Default/generic survival game setting
+    Forest,   ///< Forest/wilderness survival setting
+    Desert,   ///< Desert/arid survival setting
+    Coast,    ///< Coastal/beach survival setting
+    City      ///< Urban/city survival setting
+}
+
+/// <summary>
 /// ScriptableObject-based settings for Item Factory
 /// Provides persistent settings that can be shared across team members
 /// </summary>
@@ -265,6 +278,9 @@ public class ItemFactorySettingsEditor : Editor
         EditorGUILayout.LabelField("Output Directory:", settings.GetFullOutputDirectory(), EditorStyles.wordWrappedLabel);
     }
 }
+
+
+
 
 
 

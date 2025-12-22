@@ -138,21 +138,6 @@ public static class ErrorHandler
         
         fullMessage += $"\n\nSolution:\n{error.Solution}";
         
-        MessageType unityMessageType = MessageType.Error;
-        switch (error.Severity)
-        {
-            case ErrorSeverity.Info:
-                unityMessageType = MessageType.Info;
-                break;
-            case ErrorSeverity.Warning:
-                unityMessageType = MessageType.Warning;
-                break;
-            case ErrorSeverity.Error:
-            case ErrorSeverity.Critical:
-                unityMessageType = MessageType.Error;
-                break;
-        }
-        
         EditorUtility.DisplayDialog(error.Title, fullMessage, "OK");
         Debug.LogError($"[ErrorHandler] {error.Title}: {fullMessage}");
     }

@@ -9,7 +9,7 @@ public static class SetupItemFactoryMenu
 {
     // Debug logging disabled for release
 
-    [MenuItem("Tools/Rundee/Item Factory/Setup/Setup Item Factory", false, 6000)]
+    [MenuItem("Tools/Rundee/Item Factory/Ollama Setup", false, 3000)]
     public static void RunSetup()
     {
         // Setup menu clicked

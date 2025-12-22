@@ -132,22 +132,6 @@ Feel free to embed additional narrative instructions, balancing notes, or format
 | `--out` | Output JSON file path | `items_food.json` |
 | `--report` | Generate balance report for existing JSON file | - |
 
-### Batch Mode
-
-Run multiple generation jobs sequentially with one command:
-
-```bash
-RundeeItemFactory.exe ^
-  --mode batch ^
-  --batch "food:10:items_food.json,drink:5,material:8:items_material.json" ^
-  --model llama3 ^
-  --preset city
-```
-
-- Use `--batch "itemType:count[:outputPath],..."`.
-- Each entry inherits global arguments (model, preset, maxHunger, etc.) but can override the output path.
-- Batch logs show per-job progress, elapsed time, and a final summary table. Failures do not stop the rest of the jobs, so you can re-run only the ones that failed.
-
 ### Unity Integration
 
 #### Using the Item Factory Window (Recommended)

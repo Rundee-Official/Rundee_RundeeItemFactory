@@ -137,6 +137,21 @@ namespace CustomPresetManager
      * @return true if preset is valid, false otherwise
      */
     bool ValidatePreset(const CustomPreset& preset, std::string& errorMessage);
+    
+    /**
+     * @brief Create a CustomPreset from a preset name
+     * 
+     * Creates a CustomPreset structure from a user-provided preset name.
+     * The preset will have a simple flavor text based on the name.
+     * 
+     * @param presetName User-provided preset name (e.g., "Forest", "Desert", "My Custom World")
+     * @param[out] preset Preset structure to populate
+     * @return true on success, false on error
+     * 
+     * @note If presetName is empty, creates a default preset
+     * @note The preset ID is generated from the name (lowercase, underscore-separated)
+     */
+    bool CreatePresetFromName(const std::string& presetName, CustomPreset& preset);
 }
 
 
