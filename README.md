@@ -163,11 +163,7 @@ See [Dynamic Profile System Documentation](docs/DYNAMIC_PROFILE_SYSTEM.md) for d
    - Cancel button available during generation
 6. Items will be automatically imported if "Auto Import" is enabled
 
-**Balance Report Feature:**
-- Expand the "Balance Report" section
-- Select a JSON file and item type
-- Click "Generate Report" to view statistical analysis
-- Reports include Quick Summary, distribution stats, and balance warnings
+**Note:** Balance Report feature is available via command line (see below). Unity Editor integration is planned for future releases.
 
 #### Manual Import (Unified)
 
@@ -179,54 +175,14 @@ See [Dynamic Profile System Documentation](docs/DYNAMIC_PROFILE_SYSTEM.md) for d
 
 #### Available Unity Menu Items
 
-**Generation:**
-- `Tools/Rundee/Item Factory/Generation/Item Factory Window` - GUI for generating/importing items (auto-import optional)
-- `Tools/Rundee/Item Factory/Generation/JSON Importer` - Single window for all manual JSON imports
-
-**Management:**
-- `Tools/Rundee/Item Factory/Management/Item Manager` - Item overview, selection, and cleanup
-- `Tools/Rundee/Item Factory/Management/Registry Manager` - Manage item ID registries
-- `Tools/Rundee/Item Factory/Management/Version Manager` - Backup and restore item data
-
-**Tools:**
-- `Tools/Rundee/Item Factory/Tools/Item Preview` - Preview and edit generated items
-- `Tools/Rundee/Item Factory/Tools/Batch Job Manager` - Queue and manage batch generation jobs
-- `Tools/Rundee/Item Factory/Tools/Preset Manager` - Create and manage custom presets
-- `Tools/Rundee/Item Factory/Tools/Data Exporter` - Export items to CSV/YAML formats
-
-**Analysis:**
-- `Tools/Rundee/Item Factory/Analysis/Statistics Dashboard` - View generation statistics and trends
-- `Tools/Rundee/Item Factory/Analysis/Quality Check` - Quality control and validation
-
-**Help:**
-- `Tools/Rundee/Item Factory/Help/Help & Tutorial` - User guides and documentation
+**Main Windows:**
+- `Tools/Rundee/Item Factory/Item Factory` - Main window for generating items and managing settings
+- `Tools/Rundee/Item Factory/Import JSON` - Import JSON files and convert to ScriptableObjects
 
 **Setup:**
-- `Tools/Rundee/Item Factory/Setup/Setup Item Factory` - Runs bundled Ollama installer batch
+- `Tools/Rundee/Item Factory/Ollama Setup` - Install Ollama on Windows
 
-#### Item Manager Window
-
-`Tools > Rundee > Item Manager` provides a searchable overview of every generated ScriptableObject:
-
-- Filter by item type, rarity, or keyword (matches ID/display name).
-- Ping the underlying asset in the Project window or bulk-delete obsolete items.
-- Helpful when pruning prototypes before re-importing fresh data.
-
-#### Using ItemDatabase
-
-Add the `ItemDatabase` component to a GameObject in your scene. It will automatically load all items from Resources on `Awake()`.
-
-```csharp
-ItemDatabase db = GetComponent<ItemDatabase>();
-
-// Find items by ID
-FoodItemDataSO food = db.FindFoodItem("Food_apple");
-DrinkItemDataSO drink = db.FindDrinkItem("Drink_water");
-MaterialItemDataSO material = db.FindMaterialItem("Material_wood_plank");
-WeaponItemDataSO weapon = db.FindWeaponItem("Weapon_ak47");
-WeaponComponentItemDataSO component = db.FindWeaponComponentItem("WeaponComponent_suppressor");
-AmmoItemDataSO ammo = db.FindAmmoItem("Ammo_9mm");
-```
+**Note:** Additional management tools (Item Manager, Registry Manager, etc.) are planned for future releases.
 
 ## Documentation
 
@@ -481,9 +437,9 @@ When generating items to an existing file, the tool automatically:
 
 This allows you to incrementally build your item database without losing existing data.
 
-## Balance Report
+## Balance Report (Planned)
 
-Generate statistical reports for generated items to analyze balance and distribution patterns.
+Balance report feature is planned for future releases. This will provide statistical analysis of generated items to analyze balance and distribution patterns.
 
 ### Command Line
 
@@ -496,55 +452,7 @@ RundeeItemFactory.exe --report items_ammo.json --itemType ammo
 
 ### Unity Editor
 
-1. Open **Tools > Rundee > Item Factory > Item Factory Window**
-2. Expand the **Balance Report** section
-3. Select a JSON file and item type
-4. Click **Generate Report**
-5. View the report in the scrollable text area
-
-### Report Contents
-
-Each report includes:
-
-**Quick Summary:**
-- Key statistics at a glance
-- Average values for important stats
-- Distribution overview
-
-**Detailed Statistics:**
-- Total item count
-- Rarity distribution (with percentages)
-- Average/Min/Max for all stats
-- Type-specific distributions (weapon types, calibers, component types, etc.)
-
-**Balance Warnings:**
-- Detects unrealistic values
-- Highlights potential balance issues
-- Provides recommendations
-
-**Example Output:**
-```
-========================================
-   WEAPON ITEMS BALANCE REPORT
-========================================
-Total Items: 25
-
---- Quick Summary ---
-  Average Damage: 42.5
-  Average Fire Rate: 580 RPM
-  Average Accuracy: 68/100
-  Average Weight: 3200g (3.2 kg)
-  Weapon Categories: 18 Ranged, 7 Melee
-
---- Rarity Distribution ---
-  Common    :  8 (32.0%)
-  Uncommon  : 10 (40.0%)
-  Rare      :  7 (28.0%)
-
---- Balance Warnings ---
-  [OK] No balance issues detected.
-========================================
-```
+Balance Report feature is planned for future releases. Currently, you can analyze generated JSON files manually or use external tools.
 
 ## Troubleshooting
 
