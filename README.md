@@ -7,14 +7,17 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
 ## Features
 
 - **Local LLM Integration**: Uses Ollama for local LLM interaction
+- **Dynamic Profile System**: Create custom item structures with flexible field definitions, validation rules, and relationships
 - **Multiple Item Types**: Food, Drink, Material, Weapon, WeaponComponent, and Ammo items
-- **Preset System**: Forest, Desert, Coast, City, and Default presets
+- **Preset System**: Forest, Desert, Coast, City, and Default presets with custom preset support
+- **Dynamic Prompt Generation**: LLM prompts are dynamically built from profile data, ensuring all field definitions, validation rules, and player settings are included
 - **Unity Integration**: Automatic ScriptableObject generation with EditorWindow GUI
 - **Balance Reporting**: Statistical analysis of generated items with Quick Summary
 - **Unity Balance Report Integration**: Generate balance reports directly from Unity Editor
 - **Improved UI**: Organized sections with helpful tooltips and progress indicators
 - **Retry Logic**: Automatic retry on LLM failures with exponential backoff
 - **ID Prefixing**: Automatic type prefixes (Food_, Drink_, Material_, Weapon_, WeaponComponent_, Ammo_)
+- **ID Registry System**: Prevents duplicate IDs across generations
 - **JSON Merging**: Automatically merges new items with existing files, skipping duplicates
 
 ## Requirements
@@ -42,9 +45,11 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
 ## Installation
 
 1. Clone this repository
-2. Open `RundeeItemFactory.sln` in Visual Studio
+2. Open `RundeeItemFactory/RundeeItemFactory.sln` in Visual Studio
 3. Build the project (Release or Debug)
 4. Ensure Ollama is installed and running
+
+For detailed installation instructions, see [INSTALLATION_GUIDE.md](docs/INSTALLATION_GUIDE.md)
 
 ## Usage
 
@@ -90,33 +95,25 @@ RundeeItemFactory.exe --report items_food.json --itemType food
 RundeeItemFactory.exe --mode dummy --itemType food --count 5 --out items_dummy.json
 ```
 
-### Prompt Template System
+### Dynamic Profile System
 
-All LLM prompts are loaded from external text files so you can tweak wording without recompiling.
+The system uses a **Dynamic Profile System** where LLM prompts are automatically generated from item profiles. This ensures:
 
-- Default templates live under `RundeeItemFactory/prompts/` inside the repo.
-- When you build the project, the templates are copied next to `RundeeItemFactory.exe` inside an automatically created `prompts/` directory (for example `x64/Debug/prompts/` during debug builds).
-- At runtime the generator loads `<exe>/prompts/<itemType>.txt`. If the file is missing the previous built-in prompt is used as a fallback.
-- **Preset-specific overrides:** add files named `prompts/<itemType>_<presetSlug>.txt` (e.g., `food_forest.txt`) or custom preset overrides `prompts/<itemType>_custom_<presetSlug>.txt`. `<presetSlug>` is the preset name lowercased with spaces and punctuation replaced by `_`. Resolution order is:
-  - `food_custom_<presetSlug>` → `food_<presetSlug>` → `food`
-  - Same pattern for `drink`, `material`, `weapon`, `weapon_component`, `ammo`
+- **Complete Data Transmission**: All profile data (fields, validation rules, relationships, player settings) is included in the prompt
+- **No Data Loss**: Every field definition, constraint, and allowed value is passed to the LLM
+- **Flexible Structure**: Create custom item structures without code changes
+- **Validation Rules**: Field validation rules (min/max, allowed values, relationships) are included in prompts
+- **Player Context**: Player settings (max stats) are included for balance context
+- **Duplicate Prevention**: Existing IDs from the registry are included to prevent duplicates
 
-#### Available template placeholders
+Profiles define:
+- Field definitions with types and validation rules
+- Relationship constraints between fields
+- Allowed values and default values
+- Player settings for balance context
+- Custom context for LLM guidance
 
-| Placeholder | Description |
-|-------------|-------------|
-| `{ITEM_TYPE}` | Friendly item type name (e.g., `Food`, `WeaponComponent`) |
-| `{PRESET_NAME}` | Active preset name (`Default`, `Forest`, custom preset display name, etc.) |
-| `{PRESET_CONTEXT}` | Long-form flavor text describing the preset |
-| `{MAX_HUNGER}` | Maximum hunger parameter (Food/Drink only) |
-| `{MAX_THIRST}` | Maximum thirst parameter (Food/Drink only) |
-| `{COUNT}` | Number of items requested |
-| `{EXCLUDE_IDS}` | Formatted list of IDs to avoid (empty when nothing to exclude) |
-| `{MODEL_NAME}` | Active LLM model name (e.g., `llama3`) |
-| `{TIMESTAMP}` | Local timestamp when generation started |
-| `{EXISTING_COUNT}` | Number of existing IDs already present (size of exclusion set) |
-
-Feel free to embed additional narrative instructions, balancing notes, or formatting hints in these files. If you need more placeholders, extend `PromptTemplateLoader::LoadTemplate` with the desired variable.
+See [Dynamic Profile System Documentation](docs/DYNAMIC_PROFILE_SYSTEM.md) for detailed information.
 
 ### Command Line Arguments
 
@@ -243,22 +240,32 @@ AmmoItemDataSO ammo = db.FindAmmoItem("Ammo_9mm");
 
 ```
 RundeeItemFactory/
-├── include/
-│   ├── Data/              # Item data structures
-│   ├── Validators/        # Item validation logic
-│   ├── Parsers/           # JSON parsing
-│   ├── Writers/           # JSON writing
-│   ├── Generators/        # Item generation
-│   ├── Clients/           # LLM client (Ollama)
-│   ├── Prompts/           # Prompt building
-│   ├── Helpers/           # Command line parsing, item generation
-│   └── Utils/             # Utility functions
-└── src/                   # Implementation files
+├── RundeeItemFactory/          # C++ Visual Studio project
+│   ├── include/                # Header files
+│   │   ├── Data/               # Item data structures, profiles
+│   │   ├── Validators/         # Item validation logic
+│   │   ├── Parsers/            # JSON parsing
+│   │   ├── Writers/            # JSON writing
+│   │   ├── Generators/         # Item generation
+│   │   ├── Clients/             # LLM client (Ollama)
+│   │   ├── Prompts/             # Prompt building (DynamicPromptBuilder)
+│   │   ├── Helpers/             # Command line parsing, utilities
+│   │   └── Utils/               # Utility functions
+│   ├── src/                     # Implementation files
+│   ├── config/                  # Configuration files
+│   └── RundeeItemFactory.sln    # Visual Studio solution
+├── docs/                        # Documentation
+│   ├── DYNAMIC_PROFILE_SYSTEM.md
+│   ├── INSTALLATION_GUIDE.md
+│   ├── UNITY_IMPORT_GUIDE.md
+│   └── ...
+├── LICENCES/                    # Third-party licenses
+├── README.md                     # This file
+└── LICENSE                       # Project license
 
-UnityRundeeItemFactory/
-└── Assets/RundeeItemFactory/
-    ├── Editor/            # Unity Editor scripts
-    └── Runtime/           # Runtime scripts
+Note: The following folders are for testing/development and are not tracked in git:
+- scripts/                       # Build and test scripts
+- UnityRundeeItemFactory/        # Unity test project
 ```
 
 ## Item Data Structure

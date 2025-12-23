@@ -74,12 +74,12 @@ If you're using Unity integration, you can also install Ollama directly from Uni
    - Press `Ctrl+Shift+B` or go to **Build > Build Solution**
 
 4. Verify build output:
-   - Debug build: `x64/Debug/RundeeItemFactory.exe`
-   - Release build: `x64/Release/RundeeItemFactory.exe`
+   - Debug build: `RundeeItemFactory/x64/Debug/RundeeItemFactory.exe`
+   - Release build: `RundeeItemFactory/x64/Release/RundeeItemFactory.exe`
 
 5. Verify required files are copied:
-   - `prompts/` directory should exist next to the executable
-   - `config/rundee_config.json` should exist (optional)
+   - `config/rundee_config.json` should exist next to the executable (optional)
+   - `profiles/` directory will be created automatically on first run
 
 ### 4. Test the Installation
 
@@ -117,9 +117,9 @@ This will generate 5 food items using the LLM. First run may take 1-2 minutes.
 3. Configure executable path:
    - Go to **Tools > Rundee > Item Factory > Item Factory Window**
    - In the "Executable Path" field, browse to your `RundeeItemFactory.exe`
-   - Default locations:
-     - Debug: `RundeeItemFactory/x64/Debug/RundeeItemFactory.exe`
-     - Release: `RundeeItemFactory/x64/Release/RundeeItemFactory.exe`
+   - Default locations (relative to repository root):
+     - Debug: `RundeeItemFactory/RundeeItemFactory/x64/Debug/RundeeItemFactory.exe`
+     - Release: `RundeeItemFactory/RundeeItemFactory/x64/Release/RundeeItemFactory.exe`
 
 4. Test Unity integration:
    - In Item Factory Window, click "Verify Executable"
@@ -150,7 +150,13 @@ Create or edit `config/rundee_config.json` next to the executable:
 
 ### Profiles Directory
 
-Item profiles are stored in `profiles/` directory next to the executable. Default profiles are created automatically on first run.
+Item profiles are stored in `profiles/` directory next to the executable. The system uses a dynamic profile system where:
+
+- Default profiles are created automatically on first run
+- Profiles define item structure (fields, validation rules, relationships)
+- LLM prompts are dynamically generated from profile data
+- All profile information (fields, constraints, player settings) is included in prompts
+- See [Dynamic Profile System Documentation](DYNAMIC_PROFILE_SYSTEM.md) for details
 
 ## Troubleshooting
 
