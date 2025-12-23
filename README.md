@@ -228,13 +228,16 @@ WeaponComponentItemDataSO component = db.FindWeaponComponentItem("WeaponComponen
 AmmoItemDataSO ammo = db.FindAmmoItem("Ammo_9mm");
 ```
 
-## Testing & QA
+## Documentation
 
-- **E2E flow**: `docs/E2E_TEST_PLAN.md` — CLI generation, Unity import, Item Manager cleanup.
-- **Batch stress**: `docs/BATCH_STRESS_PLAN.md` — batch strings, metrics, acceptance criteria.
-- **Pilot QA checklist**: `docs/QA_PILOT_CHECKLIST.md` — 50–100 items per type, import/QA steps.
-- **Guardrails**: `docs/QA_GUARDRAILS.md` — duplicate/ID rules, value ranges, text checks, rarity warnings.
-- **Metrics plan**: `docs/METRICS_PLAN.md` — what to log, targets, and reporting hints.
+Available documentation in the `docs/` directory:
+
+- **[Dynamic Profile System](docs/DYNAMIC_PROFILE_SYSTEM.md)** — Complete guide to creating and using custom item profiles
+- **[Installation Guide](docs/INSTALLATION_GUIDE.md)** — Detailed setup instructions
+- **[Unity Import Guide](docs/UNITY_IMPORT_GUIDE.md)** — Unity integration and usage
+- **[Deployment Structure](docs/DEPLOYMENT_STRUCTURE.md)** — Deployment package structure and scenarios
+- **[Asset Store Setup](docs/ASSET_STORE_SETUP.md)** — Unity Asset Store distribution guide
+- **[Deployment Strategy](docs/DEPLOYMENT_STRATEGY.md)** — Deployment strategies and best practices
 
 ## Project Structure
 

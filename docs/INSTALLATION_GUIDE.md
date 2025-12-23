@@ -270,8 +270,8 @@ After installation:
 
 1. Read the [README.md](../README.md) for usage instructions
 2. Check [UNITY_IMPORT_GUIDE.md](UNITY_IMPORT_GUIDE.md) for Unity-specific features
-3. Explore [CODE_STRUCTURE.md](CODE_STRUCTURE.md) to understand the codebase
-4. Review [FEATURE_IMPLEMENTATION_SUMMARY.md](FEATURE_IMPLEMENTATION_SUMMARY.md) for available features
+3. Review [DYNAMIC_PROFILE_SYSTEM.md](DYNAMIC_PROFILE_SYSTEM.md) to understand the profile system
+4. See [DEPLOYMENT_STRUCTURE.md](DEPLOYMENT_STRUCTURE.md) for deployment information
 
 ## Getting Help
 
