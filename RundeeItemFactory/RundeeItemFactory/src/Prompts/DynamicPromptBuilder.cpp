@@ -7,338 +7,259 @@
  */
 
 #include "Prompts/DynamicPromptBuilder.h"
-#include "Prompts/CustomPreset.h"
-#include "Helpers/ItemGenerateParams.h"
+#include "Prompts/PromptTemplateLoader.h"
 #include <sstream>
 #include <algorithm>
 #include <iomanip>
-
-namespace
-{
-    std::string BuildExcludeSection(const std::set<std::string>& excludeIds)
-    {
-        if (excludeIds.empty())
-            return {};
-
-        std::string text;
-        text += "\nIMPORTANT - Avoid these existing item IDs (do NOT use these):\n";
-        int count = 0;
-        const int kMaxList = 40;
-        for (const auto& id : excludeIds)
-        {
-            if (count > 0) text += ", ";
-            text += id;
-            count++;
-            if (count >= kMaxList)
-            {
-                text += " ... (and " + std::to_string(excludeIds.size() - kMaxList) + " more, list truncated)";
-                break;
-            }
-        }
-        text += "\nGenerate NEW unique IDs that are different from all existing IDs (assume many more exist). Avoid reusing stems; use fresh, novel names, not simple number suffixes.\n";
-        text += "Do NOT generate items that are near-duplicates in concept or function of anything above or of each other in the same batch. Each item must have a distinct idea/material/purpose, not just small adjective changes.\n";
-        return text;
-    }
-}
 
 std::string DynamicPromptBuilder::BuildPromptFromProfile(
     const ItemProfile& profile,
     const FoodGenerateParams& params,
     const CustomPreset& customPreset,
-    const std::set<std::string>& excludeIds,
+    const std::set<std::string>& existingIds,
     const std::string& modelName,
     const std::string& generationTimestamp,
     int existingCount)
 {
-    std::string prompt;
+    std::ostringstream prompt;
     
-    // 1) Add world context (custom context takes priority, then custom preset)
-    if (!profile.customContext.empty())
+    // Try to load template first
+    std::string templateName = profile.itemTypeName;
+    std::transform(templateName.begin(), templateName.end(), templateName.begin(), ::tolower);
+    templateName += "_template";
+    
+    std::string templateContent = PromptTemplateLoader::LoadTemplate(
+        templateName,
+        customPreset.flavorText,
+        params.maxHunger,
+        params.maxThirst,
+        params.count,
+        existingIds,
+        customPreset.displayName,
+        profile.itemTypeName,
+        modelName,
+        generationTimestamp,
+        existingCount);
+    
+    // If template exists, use it as base
+    if (!templateContent.empty())
     {
-        prompt += "World context:\n";
-        prompt += profile.customContext;
-        if (profile.customContext.back() != '\n')
-            prompt += "\n";
-        prompt += "\n";
+        prompt << templateContent;
     }
     else
     {
-        prompt += GetPresetFlavorText(customPreset);
-    }
-    
-    // 2) Describe player parameters (if applicable)
-    // Use playerSettings from profile if available, otherwise use params
-    int maxHunger = profile.playerSettings.maxHunger > 0 ? profile.playerSettings.maxHunger : params.maxHunger;
-    int maxThirst = profile.playerSettings.maxThirst > 0 ? profile.playerSettings.maxThirst : params.maxThirst;
-    int maxHealth = profile.playerSettings.maxHealth > 0 ? profile.playerSettings.maxHealth : params.maxHealth;
-    int maxStamina = profile.playerSettings.maxStamina > 0 ? profile.playerSettings.maxStamina : params.maxStamina;
-    int maxWeight = profile.playerSettings.maxWeight > 0 ? profile.playerSettings.maxWeight : params.maxWeight;
-    int maxEnergy = profile.playerSettings.maxEnergy > 0 ? profile.playerSettings.maxEnergy : params.maxEnergy;
-    
-    prompt += "The player has:\n";
-    
-    prompt += "- maxHunger = " + std::to_string(maxHunger) + "\n";
-    prompt += "- maxThirst = " + std::to_string(maxThirst) + "\n";
-    prompt += "- maxHealth = " + std::to_string(maxHealth) + "\n";
-    prompt += "- maxStamina = " + std::to_string(maxStamina) + "\n";
-    prompt += "- maxWeight = " + std::to_string(maxWeight) + " (grams)\n";
-    prompt += "- maxEnergy = " + std::to_string(maxEnergy) + "\n\n";
-    
-    // 3) Task description
-    prompt += "Task:\n";
-    prompt += "Generate " + std::to_string(params.count) + " " + profile.itemTypeName + " items ";
-    prompt += "for the specified world setting.\n";
-    
-    // Add exclusion list if provided
-    prompt += BuildExcludeSection(excludeIds);
-    prompt += "\n";
-    
-    // 4) Define JSON Rules/Schema from profile (CRITICAL - exact structure required)
-    prompt += "Rules:\n";
-    prompt += "- Use this JSON schema EXACTLY for each item. The structure must match precisely:\n";
-    prompt += ProfileToJsonSchemaString(profile);
-    prompt += "\n";
-    prompt += "CRITICAL: You MUST include ALL fields shown above in the exact structure specified. ";
-    prompt += "Field names, types, and nesting must match exactly.\n\n";
-    
-    // 5) Add validation rules
-    std::string validationRules = BuildValidationRules(profile);
-    if (!validationRules.empty())
-    {
-        prompt += validationRules;
-        prompt += "\n";
-    }
-    
-    // 6) Output instructions
-    prompt += "Output:\n";
-    prompt += "- Output ONLY a JSON array of items matching the exact structure above.\n";
-    prompt += "- No comments, no extra text, no Markdown, no explanation.\n";
-    prompt += "- Ensure each item has all required fields.\n";
-    prompt += "- Each item must be a valid JSON object with all specified fields.\n";
-    
-    return prompt;
-}
-
-std::string DynamicPromptBuilder::ProfileToJsonSchemaString(const ItemProfile& profile)
-{
-    std::stringstream schema;
-    schema << "{\n";
-    
-    // Sort fields by display order, then by name
-    std::vector<const ProfileField*> sortedFields;
-    for (const auto& field : profile.fields)
-    {
-        sortedFields.push_back(&field);
-    }
-    std::sort(sortedFields.begin(), sortedFields.end(), [](const ProfileField* a, const ProfileField* b) {
-        if (a->displayOrder != b->displayOrder)
-            return a->displayOrder < b->displayOrder;
-        return a->name < b->name;
-    });
-    
-    // Group by category for better organization
-    std::map<std::string, std::vector<const ProfileField*>> fieldsByCategory;
-    for (const auto* field : sortedFields)
-    {
-        fieldsByCategory[field->category].push_back(field);
-    }
-    
-    bool firstField = true;
-    for (const auto& [category, fields] : fieldsByCategory)
-    {
-        if (!category.empty())
-        {
-            schema << "  // " << category << " fields\n";
-        }
+        // Build prompt from scratch
+        prompt << "You are a game item generator. Generate " << params.count 
+               << " unique " << profile.itemTypeName << " items as a JSON array.\n\n";
         
-        for (const auto* field : fields)
+        if (!customPreset.flavorText.empty())
         {
-            if (!firstField) schema << ",\n";
-            schema << "  " << std::quoted(field->name) << ": " << FieldToSchemaDescription(*field);
-            firstField = false;
+            prompt << "World Context:\n" << customPreset.flavorText << "\n\n";
         }
     }
     
-    schema << "\n}";
-    return schema.str();
-}
-
-std::string DynamicPromptBuilder::FieldToSchemaDescription(const ProfileField& field)
-{
-    std::stringstream desc;
-    
-    switch (field.type)
+    // Add profile information section
+    prompt << "\n=== ITEM PROFILE SPECIFICATION ===\n\n";
+    prompt << "Profile: " << profile.displayName << " (" << profile.id << ")\n";
+    if (!profile.description.empty())
     {
-        case ProfileFieldType::String:
-            desc << "string";
-            if (!field.description.empty())
-            {
-                desc << " // " << field.description;
-            }
-            break;
-            
-        case ProfileFieldType::Integer:
-            desc << "integer";
-            if (field.validation.minValue != 0.0 || field.validation.maxValue != 0.0)
-            {
-                desc << " (";
-                if (field.validation.minValue != 0.0)
-                    desc << "min: " << static_cast<int>(field.validation.minValue);
-                if (field.validation.minValue != 0.0 && field.validation.maxValue != 0.0)
-                    desc << ", ";
-                if (field.validation.maxValue != 0.0)
-                    desc << "max: " << static_cast<int>(field.validation.maxValue);
-                desc << ")";
-            }
-            if (!field.description.empty())
-            {
-                desc << " // " << field.description;
-            }
-            break;
-            
-        case ProfileFieldType::Float:
-            desc << "float";
-            if (field.validation.minValue != 0.0 || field.validation.maxValue != 0.0)
-            {
-                desc << " (";
-                if (field.validation.minValue != 0.0)
-                    desc << "min: " << field.validation.minValue;
-                if (field.validation.minValue != 0.0 && field.validation.maxValue != 0.0)
-                    desc << ", ";
-                if (field.validation.maxValue != 0.0)
-                    desc << "max: " << field.validation.maxValue;
-                desc << ")";
-            }
-            if (!field.description.empty())
-            {
-                desc << " // " << field.description;
-            }
-            break;
-            
-        case ProfileFieldType::Boolean:
-            desc << "boolean";
-            if (!field.description.empty())
-            {
-                desc << " // " << field.description;
-            }
-            break;
-            
-        case ProfileFieldType::Array:
-            desc << "array";
-            if (!field.description.empty())
-            {
-                desc << " // " << field.description;
-            }
-            break;
-            
-        case ProfileFieldType::Object:
-            desc << "object";
-            if (!field.description.empty())
-            {
-                desc << " // " << field.description;
-            }
-            break;
+        prompt << "Description: " << profile.description << "\n";
     }
+    prompt << "Item Type: " << profile.itemTypeName << "\n\n";
     
-    // Add allowed values if specified
-    if (!field.validation.allowedValues.empty())
+    // Add player settings for balance context
+    prompt << "Player Stat Maximums (for balancing):\n";
+    if (profile.playerSettings.count("maxHunger"))
+        prompt << "  - Max Hunger: " << profile.playerSettings.at("maxHunger") << "\n";
+    if (profile.playerSettings.count("maxThirst"))
+        prompt << "  - Max Thirst: " << profile.playerSettings.at("maxThirst") << "\n";
+    if (profile.playerSettings.count("maxHealth"))
+        prompt << "  - Max Health: " << profile.playerSettings.at("maxHealth") << "\n";
+    if (profile.playerSettings.count("maxStamina"))
+        prompt << "  - Max Stamina: " << profile.playerSettings.at("maxStamina") << "\n";
+    if (profile.playerSettings.count("maxWeight"))
+        prompt << "  - Max Weight: " << profile.playerSettings.at("maxWeight") << " grams\n";
+    if (profile.playerSettings.count("maxEnergy"))
+        prompt << "  - Max Energy: " << profile.playerSettings.at("maxEnergy") << "\n";
+    prompt << "\n";
+    
+    // Add all field definitions with validation rules
+    prompt << "=== REQUIRED FIELDS AND VALIDATION RULES ===\n\n";
+    prompt << "Each item MUST include the following fields with these specifications:\n\n";
+    
+    // Sort fields by display order
+    std::vector<ProfileField> sortedFields = profile.fields;
+    std::sort(sortedFields.begin(), sortedFields.end(), 
+        [](const ProfileField& a, const ProfileField& b) {
+            return a.displayOrder < b.displayOrder;
+        });
+    
+    for (const auto& field : sortedFields)
     {
-        desc << " (allowed: ";
-        for (size_t i = 0; i < field.validation.allowedValues.size(); ++i)
-        {
-            if (i > 0) desc << " | ";
-            desc << std::quoted(field.validation.allowedValues[i]);
-        }
-        desc << ")";
-    }
-    
-    return desc.str();
-}
-
-std::string DynamicPromptBuilder::BuildValidationRules(const ItemProfile& profile)
-{
-    std::stringstream rules;
-    bool hasRules = false;
-    
-    // First, collect field-level validation rules
-    for (const auto& field : profile.fields)
-    {
-        std::vector<std::string> fieldRules;
+        prompt << "Field: " << field.name << "\n";
+        prompt << "  Display Name: " << field.displayName << "\n";
+        prompt << "  Description: " << field.description << "\n";
+        prompt << "  Category: " << field.category << "\n";
+        prompt << "  Type: ";
         
+        switch (field.type)
+        {
+            case ProfileFieldType::String:
+                prompt << "string";
+                break;
+            case ProfileFieldType::Integer:
+                prompt << "integer";
+                break;
+            case ProfileFieldType::Float:
+                prompt << "float";
+                break;
+            case ProfileFieldType::Boolean:
+                prompt << "boolean";
+                break;
+            case ProfileFieldType::Array:
+                prompt << "array";
+                break;
+            case ProfileFieldType::Object:
+                prompt << "object";
+                break;
+        }
+        prompt << "\n";
+        
+        // Validation rules
         if (field.validation.isRequired)
         {
-            fieldRules.push_back(field.name + " is REQUIRED");
+            prompt << "  REQUIRED: Yes\n";
         }
-        
-        if (field.type == ProfileFieldType::Integer || field.type == ProfileFieldType::Float)
+        else
         {
-            if (field.validation.minValue != 0.0)
+            prompt << "  REQUIRED: No";
+            if (!field.defaultValue.is_null())
             {
-                fieldRules.push_back(field.name + " must be >= " + std::to_string(field.validation.minValue));
+                prompt << " (default: " << field.defaultValue.dump() << ")";
             }
-            if (field.validation.maxValue != 0.0)
-            {
-                fieldRules.push_back(field.name + " must be <= " + std::to_string(field.validation.maxValue));
-            }
+            prompt << "\n";
         }
         
+        // Type-specific validation
         if (field.type == ProfileFieldType::String)
         {
             if (field.validation.minLength > 0)
-            {
-                fieldRules.push_back(field.name + " must be at least " + std::to_string(field.validation.minLength) + " characters");
-            }
+                prompt << "  Min Length: " << field.validation.minLength << "\n";
             if (field.validation.maxLength > 0)
+                prompt << "  Max Length: " << field.validation.maxLength << "\n";
+            if (!field.validation.allowedValues.empty())
             {
-                fieldRules.push_back(field.name + " must be at most " + std::to_string(field.validation.maxLength) + " characters");
+                prompt << "  Allowed Values: ";
+                for (size_t i = 0; i < field.validation.allowedValues.size(); ++i)
+                {
+                    if (i > 0) prompt << ", ";
+                    prompt << field.validation.allowedValues[i];
+                }
+                prompt << "\n";
             }
         }
-        
-        // Add relationship constraints
-        for (const auto& constraint : field.validation.relationshipConstraints)
+        else if (field.type == ProfileFieldType::Integer || field.type == ProfileFieldType::Float)
         {
-            std::string constraintText = field.name + " " + constraint.operator_ + " " + constraint.targetField;
-            if (constraint.offset != 0.0)
-            {
-                if (constraint.offset > 0)
-                    constraintText += " + " + std::to_string(constraint.offset);
-                else
-                    constraintText += " - " + std::to_string(std::abs(constraint.offset));
-            }
-            if (!constraint.description.empty())
-            {
-                constraintText += " (" + constraint.description + ")";
-            }
-            fieldRules.push_back(constraintText);
+            if (field.validation.minValue != 0.0)
+                prompt << "  Min Value: " << field.validation.minValue << "\n";
+            if (field.validation.maxValue != 0.0)
+                prompt << "  Max Value: " << field.validation.maxValue << "\n";
+        }
+        else if (field.type == ProfileFieldType::Array)
+        {
+            if (field.validation.minLength > 0)
+                prompt << "  Min Elements: " << field.validation.minLength << "\n";
+            if (field.validation.maxLength > 0)
+                prompt << "  Max Elements: " << field.validation.maxLength << "\n";
         }
         
-        // Add custom constraint if specified
+        // Relationship constraints
+        if (!field.validation.relationshipConstraints.empty())
+        {
+            prompt << "  Relationship Constraints:\n";
+            for (const auto& constraint : field.validation.relationshipConstraints)
+            {
+                prompt << "    - " << constraint.description << "\n";
+                prompt << "      (" << field.name << " " << constraint.operator_ 
+                       << " " << constraint.targetField << ")\n";
+            }
+        }
+        
+        // Custom constraint
         if (!field.validation.customConstraint.empty())
         {
-            fieldRules.push_back(field.name + ": " + field.validation.customConstraint);
+            prompt << "  Custom Constraint: " << field.validation.customConstraint << "\n";
         }
         
-        if (!fieldRules.empty())
-        {
-            if (hasRules) rules << "\n";
-            for (const auto& rule : fieldRules)
-            {
-                rules << "- " << rule << "\n";
-            }
-            hasRules = true;
-        }
+        prompt << "\n";
     }
     
-    return rules.str();
+    // Add existing IDs to avoid
+    if (!existingIds.empty())
+    {
+        prompt << "\n=== EXISTING ITEM IDs TO AVOID ===\n";
+        prompt << "IMPORTANT: Do NOT use these existing item IDs. Generate NEW unique IDs.\n";
+        prompt << "Avoid reusing stems; use fresh, novel names, not simple number suffixes.\n\n";
+        
+        int idCount = 0;
+        for (const auto& id : existingIds)
+        {
+            if (idCount > 0) prompt << ", ";
+            prompt << id;
+            idCount++;
+            if (idCount >= 20) // Limit to first 20
+            {
+                prompt << " ... (and " << (existingIds.size() - 20) << " more)";
+                break;
+            }
+        }
+        prompt << "\n\n";
+    }
+    
+    // Output format instructions
+    prompt << "\n=== OUTPUT FORMAT ===\n";
+    prompt << "Return a JSON array of " << params.count << " items.\n";
+    prompt << "Each item must be a JSON object with all required fields.\n";
+    prompt << "Example structure:\n";
+    prompt << "[\n";
+    prompt << "  {\n";
+    
+    // Show example with first few fields
+    int exampleCount = 0;
+    for (const auto& field : sortedFields)
+    {
+        if (exampleCount >= 5) break;
+        prompt << "    \"" << field.name << "\": ";
+        switch (field.type)
+        {
+            case ProfileFieldType::String:
+                prompt << "\"example_value\"";
+                break;
+            case ProfileFieldType::Integer:
+                prompt << "0";
+                break;
+            case ProfileFieldType::Float:
+                prompt << "0.0";
+                break;
+            case ProfileFieldType::Boolean:
+                prompt << "false";
+                break;
+            case ProfileFieldType::Array:
+                prompt << "[]";
+                break;
+            case ProfileFieldType::Object:
+                prompt << "{}";
+                break;
+        }
+        prompt << ",\n";
+        exampleCount++;
+    }
+    prompt << "    ...\n";
+    prompt << "  }\n";
+    prompt << "]\n\n";
+    
+    prompt << "Generate " << params.count << " unique, creative " << profile.itemTypeName 
+           << " items that fit the world context and follow all validation rules.\n";
+    
+    return prompt.str();
 }
-
-std::string DynamicPromptBuilder::GetPresetFlavorText(const CustomPreset& customPreset)
-{
-    return CustomPresetManager::GetPresetFlavorText(customPreset);
-}
-
-std::string DynamicPromptBuilder::BuildExcludeSection(const std::set<std::string>& excludeIds)
-{
-    return ::BuildExcludeSection(excludeIds);
-}
-

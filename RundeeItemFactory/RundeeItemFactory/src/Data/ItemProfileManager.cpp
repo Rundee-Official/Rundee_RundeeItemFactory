@@ -1,6 +1,6 @@
 /**
  * @file ItemProfileManager.cpp
- * @brief Implementation of item profile manager
+ * @brief Implementation of profile manager
  * @author Haneul Lee (Rundee)
  * @date 2025-12-21
  * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
@@ -8,35 +8,29 @@
 
 #include "Data/ItemProfileManager.h"
 #include <fstream>
-#include <sstream>
-#include <algorithm>
 #include <filesystem>
-#include <set>
 #include <iostream>
-#include <json.hpp>
+#include <algorithm>
+#include <sstream>
+#include <set>
 
-#ifdef _WIN32
-#include <direct.h>
-#include <windows.h>
-#else
-#include <sys/stat.h>
-#include <unistd.h>
-#endif
-
-std::string ItemProfileManager::s_profilesDir = "profiles/";
+std::string ItemProfileManager::s_profilesDir;
 
 bool ItemProfileManager::Initialize(const std::string& profilesDir)
 {
     s_profilesDir = profilesDir;
     
     // Ensure directory exists
-    if (!std::filesystem::exists(s_profilesDir))
+    if (!std::filesystem::exists(profilesDir))
     {
-        std::filesystem::create_directories(s_profilesDir);
+        std::filesystem::create_directories(profilesDir);
     }
     
-    // Create default profiles if they don't exist
-    CreateDefaultProfiles(s_profilesDir);
+    // Create default profiles if directory is empty
+    if (std::filesystem::is_empty(profilesDir))
+    {
+        CreateDefaultProfiles(profilesDir);
+    }
     
     return true;
 }
@@ -51,23 +45,26 @@ ItemProfile ItemProfileManager::LoadProfileFromPath(const std::string& filePath)
 {
     ItemProfile profile;
     
+    if (!std::filesystem::exists(filePath))
+    {
+        return profile;
+    }
+    
     std::ifstream file(filePath);
     if (!file.is_open())
     {
-        return profile; // Return empty profile
+        return profile;
     }
     
     try
     {
-        nlohmann::json json;
-        file >> json;
-        file.close();
-        
-        profile = ParseProfileFromJson(json);
+        nlohmann::json j;
+        file >> j;
+        profile = ParseProfileFromJson(j);
     }
     catch (const std::exception& e)
     {
-        // Return empty profile on error
+        std::cerr << "[ItemProfileManager] Failed to parse profile: " << e.what() << "\n";
     }
     
     return profile;
@@ -75,141 +72,77 @@ ItemProfile ItemProfileManager::LoadProfileFromPath(const std::string& filePath)
 
 bool ItemProfileManager::SaveProfile(const ItemProfile& profile)
 {
-    std::vector<std::string> errors;
-    if (!ValidateProfile(profile, errors))
+    if (profile.id.empty())
     {
         return false;
     }
     
     std::string filePath = GetProfileFilePath(profile.id);
+    std::filesystem::create_directories(std::filesystem::path(filePath).parent_path());
     
-    // Ensure directory exists
-    std::filesystem::path dirPath = std::filesystem::path(filePath).parent_path();
-    if (!std::filesystem::exists(dirPath))
+    std::ofstream file(filePath);
+    if (!file.is_open())
     {
-        std::filesystem::create_directories(dirPath);
+        return false;
     }
     
     try
     {
-        nlohmann::json json = ProfileToJson(profile);
-        
-        std::ofstream file(filePath);
-        if (!file.is_open())
-        {
-            return false;
-        }
-        
-        file << json.dump(2); // Pretty print with 2 spaces
-        file.close();
-        
+        nlohmann::json j = ProfileToJson(profile);
+        file << j.dump(2);
         return true;
     }
-    catch (const std::exception&)
+    catch (const std::exception& e)
     {
+        std::cerr << "[ItemProfileManager] Failed to save profile: " << e.what() << "\n";
         return false;
     }
 }
 
 ItemProfile ItemProfileManager::GetDefaultProfile(const std::string& itemTypeName)
 {
-    // Try to load "default_<itemType>" profile
     std::string defaultId = "default_" + itemTypeName;
     std::transform(defaultId.begin(), defaultId.end(), defaultId.begin(), ::tolower);
-    
-    ItemProfile profile = LoadProfile(defaultId);
-    if (!profile.id.empty())
-    {
-        return profile;
-    }
-    
-    // Fallback: search for any profile with isDefault=true for this type
-    auto allProfiles = GetAllProfiles();
-    for (const auto& [id, prof] : allProfiles)
-    {
-        if (prof.itemTypeName == itemTypeName && prof.isDefault)
-        {
-            return prof;
-        }
-    }
-    
-    // If no profile found, try to create default profiles automatically
-    std::cout << "[ItemProfileManager] No default profile found for '" << itemTypeName << "'. Creating default profiles...\n";
-    if (CreateDefaultProfiles(s_profilesDir))
-    {
-        // Try loading again after creation
-        profile = LoadProfile(defaultId);
-        if (!profile.id.empty())
-        {
-            std::cout << "[ItemProfileManager] Successfully created and loaded default profile: " << defaultId << "\n";
-            return profile;
-        }
-    }
-    
-    // Return empty profile if still not found
-    return ItemProfile();
+    return LoadProfile(defaultId);
 }
 
 std::vector<ItemProfile> ItemProfileManager::GetProfilesForType(const std::string& itemTypeName)
 {
-    std::vector<ItemProfile> result;
-    
-    if (!std::filesystem::exists(s_profilesDir))
+    std::vector<ItemProfile> profiles;
+    auto all = GetAllProfiles();
+    for (const auto& [id, profile] : all)
     {
-        return result;
-    }
-    
-    try
-    {
-        for (const auto& entry : std::filesystem::directory_iterator(s_profilesDir))
+        if (profile.itemTypeName == itemTypeName)
         {
-            if (entry.is_regular_file() && entry.path().extension() == ".json")
-            {
-                ItemProfile profile = LoadProfileFromPath(entry.path().string());
-                if (!profile.id.empty() && profile.itemTypeName == itemTypeName)
-                {
-                    result.push_back(profile);
-                }
-            }
+            profiles.push_back(profile);
         }
     }
-    catch (const std::exception&)
-    {
-        // Return empty vector on error
-    }
-    
-    return result;
+    return profiles;
 }
 
 std::map<std::string, ItemProfile> ItemProfileManager::GetAllProfiles()
 {
-    std::map<std::string, ItemProfile> result;
+    std::map<std::string, ItemProfile> profiles;
     
     if (!std::filesystem::exists(s_profilesDir))
     {
-        return result;
+        return profiles;
     }
     
-    try
+    for (const auto& entry : std::filesystem::directory_iterator(s_profilesDir))
     {
-        for (const auto& entry : std::filesystem::directory_iterator(s_profilesDir))
+        if (entry.is_regular_file() && entry.path().extension() == ".json")
         {
-            if (entry.is_regular_file() && entry.path().extension() == ".json")
+            std::string filePath = entry.path().string();
+            ItemProfile profile = LoadProfileFromPath(filePath);
+            if (!profile.id.empty())
             {
-                ItemProfile profile = LoadProfileFromPath(entry.path().string());
-                if (!profile.id.empty())
-                {
-                    result[profile.id] = profile;
-                }
+                profiles[profile.id] = profile;
             }
         }
     }
-    catch (const std::exception&)
-    {
-        // Return empty map on error
-    }
     
-    return result;
+    return profiles;
 }
 
 bool ItemProfileManager::ProfileExists(const std::string& profileId)
@@ -221,20 +154,10 @@ bool ItemProfileManager::ProfileExists(const std::string& profileId)
 bool ItemProfileManager::DeleteProfile(const std::string& profileId)
 {
     std::string filePath = GetProfileFilePath(profileId);
-    
-    try
+    if (std::filesystem::exists(filePath))
     {
-        if (std::filesystem::exists(filePath))
-        {
-            std::filesystem::remove(filePath);
-            return true;
-        }
+        return std::filesystem::remove(filePath);
     }
-    catch (const std::exception&)
-    {
-        // Return false on error
-    }
-    
     return false;
 }
 
@@ -244,12 +167,12 @@ bool ItemProfileManager::ValidateProfile(const ItemProfile& profile, std::vector
     
     if (profile.id.empty())
     {
-        errors.push_back("Profile ID cannot be empty");
+        errors.push_back("Profile ID is required");
     }
     
     if (profile.itemTypeName.empty())
     {
-        errors.push_back("Item type name cannot be empty");
+        errors.push_back("Item type name is required");
     }
     
     if (profile.fields.empty())
@@ -261,12 +184,7 @@ bool ItemProfileManager::ValidateProfile(const ItemProfile& profile, std::vector
     std::set<std::string> fieldNames;
     for (const auto& field : profile.fields)
     {
-        if (field.name.empty())
-        {
-            errors.push_back("Field name cannot be empty");
-        }
-        
-        if (fieldNames.find(field.name) != fieldNames.end())
+        if (fieldNames.count(field.name))
         {
             errors.push_back("Duplicate field name: " + field.name);
         }
@@ -283,115 +201,375 @@ std::string ItemProfileManager::GetProfilesDirectory()
 
 bool ItemProfileManager::CreateDefaultProfiles(const std::string& profilesDir)
 {
-    if (!std::filesystem::exists(profilesDir))
-    {
-        std::filesystem::create_directories(profilesDir);
-    }
+    // Create default_food profile
+    ItemProfile foodProfile;
+    foodProfile.id = "default_food";
+    foodProfile.displayName = "Default Food Profile";
+    foodProfile.description = "Default profile for Food items";
+    foodProfile.itemTypeName = "Food";
+    foodProfile.version = 1;
+    foodProfile.isDefault = true;
     
-    // Create default profiles for all item types
-    std::vector<std::string> itemTypes = { "Food", "Drink", "Medicine", "Material", "Weapon", "WeaponComponent", "Ammo", "Armor", "Clothing" };
+    // Add fields
+    ProfileField idField;
+    idField.name = "id";
+    idField.type = ProfileFieldType::String;
+    idField.displayName = "ID";
+    idField.description = "Unique item identifier";
+    idField.category = "Identity";
+    idField.displayOrder = 0;
+    idField.validation.isRequired = true;
+    foodProfile.fields.push_back(idField);
     
-    for (const auto& typeName : itemTypes)
-    {
-        std::string profileId = "default_" + typeName;
-        std::transform(profileId.begin(), profileId.end(), profileId.begin(), ::tolower);
-        
-        // Skip if profile already exists
-        if (ProfileExists(profileId))
-        {
-            continue;
-        }
-        
-        ItemProfile profile;
-        profile.id = profileId;
-        profile.displayName = "Default " + typeName + " Profile";
-        profile.description = "Default profile for " + typeName + " items matching the original hardcoded structure";
-        profile.itemTypeName = typeName;
-        profile.version = 1;
-        profile.isDefault = true;
-        
-        // Add common base fields
-        profile.fields.push_back(CreateBaseField("id", "ID", "Unique item identifier", "Identity", 0, true));
-        profile.fields.push_back(CreateBaseField("displayName", "Display Name", "User-facing name", "Identity", 1, true));
-        profile.fields.push_back(CreateBaseField("category", "Category", "Item category", "Identity", 2, true, {typeName}));
-        profile.fields.push_back(CreateBaseField("rarity", "Rarity", "Item rarity", "Identity", 3, true, {"Common", "Uncommon", "Rare"}));
-        profile.fields.push_back(CreateBaseField("maxStack", "Max Stack", "Maximum stack size", "Inventory", 4, false, std::vector<std::string>(), 1, 1, 999));
-        profile.fields.push_back(CreateBaseField("description", "Description", "Item description", "Identity", 99, true));
-        
-        // Add type-specific fields
-        if (typeName == "Food")
-        {
-            ProfileField hungerField = CreateField("hungerRestore", ProfileFieldType::Integer, "Hunger Restore", "Amount of hunger restored (0-100)", "Effects", 10, false, 0, 100);
-            ProfileField thirstField = CreateField("thirstRestore", ProfileFieldType::Integer, "Thirst Restore", "Amount of thirst restored (0-100)", "Effects", 11, false, 0, 100);
-            
-            // Add relationship constraint: hungerRestore >= thirstRestore (Food should restore more hunger)
-            FieldRelationshipConstraint hungerConstraint;
-            hungerConstraint.operator_ = ">=";
-            hungerConstraint.targetField = "thirstRestore";
-            hungerConstraint.description = "Food items primarily restore hunger, so hungerRestore should be >= thirstRestore";
-            hungerField.validation.relationshipConstraints.push_back(hungerConstraint);
-            
-            profile.fields.push_back(hungerField);
-            profile.fields.push_back(thirstField);
-            profile.fields.push_back(CreateField("healthRestore", ProfileFieldType::Integer, "Health Restore", "Amount of health restored (0-100)", "Effects", 12, false, 0, 100));
-            profile.fields.push_back(CreateField("spoils", ProfileFieldType::Boolean, "Spoils", "Whether this food item spoils over time", "Spoilage", 20, false));
-            profile.fields.push_back(CreateField("spoilTimeMinutes", ProfileFieldType::Integer, "Spoil Time (minutes)", "Time until spoilage in minutes", "Spoilage", 21, false, 0, 10000));
-        }
-        else if (typeName == "Drink")
-        {
-            ProfileField thirstField = CreateField("thirstRestore", ProfileFieldType::Integer, "Thirst Restore", "Amount of thirst restored (0-100)", "Effects", 11, false, 0, 100);
-            ProfileField hungerField = CreateField("hungerRestore", ProfileFieldType::Integer, "Hunger Restore", "Amount of hunger restored (0-100)", "Effects", 10, false, 0, 100);
-            
-            // Add relationship constraints: thirstRestore >= hungerRestore AND thirstRestore >= 10
-            FieldRelationshipConstraint thirstConstraint1;
-            thirstConstraint1.operator_ = ">=";
-            thirstConstraint1.targetField = "hungerRestore";
-            thirstConstraint1.description = "Drink items primarily restore thirst, so thirstRestore should be >= hungerRestore";
-            thirstField.validation.relationshipConstraints.push_back(thirstConstraint1);
-            
-            // Minimum value constraint (thirstRestore >= 10)
-            thirstField.validation.minValue = 10.0;
-            
-            profile.fields.push_back(hungerField);
-            profile.fields.push_back(thirstField);
-            profile.fields.push_back(CreateField("healthRestore", ProfileFieldType::Integer, "Health Restore", "Amount of health restored (0-100)", "Effects", 12, false, 0, 100));
-            profile.fields.push_back(CreateField("spoils", ProfileFieldType::Boolean, "Spoils", "Whether this drink item spoils over time", "Spoilage", 20, false));
-            profile.fields.push_back(CreateField("spoilTimeMinutes", ProfileFieldType::Integer, "Spoil Time (minutes)", "Time until spoilage in minutes", "Spoilage", 21, false, 0, 10000));
-        }
-        else if (typeName == "Medicine")
-        {
-            ProfileField healthField = CreateField("healthRestore", ProfileFieldType::Integer, "Health Restore", "Amount of health restored (0-100)", "Effects", 10, false, 0, 100);
-            // Minimum value: healthRestore >= 10 for all medicine, >= 20 for Rare
-            healthField.validation.minValue = 10.0;
-            // Note: Rare-specific constraint would need to be checked at generation time or via customConstraint
-            profile.fields.push_back(healthField);
-        }
-        else if (typeName == "Material")
-        {
-            profile.fields.push_back(CreateField("materialType", ProfileFieldType::String, "Material Type", "Type of material (e.g., Wood, Metal, Stone)", "Properties", 10, false));
-            profile.fields.push_back(CreateField("hardness", ProfileFieldType::Integer, "Hardness", "Material hardness (0-100)", "Properties", 11, false, 0, 100));
-            profile.fields.push_back(CreateField("flammability", ProfileFieldType::Integer, "Flammability", "Material flammability (0-100)", "Properties", 12, false, 0, 100));
-            profile.fields.push_back(CreateField("value", ProfileFieldType::Integer, "Value", "Material value", "Properties", 13, false, 0, 1000));
-        }
-        // Note: Weapon, WeaponComponent, Ammo, Armor, Clothing are more complex
-        // For now, just create basic structure - can be expanded later
-        
-        // Save profile
-        if (!SaveProfile(profile))
-        {
-            std::cerr << "[ItemProfileManager] Warning: Failed to create default profile for " << typeName << "\n";
-        }
-        else
-        {
-            std::cout << "[ItemProfileManager] Created default profile: " << profileId << "\n";
-        }
-    }
+    ProfileField displayNameField;
+    displayNameField.name = "displayName";
+    displayNameField.type = ProfileFieldType::String;
+    displayNameField.displayName = "Display Name";
+    displayNameField.description = "User-facing name";
+    displayNameField.category = "Identity";
+    displayNameField.displayOrder = 1;
+    displayNameField.validation.isRequired = true;
+    foodProfile.fields.push_back(displayNameField);
+    
+    ProfileField categoryField;
+    categoryField.name = "category";
+    categoryField.type = ProfileFieldType::String;
+    categoryField.displayName = "Category";
+    categoryField.description = "Item category";
+    categoryField.category = "Identity";
+    categoryField.displayOrder = 2;
+    categoryField.validation.isRequired = true;
+    categoryField.validation.allowedValues = {"Food"};
+    foodProfile.fields.push_back(categoryField);
+    
+    ProfileField rarityField;
+    rarityField.name = "rarity";
+    rarityField.type = ProfileFieldType::String;
+    rarityField.displayName = "Rarity";
+    rarityField.description = "Item rarity";
+    rarityField.category = "Identity";
+    rarityField.displayOrder = 3;
+    rarityField.validation.isRequired = true;
+    rarityField.validation.allowedValues = {"Common", "Uncommon", "Rare"};
+    foodProfile.fields.push_back(rarityField);
+    
+    ProfileField maxStackField;
+    maxStackField.name = "maxStack";
+    maxStackField.type = ProfileFieldType::Integer;
+    maxStackField.displayName = "Max Stack";
+    maxStackField.description = "Maximum stack size";
+    maxStackField.category = "Inventory";
+    maxStackField.displayOrder = 4;
+    maxStackField.defaultValue = 1;
+    maxStackField.validation.minValue = 1.0;
+    maxStackField.validation.maxValue = 999.0;
+    foodProfile.fields.push_back(maxStackField);
+    
+    ProfileField descriptionField;
+    descriptionField.name = "description";
+    descriptionField.type = ProfileFieldType::String;
+    descriptionField.displayName = "Description";
+    descriptionField.description = "Item description";
+    descriptionField.category = "Identity";
+    descriptionField.displayOrder = 99;
+    descriptionField.validation.isRequired = true;
+    foodProfile.fields.push_back(descriptionField);
+    
+    ProfileField hungerRestoreField;
+    hungerRestoreField.name = "hungerRestore";
+    hungerRestoreField.type = ProfileFieldType::Integer;
+    hungerRestoreField.displayName = "Hunger Restore";
+    hungerRestoreField.description = "Amount of hunger restored (0-100)";
+    hungerRestoreField.category = "Effects";
+    hungerRestoreField.displayOrder = 10;
+    hungerRestoreField.validation.minValue = 0.0;
+    hungerRestoreField.validation.maxValue = 100.0;
+    RelationshipConstraint hungerConstraint;
+    hungerConstraint.description = "Food items primarily restore hunger, so hungerRestore should be >= thirstRestore";
+    hungerConstraint.operator_ = ">=";
+    hungerConstraint.targetField = "thirstRestore";
+    hungerRestoreField.validation.relationshipConstraints.push_back(hungerConstraint);
+    foodProfile.fields.push_back(hungerRestoreField);
+    
+    ProfileField thirstRestoreField;
+    thirstRestoreField.name = "thirstRestore";
+    thirstRestoreField.type = ProfileFieldType::Integer;
+    thirstRestoreField.displayName = "Thirst Restore";
+    thirstRestoreField.description = "Amount of thirst restored (0-100)";
+    thirstRestoreField.category = "Effects";
+    thirstRestoreField.displayOrder = 11;
+    thirstRestoreField.validation.minValue = 0.0;
+    thirstRestoreField.validation.maxValue = 100.0;
+    foodProfile.fields.push_back(thirstRestoreField);
+    
+    ProfileField healthRestoreField;
+    healthRestoreField.name = "healthRestore";
+    healthRestoreField.type = ProfileFieldType::Integer;
+    healthRestoreField.displayName = "Health Restore";
+    healthRestoreField.description = "Amount of health restored (0-100)";
+    healthRestoreField.category = "Effects";
+    healthRestoreField.displayOrder = 12;
+    healthRestoreField.validation.minValue = 0.0;
+    healthRestoreField.validation.maxValue = 100.0;
+    foodProfile.fields.push_back(healthRestoreField);
+    
+    ProfileField spoilsField;
+    spoilsField.name = "spoils";
+    spoilsField.type = ProfileFieldType::Boolean;
+    spoilsField.displayName = "Spoils";
+    spoilsField.description = "Whether this food item spoils over time";
+    spoilsField.category = "Spoilage";
+    spoilsField.displayOrder = 20;
+    foodProfile.fields.push_back(spoilsField);
+    
+    ProfileField spoilTimeField;
+    spoilTimeField.name = "spoilTimeMinutes";
+    spoilTimeField.type = ProfileFieldType::Integer;
+    spoilTimeField.displayName = "Spoil Time (minutes)";
+    spoilTimeField.description = "Time until spoilage in minutes";
+    spoilTimeField.category = "Spoilage";
+    spoilTimeField.displayOrder = 21;
+    spoilTimeField.validation.minValue = 0.0;
+    spoilTimeField.validation.maxValue = 10000.0;
+    foodProfile.fields.push_back(spoilTimeField);
+    
+    // Set player settings
+    foodProfile.playerSettings["maxHunger"] = 100;
+    foodProfile.playerSettings["maxThirst"] = 100;
+    foodProfile.playerSettings["maxHealth"] = 100;
+    foodProfile.playerSettings["maxStamina"] = 100;
+    foodProfile.playerSettings["maxWeight"] = 50000;
+    foodProfile.playerSettings["maxEnergy"] = 100;
+    
+    SaveProfile(foodProfile);
+    std::cout << "[ItemProfileManager] Created default profile: " << foodProfile.id << "\n";
+    
+    // Create other default profiles similarly (simplified for now)
+    // In production, load from JSON files in profiles/ directory
     
     return true;
 }
 
-// Helper function to create base field
-ProfileField ItemProfileManager::CreateBaseField(const std::string& name, const std::string& displayName, 
+std::string ItemProfileManager::GetProfileFilePath(const std::string& profileId)
+{
+    return s_profilesDir + "/" + profileId + ".json";
+}
+
+ItemProfile ItemProfileManager::ParseProfileFromJson(const nlohmann::json& json)
+{
+    ItemProfile profile;
+    
+    if (json.contains("id") && json["id"].is_string())
+        profile.id = json["id"];
+    if (json.contains("displayName") && json["displayName"].is_string())
+        profile.displayName = json["displayName"];
+    if (json.contains("description") && json["description"].is_string())
+        profile.description = json["description"];
+    if (json.contains("itemTypeName") && json["itemTypeName"].is_string())
+        profile.itemTypeName = json["itemTypeName"];
+    if (json.contains("version") && json["version"].is_number())
+        profile.version = json["version"];
+    if (json.contains("isDefault") && json["isDefault"].is_boolean())
+        profile.isDefault = json["isDefault"];
+    if (json.contains("customContext") && json["customContext"].is_string())
+        profile.customContext = json["customContext"];
+    
+    if (json.contains("fields") && json["fields"].is_array())
+    {
+        for (const auto& fieldJson : json["fields"])
+        {
+            profile.fields.push_back(ParseFieldFromJson(fieldJson));
+        }
+    }
+    
+    if (json.contains("playerSettings") && json["playerSettings"].is_object())
+    {
+        for (const auto& [key, value] : json["playerSettings"].items())
+        {
+            if (value.is_number_integer())
+            {
+                profile.playerSettings[key] = value.get<int>();
+            }
+        }
+    }
+    
+    return profile;
+}
+
+nlohmann::json ItemProfileManager::ProfileToJson(const ItemProfile& profile)
+{
+    nlohmann::json j;
+    j["id"] = profile.id;
+    j["displayName"] = profile.displayName;
+    j["description"] = profile.description;
+    j["itemTypeName"] = profile.itemTypeName;
+    j["version"] = profile.version;
+    j["isDefault"] = profile.isDefault;
+    if (!profile.customContext.empty())
+        j["customContext"] = profile.customContext;
+    
+    j["fields"] = nlohmann::json::array();
+    for (const auto& field : profile.fields)
+    {
+        j["fields"].push_back(FieldToJson(field));
+    }
+    
+    j["playerSettings"] = nlohmann::json::object();
+    for (const auto& [key, value] : profile.playerSettings)
+    {
+        j["playerSettings"][key] = value;
+    }
+    
+    j["metadata"] = profile.metadata;
+    
+    return j;
+}
+
+ProfileField ItemProfileManager::ParseFieldFromJson(const nlohmann::json& json)
+{
+    ProfileField field;
+    
+    if (json.contains("name") && json["name"].is_string())
+        field.name = json["name"];
+    if (json.contains("displayName") && json["displayName"].is_string())
+        field.displayName = json["displayName"];
+    if (json.contains("description") && json["description"].is_string())
+        field.description = json["description"];
+    if (json.contains("category") && json["category"].is_string())
+        field.category = json["category"];
+    if (json.contains("displayOrder") && json["displayOrder"].is_number())
+        field.displayOrder = json["displayOrder"];
+    if (json.contains("defaultValue"))
+        field.defaultValue = json["defaultValue"];
+    
+    // Parse type
+    if (json.contains("type") && json["type"].is_string())
+    {
+        std::string typeStr = json["type"];
+        if (typeStr == "string")
+            field.type = ProfileFieldType::String;
+        else if (typeStr == "integer")
+            field.type = ProfileFieldType::Integer;
+        else if (typeStr == "float")
+            field.type = ProfileFieldType::Float;
+        else if (typeStr == "boolean")
+            field.type = ProfileFieldType::Boolean;
+        else if (typeStr == "array")
+            field.type = ProfileFieldType::Array;
+        else if (typeStr == "object")
+            field.type = ProfileFieldType::Object;
+    }
+    
+    if (json.contains("validation") && json["validation"].is_object())
+    {
+        field.validation = ParseValidationFromJson(json["validation"]);
+    }
+    
+    return field;
+}
+
+nlohmann::json ItemProfileManager::FieldToJson(const ProfileField& field)
+{
+    nlohmann::json j;
+    j["name"] = field.name;
+    j["displayName"] = field.displayName;
+    j["description"] = field.description;
+    j["category"] = field.category;
+    j["displayOrder"] = field.displayOrder;
+    if (!field.defaultValue.is_null())
+        j["defaultValue"] = field.defaultValue;
+    
+    // Type to string
+    switch (field.type)
+    {
+        case ProfileFieldType::String: j["type"] = "string"; break;
+        case ProfileFieldType::Integer: j["type"] = "integer"; break;
+        case ProfileFieldType::Float: j["type"] = "float"; break;
+        case ProfileFieldType::Boolean: j["type"] = "boolean"; break;
+        case ProfileFieldType::Array: j["type"] = "array"; break;
+        case ProfileFieldType::Object: j["type"] = "object"; break;
+    }
+    
+    j["validation"] = ValidationToJson(field.validation);
+    
+    return j;
+}
+
+ProfileFieldValidation ItemProfileManager::ParseValidationFromJson(const nlohmann::json& json)
+{
+    ProfileFieldValidation validation;
+    
+    if (json.contains("isRequired") && json["isRequired"].is_boolean())
+        validation.isRequired = json["isRequired"];
+    if (json.contains("minLength") && json["minLength"].is_number())
+        validation.minLength = json["minLength"];
+    if (json.contains("maxLength") && json["maxLength"].is_number())
+        validation.maxLength = json["maxLength"];
+    if (json.contains("minValue") && json["minValue"].is_number())
+        validation.minValue = json["minValue"];
+    if (json.contains("maxValue") && json["maxValue"].is_number())
+        validation.maxValue = json["maxValue"];
+    if (json.contains("customConstraint") && json["customConstraint"].is_string())
+        validation.customConstraint = json["customConstraint"];
+    
+    if (json.contains("allowedValues") && json["allowedValues"].is_array())
+    {
+        for (const auto& val : json["allowedValues"])
+        {
+            if (val.is_string())
+                validation.allowedValues.push_back(val.get<std::string>());
+        }
+    }
+    
+    if (json.contains("relationshipConstraints") && json["relationshipConstraints"].is_array())
+    {
+        for (const auto& constraintJson : json["relationshipConstraints"])
+        {
+            RelationshipConstraint constraint;
+            if (constraintJson.contains("description") && constraintJson["description"].is_string())
+                constraint.description = constraintJson["description"];
+            if (constraintJson.contains("operator") && constraintJson["operator"].is_string())
+                constraint.operator_ = constraintJson["operator"];
+            if (constraintJson.contains("targetField") && constraintJson["targetField"].is_string())
+                constraint.targetField = constraintJson["targetField"];
+            validation.relationshipConstraints.push_back(constraint);
+        }
+    }
+    
+    return validation;
+}
+
+nlohmann::json ItemProfileManager::ValidationToJson(const ProfileFieldValidation& validation)
+{
+    nlohmann::json j;
+    j["isRequired"] = validation.isRequired;
+    j["minLength"] = validation.minLength;
+    j["maxLength"] = validation.maxLength;
+    j["minValue"] = validation.minValue;
+    j["maxValue"] = validation.maxValue;
+    if (!validation.customConstraint.empty())
+        j["customConstraint"] = validation.customConstraint;
+    
+    j["allowedValues"] = nlohmann::json::array();
+    for (const auto& val : validation.allowedValues)
+    {
+        j["allowedValues"].push_back(val);
+    }
+    
+    j["relationshipConstraints"] = nlohmann::json::array();
+    for (const auto& constraint : validation.relationshipConstraints)
+    {
+        nlohmann::json c;
+        c["description"] = constraint.description;
+        c["operator"] = constraint.operator_;
+        c["targetField"] = constraint.targetField;
+        j["relationshipConstraints"].push_back(c);
+    }
+    
+    return j;
+}
+
+ProfileField ItemProfileManager::CreateBaseField(const std::string& name, const std::string& displayName,
     const std::string& description, const std::string& category, int order, bool required,
     const std::vector<std::string>& allowedValues, int defaultValue, int minValue, int maxValue)
 {
@@ -403,34 +581,14 @@ ProfileField ItemProfileManager::CreateBaseField(const std::string& name, const 
     field.displayOrder = order;
     field.type = ProfileFieldType::String;
     field.validation.isRequired = required;
-    
-    if (!allowedValues.empty())
-    {
-        field.validation.allowedValues = allowedValues;
-    }
-    
-    if (name == "maxStack")
-    {
-        field.type = ProfileFieldType::Integer;
-        field.defaultValue = defaultValue;
-        field.validation.minValue = minValue;
-        field.validation.maxValue = maxValue;
-    }
-    else if (name == "category")
-    {
-        field.validation.allowedValues = allowedValues;
-    }
-    else if (name == "rarity")
-    {
-        field.validation.allowedValues = allowedValues;
-    }
-    
+    field.validation.allowedValues = allowedValues;
+    field.validation.minValue = minValue;
+    field.validation.maxValue = maxValue;
     return field;
 }
 
-// Helper function to create field
-ProfileField ItemProfileManager::CreateField(const std::string& name, ProfileFieldType type, 
-    const std::string& displayName, const std::string& description, const std::string& category, 
+ProfileField ItemProfileManager::CreateField(const std::string& name, ProfileFieldType type,
+    const std::string& displayName, const std::string& description, const std::string& category,
     int order, bool required, double minValue, double maxValue)
 {
     ProfileField field;
@@ -441,238 +599,7 @@ ProfileField ItemProfileManager::CreateField(const std::string& name, ProfileFie
     field.category = category;
     field.displayOrder = order;
     field.validation.isRequired = required;
-    
-    if (type == ProfileFieldType::Integer || type == ProfileFieldType::Float)
-    {
-        field.validation.minValue = minValue;
-        field.validation.maxValue = maxValue;
-    }
-    
+    field.validation.minValue = minValue;
+    field.validation.maxValue = maxValue;
     return field;
 }
-
-ItemProfile ItemProfileManager::ParseProfileFromJson(const nlohmann::json& json)
-{
-    ItemProfile profile;
-    
-    if (json.contains("id")) profile.id = json["id"].get<std::string>();
-    if (json.contains("displayName")) profile.displayName = json["displayName"].get<std::string>();
-    if (json.contains("description")) profile.description = json["description"].get<std::string>();
-    if (json.contains("itemTypeName")) profile.itemTypeName = json["itemTypeName"].get<std::string>();
-    if (json.contains("version")) profile.version = json["version"].get<int>();
-    if (json.contains("isDefault")) profile.isDefault = json["isDefault"].get<bool>();
-    if (json.contains("customContext")) profile.customContext = json["customContext"].get<std::string>();
-    
-    // Parse playerSettings
-    if (json.contains("playerSettings") && json["playerSettings"].is_object())
-    {
-        const auto& ps = json["playerSettings"];
-        profile.playerSettings.maxHunger = ps.value("maxHunger", 100);
-        profile.playerSettings.maxThirst = ps.value("maxThirst", 100);
-        profile.playerSettings.maxHealth = ps.value("maxHealth", 100);
-        profile.playerSettings.maxStamina = ps.value("maxStamina", 100);
-        profile.playerSettings.maxWeight = ps.value("maxWeight", 50000);
-        profile.playerSettings.maxEnergy = ps.value("maxEnergy", 100);
-    }
-    
-    if (json.contains("fields") && json["fields"].is_array())
-    {
-        for (const auto& fieldJson : json["fields"])
-        {
-            profile.fields.push_back(ParseFieldFromJson(fieldJson));
-        }
-    }
-    
-    if (json.contains("metadata") && json["metadata"].is_object())
-    {
-        for (const auto& [key, value] : json["metadata"].items())
-        {
-            if (value.is_string())
-            {
-                profile.metadata[key] = value.get<std::string>();
-            }
-        }
-    }
-    
-    return profile;
-}
-
-nlohmann::json ItemProfileManager::ProfileToJson(const ItemProfile& profile)
-{
-    nlohmann::json json;
-    
-    json["id"] = profile.id;
-    json["displayName"] = profile.displayName;
-    json["description"] = profile.description;
-    json["itemTypeName"] = profile.itemTypeName;
-    json["version"] = profile.version;
-    json["isDefault"] = profile.isDefault;
-    if (!profile.customContext.empty())
-    {
-        json["customContext"] = profile.customContext;
-    }
-    
-    // Add playerSettings
-    json["playerSettings"] = nlohmann::json::object();
-    json["playerSettings"]["maxHunger"] = profile.playerSettings.maxHunger;
-    json["playerSettings"]["maxThirst"] = profile.playerSettings.maxThirst;
-    json["playerSettings"]["maxHealth"] = profile.playerSettings.maxHealth;
-    json["playerSettings"]["maxStamina"] = profile.playerSettings.maxStamina;
-    json["playerSettings"]["maxWeight"] = profile.playerSettings.maxWeight;
-    json["playerSettings"]["maxEnergy"] = profile.playerSettings.maxEnergy;
-    
-    json["fields"] = nlohmann::json::array();
-    for (const auto& field : profile.fields)
-    {
-        json["fields"].push_back(FieldToJson(field));
-    }
-    
-    json["metadata"] = nlohmann::json::object();
-    for (const auto& [key, value] : profile.metadata)
-    {
-        json["metadata"][key] = value;
-    }
-    
-    return json;
-}
-
-ProfileField ItemProfileManager::ParseFieldFromJson(const nlohmann::json& json)
-{
-    ProfileField field;
-    
-    if (json.contains("name")) field.name = json["name"].get<std::string>();
-    if (json.contains("displayName")) field.displayName = json["displayName"].get<std::string>();
-    if (json.contains("description")) field.description = json["description"].get<std::string>();
-    if (json.contains("category")) field.category = json["category"].get<std::string>();
-    if (json.contains("displayOrder")) field.displayOrder = json["displayOrder"].get<int>();
-    
-    if (json.contains("type"))
-    {
-        field.type = StringToProfileFieldType(json["type"].get<std::string>());
-    }
-    
-    if (json.contains("defaultValue"))
-    {
-        field.defaultValue = json["defaultValue"];
-    }
-    
-    if (json.contains("validation"))
-    {
-        field.validation = ParseValidationFromJson(json["validation"]);
-    }
-    
-    return field;
-}
-
-nlohmann::json ItemProfileManager::FieldToJson(const ProfileField& field)
-{
-    nlohmann::json json;
-    
-    json["name"] = field.name;
-    json["type"] = ProfileFieldTypeToString(field.type);
-    json["displayName"] = field.displayName;
-    json["description"] = field.description;
-    json["category"] = field.category;
-    json["displayOrder"] = field.displayOrder;
-    json["defaultValue"] = field.defaultValue;
-    json["validation"] = ValidationToJson(field.validation);
-    
-    return json;
-}
-
-ProfileFieldValidation ItemProfileManager::ParseValidationFromJson(const nlohmann::json& json)
-{
-    ProfileFieldValidation validation;
-    
-    if (json.contains("minValue")) validation.minValue = json["minValue"].get<double>();
-    if (json.contains("maxValue")) validation.maxValue = json["maxValue"].get<double>();
-    if (json.contains("isRequired")) validation.isRequired = json["isRequired"].get<bool>();
-    if (json.contains("minLength")) validation.minLength = json["minLength"].get<int>();
-    if (json.contains("maxLength")) validation.maxLength = json["maxLength"].get<int>();
-    if (json.contains("regexPattern")) validation.regexPattern = json["regexPattern"].get<std::string>();
-    if (json.contains("customConstraint")) validation.customConstraint = json["customConstraint"].get<std::string>();
-    
-    // Parse relationship constraints
-    if (json.contains("relationshipConstraints") && json["relationshipConstraints"].is_array())
-    {
-        for (const auto& constraintJson : json["relationshipConstraints"])
-        {
-            FieldRelationshipConstraint constraint;
-            if (constraintJson.contains("operator")) constraint.operator_ = constraintJson["operator"].get<std::string>();
-            if (constraintJson.contains("targetField")) constraint.targetField = constraintJson["targetField"].get<std::string>();
-            if (constraintJson.contains("offset")) constraint.offset = constraintJson["offset"].get<double>();
-            if (constraintJson.contains("description")) constraint.description = constraintJson["description"].get<std::string>();
-            validation.relationshipConstraints.push_back(constraint);
-        }
-    }
-    
-    if (json.contains("allowedValues") && json["allowedValues"].is_array())
-    {
-        for (const auto& value : json["allowedValues"])
-        {
-            if (value.is_string())
-            {
-                validation.allowedValues.push_back(value.get<std::string>());
-            }
-        }
-    }
-    
-    return validation;
-}
-
-nlohmann::json ItemProfileManager::ValidationToJson(const ProfileFieldValidation& validation)
-{
-    nlohmann::json json;
-    
-    json["minValue"] = validation.minValue;
-    json["maxValue"] = validation.maxValue;
-    json["isRequired"] = validation.isRequired;
-    json["minLength"] = validation.minLength;
-    json["maxLength"] = validation.maxLength;
-    if (!validation.regexPattern.empty())
-    {
-        json["regexPattern"] = validation.regexPattern;
-    }
-    if (!validation.customConstraint.empty())
-    {
-        json["customConstraint"] = validation.customConstraint;
-    }
-    
-    if (!validation.allowedValues.empty())
-    {
-        json["allowedValues"] = nlohmann::json::array();
-        for (const auto& value : validation.allowedValues)
-        {
-            json["allowedValues"].push_back(value);
-        }
-    }
-    
-    // Serialize relationship constraints
-    if (!validation.relationshipConstraints.empty())
-    {
-        json["relationshipConstraints"] = nlohmann::json::array();
-        for (const auto& constraint : validation.relationshipConstraints)
-        {
-            nlohmann::json constraintJson;
-            constraintJson["operator"] = constraint.operator_;
-            constraintJson["targetField"] = constraint.targetField;
-            if (constraint.offset != 0.0)
-            {
-                constraintJson["offset"] = constraint.offset;
-            }
-            if (!constraint.description.empty())
-            {
-                constraintJson["description"] = constraint.description;
-            }
-            json["relationshipConstraints"].push_back(constraintJson);
-        }
-    }
-    
-    return json;
-}
-
-std::string ItemProfileManager::GetProfileFilePath(const std::string& profileId)
-{
-    return s_profilesDir + profileId + ".json";
-}
-

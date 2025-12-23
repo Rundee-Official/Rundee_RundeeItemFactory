@@ -1,3 +1,13 @@
+/**
+ * @file ItemFactoryMainWindow.cs
+ * @brief Main unified Item Factory window for profile-based item generation
+ * @author Haneul Lee (Rundee)
+ * @date 2025-12-21
+ * @copyright Copyright (c) 2025 Haneul Lee. All rights reserved.
+ * 
+ * Provides UI for generating items using profiles, managing profiles, and importing items
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -165,7 +175,7 @@ public class ItemFactoryMainWindow : EditorWindow
                     "Executable not found. You can download it automatically or browse manually.", 
                     MessageType.Warning);
                 
-                EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Download Executable", GUILayout.Height(30)))
                 {
                     StartDownload();
@@ -176,17 +186,17 @@ public class ItemFactoryMainWindow : EditorWindow
                         ? Application.dataPath 
                         : Path.GetDirectoryName(executablePath);
                     string path = EditorUtility.OpenFilePanel("Select RundeeItemFactory.exe", defaultDir, "exe");
-                    if (!string.IsNullOrEmpty(path))
-                    {
-                        executablePath = path;
-                        SaveSettings();
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
+            if (!string.IsNullOrEmpty(path))
+            {
+                executablePath = path;
+                SaveSettings();
+            }
+        }
+        EditorGUILayout.EndHorizontal();
             }
             else if (existsAtDefault)
             {
-                // Default location???�으�??�동?�로 ?�정
+                // Auto-set default location
                 executablePath = defaultDownloadPath;
                 SaveSettings();
             }
@@ -435,7 +445,7 @@ public class ItemFactoryMainWindow : EditorWindow
         // Options
         EditorGUILayout.LabelField("Options", EditorStyles.boldLabel);
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        autoImport = EditorGUILayout.Toggle("Auto-Import After Generation", autoImport);
+        autoImport = EditorGUILayout.ToggleLeft("Auto-Import After Generation", autoImport);
         EditorGUILayout.EndVertical();
         
         EditorGUILayout.Space(10);
@@ -549,10 +559,10 @@ public class ItemFactoryMainWindow : EditorWindow
         
         // Determine profiles directory (Assets/RundeeItemFactory/ItemProfiles)
         profilesPath = Path.Combine(Application.dataPath, "RundeeItemFactory", "ItemProfiles");
-        if (!Directory.Exists(profilesPath))
-        {
-            Directory.CreateDirectory(profilesPath);
-            return;
+            if (!Directory.Exists(profilesPath))
+            {
+                Directory.CreateDirectory(profilesPath);
+                return;
         }
         
         string[] files = Directory.GetFiles(profilesPath, "*.json");
@@ -632,9 +642,7 @@ public class ItemFactoryMainWindow : EditorWindow
     
     private void FindExecutablePath()
     {
-        string projectRoot = Application.dataPath.Replace("/Assets", "");
-        
-        // First check default download location
+        // Priority 1: Assets/RundeeItemFactory/ folder (deployment environment, recommended)
         string defaultPath = ExecutableDownloader.GetDownloadPath();
         if (File.Exists(defaultPath))
         {
@@ -643,55 +651,23 @@ public class ItemFactoryMainWindow : EditorWindow
             return;
         }
         
-        string[] possiblePaths = new string[]
-        {
-            // Standard build locations
-            Path.Combine(projectRoot, "RundeeItemFactory", "x64", "Release", "RundeeItemFactory.exe"),
-            Path.Combine(projectRoot, "RundeeItemFactory", "x64", "Debug", "RundeeItemFactory.exe"),
-            Path.Combine(projectRoot, "RundeeItemFactory", "x64", "Release", "ItemGenerator.exe"),
-            Path.Combine(projectRoot, "RundeeItemFactory", "x64", "Debug", "ItemGenerator.exe"),
-            // Alternative locations
-            Path.Combine(projectRoot, "..", "RundeeItemFactory", "x64", "Release", "RundeeItemFactory.exe"),
-            Path.Combine(projectRoot, "..", "RundeeItemFactory", "x64", "Debug", "RundeeItemFactory.exe"),
-            Path.Combine(projectRoot, "..", "RundeeItemFactory", "x64", "Release", "ItemGenerator.exe"),
-            Path.Combine(projectRoot, "..", "RundeeItemFactory", "x64", "Debug", "ItemGenerator.exe"),
-            // Deployment folder
-            Path.Combine(projectRoot, "..", "Deployment", "RundeeItemFactory.exe"),
-            Path.Combine(projectRoot, "Deployment", "RundeeItemFactory.exe"),
-            // Root level
-            Path.Combine(projectRoot, "..", "RundeeItemFactory.exe"),
-            Path.Combine(projectRoot, "RundeeItemFactory.exe"),
-        };
-        
-        foreach (string path in possiblePaths)
-        {
+        // Priority 2: Development environment paths (Visual Studio build location)
+        string projectRoot = Application.dataPath.Replace("/Assets", "");
+            string[] possiblePaths = new string[]
+            {
+            // Development environment: Visual Studio build location
+            Path.Combine(projectRoot, "..", "RundeeItemFactory", "RundeeItemFactory", "x64", "Release", "RundeeItemFactory.exe"),
+            Path.Combine(projectRoot, "..", "RundeeItemFactory", "RundeeItemFactory", "x64", "Debug", "RundeeItemFactory.exe"),
+            };
+            
+            foreach (string path in possiblePaths)
+            {
             string fullPath = Path.GetFullPath(path);
             if (File.Exists(fullPath))
             {
                 executablePath = fullPath;
                 SaveSettings();
                 return;
-            }
-        }
-        
-        // If not found, try to find any .exe in common build directories
-        string[] searchDirs = new string[]
-        {
-            Path.Combine(projectRoot, "RundeeItemFactory", "x64"),
-            Path.Combine(projectRoot, "..", "RundeeItemFactory", "x64"),
-        };
-        
-        foreach (string dir in searchDirs)
-        {
-            if (Directory.Exists(dir))
-            {
-                string[] exes = Directory.GetFiles(dir, "*.exe", SearchOption.AllDirectories);
-                if (exes.Length > 0)
-                {
-                    executablePath = Path.GetFullPath(exes[0]);
-                    SaveSettings();
-                    return;
-                }
             }
         }
     }
@@ -807,12 +783,12 @@ public class ItemFactoryMainWindow : EditorWindow
     {
         if (selectedProfile != null && selectedProfile.playerSettings != null)
         {
-            maxHunger = selectedProfile.playerSettings.maxHunger;
-            maxThirst = selectedProfile.playerSettings.maxThirst;
-            maxHealth = selectedProfile.playerSettings.maxHealth;
-            maxStamina = selectedProfile.playerSettings.maxStamina;
-            maxWeight = selectedProfile.playerSettings.maxWeight;
-            maxEnergy = selectedProfile.playerSettings.maxEnergy;
+            maxHunger = selectedProfile.playerSettings.ContainsKey("maxHunger") ? selectedProfile.playerSettings["maxHunger"] : 100;
+            maxThirst = selectedProfile.playerSettings.ContainsKey("maxThirst") ? selectedProfile.playerSettings["maxThirst"] : 100;
+            maxHealth = selectedProfile.playerSettings.ContainsKey("maxHealth") ? selectedProfile.playerSettings["maxHealth"] : 100;
+            maxStamina = selectedProfile.playerSettings.ContainsKey("maxStamina") ? selectedProfile.playerSettings["maxStamina"] : 100;
+            maxWeight = selectedProfile.playerSettings.ContainsKey("maxWeight") ? selectedProfile.playerSettings["maxWeight"] : 50000;
+            maxEnergy = selectedProfile.playerSettings.ContainsKey("maxEnergy") ? selectedProfile.playerSettings["maxEnergy"] : 100;
             UnityEngine.Debug.Log($"[ItemFactoryMainWindow] Loaded Player Settings from Item Profile '{selectedProfile.id}'");
         }
         else
@@ -897,9 +873,16 @@ public class ItemFactoryMainWindow : EditorWindow
     {
         if (selectedProfile != null)
         {
-            string projectRoot = Application.dataPath.Replace("/Assets", "");
+            // Save JSON to Unity project's Assets folder
+            string jsonDir = Path.Combine(Application.dataPath, "RundeeItemFactory", "ItemJson");
+            if (!Directory.Exists(jsonDir))
+            {
+                Directory.CreateDirectory(jsonDir);
+            }
             string fileName = $"items_{selectedProfile.id}.json";
-            outputPath = Path.Combine(projectRoot, "ItemJson", fileName);
+            outputPath = Path.Combine(jsonDir, fileName);
+            // Normalize path separators to forward slashes for Unity consistency
+            outputPath = outputPath.Replace('\\', '/');
         }
     }
     
@@ -915,6 +898,36 @@ public class ItemFactoryMainWindow : EditorWindow
         {
             AddLog("Error: Executable not found", true);
             return;
+        }
+        
+        // Copy profile to executable directory's profiles/ folder
+        // .exe is in Assets/RundeeItemFactory/, so create profiles/ folder next to .exe
+        string exeDir = Path.GetDirectoryName(executablePath);
+        // Ensure we're not creating profiles in Assets - use .exe directory only
+        string profilesDir = Path.Combine(exeDir, "profiles");
+        if (!Directory.Exists(profilesDir))
+        {
+            Directory.CreateDirectory(profilesDir);
+        }
+        
+        string profileSourcePath = Path.Combine(Application.dataPath, "RundeeItemFactory", "ItemProfiles", selectedProfile.id + ".json");
+        string profileDestPath = Path.Combine(profilesDir, selectedProfile.id + ".json");
+        
+        if (File.Exists(profileSourcePath))
+        {
+            try
+            {
+                File.Copy(profileSourcePath, profileDestPath, true);
+                AddLog($"Copied profile to: {profileDestPath}");
+            }
+            catch (Exception e)
+            {
+                AddLog($"Warning: Failed to copy profile: {e.Message}", true);
+            }
+        }
+        else
+        {
+            AddLog($"Warning: Profile file not found at: {profileSourcePath}", true);
         }
         
         // Build command line arguments
@@ -947,8 +960,10 @@ public class ItemFactoryMainWindow : EditorWindow
         args.Add("--maxEnergy");
         args.Add(maxEnergy.ToString());
         
-        args.Add("--output");
-        args.Add(outputPath);
+        args.Add("--out");
+        // Normalize path separators for C++ executable (use forward slashes or ensure proper escaping)
+        string normalizedOutputPath = outputPath.Replace('\\', '/');
+        args.Add(normalizedOutputPath);
         
         string argsString = string.Join(" ", args.Select(a => $"\"{a}\""));
         
@@ -961,6 +976,7 @@ public class ItemFactoryMainWindow : EditorWindow
             {
                 FileName = executablePath,
                 Arguments = argsString,
+                WorkingDirectory = exeDir, // Set working directory to executable directory
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -1029,14 +1045,32 @@ public class ItemFactoryMainWindow : EditorWindow
             return;
         }
         
+        if (!File.Exists(jsonPath))
+        {
+            AddLog($"Error: JSON file not found: {jsonPath}", true);
+            return;
+        }
+        
+        AddLog($"Starting import from: {jsonPath}");
+        AddLog($"Using profile: {selectedProfile.id} ({selectedProfile.itemTypeName})");
+        
         try
         {
             int imported = DynamicItemImporter.ImportFromJson(jsonPath, selectedProfile.id, selectedProfile.itemTypeName);
-            AddLog($"Successfully imported {imported} items");
+            if (imported > 0)
+            {
+                AddLog($"Successfully imported {imported} items to Assets/Resources/RundeeItemFactory/{selectedProfile.itemTypeName}Items/");
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                AddLog("Warning: No items were imported. Check Unity Console for details.", true);
+            }
         }
         catch (Exception e)
         {
             AddLog($"Import failed: {e.Message}", true);
+            AddLog($"Stack trace: {e.StackTrace}", true);
         }
     }
     
@@ -1256,19 +1290,22 @@ public class ItemFactoryMainWindow : EditorWindow
         EditorGUILayout.LabelField("Vital Stats", EditorStyles.miniLabel);
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max Health:", GUILayout.Width(120));
-        itemProfileManagerSelectedProfile.playerSettings.maxHealth = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings.maxHealth);
+        if (!itemProfileManagerSelectedProfile.playerSettings.ContainsKey("maxHealth")) itemProfileManagerSelectedProfile.playerSettings["maxHealth"] = 100;
+        itemProfileManagerSelectedProfile.playerSettings["maxHealth"] = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings["maxHealth"]);
         EditorGUILayout.HelpBox("Maximum health points. Used to balance healthRestore values in items", MessageType.None);
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max Hunger:", GUILayout.Width(120));
-        itemProfileManagerSelectedProfile.playerSettings.maxHunger = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings.maxHunger);
+        if (!itemProfileManagerSelectedProfile.playerSettings.ContainsKey("maxHunger")) itemProfileManagerSelectedProfile.playerSettings["maxHunger"] = 100;
+        itemProfileManagerSelectedProfile.playerSettings["maxHunger"] = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings["maxHunger"]);
         EditorGUILayout.HelpBox("Maximum hunger value. Used to balance hungerRestore values in food items", MessageType.None);
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max Thirst:", GUILayout.Width(120));
-        itemProfileManagerSelectedProfile.playerSettings.maxThirst = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings.maxThirst);
+        if (!itemProfileManagerSelectedProfile.playerSettings.ContainsKey("maxThirst")) itemProfileManagerSelectedProfile.playerSettings["maxThirst"] = 100;
+        itemProfileManagerSelectedProfile.playerSettings["maxThirst"] = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings["maxThirst"]);
         EditorGUILayout.HelpBox("Maximum thirst value. Used to balance thirstRestore values in drink items", MessageType.None);
         EditorGUILayout.EndHorizontal();
         
@@ -1276,13 +1313,15 @@ public class ItemFactoryMainWindow : EditorWindow
         EditorGUILayout.LabelField("Physical Stats", EditorStyles.miniLabel);
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max Stamina:", GUILayout.Width(120));
-        itemProfileManagerSelectedProfile.playerSettings.maxStamina = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings.maxStamina);
+        if (!itemProfileManagerSelectedProfile.playerSettings.ContainsKey("maxStamina")) itemProfileManagerSelectedProfile.playerSettings["maxStamina"] = 100;
+        itemProfileManagerSelectedProfile.playerSettings["maxStamina"] = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings["maxStamina"]);
         EditorGUILayout.HelpBox("Maximum stamina points. Used for stamina-related item effects", MessageType.None);
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max Energy:", GUILayout.Width(120));
-        itemProfileManagerSelectedProfile.playerSettings.maxEnergy = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings.maxEnergy);
+        if (!itemProfileManagerSelectedProfile.playerSettings.ContainsKey("maxEnergy")) itemProfileManagerSelectedProfile.playerSettings["maxEnergy"] = 100;
+        itemProfileManagerSelectedProfile.playerSettings["maxEnergy"] = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings["maxEnergy"]);
         EditorGUILayout.HelpBox("Maximum energy points. Used for energy-related item effects", MessageType.None);
         EditorGUILayout.EndHorizontal();
         
@@ -1290,7 +1329,8 @@ public class ItemFactoryMainWindow : EditorWindow
         EditorGUILayout.LabelField("Inventory", EditorStyles.miniLabel);
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Max Weight (grams):", GUILayout.Width(120));
-        itemProfileManagerSelectedProfile.playerSettings.maxWeight = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings.maxWeight);
+        if (!itemProfileManagerSelectedProfile.playerSettings.ContainsKey("maxWeight")) itemProfileManagerSelectedProfile.playerSettings["maxWeight"] = 50000;
+        itemProfileManagerSelectedProfile.playerSettings["maxWeight"] = EditorGUILayout.IntField(itemProfileManagerSelectedProfile.playerSettings["maxWeight"]);
         EditorGUILayout.HelpBox("Maximum carry weight in grams. Used to balance item weight values (e.g., 50000 = 50kg)", MessageType.None);
         EditorGUILayout.EndHorizontal();
         
@@ -1320,8 +1360,7 @@ public class ItemFactoryMainWindow : EditorWindow
             "Add custom fields specific to your item type. These fields will be included in generated items.",
             MessageType.Info);
         
-        itemProfileEditorScrollPosition = EditorGUILayout.BeginScrollView(itemProfileEditorScrollPosition, GUILayout.Height(300));
-        
+        // Draw custom fields (no nested scroll view - use the outer scroll view)
         for (int i = 0; i < itemProfileManagerSelectedProfile.fields.Count; i++)
         {
             // Skip identity fields
@@ -1331,8 +1370,6 @@ public class ItemFactoryMainWindow : EditorWindow
             DrawItemProfileManagerFieldEditor(itemProfileManagerSelectedProfile.fields[i], i);
         }
         
-        EditorGUILayout.EndScrollView();
-        
         // Add Field Button
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Add Custom Field", GUILayout.Height(30)))
@@ -1340,7 +1377,7 @@ public class ItemFactoryMainWindow : EditorWindow
             var newField = new ProfileField
             {
                 name = "newField",
-                type = FieldType.String,
+                type = ProfileFieldType.String,
                 displayName = "New Field",
                 category = "General",
                 displayOrder = GetItemProfileManagerCustomFieldsCount()
@@ -1375,7 +1412,7 @@ public class ItemFactoryMainWindow : EditorWindow
         "Combat",          // accuracy, recoil, damage
         "Inventory",       // maxStack, weight
         "Effects",         // restore values, modifiers
-        "General"          // 기�?
+        "General"          // Other
     };
     
     private static readonly string[] ItemProfileManagerIdentityFieldNames = new string[]
@@ -1460,7 +1497,7 @@ public class ItemFactoryMainWindow : EditorWindow
             name = fieldName,
             displayName = displayName,
             description = description,
-            type = FieldType.String,
+            type = ProfileFieldType.String,
             category = "Identity",
             isRequired = isRequired,
             displayOrder = Array.IndexOf(ItemProfileManagerIdentityFieldNames, fieldName)
@@ -1559,7 +1596,7 @@ public class ItemFactoryMainWindow : EditorWindow
         EditorGUILayout.Space(5);
         
         // Type and Settings
-        field.type = (FieldType)EditorGUILayout.EnumPopup("Type:", field.type);
+        field.type = (ProfileFieldType)EditorGUILayout.EnumPopup("Type:", field.type);
         field.displayOrder = EditorGUILayout.IntField("Display Order:", field.displayOrder);
         field.isRequired = EditorGUILayout.Toggle("Required:", field.isRequired);
         field.defaultValue = EditorGUILayout.TextField("Default Value:", field.defaultValue);
@@ -1579,7 +1616,7 @@ public class ItemFactoryMainWindow : EditorWindow
         
         switch (field.type)
         {
-            case FieldType.String:
+            case ProfileFieldType.String:
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Min Length:", GUILayout.Width(80));
                 field.minLength = EditorGUILayout.IntField(field.minLength, GUILayout.Width(100));
@@ -1601,8 +1638,8 @@ public class ItemFactoryMainWindow : EditorWindow
                 }
                 break;
                 
-            case FieldType.Integer:
-            case FieldType.Float:
+            case ProfileFieldType.Integer:
+            case ProfileFieldType.Float:
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Min Value:", GUILayout.Width(80));
                 field.minValue = EditorGUILayout.DoubleField(field.minValue, GUILayout.Width(100));
@@ -1611,12 +1648,12 @@ public class ItemFactoryMainWindow : EditorWindow
                 EditorGUILayout.EndHorizontal();
                 break;
                 
-            case FieldType.Boolean:
+            case ProfileFieldType.Boolean:
                 EditorGUILayout.HelpBox("Boolean fields don't require validation.", MessageType.None);
                 break;
                 
-            case FieldType.Array:
-            case FieldType.Object:
+            case ProfileFieldType.Array:
+            case ProfileFieldType.Object:
                 EditorGUILayout.HelpBox("Complex types (Array/Object) validation is handled by the parser.", MessageType.Info);
                 break;
         }
@@ -1710,7 +1747,15 @@ public class ItemFactoryMainWindow : EditorWindow
             version = 1,
             isDefault = false,
             fields = new List<ProfileField>(),
-            playerSettings = new PlayerSettings()
+            playerSettings = new Dictionary<string, int>
+            {
+                { "maxHunger", 100 },
+                { "maxThirst", 100 },
+                { "maxHealth", 100 },
+                { "maxStamina", 100 },
+                { "maxWeight", 50000 },
+                { "maxEnergy", 100 }
+            }
         };
         
         // Ensure identity fields are added
@@ -2191,4 +2236,3 @@ public class ItemFactoryMainWindow : EditorWindow
         EditorGUILayout.EndVertical();
     }
 }
-

@@ -65,53 +65,29 @@ struct CommandLineArgs
 
 /**
  * @namespace CommandLineParser
- * @brief Namespace for command line parsing utilities
+ * @brief Command line parsing functions
  */
 namespace CommandLineParser
 {
     /**
      * @brief Parse command line arguments
-     * 
-     * Parses argc/argv into a CommandLineArgs structure. Supports:
-     * - Model selection: --model <name>
-     * - Item type: --type <food|drink|material|weapon|weaponcomponent|ammo>
-     * - Count: --count <number>
-     * - Preset: --preset <preset_name> (user-defined preset name)
-     * - Output path: --output <path>
-     * - Custom preset: --custom-preset <path> (path to custom preset JSON file)
-     * - Additional prompt: --additional-prompt <text>
-     * 
-     * @param argc Number of command line arguments
-     * @param argv Array of command line argument strings
-     * @return Parsed CommandLineArgs structure
+     * @param argc Argument count
+     * @param argv Argument vector
+     * @return Parsed arguments
      */
     CommandLineArgs ParseArguments(int argc, char** argv);
-
+    
     /**
-     * @brief Convert ItemType enum to string
-     * @param itemType Item type enum value
-     * @return String representation (e.g., "Food", "Weapon")
-     */
-    std::string GetItemTypeName(ItemType itemType);
-
-    /**
-     * @brief Convert RunMode enum to string
-     * @param mode Run mode enum value
-     * @return String representation ("LLM")
+     * @brief Get run mode name as string
+     * @param mode Run mode
+     * @return Mode name string
      */
     std::string GetRunModeName(RunMode mode);
     
     /**
-     * @brief Convert string to ItemType enum
-     * 
-     * Parses a string (case-insensitive) into an ItemType enum value.
-     * 
-     * @param typeStr String representation of item type
-     * @return ItemType enum value, or ItemType::Food if parsing fails
-     * 
-     * @note Valid strings: "food", "drink", "material", "weapon", "weaponcomponent", "ammo"
+     * @brief Get item type name as string
+     * @param type Item type
+     * @return Type name string
      */
-    ItemType ParseItemType(const std::string& typeStr);
+    std::string GetItemTypeName(ItemType type);
 }
-
-
