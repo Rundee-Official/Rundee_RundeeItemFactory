@@ -16,6 +16,8 @@ x86/
 
 # Test Projects
 UnityRundeeItemFactoryTest/
+UnityRundeeItemFactory/
+scripts/
 
 # CMake/VS temp
 [Cc]MakeCache.txt
@@ -35,15 +37,15 @@ RundeeItemFactory/x64/Release/ItemJson/
 RundeeItemFactory/x64/Release/TempState/
 RundeeItemFactory/x64/Release/*.raw.json
 
-# Unity generated
-UnityRundeeItemFactory/Library/
-UnityRundeeItemFactory/Logs/
-UnityRundeeItemFactory/obj/
-UnityRundeeItemFactory/Temp/
-UnityRundeeItemFactory/TempArtifacts/
-UnityRundeeItemFactory/Build/
-UnityRundeeItemFactory/Builds/
-UnityRundeeItemFactory/UserSettings/
+# Unity generated (entire UnityRundeeItemFactory folder is ignored above)
+# UnityRundeeItemFactory/Library/
+# UnityRundeeItemFactory/Logs/
+# UnityRundeeItemFactory/obj/
+# UnityRundeeItemFactory/Temp/
+# UnityRundeeItemFactory/TempArtifacts/
+# UnityRundeeItemFactory/Build/
+# UnityRundeeItemFactory/Builds/
+# UnityRundeeItemFactory/UserSettings/
 
 # IDE metadata
 .idea/
