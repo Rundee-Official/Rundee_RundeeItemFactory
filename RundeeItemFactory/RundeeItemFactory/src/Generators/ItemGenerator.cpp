@@ -249,9 +249,19 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
         std::cout << "[ItemGenerator] Using default preset\n";
     }
 
-    // Get existing IDs
+    // Get existing IDs from both JSON file and registry
     std::set<std::string> existingIds = DynamicItemJsonWriter::GetExistingIds(args.params.outputPath);
     std::cout << "[ItemGenerator] Found " << existingIds.size() << " existing items in " << args.params.outputPath << "\n";
+    
+    // Load IDs from registry (persistent across all generations)
+    std::string typeNameLower = profile.itemTypeName;
+    std::transform(typeNameLower.begin(), typeNameLower.end(), typeNameLower.begin(), ::tolower);
+    std::set<std::string> registryIds = ItemGeneratorRegistry::LoadRegistryIds(typeNameLower);
+    std::cout << "[ItemGenerator] Loaded " << registryIds.size() << " IDs from registry for type: " << typeNameLower << "\n";
+    
+    // Merge registry IDs with existing JSON IDs
+    existingIds.insert(registryIds.begin(), registryIds.end());
+    std::cout << "[ItemGenerator] Total unique IDs to avoid: " << existingIds.size() << "\n";
 
     // Generate timestamp
     auto now = std::chrono::system_clock::now();
@@ -330,13 +340,44 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
 
     std::cout << "[ItemGenerator] Successfully wrote " << newItems.size() << " items to " << args.params.outputPath << "\n";
 
-    // Log registry event
-    size_t beforeCount = existingIds.size();
-    size_t afterCount = beforeCount + newItems.size();
-    ItemGeneratorRegistry::LogRegistryEvent(profile.itemTypeName, beforeCount, static_cast<size_t>(newItems.size()), afterCount);
+    // Append new item IDs to registry (persistent storage)
+    if (!newItems.empty())
+    {
+        // Extract IDs from new items and add to registry
+        std::set<std::string> newIds;
+        for (const auto& item : newItems)
+        {
+            if (item.contains("id") && item["id"].is_string())
+            {
+                newIds.insert(item["id"].get<std::string>());
+            }
+        }
+        
+        if (!newIds.empty())
+        {
+            // Load existing registry IDs
+            std::set<std::string> registryIds = ItemGeneratorRegistry::LoadRegistryIds(typeNameLower);
+            size_t beforeCount = registryIds.size();
+            
+            // Merge new IDs
+            registryIds.insert(newIds.begin(), newIds.end());
+            
+            // Save back to registry
+            if (ItemGeneratorRegistry::SaveRegistryIds(typeNameLower, registryIds))
+            {
+                size_t afterCount = registryIds.size();
+                size_t addedCount = afterCount - beforeCount;
+                std::cout << "[ItemGenerator] Added " << addedCount << " new IDs to registry (total: " << afterCount << ")\n";
+                ItemGeneratorRegistry::LogRegistryEvent(profile.itemTypeName, beforeCount, addedCount, afterCount);
+            }
+        }
+    }
 
     return 0;
 }
+
+
+
 
 
 

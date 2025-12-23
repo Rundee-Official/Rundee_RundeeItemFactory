@@ -74,3 +74,6 @@ void ItemGeneratorRegistry::AppendIdsToRegistry(const std::string& typeName, con
 
 
 
+
+
+
