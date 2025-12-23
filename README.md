@@ -12,8 +12,6 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
 - **Preset System**: Forest, Desert, Coast, City, and Default presets with custom preset support
 - **Dynamic Prompt Generation**: LLM prompts are dynamically built from profile data, ensuring all field definitions, validation rules, and player settings are included
 - **Unity Integration**: Automatic ScriptableObject generation with EditorWindow GUI
-- **Balance Reporting**: Statistical analysis of generated items with Quick Summary
-- **Unity Balance Report Integration**: Generate balance reports directly from Unity Editor
 - **Improved UI**: Organized sections with helpful tooltips and progress indicators
 - **Retry Logic**: Automatic retry on LLM failures with exponential backoff
 - **ID Prefixing**: Automatic type prefixes (Food_, Drink_, Material_, Weapon_, WeaponComponent_, Ammo_)
@@ -127,7 +125,7 @@ See [Dynamic Profile System Documentation](docs/DYNAMIC_PROFILE_SYSTEM.md) for d
 | `--maxHunger` | Maximum hunger value | `100` |
 | `--maxThirst` | Maximum thirst value | `100` |
 | `--out` | Output JSON file path | `items_food.json` |
-| `--report` | Generate balance report for existing JSON file | - |
+| `--report` | Generate balance report (planned, not yet implemented) | - |
 
 ### Unity Integration
 
