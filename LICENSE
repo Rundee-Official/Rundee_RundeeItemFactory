@@ -1,4 +1,40 @@
+RundeeItemFactory C++ Project License
 
+Copyright (c) 2025 Haneul Lee (Rundee)
 
+All rights reserved.
 
+This software and associated documentation files (the "Software") are the exclusive 
+property of Haneul Lee (Rundee). All rights, title, and interest in and to the 
+Software, including all intellectual property rights, remain with Haneul Lee (Rundee).
 
+PROHIBITED ACTIONS:
+
+You are strictly prohibited from:
+- Copying, reproducing, or duplicating the Software in whole or in part without 
+  explicit written permission from the copyright owner
+- Modifying, adapting, or creating derivative works based on the Software without 
+  explicit written permission from the copyright owner
+- Distributing, publishing, selling, or sublicensing the Software or any portion 
+  thereof to any third party without explicit written permission from the copyright owner
+- Reverse engineering, decompiling, or disassembling the Software
+- Removing or altering any copyright notices, proprietary rights notices, or 
+  other identifying information from the Software
+- Using the Software to create competing products or services
+
+LEGAL NOTICE:
+
+Any unauthorized use, copying, distribution, or modification of this Software 
+constitutes a violation of copyright law and may result in severe civil and 
+criminal penalties. The copyright owner reserves the right to take legal action 
+against any individual or entity that violates these terms.
+
+For licensing inquiries, please contact:
+- GitHub: https://github.com/Rundee-Official/Rundee_RundeeItemFactory
+- Copyright Owner: Haneul Lee (Rundee)
+
+---
+
+This license applies to the C++ source code and executable components of the 
+RundeeItemFactory project. The Unity Editor integration components are separately 
+licensed and distributed through the Unity Asset Store.
