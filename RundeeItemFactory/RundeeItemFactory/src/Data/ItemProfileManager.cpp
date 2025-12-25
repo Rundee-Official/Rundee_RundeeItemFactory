@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <sstream>
 #include <set>
+#include <climits>
+#include <json.hpp>
 
 std::string ItemProfileManager::s_profilesDir;
 
@@ -29,7 +31,7 @@ bool ItemProfileManager::Initialize(const std::string& profilesDir)
     // Create default profiles if directory is empty
     if (std::filesystem::is_empty(profilesDir))
     {
-        CreateDefaultProfiles(profilesDir);
+        // Default profiles removed - users create their own profiles
     }
     
     return true;
@@ -333,13 +335,7 @@ bool ItemProfileManager::CreateDefaultProfiles(const std::string& profilesDir)
     spoilTimeField.validation.maxValue = 10000.0;
     foodProfile.fields.push_back(spoilTimeField);
     
-    // Set player settings
-    foodProfile.playerSettings["maxHunger"] = 100;
-    foodProfile.playerSettings["maxThirst"] = 100;
-    foodProfile.playerSettings["maxHealth"] = 100;
-    foodProfile.playerSettings["maxStamina"] = 100;
-    foodProfile.playerSettings["maxWeight"] = 50000;
-    foodProfile.playerSettings["maxEnergy"] = 100;
+    // Player settings removed from ItemProfile - now using PlayerProfile instead
     
     SaveProfile(foodProfile);
     std::cout << "[ItemProfileManager] Created default profile: " << foodProfile.id << "\n";
@@ -352,7 +348,122 @@ bool ItemProfileManager::CreateDefaultProfiles(const std::string& profilesDir)
 
 std::string ItemProfileManager::GetProfileFilePath(const std::string& profileId)
 {
-    return s_profilesDir + "/" + profileId + ".json";
+    // Use filesystem::path to handle path separators correctly
+    std::filesystem::path profilePath(s_profilesDir);
+    profilePath /= (profileId + ".json");
+    return profilePath.string();
+}
+
+void ItemProfileManager::EnsureRequiredFields(ItemProfile& profile)
+{
+    // Check if id field exists
+    bool hasId = false;
+    bool hasDisplayName = false;
+    int minDisplayOrder = INT_MAX;
+    
+    for (const auto& field : profile.fields)
+    {
+        if (field.name == "id")
+            hasId = true;
+        if (field.name == "displayName")
+            hasDisplayName = true;
+        if (field.displayOrder < minDisplayOrder)
+            minDisplayOrder = field.displayOrder;
+    }
+    
+    // If no fields exist, start from 0
+    if (minDisplayOrder == INT_MAX)
+        minDisplayOrder = 0;
+    
+    // Add id field if missing (at position 0)
+    if (!hasId)
+    {
+        ProfileField idField;
+        idField.name = "id";
+        idField.type = ProfileFieldType::String;
+        idField.displayName = "ID";
+        idField.description = "Unique identifier for this item. Must be unique across all items. Format: {itemType}_{number} (e.g., weapon_001, food_042)";
+        idField.category = "Basic";
+        idField.displayOrder = minDisplayOrder - 2; // Ensure it's first
+        idField.defaultValue = nlohmann::json();
+        idField.validation.isRequired = true;
+        idField.validation.minLength = 1;
+        idField.validation.maxLength = 100;
+        profile.fields.insert(profile.fields.begin(), idField);
+    }
+    else
+    {
+        // Ensure id field is required and has proper description
+        for (auto& field : profile.fields)
+        {
+            if (field.name == "id")
+            {
+                field.validation.isRequired = true;
+                if (field.description.empty())
+                {
+                    field.description = "Unique identifier for this item. Must be unique across all items. Format: {itemType}_{number} (e.g., weapon_001, food_042)";
+                }
+                // Move to first position
+                if (field.displayOrder != minDisplayOrder - 2)
+                {
+                    field.displayOrder = minDisplayOrder - 2;
+                }
+                break;
+            }
+        }
+    }
+    
+    // Add displayName field if missing (at position 1)
+    if (!hasDisplayName)
+    {
+        ProfileField displayNameField;
+        displayNameField.name = "displayName";
+        displayNameField.type = ProfileFieldType::String;
+        displayNameField.displayName = "Display Name";
+        displayNameField.description = "Human-readable name for this item. Should clearly identify what the item is (e.g., 'AK-47 Assault Rifle', 'Healing Potion')";
+        displayNameField.category = "Basic";
+        displayNameField.displayOrder = minDisplayOrder - 1; // Second after id
+        displayNameField.defaultValue = nlohmann::json();
+        displayNameField.validation.isRequired = true;
+        displayNameField.validation.minLength = 1;
+        displayNameField.validation.maxLength = 200;
+        // Insert after id field
+        if (profile.fields.size() > 0 && profile.fields[0].name == "id")
+        {
+            profile.fields.insert(profile.fields.begin() + 1, displayNameField);
+        }
+        else
+        {
+            profile.fields.insert(profile.fields.begin(), displayNameField);
+        }
+    }
+    else
+    {
+        // Ensure displayName field is required and has proper description
+        for (auto& field : profile.fields)
+        {
+            if (field.name == "displayName")
+            {
+                field.validation.isRequired = true;
+                if (field.description.empty())
+                {
+                    field.description = "Human-readable name for this item. Should clearly identify what the item is (e.g., 'AK-47 Assault Rifle', 'Healing Potion')";
+                }
+                // Move to second position
+                if (field.displayOrder != minDisplayOrder - 1)
+                {
+                    field.displayOrder = minDisplayOrder - 1;
+                }
+                break;
+            }
+        }
+    }
+    
+    // Sort fields by displayOrder to ensure id and displayName are first
+    std::sort(profile.fields.begin(), profile.fields.end(),
+        [](const ProfileField& a, const ProfileField& b) {
+            return a.displayOrder < b.displayOrder;
+        });
 }
 
 ItemProfile ItemProfileManager::ParseProfileFromJson(const nlohmann::json& json)
@@ -382,16 +493,11 @@ ItemProfile ItemProfileManager::ParseProfileFromJson(const nlohmann::json& json)
         }
     }
     
-    if (json.contains("playerSettings") && json["playerSettings"].is_object())
-    {
-        for (const auto& [key, value] : json["playerSettings"].items())
-        {
-            if (value.is_number_integer())
-            {
-                profile.playerSettings[key] = value.get<int>();
-            }
-        }
-    }
+    // Ensure id and displayName fields are always present at the top
+    EnsureRequiredFields(profile);
+    
+    // Player settings removed from ItemProfile - now using PlayerProfile instead
+    // Legacy support: ignore playerSettings if present in JSON (for backward compatibility)
     
     return profile;
 }
@@ -414,11 +520,8 @@ nlohmann::json ItemProfileManager::ProfileToJson(const ItemProfile& profile)
         j["fields"].push_back(FieldToJson(field));
     }
     
-    j["playerSettings"] = nlohmann::json::object();
-    for (const auto& [key, value] : profile.playerSettings)
-    {
-        j["playerSettings"][key] = value;
-    }
+    // Player settings removed from ItemProfile - now using PlayerProfile instead
+    // Do not save playerSettings to JSON
     
     j["metadata"] = profile.metadata;
     

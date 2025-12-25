@@ -61,6 +61,7 @@ struct CommandLineArgs
     std::string additionalPrompt;           ///< Additional user-defined prompt text to append
     bool useTestMode = false;                ///< If true, outputs go to Test/ folder instead of ItemJson/
     std::string profileId;                   ///< Item profile ID to use for generation (empty = use default profile for item type)
+    std::string playerProfileId;             ///< Player profile ID to use for generation (empty = use default player profile)
 };
 
 /**

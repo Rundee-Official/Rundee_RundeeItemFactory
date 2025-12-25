@@ -1,18 +1,17 @@
 # RundeeItemFactory
 
-LLM-powered item generator for Unity & Unreal Engine games.
+LLM-powered command-line tool for generating game item JSON data using local LLM (Ollama).
 
-Automatically generates game item JSON data (Food, Drink, Material, Weapon, WeaponComponent, Ammo) using local LLM (Ollama) and imports them into Unity ScriptableObjects.
+Automatically generates game item JSON data (Food, Drink, Material, Weapon, WeaponComponent, Ammo) using local LLM (Ollama) with dynamic profile system support.
 
 ## Features
 
 - **Local LLM Integration**: Uses Ollama for local LLM interaction
 - **Dynamic Profile System**: Create custom item structures with flexible field definitions, validation rules, and relationships
+- **Player Profile System**: Define player stat settings and stat sections that influence item generation and balancing
 - **Multiple Item Types**: Food, Drink, Material, Weapon, WeaponComponent, and Ammo items
-- **Preset System**: Forest, Desert, Coast, City, and Default presets with custom preset support
-- **Dynamic Prompt Generation**: LLM prompts are dynamically built from profile data, ensuring all field definitions, validation rules, and player settings are included
-- **Unity Integration**: Automatic ScriptableObject generation with EditorWindow GUI
-- **Improved UI**: Organized sections with helpful tooltips and progress indicators
+- **World Context System**: Define custom world context in Item Profiles for flexible item generation
+- **Dynamic Prompt Generation**: LLM prompts are dynamically built from profile data, ensuring all field definitions, validation rules, player settings, and custom context are included
 - **Retry Logic**: Automatic retry on LLM failures with exponential backoff
 - **ID Prefixing**: Automatic type prefixes (Food_, Drink_, Material_, Weapon_, WeaponComponent_, Ammo_)
 - **ID Registry System**: Prevents duplicate IDs across generations
@@ -20,34 +19,52 @@ Automatically generates game item JSON data (Food, Drink, Material, Weapon, Weap
 
 ## Requirements
 
+- **Windows 10/11** (64-bit)
+- **Visual Studio 2019 or later** (with C++ workload)
 - **Ollama**: Install from [ollama.ai](https://ollama.ai)
-- **C++ Compiler**: Visual Studio 2019 or later (Windows)
-- **Unity**: 2020.3 or later (for Unity integration)
-
-## Configuration
-
-- Optional config file: `config/rundee_config.json`
-- Controls Ollama host/port, retries, and HTTP timeouts. The file is copied next to `RundeeItemFactory.exe` on build so runtime picks it up automatically.
-- Example:
-  ```json
-  {
-    "ollama": {
-      "host": "localhost",
-      "port": 11434,
-      "maxRetries": 3,
-      "requestTimeoutSeconds": 120
-    }
-  }
-  ```
 
 ## Installation
+
+### 1. Build from Source
 
 1. Clone this repository
 2. Open `RundeeItemFactory/RundeeItemFactory.sln` in Visual Studio
 3. Build the project (Release or Debug)
-4. Ensure Ollama is installed and running
+4. The executable will be in `RundeeItemFactory/RundeeItemFactory/x64/Release/` (or Debug)
 
-For detailed installation instructions, see [INSTALLATION_GUIDE.md](docs/INSTALLATION_GUIDE.md)
+### 2. Install Ollama
+
+1. Download Ollama from https://ollama.ai/download
+2. Run the installer
+3. Pull a model (we recommend llama3):
+   ```powershell
+   ollama pull llama3
+   ```
+
+### 3. Prepare Profiles
+
+Create JSON profile files in the following directories (relative to the executable):
+
+- `ItemProfiles/` - Item profile JSON files
+- `PlayerProfiles/` - Player profile JSON files
+
+## Configuration
+
+Optional config file: `config/rundee_config.json`
+
+Controls Ollama host/port, retries, and HTTP timeouts. The file is copied next to `RundeeItemFactory.exe` on build so runtime picks it up automatically.
+
+Example:
+```json
+{
+  "ollama": {
+    "host": "localhost",
+    "port": 11434,
+    "maxRetries": 3,
+    "requestTimeoutSeconds": 120
+  }
+}
+```
 
 ## Usage
 
@@ -55,143 +72,80 @@ For detailed installation instructions, see [INSTALLATION_GUIDE.md](docs/INSTALL
 
 #### Generate Food Items
 ```bash
-RundeeItemFactory.exe --mode llm --itemType food --model llama3 --count 10 --preset city --out items_food.json
+RundeeItemFactory.exe --mode llm --itemType food --model llama3 --count 10 --profile realistic_food --playerProfile default_player --out ItemJson/items_food.json
 ```
 
 #### Generate Drink Items
 ```bash
-RundeeItemFactory.exe --mode llm --itemType drink --model llama3 --count 10 --preset coast --out items_drink.json
+RundeeItemFactory.exe --mode llm --itemType drink --model llama3 --count 10 --out items_drink.json
 ```
 
 #### Generate Material Items
 ```bash
-RundeeItemFactory.exe --mode llm --itemType material --model llama3 --count 10 --preset forest --out items_material.json
+RundeeItemFactory.exe --mode llm --itemType material --model llama3 --count 10 --out items_material.json
 ```
 
 #### Generate Weapon Items
 ```bash
-RundeeItemFactory.exe --mode llm --itemType weapon --model llama3 --count 10 --preset city --out items_weapon.json
+RundeeItemFactory.exe --mode llm --itemType weapon --model llama3 --count 10 --profile realistic_firearms --out items_weapon.json
 ```
 
 #### Generate Weapon Component Items
 ```bash
-RundeeItemFactory.exe --mode llm --itemType weaponcomponent --model llama3 --count 10 --preset city --out items_weapon_component.json
+RundeeItemFactory.exe --mode llm --itemType weaponcomponent --model llama3 --count 10 --out items_weapon_component.json
 ```
 
 #### Generate Ammo Items
 ```bash
-RundeeItemFactory.exe --mode llm --itemType ammo --model llama3 --count 10 --preset city --out items_ammo.json
+RundeeItemFactory.exe --mode llm --itemType ammo --model llama3 --count 10 --out items_ammo.json
 ```
-
-#### Generate Balance Report
-```bash
-RundeeItemFactory.exe --report items_food.json --itemType food
-```
-
-#### Dummy Mode (for testing without LLM)
-```bash
-RundeeItemFactory.exe --mode dummy --itemType food --count 5 --out items_dummy.json
-```
-
-### Dynamic Profile System
-
-The system uses a **Dynamic Profile System** where LLM prompts are automatically generated from item profiles. This ensures:
-
-- **Complete Data Transmission**: All profile data (fields, validation rules, relationships, player settings) is included in the prompt
-- **No Data Loss**: Every field definition, constraint, and allowed value is passed to the LLM
-- **Flexible Structure**: Create custom item structures without code changes
-- **Validation Rules**: Field validation rules (min/max, allowed values, relationships) are included in prompts
-- **Player Context**: Player settings (max stats) are included for balance context
-- **Duplicate Prevention**: Existing IDs from the registry are included to prevent duplicates
-
-Profiles define:
-- Field definitions with types and validation rules
-- Relationship constraints between fields
-- Allowed values and default values
-- Player settings for balance context
-- Custom context for LLM guidance
-
-See [Dynamic Profile System Documentation](docs/DYNAMIC_PROFILE_SYSTEM.md) for detailed information.
 
 ### Command Line Arguments
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `--mode` | Generation mode: `llm` or `dummy` | `dummy` |
+| `--mode` | Generation mode: `llm` | `llm` |
 | `--itemType` | Item type: `food`, `drink`, `material`, `weapon`, `weaponcomponent`, or `ammo` | `food` |
 | `--model` | Ollama model name | `llama3` |
 | `--count` | Number of items to generate | `5` |
-| `--preset` | World preset: `default`, `forest`, `desert`, `coast`, `city` | `default` |
-| `--maxHunger` | Maximum hunger value | `100` |
-| `--maxThirst` | Maximum thirst value | `100` |
-| `--out` | Output JSON file path | `items_food.json` |
-| `--report` | Generate balance report (planned, not yet implemented) | - |
+| `--profile` | Item profile ID to use (empty = use default for item type) | - |
+| `--playerProfile` | Player profile ID to use (empty = use default player profile) | - |
+| `--out` | Output JSON file path (relative to .exe location) | `ItemJson/items_food.json` |
 
-### Unity Integration
+**Note:** World context is defined in Item Profiles using the "World Context / Background" field.
 
-#### Using the Item Factory Window (Recommended)
+## Dynamic Profile System
 
-1. Open Unity Editor
-2. Go to **Tools > Rundee > Item Factory > Item Factory Window**
-3. (Optional) Open the **Setup (Ollama)** foldout to verify Ollama is installed. If not detected on Windows, run the bundled installer (.bat) directly from the window.
-3. The window is organized into collapsible sections:
+The system uses a **Dynamic Profile System** where LLM prompts are automatically generated from item profiles. This ensures:
 
-   **Configuration Section:**
-   - **Executable Path**: Path to `RundeeItemFactory.exe` (auto-detected if in standard location)
-   - Shows status indicator when executable is found
+- **Complete Data Transmission**: All profile data (fields, validation rules, relationships, custom context, metadata) is included in the prompt
+- **No Data Loss**: Every field definition, constraint, allowed value, and custom field is passed to the LLM
+- **Flexible Structure**: Create custom item structures without code changes
+- **Validation Rules**: Field validation rules (min/max, allowed values, relationships) are included in prompts
+- **Player Context**: Player profile settings (max stats) and stat sections are included for balance context
+- **Duplicate Prevention**: Existing IDs from the registry are included to prevent duplicates
+- **Descriptive IDs**: Automatically generates short, descriptive item IDs (e.g., `weapon_FNScar17S`) from display names
 
-   **Generation Parameters Section:**
-   - **Model**: LLM model name (e.g., `llama3`, `llama3:8b`, or custom)
-   - **Preset**: World preset with helpful descriptions:
-     - Default: Generic survival environment
-     - Forest: Natural resources, wild foods
-     - Desert: Scarce resources, preserved foods
-     - Coast: Seafood, fresh water sources
-     - City: Processed foods, modern weapons
-   - **Item Type**: Food, Drink, Material, Weapon, Weapon Component, or Ammo
-   - **Count**: Number of items to generate (recommended: 10-20 for testing, 50-100 for production)
-   - **Max Hunger/Thirst**: Maximum values for balancing (Food/Drink only)
-   - **Output File**: Path where JSON will be saved (shows file size if exists)
-   - **Auto Import**: Automatically import items after generation
+### Item Profiles
 
-4. Click **Generate Items**
-5. Monitor progress:
-   - Progress bar shows generation status
-   - Log area displays real-time output
-   - Cancel button available during generation
-6. Items will be automatically imported if "Auto Import" is enabled
+Item Profiles define:
+- Field definitions with types and validation rules
+- Relationship constraints between fields
+- Allowed values and default values
+- Custom context for LLM guidance (World Context / Background)
+- Metadata for additional information
 
-**Note:** Balance Report feature is available via command line (see below). Unity Editor integration is planned for future releases.
+Profile files should be placed in `ItemProfiles/` directory and named as `{profile_id}.json`.
 
-#### Manual Import (Unified)
+### Player Profiles
 
-1. Generate JSON files using the command line tool.
-2. In Unity Editor, open **Tools > Rundee > Item Factory > JSON Importer**.
-3. Choose the target **Item type** (Food, Drink, Material, Weapon, Weapon Component, Ammo).
-4. Pick the JSON file and click **Import Selected JSON**.
-5. ScriptableObjects will be created automatically in `Assets/Resources/RundeeItemFactory/[Type]Items/`.
+Player Profiles define:
+- Player stat settings (max hunger, thirst, health, stamina, weight, energy)
+- Stat sections with nested fields and values
+- Display order and organization
+- Descriptions and metadata
 
-#### Available Unity Menu Items
-
-**Main Windows:**
-- `Tools/Rundee/Item Factory/Item Factory` - Main window for generating items and managing settings
-- `Tools/Rundee/Item Factory/Import JSON` - Import JSON files and convert to ScriptableObjects
-
-**Setup:**
-- `Tools/Rundee/Item Factory/Ollama Setup` - Install Ollama on Windows
-
-**Note:** Additional management tools (Item Manager, Registry Manager, etc.) are planned for future releases.
-
-## Documentation
-
-Available documentation in the `docs/` directory:
-
-- **[Dynamic Profile System](docs/DYNAMIC_PROFILE_SYSTEM.md)** — Complete guide to creating and using custom item profiles
-- **[Installation Guide](docs/INSTALLATION_GUIDE.md)** — Detailed setup instructions
-- **[Unity Import Guide](docs/UNITY_IMPORT_GUIDE.md)** — Unity integration and usage
-- **[Deployment Structure](docs/DEPLOYMENT_STRUCTURE.md)** — Deployment package structure and scenarios
-- **[Asset Store Setup](docs/ASSET_STORE_SETUP.md)** — Unity Asset Store distribution guide
-- **[Deployment Strategy](docs/DEPLOYMENT_STRATEGY.md)** — Deployment strategies and best practices
+Profile files should be placed in `PlayerProfiles/` directory and named as `{profile_id}.json`.
 
 ## Project Structure
 
@@ -199,30 +153,37 @@ Available documentation in the `docs/` directory:
 RundeeItemFactory/
 ├── RundeeItemFactory/          # C++ Visual Studio project
 │   ├── include/                # Header files
-│   │   ├── Data/               # Item data structures, profiles
-│   │   ├── Validators/         # Item validation logic
+│   │   ├── Data/               # Item/Player data structures, profiles
 │   │   ├── Parsers/            # JSON parsing
 │   │   ├── Writers/            # JSON writing
 │   │   ├── Generators/         # Item generation
-│   │   ├── Clients/             # LLM client (Ollama)
-│   │   ├── Prompts/             # Prompt building (DynamicPromptBuilder)
-│   │   ├── Helpers/             # Command line parsing, utilities
-│   │   └── Utils/               # Utility functions
-│   ├── src/                     # Implementation files
-│   ├── config/                  # Configuration files
-│   └── RundeeItemFactory.sln    # Visual Studio solution
-├── docs/                        # Documentation
-│   ├── DYNAMIC_PROFILE_SYSTEM.md
-│   ├── INSTALLATION_GUIDE.md
-│   ├── UNITY_IMPORT_GUIDE.md
-│   └── ...
-├── LICENCES/                    # Third-party licenses
-├── README.md                     # This file
-└── LICENSE                       # Project license
+│   │   ├── Clients/            # LLM client (Ollama)
+│   │   ├── Prompts/            # Prompt building (DynamicPromptBuilder)
+│   │   ├── Helpers/            # Command line parsing, utilities
+│   │   └── Utils/              # Utility functions
+│   ├── src/                    # Implementation files
+│   ├── config/                 # Configuration files
+│   └── RundeeItemFactory.sln   # Visual Studio solution
+├── LICENCES/                   # Third-party licenses
+├── README.md                   # This file
+└── LICENSE                     # Project license
+```
 
-Note: The following folders are for testing/development and are not tracked in git:
-- scripts/                       # Build and test scripts
-- UnityRundeeItemFactory/        # Unity test project
+### Runtime Structure
+
+When running the executable, the following directory structure is expected:
+
+```
+RundeeItemFactory.exe location/
+├── RundeeItemFactory.exe       # Main executable
+├── config/
+│   └── rundee_config.json      # Optional configuration
+├── ItemProfiles/               # Item profile JSON files
+│   └── {profile_id}.json
+├── PlayerProfiles/             # Player profile JSON files
+│   └── {profile_id}.json
+├── ItemJson/                   # Generated item JSON files (created by .exe)
+└── Registry/                   # ID registry for duplicate prevention (created by .exe)
 ```
 
 ## Item Data Structure
@@ -397,24 +358,19 @@ Weapon components modify weapon stats when attached. Magazines can describe thei
 }
 ```
 
-## Presets
+## World Context
 
-Presets define the world context for item generation, influencing the types and characteristics of generated items.
+World context defines the environment and setting for item generation, influencing the types and characteristics of generated items. This is configured in Item Profiles using the "World Context / Background" field, allowing for complete customization without code changes.
 
-### Default
-Generic early-game survival environment with moderate resources. Items should feel simple and grounded, not magical or high-tech.
+### Example Contexts
 
-### Forest
-Temperate forest environment with natural resources, wild foods, and organic materials. Items include berries, nuts, roots, and simple cooked meals.
+- **Survival**: Generic early-game survival environment with moderate resources. Items should feel simple and grounded, not magical or high-tech.
+- **Forest**: Temperate forest environment with natural resources, wild foods, and organic materials.
+- **Desert**: Harsh desert environment with scarce resources, preserved foods, and heat-resistant materials.
+- **Coastal**: Coastal environment with seafood, fresh water sources, and marine materials.
+- **Urban**: Urban environment with processed foods, manufactured items, and modern weapons.
 
-### Desert
-Harsh desert environment with scarce resources, preserved foods, and heat-resistant materials. Food items are low in quantity but efficient.
-
-### Coast
-Coastal environment with seafood, fresh water sources, and marine materials. Items include coconuts, fish, shellfish, and tropical fruits.
-
-### City
-Urban environment with processed foods, manufactured items, and modern weapons. Items include canned goods, energy drinks, and advanced weaponry.
+You can define any world context in your Item Profiles to match your game's setting and requirements.
 
 ## Retry Logic
 
@@ -435,38 +391,28 @@ When generating items to an existing file, the tool automatically:
 
 This allows you to incrementally build your item database without losing existing data.
 
-## Balance Report (Planned)
-
-Balance report feature is planned for future releases. This will provide statistical analysis of generated items to analyze balance and distribution patterns.
-
-### Command Line
-
-```bash
-RundeeItemFactory.exe --report items_food.json --itemType food
-RundeeItemFactory.exe --report items_weapon.json --itemType weapon
-RundeeItemFactory.exe --report items_weaponcomponent.json --itemType weaponcomponent
-RundeeItemFactory.exe --report items_ammo.json --itemType ammo
-```
-
-### Unity Editor
-
-Balance Report feature is planned for future releases. Currently, you can analyze generated JSON files manually or use external tools.
-
 ## Troubleshooting
 
 ### Ollama not found
 - Ensure Ollama is installed and in your PATH
 - Test with: `ollama run llama3 "test"`
+- Verify Ollama service is running: `ollama list`
 
 ### Empty JSON response
 - Check if Ollama is running
 - Try a different model
 - Check network connection (if using remote Ollama)
+- Verify the model is installed: `ollama list`
 
-### Unity import fails
-- Ensure JSON file is valid
-- Check file path
-- Verify Unity Editor console for errors
+### Profile not found
+- Ensure profile JSON files are in the correct directories (`ItemProfiles/` or `PlayerProfiles/`)
+- Check that the profile ID matches the filename (without .json extension)
+- Verify the JSON file is valid
+
+### Build errors
+- Ensure Visual Studio 2019 or later is installed
+- Install "Desktop development with C++" workload
+- Check that all dependencies are properly configured
 
 ## License
 

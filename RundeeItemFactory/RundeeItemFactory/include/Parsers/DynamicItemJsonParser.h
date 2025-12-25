@@ -69,6 +69,13 @@ public:
         const nlohmann::json& item,
         const std::string& fieldName,
         const ItemProfile& profile);
+    
+    /**
+     * @brief Generate short ID from displayName by extracting key identifiers
+     * @param displayName Display name to process
+     * @return Short ID suffix (without prefix)
+     */
+    static std::string GenerateShortIdFromDisplayName(const std::string& displayName);
 
 private:
     /**
@@ -89,5 +96,16 @@ private:
      * @return Cleaned JSON text
      */
     static std::string CleanJsonText(const std::string& jsonText);
+    
+    /**
+     * @brief Ensure id and displayName are present, generate if missing
+     * @param item JSON item to modify
+     * @param profile Profile for context
+     * @param index Item index for generating unique ID
+     */
+    static void EnsureIdAndDisplayName(
+        nlohmann::json& item,
+        const ItemProfile& profile,
+        size_t index);
 };
 

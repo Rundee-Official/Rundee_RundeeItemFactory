@@ -23,9 +23,9 @@
 #include "Parsers/DynamicItemJsonParser.h"
 #include "Writers/DynamicItemJsonWriter.h"
 #include "Prompts/DynamicPromptBuilder.h"
-#include "Prompts/CustomPreset.h"
 #include "Clients/OllamaClient.h"
 #include "Data/ItemProfileManager.h"
+#include "Data/PlayerProfileManager.h"
 #include "Helpers/AppConfig.h"
 #include <fstream>
 #include <map>
@@ -40,6 +40,7 @@
 #include <chrono>
 #include <map>
 #include <algorithm>
+#include <cctype>
 #include <thread>
 #include <future>
 #include <mutex>
@@ -47,6 +48,7 @@
 #include <random>
 #ifdef _WIN32
 #include <direct.h>
+#include <windows.h>
 #else
 #include <sys/stat.h>
 #endif
@@ -174,87 +176,135 @@ static void EnsureParentDir(const std::string& path)
     }
 }
 
-int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
+int ItemGenerator::GenerateWithLLM(CommandLineArgs& args)
 {
-    // Initialize profile manager
-    if (!ItemProfileManager::Initialize("profiles/"))
+    // Get executable directory - this is the base for all paths
+    std::string exeDir;
+    
+#ifdef _WIN32
+    char exePath[MAX_PATH];
+    DWORD pathLen = GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    if (pathLen > 0 && pathLen < MAX_PATH)
     {
-        std::cerr << "[ItemGenerator] Failed to initialize ItemProfileManager\n";
-        return 1;
-    }
-
-    // Load profile
-    ItemProfile profile;
-    if (!args.profileId.empty())
-    {
-        profile = ItemProfileManager::LoadProfile(args.profileId);
-        if (profile.id.empty())
+        exeDir = exePath;
+        size_t lastSlash = exeDir.find_last_of("\\/");
+        if (lastSlash != std::string::npos)
         {
-            std::cerr << "[ItemGenerator] Failed to load profile: " << args.profileId << "\n";
-            return 1;
+            exeDir = exeDir.substr(0, lastSlash + 1);
         }
-        std::cout << "[ItemGenerator] Loaded profile: " << profile.id << " (" << profile.displayName << ")\n";
     }
     else
     {
-        // Use default profile based on item type
+        exeDir = "";
+    }
+#else
+    exeDir = "";
+#endif
+    
+    // ItemProfiles directory - always use .exe directory/ItemProfiles
+    std::string profilesDir = exeDir + "ItemProfiles";
+    std::filesystem::path profilesPath(profilesDir);
+    profilesDir = profilesPath.string();
+    if (profilesDir.back() != '/' && profilesDir.back() != '\\')
+    {
+        profilesDir += "/";
+    }
+    
+    // Initialize item profile manager
+    if (!ItemProfileManager::Initialize(profilesDir))
+    {
+        std::cerr << "[ItemGenerator] Failed to initialize ItemProfileManager with directory: " << profilesDir << "\n";
+        return 1;
+    }
+    
+    std::cout << "[ItemGenerator] Using item profiles directory: " << profilesDir << "\n";
+
+    // PlayerProfiles directory - always use .exe directory/PlayerProfiles
+    std::string playerProfilesDir = exeDir + "PlayerProfiles";
+    std::filesystem::path playerProfilesPath(playerProfilesDir);
+    playerProfilesDir = playerProfilesPath.string();
+    if (playerProfilesDir.back() != '/' && playerProfilesDir.back() != '\\')
+    {
+        playerProfilesDir += "/";
+    }
+    
+    // Load player profile (REQUIRED)
+    PlayerProfile playerProfile;
+    bool playerProfileLoaded = false;
+    
+    if (!args.playerProfileId.empty())
+    {
+        playerProfile = PlayerProfileManager::LoadProfile(args.playerProfileId, playerProfilesDir);
+        if (playerProfile.id.empty())
+        {
+            std::cerr << "[ItemGenerator] Error: Failed to load player profile: " << args.playerProfileId << "\n";
+            std::cerr << "[ItemGenerator] Player profile is required. Please create a player profile in PlayerProfiles folder.\n";
+            return 1;
+        }
+        playerProfileLoaded = true;
+    }
+    else if (!playerProfilesDir.empty())
+    {
+        // Try to load default player profile
+        playerProfile = PlayerProfileManager::GetDefaultProfile(playerProfilesDir);
+        if (!playerProfile.id.empty())
+        {
+            playerProfileLoaded = true;
+        }
+    }
+    
+    if (!playerProfileLoaded)
+    {
+        std::cerr << "[ItemGenerator] Error: No player profile found. Player profile is required.\n";
+        std::cerr << "[ItemGenerator] Please create a player profile in: " << playerProfilesDir << "\n";
+        return 1;
+    }
+    
+    std::cout << "[ItemGenerator] Loaded player profile: " << playerProfile.id << " (" << playerProfile.displayName << ")\n";
+    // Override params with player profile settings
+    args.params.maxHunger = playerProfile.playerSettings.maxHunger;
+    args.params.maxThirst = playerProfile.playerSettings.maxThirst;
+    args.params.maxHealth = playerProfile.playerSettings.maxHealth;
+    args.params.maxStamina = playerProfile.playerSettings.maxStamina;
+    args.params.maxWeight = playerProfile.playerSettings.maxWeight;
+    args.params.maxEnergy = playerProfile.playerSettings.maxEnergy;
+
+    // Load item profile
+    ItemProfile itemProfile;
+    if (!args.profileId.empty())
+    {
+        itemProfile = ItemProfileManager::LoadProfile(args.profileId);
+        if (itemProfile.id.empty())
+        {
+            std::cerr << "[ItemGenerator] Failed to load item profile: " << args.profileId << "\n";
+            return 1;
+        }
+        std::cout << "[ItemGenerator] Loaded item profile: " << itemProfile.id << " (" << itemProfile.displayName << ")\n";
+    }
+    else
+    {
+        // Use default item profile based on item type
         std::string defaultProfileId = "default_" + CommandLineParser::GetItemTypeName(args.itemType);
         std::transform(defaultProfileId.begin(), defaultProfileId.end(), defaultProfileId.begin(), ::tolower);
         
-        profile = ItemProfileManager::LoadProfile(defaultProfileId);
-        if (profile.id.empty())
+        itemProfile = ItemProfileManager::LoadProfile(defaultProfileId);
+        if (itemProfile.id.empty())
         {
-            std::cerr << "[ItemGenerator] Failed to load default profile for item type: " << defaultProfileId << "\n";
+            std::cerr << "[ItemGenerator] Failed to load default item profile for item type: " << defaultProfileId << "\n";
             return 1;
         }
-        std::cout << "[ItemGenerator] Using default profile: " << profile.id << "\n";
+        std::cout << "[ItemGenerator] Using default item profile: " << itemProfile.id << "\n";
     }
 
-    // Load custom preset
-    CustomPreset customPreset;
-    if (!args.customPresetPath.empty())
-    {
-        if (!CustomPresetManager::LoadPresetFromFile(args.customPresetPath, customPreset))
-        {
-            std::cerr << "[ItemGenerator] Failed to load custom preset from: " << args.customPresetPath << "\n";
-            return 1;
-        }
-        std::cout << "[ItemGenerator] Loaded custom preset: " << customPreset.displayName << "\n";
-    }
-    else if (!args.presetName.empty())
-    {
-        if (!CustomPresetManager::CreatePresetFromName(args.presetName, customPreset))
-        {
-            std::cerr << "[ItemGenerator] Failed to create preset from name: " << args.presetName << "\n";
-            return 1;
-        }
-        std::cout << "[ItemGenerator] Using preset: " << customPreset.displayName << "\n";
-    }
-    else if (!profile.customContext.empty())
-    {
-        // Use profile's custom context as preset
-        customPreset.id = profile.id + "_context";
-        customPreset.displayName = profile.displayName + " Context";
-        customPreset.flavorText = profile.customContext;
-        std::cout << "[ItemGenerator] Using profile custom context as preset\n";
-    }
-    else
-    {
-        // Use default preset
-        if (!CustomPresetManager::CreatePresetFromName("default", customPreset))
-        {
-            std::cerr << "[ItemGenerator] Failed to create default preset\n";
-            return 1;
-        }
-        std::cout << "[ItemGenerator] Using default preset\n";
-    }
+    // Use item profile's custom context for world context (Preset system removed)
+    // World context is now managed through Item Profile's customContext field
 
     // Get existing IDs from both JSON file and registry
     std::set<std::string> existingIds = DynamicItemJsonWriter::GetExistingIds(args.params.outputPath);
     std::cout << "[ItemGenerator] Found " << existingIds.size() << " existing items in " << args.params.outputPath << "\n";
     
     // Load IDs from registry (persistent across all generations)
-    std::string typeNameLower = profile.itemTypeName;
+    std::string typeNameLower = itemProfile.itemTypeName;
     std::transform(typeNameLower.begin(), typeNameLower.end(), typeNameLower.begin(), ::tolower);
     std::set<std::string> registryIds = ItemGeneratorRegistry::LoadRegistryIds(typeNameLower);
     std::cout << "[ItemGenerator] Loaded " << registryIds.size() << " IDs from registry for type: " << typeNameLower << "\n";
@@ -276,11 +326,11 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
 #endif
     std::string generationTimestamp = ss.str();
 
-    // Build prompt
+    // Build prompt (world context is taken from itemProfile.customContext)
     std::string prompt = DynamicPromptBuilder::BuildPromptFromProfile(
-        profile,
+        itemProfile,
+        playerProfile,
         args.params,
-        customPreset,
         existingIds,
         args.modelName,
         generationTimestamp,
@@ -297,7 +347,7 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
 
     // Parse response
     std::vector<nlohmann::json> items;
-    if (!DynamicItemJsonParser::ParseItemsFromJsonText(response, profile, items))
+    if (!DynamicItemJsonParser::ParseItemsFromJsonText(response, itemProfile, items))
     {
         std::cerr << "[ItemGenerator] Failed to parse LLM response\n";
         return 1;
@@ -305,10 +355,46 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
 
     std::cout << "[ItemGenerator] Parsed " << items.size() << " items from LLM response\n";
 
-    // Filter out duplicates
+    // Filter out duplicates and ensure id/displayName are present
     std::vector<nlohmann::json> newItems;
-    for (const auto& item : items)
+    for (size_t i = 0; i < items.size(); ++i)
     {
+        nlohmann::json item = items[i];
+        
+        // Ensure displayName is present first (needed for ID generation)
+        if (!item.contains("displayName") || item["displayName"].is_null() ||
+            (item["displayName"].is_string() && item["displayName"].get<std::string>().empty()))
+        {
+            // Generate displayName if missing
+            item["displayName"] = itemProfile.itemTypeName + " Item " + std::to_string(i + 1);
+        }
+        
+        // Ensure id is present and based on displayName
+        if (!item.contains("id") || item["id"].is_null() || 
+            (item["id"].is_string() && item["id"].get<std::string>().empty()))
+        {
+            // Generate id from displayName using the same logic as parser
+            std::string itemTypePrefix = itemProfile.itemTypeName;
+            std::transform(itemTypePrefix.begin(), itemTypePrefix.end(), itemTypePrefix.begin(), ::tolower);
+            itemTypePrefix.erase(std::remove_if(itemTypePrefix.begin(), itemTypePrefix.end(),
+                [](char c) { return !std::isalnum(c); }), itemTypePrefix.end());
+            
+            std::string displayName = item["displayName"].get<std::string>();
+            std::string idSuffix = DynamicItemJsonParser::GenerateShortIdFromDisplayName(displayName);
+            
+            // Limit length
+            if (idSuffix.length() > 30)
+                idSuffix = idSuffix.substr(0, 30);
+            
+            if (idSuffix.empty())
+                idSuffix = std::to_string(i + 1);
+            
+            std::ostringstream idStream;
+            idStream << itemTypePrefix << "_" << idSuffix;
+            item["id"] = idStream.str();
+        }
+        
+        // Check for duplicates
         if (item.contains("id") && item["id"].is_string())
         {
             std::string id = item["id"].get<std::string>();
@@ -317,6 +403,11 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
                 newItems.push_back(item);
                 existingIds.insert(id);
             }
+        }
+        else
+        {
+            // If id is still missing after generation, skip this item
+            std::cerr << "[ItemGenerator] Warning: Item at index " << i << " has no valid id, skipping\n";
         }
     }
 
@@ -368,7 +459,7 @@ int ItemGenerator::GenerateWithLLM(const CommandLineArgs& args)
                 size_t afterCount = registryIds.size();
                 size_t addedCount = afterCount - beforeCount;
                 std::cout << "[ItemGenerator] Added " << addedCount << " new IDs to registry (total: " << afterCount << ")\n";
-                ItemGeneratorRegistry::LogRegistryEvent(profile.itemTypeName, beforeCount, addedCount, afterCount);
+                ItemGeneratorRegistry::LogRegistryEvent(itemProfile.itemTypeName, beforeCount, addedCount, afterCount);
             }
         }
     }

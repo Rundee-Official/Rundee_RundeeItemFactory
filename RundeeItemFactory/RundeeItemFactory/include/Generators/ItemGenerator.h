@@ -19,8 +19,8 @@ class ItemGenerator
 public:
     /**
      * @brief Generate items using LLM
-     * @param args Command line arguments
+     * @param args Command line arguments (may be modified to apply player profile settings)
      * @return Exit code (0 = success)
      */
-    static int GenerateWithLLM(const CommandLineArgs& args);
+    static int GenerateWithLLM(CommandLineArgs& args);
 };

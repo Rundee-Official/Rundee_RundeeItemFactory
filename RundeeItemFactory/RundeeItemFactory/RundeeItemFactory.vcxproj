@@ -31,6 +31,7 @@
     <ClCompile Include="src\Generators\ItemGenerator.cpp" />
     <ClCompile Include="src\Generators\ItemGeneratorRegistry.cpp" />
     <ClCompile Include="src\Data\ItemProfileManager.cpp" />
+    <ClCompile Include="src\Data\PlayerProfileManager.cpp" />
     <ClCompile Include="src\Prompts\DynamicPromptBuilder.cpp" />
     <ClCompile Include="src\Parsers\DynamicItemJsonParser.cpp" />
   </ItemGroup>
@@ -49,7 +50,9 @@
     <ClInclude Include="include\Generators\ItemGenerator.h" />
     <ClInclude Include="include\Generators\ItemGeneratorRegistry.h" />
     <ClInclude Include="include\Data\ItemProfile.h" />
+    <ClInclude Include="include\Data\PlayerProfile.h" />
     <ClInclude Include="include\Data\ItemProfileManager.h" />
+    <ClInclude Include="include\Data\PlayerProfileManager.h" />
     <ClInclude Include="include\Prompts\DynamicPromptBuilder.h" />
     <ClInclude Include="include\Parsers\DynamicItemJsonParser.h" />
   </ItemGroup>

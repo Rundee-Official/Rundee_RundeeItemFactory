@@ -174,5 +174,11 @@ private:
      * @return Full file path
      */
     static std::string GetProfileFilePath(const std::string& profileId);
+    
+    /**
+     * @brief Ensure id and displayName fields are always present at the top
+     * @param profile Profile to modify
+     */
+    static void EnsureRequiredFields(ItemProfile& profile);
 };
 

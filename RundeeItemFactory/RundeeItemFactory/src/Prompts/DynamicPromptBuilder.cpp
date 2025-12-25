@@ -14,8 +14,8 @@
 
 std::string DynamicPromptBuilder::BuildPromptFromProfile(
     const ItemProfile& profile,
+    const PlayerProfile& playerProfile,
     const FoodGenerateParams& params,
-    const CustomPreset& customPreset,
     const std::set<std::string>& existingIds,
     const std::string& modelName,
     const std::string& generationTimestamp,
@@ -23,19 +23,20 @@ std::string DynamicPromptBuilder::BuildPromptFromProfile(
 {
     std::ostringstream prompt;
     
-    // Try to load template first
+    // Try to load template first (if templates are used in the future)
     std::string templateName = profile.itemTypeName;
     std::transform(templateName.begin(), templateName.end(), templateName.begin(), ::tolower);
     templateName += "_template";
     
+    std::string worldContext = profile.customContext.empty() ? "" : profile.customContext;
     std::string templateContent = PromptTemplateLoader::LoadTemplate(
         templateName,
-        customPreset.flavorText,
+        worldContext,
         params.maxHunger,
         params.maxThirst,
         params.count,
         existingIds,
-        customPreset.displayName,
+        profile.displayName,  // Used as presetName replacement (display name of profile)
         profile.itemTypeName,
         modelName,
         generationTimestamp,
@@ -52,9 +53,10 @@ std::string DynamicPromptBuilder::BuildPromptFromProfile(
         prompt << "You are a game item generator. Generate " << params.count 
                << " unique " << profile.itemTypeName << " items as a JSON array.\n\n";
         
-        if (!customPreset.flavorText.empty())
+        // Use Item Profile's customContext as world context (Preset system removed)
+        if (!profile.customContext.empty())
         {
-            prompt << "World Context:\n" << customPreset.flavorText << "\n\n";
+            prompt << "World Context:\n" << profile.customContext << "\n\n";
         }
     }
     
@@ -65,26 +67,110 @@ std::string DynamicPromptBuilder::BuildPromptFromProfile(
     {
         prompt << "Description: " << profile.description << "\n";
     }
-    prompt << "Item Type: " << profile.itemTypeName << "\n\n";
+    prompt << "Item Type: " << profile.itemTypeName << "\n";
+    
+    // Note: customContext is already included in "World Context" section above, so we don't duplicate it here
+    
+    // Add metadata if provided
+    if (!profile.metadata.empty())
+    {
+        prompt << "Metadata: ";
+        bool first = true;
+        for (const auto& [key, value] : profile.metadata)
+        {
+            if (!first) prompt << ", ";
+            prompt << key << ": " << value.dump();
+            first = false;
+        }
+        prompt << "\n";
+    }
+    prompt << "\n";
+    
+    // Add player profile information
+    prompt << "\n=== PLAYER PROFILE SPECIFICATION ===\n\n";
+    prompt << "Player Profile: " << playerProfile.displayName << " (" << playerProfile.id << ")\n";
+    if (!playerProfile.description.empty())
+    {
+        prompt << "Description: " << playerProfile.description << "\n";
+    }
+    prompt << "\n";
     
     // Add player settings for balance context
     prompt << "Player Stat Maximums (for balancing):\n";
-    if (profile.playerSettings.count("maxHunger"))
-        prompt << "  - Max Hunger: " << profile.playerSettings.at("maxHunger") << "\n";
-    if (profile.playerSettings.count("maxThirst"))
-        prompt << "  - Max Thirst: " << profile.playerSettings.at("maxThirst") << "\n";
-    if (profile.playerSettings.count("maxHealth"))
-        prompt << "  - Max Health: " << profile.playerSettings.at("maxHealth") << "\n";
-    if (profile.playerSettings.count("maxStamina"))
-        prompt << "  - Max Stamina: " << profile.playerSettings.at("maxStamina") << "\n";
-    if (profile.playerSettings.count("maxWeight"))
-        prompt << "  - Max Weight: " << profile.playerSettings.at("maxWeight") << " grams\n";
-    if (profile.playerSettings.count("maxEnergy"))
-        prompt << "  - Max Energy: " << profile.playerSettings.at("maxEnergy") << "\n";
+    prompt << "  - Max Hunger: " << params.maxHunger << "\n";
+    prompt << "  - Max Thirst: " << params.maxThirst << "\n";
+    prompt << "  - Max Health: " << params.maxHealth << "\n";
+    prompt << "  - Max Stamina: " << params.maxStamina << "\n";
+    prompt << "  - Max Weight: " << params.maxWeight << " grams\n";
+    prompt << "  - Max Energy: " << params.maxEnergy << "\n";
     prompt << "\n";
+    
+    // Add player stat sections (custom stat fields)
+    if (!playerProfile.statSections.empty())
+    {
+        prompt << "Player Stat Sections (Additional Context):\n";
+        
+        // Sort sections by displayOrder
+        std::vector<PlayerStatSection> sortedSections = playerProfile.statSections;
+        std::sort(sortedSections.begin(), sortedSections.end(),
+            [](const PlayerStatSection& a, const PlayerStatSection& b) {
+                return a.displayOrder < b.displayOrder;
+            });
+        
+        for (const auto& section : sortedSections)
+        {
+            prompt << "\n  Section: " << section.displayName;
+            if (!section.name.empty() && section.name != section.displayName)
+            {
+                prompt << " (" << section.name << ")";
+            }
+            prompt << "\n";
+            
+            if (!section.description.empty())
+            {
+                prompt << "    Description: " << section.description << "\n";
+            }
+            
+            if (!section.fields.empty())
+            {
+                // Sort fields by displayOrder
+                std::vector<PlayerStatField> sortedFields = section.fields;
+                std::sort(sortedFields.begin(), sortedFields.end(),
+                    [](const PlayerStatField& a, const PlayerStatField& b) {
+                        return a.displayOrder < b.displayOrder;
+                    });
+                
+                prompt << "    Fields:\n";
+                for (const auto& field : sortedFields)
+                {
+                    prompt << "      - " << field.displayName;
+                    if (!field.name.empty() && field.name != field.displayName)
+                    {
+                        prompt << " (" << field.name << ")";
+                    }
+                    prompt << ": " << field.value;
+                    if (!field.description.empty())
+                    {
+                        prompt << " - " << field.description;
+                    }
+                    prompt << "\n";
+                }
+            }
+        }
+        prompt << "\n";
+    }
     
     // Add all field definitions with validation rules
     prompt << "=== REQUIRED FIELDS AND VALIDATION RULES ===\n\n";
+    prompt << "CRITICAL: Every item MUST have 'id' and 'displayName' fields. These are ALWAYS required and must be generated FIRST.\n";
+    prompt << "- 'displayName': Human-readable name that clearly identifies the item (e.g., 'AK-47 Assault Rifle', 'FN SCAR-17S Enhanced', 'Healing Potion').\n";
+    prompt << "- 'id': Unique identifier based on displayName in format {itemType}_{cleanedDisplayName} (e.g., weapon_ak47assaultrifle, weapon_fnscar17senhanced, food_healingpotion).\n";
+    prompt << "  The ID should be derived from the displayName by:\n";
+    prompt << "  1. Converting to lowercase\n";
+    prompt << "  2. Removing spaces, hyphens, and special characters\n";
+    prompt << "  3. Keeping only alphanumeric characters\n";
+    prompt << "  4. Prefixing with item type (e.g., 'weapon_', 'food_')\n";
+    prompt << "  Example: 'FN SCAR-17S Enhanced' -> 'weapon_fnscar17senhanced'\n\n";
     prompt << "Each item MUST include the following fields with these specifications:\n\n";
     
     // Sort fields by display order
@@ -94,8 +180,14 @@ std::string DynamicPromptBuilder::BuildPromptFromProfile(
             return a.displayOrder < b.displayOrder;
         });
     
+    // Emphasize id and displayName fields
     for (const auto& field : sortedFields)
     {
+        // Special emphasis for id and displayName
+        if (field.name == "id" || field.name == "displayName")
+        {
+            prompt << "*** CRITICAL FIELD ***\n";
+        }
         prompt << "Field: " << field.name << "\n";
         prompt << "  Display Name: " << field.displayName << "\n";
         prompt << "  Description: " << field.description << "\n";

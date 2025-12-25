@@ -13,16 +13,51 @@
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
+#include <filesystem>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 namespace CommandLineParser
 {
+    /**
+     * @brief Get the directory where the executable is located
+     * @return Executable directory path (with trailing slash/backslash)
+     */
+    static std::string GetExecutableDirectory()
+    {
+#ifdef _WIN32
+        char exePath[MAX_PATH];
+        DWORD pathLen = GetModuleFileNameA(NULL, exePath, MAX_PATH);
+        if (pathLen == 0 || pathLen >= MAX_PATH)
+        {
+            return ""; // Fallback to relative path
+        }
+
+        // Extract directory
+        std::string exeDir = exePath;
+        size_t lastSlash = exeDir.find_last_of("\\/");
+        if (lastSlash != std::string::npos)
+        {
+            exeDir = exeDir.substr(0, lastSlash + 1);
+        }
+        return exeDir;
+#else
+        // For non-Windows, use current directory as fallback
+        return "";
+#endif
+    }
+
     CommandLineArgs ParseArguments(int argc, char** argv)
     {
         CommandLineArgs args;
         args.params.count = 5;
         args.params.maxHunger = 100;
         args.params.maxThirst = 100;
-        args.params.outputPath = "ItemJson/items_food.json";
+        
+        // Get executable directory and set default output path relative to it
+        std::string exeDir = GetExecutableDirectory();
+        args.params.outputPath = exeDir + "ItemJson/items_food.json";
 
         for (int i = 1; i < argc; ++i)
         {
@@ -88,7 +123,20 @@ namespace CommandLineParser
             }
             else if (arg == "--out" && i + 1 < argc)
             {
-                args.params.outputPath = argv[++i];
+                std::string outPath = argv[++i];
+                std::string exeDir = GetExecutableDirectory();
+                
+                // Always save to .exe directory/ItemJson folder
+                // Extract filename from path (handles both absolute and relative)
+                std::filesystem::path pathObj(outPath);
+                std::string fileName = pathObj.filename().string();
+                
+                // Ensure ItemJson folder path
+                std::filesystem::path itemJsonPath(exeDir);
+                itemJsonPath /= "ItemJson";
+                itemJsonPath /= fileName;
+                
+                args.params.outputPath = itemJsonPath.string();
             }
             else if (arg == "--report" && i + 1 < argc)
             {
@@ -110,6 +158,10 @@ namespace CommandLineParser
             else if (arg == "--profile" && i + 1 < argc)
             {
                 args.profileId = argv[++i];
+            }
+            else if (arg == "--playerProfile" && i + 1 < argc)
+            {
+                args.playerProfileId = argv[++i];
             }
             else
             {

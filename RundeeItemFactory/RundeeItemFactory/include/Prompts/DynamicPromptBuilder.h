@@ -12,8 +12,8 @@
 #pragma once
 
 #include "Data/ItemProfile.h"
+#include "Data/PlayerProfile.h"
 #include "Helpers/ItemGenerateParams.h"
-#include "Prompts/CustomPreset.h"
 #include <string>
 #include <set>
 
@@ -26,19 +26,20 @@ class DynamicPromptBuilder
 public:
     /**
      * @brief Build prompt from profile with all field information
-     * @param profile Item profile with fields and validation
+     * @param profile Item profile with fields and validation (includes customContext for world context)
+     * @param playerProfile Player profile with stat settings and sections
      * @param params Generation parameters (count, player stats)
-     * @param customPreset Custom preset for world context
      * @param existingIds Set of existing IDs to avoid
      * @param modelName LLM model name
      * @param generationTimestamp Timestamp string
      * @param existingCount Number of existing items
      * @return Complete prompt string with all profile data
+     * @note World context is taken from profile.customContext (Preset system removed)
      */
     static std::string BuildPromptFromProfile(
         const ItemProfile& profile,
+        const PlayerProfile& playerProfile,
         const FoodGenerateParams& params,
-        const CustomPreset& customPreset,
         const std::set<std::string>& existingIds,
         const std::string& modelName,
         const std::string& generationTimestamp,

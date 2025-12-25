@@ -11,6 +11,11 @@
 #include "Utils/JsonUtils.h"
 #include <iostream>
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
+#include <cctype>
+#include <map>
+#include <vector>
 
 using nlohmann::json;
 
@@ -79,6 +84,9 @@ bool DynamicItemJsonParser::ParseItemsFromJsonText(
         // Apply defaults from profile
         json item = jItem;
         ApplyDefaults(item, profile);
+        
+        // Ensure id and displayName are always present (generate if missing)
+        EnsureIdAndDisplayName(item, profile, i);
         
         // Validate item
         std::vector<std::string> errors;
@@ -315,5 +323,172 @@ std::string DynamicItemJsonParser::CleanJsonText(const std::string& jsonText)
 {
     // Use existing StringUtils function
     return StringUtils::CleanJsonArrayText(jsonText);
+}
+
+void DynamicItemJsonParser::EnsureIdAndDisplayName(
+    nlohmann::json& item,
+    const ItemProfile& profile,
+    size_t index)
+{
+    // Generate item type prefix (lowercase, no spaces)
+    std::string itemTypePrefix = profile.itemTypeName;
+    std::transform(itemTypePrefix.begin(), itemTypePrefix.end(), itemTypePrefix.begin(), ::tolower);
+    // Remove spaces and special characters
+    itemTypePrefix.erase(std::remove_if(itemTypePrefix.begin(), itemTypePrefix.end(),
+        [](char c) { return !std::isalnum(c); }), itemTypePrefix.end());
+    
+    // Ensure displayName field exists first (needed for ID generation)
+    if (!item.contains("displayName") || item["displayName"].is_null() ||
+        (item["displayName"].is_string() && item["displayName"].get<std::string>().empty()))
+    {
+        // Try to generate from other fields that might contain a name
+        std::string displayName;
+        
+        // Check common name fields
+        std::vector<std::string> nameFields = {"name", "title", "weaponName", "itemName", "foodName"};
+        for (const auto& nameField : nameFields)
+        {
+            if (item.contains(nameField) && item[nameField].is_string())
+            {
+                displayName = item[nameField].get<std::string>();
+                break;
+            }
+        }
+        
+        // If still empty, use a generic name based on item type
+        if (displayName.empty())
+        {
+            displayName = profile.itemTypeName + " Item " + std::to_string(index + 1);
+        }
+        
+        item["displayName"] = displayName;
+    }
+    
+    // ALWAYS generate ID from displayName (ignore LLM-generated ID to ensure consistency)
+    if (item.contains("displayName") && item["displayName"].is_string())
+    {
+        std::string displayName = item["displayName"].get<std::string>();
+        if (!displayName.empty())
+        {
+            // Generate ID from displayName - extract key identifiers only
+            std::string idSuffix = GenerateShortIdFromDisplayName(displayName);
+            
+            // Limit length to avoid too long IDs (max 30 chars for suffix)
+            if (idSuffix.length() > 30)
+            {
+                idSuffix = idSuffix.substr(0, 30);
+            }
+            
+            // If suffix is empty after cleaning, use index as fallback
+            if (idSuffix.empty())
+            {
+                idSuffix = std::to_string(index + 1);
+            }
+            
+            std::ostringstream idStream;
+            idStream << itemTypePrefix << "_" << idSuffix;
+            item["id"] = idStream.str();
+        }
+    }
+    
+    // Fallback: if displayName is not available, generate from index
+    if (!item.contains("id") || item["id"].is_null() || 
+        (item["id"].is_string() && item["id"].get<std::string>().empty()))
+    {
+        std::ostringstream idStream;
+        idStream << itemTypePrefix << "_" << std::setfill('0') << std::setw(3) << (index + 1);
+        item["id"] = idStream.str();
+    }
+}
+
+std::string DynamicItemJsonParser::GenerateShortIdFromDisplayName(const std::string& displayName)
+{
+    // Common words to remove (generic descriptors)
+    std::vector<std::string> commonWords = {
+        "enhanced", "advanced", "professional", "premium", "standard", "basic",
+        "deluxe", "ultimate", "superior", "elite", "master", "expert",
+        "semiautomatic", "automatic", "semi-auto", "full-auto",
+        "assault", "rifle", "pistol", "carbine", "shotgun", "sniper",
+        "model", "mk", "mark", "version", "ver", "v", "edition", "ed",
+        "lever-action", "bolt-action", "pump-action", "action"
+    };
+    
+    // Manufacturer abbreviations
+    std::map<std::string, std::string> manufacturerAbbrevs = {
+        {"heckler", "hk"}, {"koch", ""}, {"&", ""}, {"and", ""},
+        {"colt", "colt"}, {"sig", "sig"}, {"sauer", ""},
+        {"winchester", "win"}, {"remington", "rem"},
+        {"fn", "fn"}, {"herstal", ""},
+        {"glock", "glock"}, {"beretta", "ber"}, {"smith", "sw"}, {"wesson", ""}
+    };
+    
+    std::string result = displayName;
+    
+    // Convert to lowercase
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    
+    // Remove common words
+    for (const auto& word : commonWords)
+    {
+        size_t pos = 0;
+        while ((pos = result.find(word, pos)) != std::string::npos)
+        {
+            // Check if it's a whole word (surrounded by non-alphanumeric or at boundaries)
+            bool isWholeWord = true;
+            if (pos > 0 && std::isalnum(result[pos - 1]))
+                isWholeWord = false;
+            if (pos + word.length() < result.length() && std::isalnum(result[pos + word.length()]))
+                isWholeWord = false;
+            
+            if (isWholeWord)
+            {
+                result.erase(pos, word.length());
+                // Remove following space/hyphen if exists
+                if (pos < result.length() && (result[pos] == ' ' || result[pos] == '-'))
+                    result.erase(pos, 1);
+            }
+            else
+            {
+                pos += word.length();
+            }
+        }
+    }
+    
+    // Apply manufacturer abbreviations
+    for (const auto& [full, abbrev] : manufacturerAbbrevs)
+    {
+        size_t pos = 0;
+        while ((pos = result.find(full, pos)) != std::string::npos)
+        {
+            bool isWholeWord = true;
+            if (pos > 0 && std::isalnum(result[pos - 1]))
+                isWholeWord = false;
+            if (pos + full.length() < result.length() && std::isalnum(result[pos + full.length()]))
+                isWholeWord = false;
+            
+            if (isWholeWord)
+            {
+                result.erase(pos, full.length());
+                if (!abbrev.empty())
+                {
+                    result.insert(pos, abbrev);
+                    pos += abbrev.length();
+                }
+                // Remove following space/hyphen if exists
+                if (pos < result.length() && (result[pos] == ' ' || result[pos] == '-'))
+                    result.erase(pos, 1);
+            }
+            else
+            {
+                pos += full.length();
+            }
+        }
+    }
+    
+    // Remove all spaces, hyphens, and special characters, keep only alphanumeric
+    result.erase(std::remove_if(result.begin(), result.end(),
+        [](char c) { return !std::isalnum(c); }), result.end());
+    
+    return result;
 }
 
