@@ -2,11 +2,11 @@
 # Generated for comprehensive API documentation
 
 PROJECT_NAME           = "RundeeItemFactory"
-PROJECT_NUMBER         = "1.0.0"
+PROJECT_NUMBER         = "1.0.1"
 PROJECT_BRIEF          = "LLM-powered item generator for Unity & Unreal Engine games"
 OUTPUT_DIRECTORY       = docs/cpp
-INPUT                  = RundeeItemFactory/RundeeItemFactory/include \
-                         RundeeItemFactory/RundeeItemFactory/src
+INPUT                  = "RundeeItemFactory/RundeeItemFactory/include" \
+                         "RundeeItemFactory/RundeeItemFactory/src"
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h *.cpp *.hpp
 RECURSIVE              = YES
