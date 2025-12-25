@@ -185,4 +185,3 @@ std::string PromptTemplateLoader::LoadTemplate(const std::string& templateName,
 
     return templateContent;
 }
-

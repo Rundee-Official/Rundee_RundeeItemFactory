@@ -1,0 +1,414 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="class_dynamic_item_json_parser" kind="class" language="C++" prot="public">
+    <compoundname>DynamicItemJsonParser</compoundname>
+    <includes refid="_dynamic_item_json_parser_8h" local="no">DynamicItemJsonParser.h</includes>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1a42d800d44e9f86110492d4b13d51f1fe" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DynamicItemJsonParser::ParseItemsFromJsonText</definition>
+        <argsstring>(const std::string &amp;jsonText, const ItemProfile &amp;profile, std::vector&lt; nlohmann::json &gt; &amp;outItems)</argsstring>
+        <name>ParseItemsFromJsonText</name>
+        <qualifiedname>DynamicItemJsonParser::ParseItemsFromJsonText</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>jsonText</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; nlohmann::json &gt; &amp;</type>
+          <declname>outItems</declname>
+        </param>
+        <briefdescription>
+<para>Parse items from JSON text using a profile. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jsonText</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON text to parse </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile defining the expected structure </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>outItems</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of parsed items (as JSON objects) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if parsing succeeded </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="37" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="22" bodyend="110"/>
+        <references refid="class_dynamic_item_json_parser_1adc0369065c6a1ed1ea76a6bd3cf7aa51" compoundref="_dynamic_item_json_parser_8cpp" startline="159" endline="171">ApplyDefaults</references>
+        <references refid="namespace_string_utils_1ab598992ace1267f4225dc312b8bcb6d8" compoundref="_string_utils_8cpp" startline="118" endline="234">StringUtils::CleanJsonArrayText</references>
+        <references refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" compoundref="_item_profile_8h" startline="82">ItemProfile::id</references>
+        <references refid="class_dynamic_item_json_parser_1a7714f0df9e23c8ce130f49b8b2cf0fe2" compoundref="_dynamic_item_json_parser_8cpp" startline="112" endline="157">ValidateItem</references>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1a7714f0df9e23c8ce130f49b8b2cf0fe2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DynamicItemJsonParser::ValidateItem</definition>
+        <argsstring>(const nlohmann::json &amp;item, const ItemProfile &amp;profile, std::vector&lt; std::string &gt; &amp;errors)</argsstring>
+        <name>ValidateItem</name>
+        <qualifiedname>DynamicItemJsonParser::ValidateItem</qualifiedname>
+        <param>
+          <type>const nlohmann::json &amp;</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>errors</declname>
+        </param>
+        <briefdescription>
+<para>Validate an item against its profile. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object representing an item </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile to validate against </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>errors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of error messages </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if item is valid </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="49" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="112" bodyend="157"/>
+        <references refid="struct_item_profile_1af0d9eb9e0cff4129a67c76a2197f1847" compoundref="_item_profile_8h" startline="89">ItemProfile::fields</references>
+        <referencedby refid="class_dynamic_item_json_parser_1a42d800d44e9f86110492d4b13d51f1fe" compoundref="_dynamic_item_json_parser_8cpp" startline="22" endline="110">ParseItemsFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1adc0369065c6a1ed1ea76a6bd3cf7aa51" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void DynamicItemJsonParser::ApplyDefaults</definition>
+        <argsstring>(nlohmann::json &amp;item, const ItemProfile &amp;profile)</argsstring>
+        <name>ApplyDefaults</name>
+        <qualifiedname>DynamicItemJsonParser::ApplyDefaults</qualifiedname>
+        <param>
+          <type>nlohmann::json &amp;</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <briefdescription>
+<para>Apply default values from profile to an item. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object to modify </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile with default values </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="59" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="159" bodyend="171"/>
+        <references refid="struct_item_profile_1af0d9eb9e0cff4129a67c76a2197f1847" compoundref="_item_profile_8h" startline="89">ItemProfile::fields</references>
+        <referencedby refid="class_dynamic_item_json_parser_1a42d800d44e9f86110492d4b13d51f1fe" compoundref="_dynamic_item_json_parser_8cpp" startline="22" endline="110">ParseItemsFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1ad1721b1b946070afcf84bacb18e8b1c8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nlohmann::json</type>
+        <definition>nlohmann::json DynamicItemJsonParser::GetFieldValue</definition>
+        <argsstring>(const nlohmann::json &amp;item, const std::string &amp;fieldName, const ItemProfile &amp;profile)</argsstring>
+        <name>GetFieldValue</name>
+        <qualifiedname>DynamicItemJsonParser::GetFieldValue</qualifiedname>
+        <param>
+          <type>const nlohmann::json &amp;</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>fieldName</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <briefdescription>
+<para>Get field value from item JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>fieldName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Field name </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile for type information </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>JSON value (can be null if not found) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="68" column="27" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="173" bodyend="184"/>
+      </memberdef>
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1a6e6bad83b337b20ae3ec6d9f19dcd8cf" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string DynamicItemJsonParser::GenerateShortIdFromDisplayName</definition>
+        <argsstring>(const std::string &amp;displayName)</argsstring>
+        <name>GenerateShortIdFromDisplayName</name>
+        <qualifiedname>DynamicItemJsonParser::GenerateShortIdFromDisplayName</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <briefdescription>
+<para>Generate short ID from displayName by extracting key identifiers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>displayName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Display name to process </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Short ID suffix (without prefix) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="78" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="404" bodyend="493"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1a89eb3390fe54d8112b4b6b0d089b0509" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool DynamicItemJsonParser::ValidateFieldValue</definition>
+        <argsstring>(const nlohmann::json &amp;value, const ProfileField &amp;field, std::vector&lt; std::string &gt; &amp;errors)</argsstring>
+        <name>ValidateFieldValue</name>
+        <qualifiedname>DynamicItemJsonParser::ValidateFieldValue</qualifiedname>
+        <param>
+          <type>const nlohmann::json &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_profile_field" kindref="compound">ProfileField</ref> &amp;</type>
+          <declname>field</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>errors</declname>
+        </param>
+        <briefdescription>
+<para>Validate a single field value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON value </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>field</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Field definition </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>errors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of error messages </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if field is valid </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="88" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="186" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1a3559ef736775e25c933ee088146a9c6a" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string DynamicItemJsonParser::CleanJsonText</definition>
+        <argsstring>(const std::string &amp;jsonText)</argsstring>
+        <name>CleanJsonText</name>
+        <qualifiedname>DynamicItemJsonParser::CleanJsonText</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>jsonText</declname>
+        </param>
+        <briefdescription>
+<para>Clean JSON text (remove markdown, extract array, etc.). </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>jsonText</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Raw JSON text </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Cleaned JSON text </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="98" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="322" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="class_dynamic_item_json_parser_1a5a7ad8dff63804a383317d88af351018" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void DynamicItemJsonParser::EnsureIdAndDisplayName</definition>
+        <argsstring>(nlohmann::json &amp;item, const ItemProfile &amp;profile, size_t index)</argsstring>
+        <name>EnsureIdAndDisplayName</name>
+        <qualifiedname>DynamicItemJsonParser::EnsureIdAndDisplayName</qualifiedname>
+        <param>
+          <type>nlohmann::json &amp;</type>
+          <declname>item</declname>
+        </param>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>Ensure id and displayName are present, generate if missing. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON item to modify </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile for context </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Item index for generating unique ID </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="106" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp" bodystart="328" bodyend="402"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Static class for parsing items dynamically from JSON. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Parses items from JSON text using item profiles to determine the expected structure. Returns items as JSON objects rather than typed structs. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" line="27" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h" bodystart="28" bodyend="110"/>
+    <listofallmembers>
+      <member refid="class_dynamic_item_json_parser_1adc0369065c6a1ed1ea76a6bd3cf7aa51" prot="public" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>ApplyDefaults</name></member>
+      <member refid="class_dynamic_item_json_parser_1a3559ef736775e25c933ee088146a9c6a" prot="private" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>CleanJsonText</name></member>
+      <member refid="class_dynamic_item_json_parser_1a5a7ad8dff63804a383317d88af351018" prot="private" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>EnsureIdAndDisplayName</name></member>
+      <member refid="class_dynamic_item_json_parser_1a6e6bad83b337b20ae3ec6d9f19dcd8cf" prot="public" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>GenerateShortIdFromDisplayName</name></member>
+      <member refid="class_dynamic_item_json_parser_1ad1721b1b946070afcf84bacb18e8b1c8" prot="public" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>GetFieldValue</name></member>
+      <member refid="class_dynamic_item_json_parser_1a42d800d44e9f86110492d4b13d51f1fe" prot="public" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>ParseItemsFromJsonText</name></member>
+      <member refid="class_dynamic_item_json_parser_1a89eb3390fe54d8112b4b6b0d089b0509" prot="private" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>ValidateFieldValue</name></member>
+      <member refid="class_dynamic_item_json_parser_1a7714f0df9e23c8ce130f49b8b2cf0fe2" prot="public" virt="non-virtual"><scope>DynamicItemJsonParser</scope><name>ValidateItem</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

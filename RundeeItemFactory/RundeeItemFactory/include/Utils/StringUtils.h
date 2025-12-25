@@ -107,5 +107,3 @@ namespace StringUtils
      */
     std::string RemoveControlCharacters(const std::string& s);
 }
-
-

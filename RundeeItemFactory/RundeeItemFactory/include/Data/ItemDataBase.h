@@ -85,15 +85,3 @@ struct ItemDataBase
      */
     virtual std::string GetItemTypeName() const = 0;
 };
-
-
-
-
-
-
-
-
-
-
-
-

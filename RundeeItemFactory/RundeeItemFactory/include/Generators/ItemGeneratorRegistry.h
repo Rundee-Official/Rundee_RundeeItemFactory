@@ -51,7 +51,16 @@ namespace ItemGeneratorRegistry
     void LogRegistryEvent(const std::string& typeName, size_t beforeCount, size_t addedCount, size_t afterCount);
 }
 
-// Template implementation
+/**
+ * @brief Template implementation for AppendIdsToRegistry
+ * 
+ * Loads existing IDs from registry, adds new IDs from items,
+ * saves back to registry, and logs the event.
+ * 
+ * @tparam T Item type with an 'id' member (e.g., ItemData, nlohmann::json)
+ * @param typeName Item type name (e.g., "Food", "Weapon")
+ * @param items Vector of items to extract IDs from
+ */
 template <typename T>
 void ItemGeneratorRegistry::AppendIdsToRegistry(const std::string& typeName, const std::vector<T>& items)
 {
@@ -71,10 +80,3 @@ void ItemGeneratorRegistry::AppendIdsToRegistry(const std::string& typeName, con
         LogRegistryEvent(typeName, before, added, after);
     }
 }
-
-
-
-
-
-
-

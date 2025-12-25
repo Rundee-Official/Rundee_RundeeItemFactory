@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="namespace_string_utils" kind="namespace" language="C++">
+    <compoundname>StringUtils</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_string_utils_1a8d0f5f659979db4a9c03af25e1cfb843" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void StringUtils::TrimString</definition>
+        <argsstring>(std::string &amp;str)</argsstring>
+        <name>TrimString</name>
+        <qualifiedname>StringUtils::TrimString</qualifiedname>
+        <param>
+          <type>std::string &amp;</type>
+          <declname>str</declname>
+        </param>
+        <briefdescription>
+<para>Trim whitespace from both ends of a string. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes leading and trailing whitespace characters (spaces, tabs, newlines). Modifies the string in-place.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String to trim (modified in-place) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="17" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="17" bodyend="27" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="30" declcolumn="10"/>
+        <referencedby refid="namespace_string_utils_1ab598992ace1267f4225dc312b8bcb6d8" compoundref="_string_utils_8cpp" startline="118" endline="234">CleanJsonArrayText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1ab598992ace1267f4225dc312b8bcb6d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::CleanJsonArrayText</definition>
+        <argsstring>(const std::string &amp;input)</argsstring>
+        <name>CleanJsonArrayText</name>
+        <qualifiedname>StringUtils::CleanJsonArrayText</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+<para>Clean JSON array text from LLM responses. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes trailing commas and closes unclosed brackets in JSON array text. Handles common JSON formatting errors from LLM responses.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Raw JSON text from LLM </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Cleaned JSON text</para>
+</simplesect>
+<simplesect kind="note"><para>Removes trailing commas before closing brackets </para>
+</simplesect>
+<simplesect kind="note"><para>Attempts to close unclosed brackets </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="118" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="118" bodyend="234" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="44" declcolumn="17"/>
+        <references refid="namespace_string_utils_1af35d247b9c183f0d140cdd6801f8a57e" compoundref="_string_utils_8cpp" startline="29" endline="116">FixCommonJsonErrors</references>
+        <references refid="namespace_string_utils_1a8d0f5f659979db4a9c03af25e1cfb843" compoundref="_string_utils_8cpp" startline="17" endline="27">TrimString</references>
+        <referencedby refid="class_dynamic_item_json_parser_1a42d800d44e9f86110492d4b13d51f1fe" compoundref="_dynamic_item_json_parser_8cpp" startline="22" endline="110">DynamicItemJsonParser::ParseItemsFromJsonText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1af35d247b9c183f0d140cdd6801f8a57e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::FixCommonJsonErrors</definition>
+        <argsstring>(const std::string &amp;input)</argsstring>
+        <name>FixCommonJsonErrors</name>
+        <qualifiedname>StringUtils::FixCommonJsonErrors</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+<para>Fix common JSON errors. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Attempts to fix common JSON formatting errors like trailing commas, unclosed brackets, and malformed structures.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON text with potential errors </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Fixed JSON text </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="29" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="29" bodyend="116" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="55" declcolumn="17"/>
+        <referencedby refid="namespace_string_utils_1ab598992ace1267f4225dc312b8bcb6d8" compoundref="_string_utils_8cpp" startline="118" endline="234">CleanJsonArrayText</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1a643318c89e8c6766d06b606898584fd8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::EscapeForCmd</definition>
+        <argsstring>(const std::string &amp;s)</argsstring>
+        <name>EscapeForCmd</name>
+        <qualifiedname>StringUtils::EscapeForCmd</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Escape special characters for command line. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Escapes special characters that have meaning in command line shells (quotes, spaces, etc.) so the string can be safely used in command line arguments.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String to escape </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Escaped string safe for command line use </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="236" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="236" bodyend="248" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="66" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1ab13b2a4c7a95e090e7ca4d931ec8ea54" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::EscapeString</definition>
+        <argsstring>(const std::string &amp;s)</argsstring>
+        <name>EscapeString</name>
+        <qualifiedname>StringUtils::EscapeString</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Escape string for JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Escapes special characters for JSON format (quotes, backslashes, newlines, etc.).</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String to escape </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>JSON-escaped string </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="250" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="250" bodyend="264" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="76" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1a24756c583c8a4e9e8287b6494b7829b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::NormalizeWhitespace</definition>
+        <argsstring>(const std::string &amp;s)</argsstring>
+        <name>NormalizeWhitespace</name>
+        <qualifiedname>StringUtils::NormalizeWhitespace</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Normalize whitespace. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Replaces newlines and tabs with spaces, and collapses multiple spaces into one.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String to normalize </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>String with normalized whitespace </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="266" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="266" bodyend="279" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="86" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1a0cdb41d20f6dd79f4983d0e306ad0c17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::StripAnsiEscapeCodes</definition>
+        <argsstring>(const std::string &amp;s)</argsstring>
+        <name>StripAnsiEscapeCodes</name>
+        <qualifiedname>StringUtils::StripAnsiEscapeCodes</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Remove ANSI escape codes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes ANSI escape sequences (e.g., cursor hide/show codes, color codes) from terminal output strings.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String potentially containing ANSI codes </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>String with ANSI codes removed </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="281" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="281" bodyend="356" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="97" declcolumn="17"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_string_utils_1a24909c4521c6d1212182189b401e276c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string StringUtils::RemoveControlCharacters</definition>
+        <argsstring>(const std::string &amp;s)</argsstring>
+        <name>RemoveControlCharacters</name>
+        <qualifiedname>StringUtils::RemoveControlCharacters</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+<para>Remove non-printable control characters. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Removes control characters (except whitespace) from the string. Preserves spaces, tabs, and newlines.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>String potentially containing control characters </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>String with control characters removed </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" line="358" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Utils/StringUtils.cpp" bodystart="358" bodyend="372" declfile="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" declline="108" declcolumn="17"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Namespace for string utility functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Utils/StringUtils.h" line="17" column="1"/>
+  </compounddef>
+</doxygen>

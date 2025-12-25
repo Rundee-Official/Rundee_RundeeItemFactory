@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_player_settings" kind="struct" language="C++" prot="public">
+    <compoundname>PlayerSettings</compoundname>
+    <includes refid="_player_profile_8h" local="no">PlayerProfile.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_player_settings_1a2fa10c17ef20c621543bb4e7d88af899" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerSettings::maxHunger</definition>
+        <argsstring></argsstring>
+        <name>maxHunger</name>
+        <qualifiedname>PlayerSettings::maxHunger</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="23" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="23" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_settings_1a958344e0ff48949824da79f990c21a90" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerSettings::maxThirst</definition>
+        <argsstring></argsstring>
+        <name>maxThirst</name>
+        <qualifiedname>PlayerSettings::maxThirst</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="24" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="24" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_settings_1a66f654fc61e28528677726fecd6923b7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerSettings::maxHealth</definition>
+        <argsstring></argsstring>
+        <name>maxHealth</name>
+        <qualifiedname>PlayerSettings::maxHealth</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="25" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="25" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_settings_1a2a3482920aad5f9aa5b07c1183553198" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerSettings::maxStamina</definition>
+        <argsstring></argsstring>
+        <name>maxStamina</name>
+        <qualifiedname>PlayerSettings::maxStamina</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="26" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="26" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_settings_1a5cd8cafa08bf277278aad4970ecdd967" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerSettings::maxWeight</definition>
+        <argsstring></argsstring>
+        <name>maxWeight</name>
+        <qualifiedname>PlayerSettings::maxWeight</qualifiedname>
+        <initializer>= 50000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="27" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="27" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_settings_1ad4d48b2b8f9a45da42600c52d6b56b07" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerSettings::maxEnergy</definition>
+        <argsstring></argsstring>
+        <name>maxEnergy</name>
+        <qualifiedname>PlayerSettings::maxEnergy</qualifiedname>
+        <initializer>= 100</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="28" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="28" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Player stat maximum values. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="21" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="22" bodyend="29"/>
+    <listofallmembers>
+      <member refid="struct_player_settings_1ad4d48b2b8f9a45da42600c52d6b56b07" prot="public" virt="non-virtual"><scope>PlayerSettings</scope><name>maxEnergy</name></member>
+      <member refid="struct_player_settings_1a66f654fc61e28528677726fecd6923b7" prot="public" virt="non-virtual"><scope>PlayerSettings</scope><name>maxHealth</name></member>
+      <member refid="struct_player_settings_1a2fa10c17ef20c621543bb4e7d88af899" prot="public" virt="non-virtual"><scope>PlayerSettings</scope><name>maxHunger</name></member>
+      <member refid="struct_player_settings_1a2a3482920aad5f9aa5b07c1183553198" prot="public" virt="non-virtual"><scope>PlayerSettings</scope><name>maxStamina</name></member>
+      <member refid="struct_player_settings_1a958344e0ff48949824da79f990c21a90" prot="public" virt="non-virtual"><scope>PlayerSettings</scope><name>maxThirst</name></member>
+      <member refid="struct_player_settings_1a5cd8cafa08bf277278aad4970ecdd967" prot="public" virt="non-virtual"><scope>PlayerSettings</scope><name>maxWeight</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

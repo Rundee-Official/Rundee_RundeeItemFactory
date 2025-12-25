@@ -68,5 +68,3 @@ struct PlayerProfile
     PlayerSettings playerSettings;
     std::vector<PlayerStatSection> statSections;
 };
-
-

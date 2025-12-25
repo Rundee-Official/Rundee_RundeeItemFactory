@@ -79,4 +79,3 @@ public:
      */
     static bool TemplateExists(const std::string& templateName);
 };
-

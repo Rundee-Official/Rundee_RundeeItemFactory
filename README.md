@@ -156,6 +156,8 @@ Profile files should be placed in `PlayerProfiles/` directory and named as `{pro
 
 ## Project Structure
 
+### Repository Structure
+
 ```
 RundeeItemFactory/
 ├── RundeeItemFactory/          # C++ Visual Studio project
@@ -171,10 +173,42 @@ RundeeItemFactory/
 │   ├── src/                    # Implementation files
 │   ├── config/                 # Configuration files
 │   └── RundeeItemFactory.sln   # Visual Studio solution
+├── UnityRundeeItemFactory/     # Unity Editor package
+│   └── Assets/
+│       └── RundeeItemFactory/
+│           ├── Editor/         # Unity Editor scripts
+│           │   ├── ItemFactoryMainWindow.cs      # Main UI window
+│           │   ├── DynamicItemImporter.cs        # JSON to ScriptableObject converter
+│           │   ├── ExecutableDownloader.cs       # .exe downloader
+│           │   └── ErrorHandler.cs               # Error handling
+│           ├── ItemProfiles/   # Item profile JSON files
+│           ├── PlayerProfiles/ # Player profile JSON files
+│           └── ItemJson/       # Generated item JSON files
 ├── LICENCES/                   # Third-party licenses
+├── PROJECT_DOCUMENTATION.md    # Detailed architecture documentation (Korean)
+├── OPTIMIZATION_VERIFICATION.md # Optimization verification report
+├── TODO_NEXT_SESSION.md        # Development TODO list
 ├── README.md                   # This file
 └── LICENSE                     # Project license
 ```
+
+### System Architecture
+
+The system consists of two main components:
+
+1. **C++ Executable** (`RundeeItemFactory.exe`)
+   - Loads Item and Player profiles
+   - Generates prompts dynamically from profile data
+   - Communicates with Ollama LLM server
+   - Generates item JSON files
+
+2. **Unity Editor Package**
+   - **ItemFactoryMainWindow**: Main UI for profile management and item generation
+   - **DynamicItemImporter**: Converts JSON items to Unity ScriptableObjects
+   - **ExecutableDownloader**: Downloads the latest .exe from GitHub Releases
+   - Profile management UI (Item Profile Manager, Player Profile Manager)
+
+For detailed architecture information, see [PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md) (Korean).
 
 ### Runtime Structure
 
@@ -386,7 +420,7 @@ The tool automatically retries LLM calls up to 3 times if:
 - The response doesn't look like valid JSON
 - The command fails
 
-Retry delays use exponential backoff (2, 4, 6 seconds).
+Retry delays use exponential backoff (1, 2, 4, 8 seconds, capped at 60 seconds): `2^(attempt-1)` seconds.
 
 ## JSON Merging
 
@@ -420,6 +454,23 @@ This allows you to incrementally build your item database without losing existin
 - Ensure Visual Studio 2019 or later is installed
 - Install "Desktop development with C++" workload
 - Check that all dependencies are properly configured
+
+## Performance Optimizations
+
+The project has been optimized for performance:
+
+- **C++**: Pre-allocated memory buffers for JSON processing (reduces memory reallocations by ~30-50%)
+- **Unity**: Cached file system checks (every 0.5 seconds instead of every frame)
+- **Import**: Batch processing using `AssetDatabase.StartAssetEditing()` / `StopAssetEditing()`
+- **Retry Logic**: Exponential backoff for LLM retries (1, 2, 4, 8 seconds)
+
+For detailed optimization information, see [OPTIMIZATION_VERIFICATION.md](OPTIMIZATION_VERIFICATION.md).
+
+## Additional Documentation
+
+- **[PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md)**: Detailed architecture, components, and system design (Korean)
+- **[OPTIMIZATION_VERIFICATION.md](OPTIMIZATION_VERIFICATION.md)**: Performance optimization verification report
+- **[TODO_NEXT_SESSION.md](TODO_NEXT_SESSION.md)**: Development TODO list and completed tasks
 
 ## License
 

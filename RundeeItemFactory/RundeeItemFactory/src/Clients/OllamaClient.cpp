@@ -23,40 +23,82 @@
 
 namespace
 {
-    // Build JSON request body for Ollama API
+    /**
+     * @brief Safely close a WinHTTP handle, checking for NULL first
+     * @param handle WinHTTP handle to close (can be NULL)
+     * 
+     * Helper function that safely closes WinHTTP handles without crashing
+     * if the handle is NULL. Used for cleanup in error paths.
+     */
+    inline void SafeCloseHandle(HINTERNET handle)
+    {
+        if (handle != NULL)
+        {
+            WinHttpCloseHandle(handle);
+        }
+    }
+
+    /**
+     * @brief Build JSON request body for Ollama API
+     * @param modelName Name of the LLM model (e.g., "llama3")
+     * @param prompt Prompt text to send to the LLM
+     * @return JSON string in format: {"model":"name","prompt":"text","stream":false}
+     * 
+     * Escapes JSON special characters in the prompt text to ensure valid JSON.
+     * Pre-allocates string memory for performance optimization.
+     */
     std::string BuildJsonRequest(const std::string& modelName, const std::string& prompt)
     {
-        std::ostringstream json;
-        json << "{\"model\":\"" << modelName << "\",\"prompt\":\"";
+        // Pre-allocate string with estimated size (model name + prompt length + overhead)
+        std::string json;
+        json.reserve(modelName.length() + prompt.length() * 2 + 50); // Reserve extra space for escaped chars
+        
+        json = "{\"model\":\"";
+        json += modelName;
+        json += "\",\"prompt\":\"";
         
         // Escape JSON special characters in prompt
         for (char c : prompt)
         {
             if (c == '"')
-                json << "\\\"";
+                json += "\\\"";
             else if (c == '\\')
-                json << "\\\\";
+                json += "\\\\";
             else if (c == '\n')
-                json << "\\n";
+                json += "\\n";
             else if (c == '\r')
-                json << "\\r";
+                json += "\\r";
             else if (c == '\t')
-                json << "\\t";
+                json += "\\t";
             else
-                json << c;
+                json += c;
         }
         
-        json << "\",\"stream\":false}";
-        return json.str();
+        json += "\",\"stream\":false}";
+        return json;
     }
 
-    // Extract response text from Ollama JSON response
-    // Ollama API can return multiple JSON objects (one per line) when stream: false
-    // Each line: {"response": "text_chunk", "done": false}
-    // Last line: {"response": "text_chunk", "done": true}
+    /**
+     * @brief Extract response text from Ollama JSON response
+     * @param jsonResponse Raw JSON response string from Ollama API
+     * @return Extracted response text with all chunks concatenated
+     * 
+     * Ollama API can return multiple JSON objects (one per line) when stream: false.
+     * Each line format: {"response": "text_chunk", "done": false}
+     * Last line format: {"response": "text_chunk", "done": true}
+     * 
+     * This function:
+     * - Parses each line as a separate JSON object
+     * - Extracts the "response" field from each line
+     * - Unescapes JSON escape sequences
+     * - Concatenates all chunks into a single string
+     * 
+     * Pre-allocates result string for performance optimization.
+     */
     std::string ExtractResponseFromJson(const std::string& jsonResponse)
     {
         std::string result;
+        result.reserve(jsonResponse.length() / 2); // Pre-allocate estimated size
         std::istringstream stream(jsonResponse);
         std::string line;
         
@@ -217,7 +259,9 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
     
     if (!hSession)
     {
-        std::cerr << "[OllamaClient] WinHttpOpen failed. Error: " << GetLastError() << "\n";
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpOpen failed. Error code: " << error 
+                  << ". Check if WinHTTP is properly installed.\n";
         return {};
     }
     
@@ -226,8 +270,10 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
     
     if (!hConnect)
     {
-        std::cerr << "[OllamaClient] WinHttpConnect failed. Error: " << GetLastError() << "\n";
-        WinHttpCloseHandle(hSession);
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpConnect failed. Error code: " << error 
+                  << " (host=" << host << ", port=" << port << ")\n";
+        SafeCloseHandle(hSession);
         return {};
     }
     
@@ -242,9 +288,10 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
     
     if (!hRequest)
     {
-        std::cerr << "[OllamaClient] WinHttpOpenRequest failed. Error: " << GetLastError() << "\n";
-        WinHttpCloseHandle(hConnect);
-        WinHttpCloseHandle(hSession);
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpOpenRequest failed. Error code: " << error << "\n";
+        SafeCloseHandle(hConnect);
+        SafeCloseHandle(hSession);
         return {};
     }
     
@@ -252,10 +299,11 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
     std::wstring headers = L"Content-Type: application/json\r\n";
     if (!WinHttpAddRequestHeaders(hRequest, headers.c_str(), -1, WINHTTP_ADDREQ_FLAG_ADD))
     {
-        std::cerr << "[OllamaClient] WinHttpAddRequestHeaders failed. Error: " << GetLastError() << "\n";
-        WinHttpCloseHandle(hRequest);
-        WinHttpCloseHandle(hConnect);
-        WinHttpCloseHandle(hSession);
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpAddRequestHeaders failed. Error code: " << error << "\n";
+        SafeCloseHandle(hRequest);
+        SafeCloseHandle(hConnect);
+        SafeCloseHandle(hSession);
         return {};
     }
     
@@ -269,20 +317,23 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
                             (DWORD)jsonRequest.length(),
                             (DWORD)jsonRequest.length(), 0))
     {
-        std::cerr << "[OllamaClient] WinHttpSendRequest failed. Error: " << GetLastError() << "\n";
-        WinHttpCloseHandle(hRequest);
-        WinHttpCloseHandle(hConnect);
-        WinHttpCloseHandle(hSession);
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpSendRequest failed. Error code: " << error 
+                  << " (request size: " << jsonRequest.length() << " bytes)\n";
+        SafeCloseHandle(hRequest);
+        SafeCloseHandle(hConnect);
+        SafeCloseHandle(hSession);
         return {};
     }
     
     // Receive response
     if (!WinHttpReceiveResponse(hRequest, NULL))
     {
-        std::cerr << "[OllamaClient] WinHttpReceiveResponse failed. Error: " << GetLastError() << "\n";
-        WinHttpCloseHandle(hRequest);
-        WinHttpCloseHandle(hConnect);
-        WinHttpCloseHandle(hSession);
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpReceiveResponse failed. Error code: " << error << "\n";
+        SafeCloseHandle(hRequest);
+        SafeCloseHandle(hConnect);
+        SafeCloseHandle(hSession);
         return {};
     }
     
@@ -296,24 +347,27 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
                               &statusCodeSize,
                               WINHTTP_NO_HEADER_INDEX))
     {
-        std::cerr << "[OllamaClient] WinHttpQueryHeaders failed. Error: " << GetLastError() << "\n";
-        WinHttpCloseHandle(hRequest);
-        WinHttpCloseHandle(hConnect);
-        WinHttpCloseHandle(hSession);
+        DWORD error = GetLastError();
+        std::cerr << "[OllamaClient] WinHttpQueryHeaders failed. Error code: " << error << "\n";
+        SafeCloseHandle(hRequest);
+        SafeCloseHandle(hConnect);
+        SafeCloseHandle(hSession);
         return {};
     }
     
     if (statusCode != 200)
     {
-        std::cerr << "[OllamaClient] HTTP request failed with status code: " << statusCode << "\n";
-        WinHttpCloseHandle(hRequest);
-        WinHttpCloseHandle(hConnect);
-        WinHttpCloseHandle(hSession);
+        std::cerr << "[OllamaClient] HTTP request failed with status code: " << statusCode 
+                  << " (expected 200 OK). Server may be unavailable or request invalid.\n";
+        SafeCloseHandle(hRequest);
+        SafeCloseHandle(hConnect);
+        SafeCloseHandle(hSession);
         return {};
     }
     
     // Read response data
     std::string response;
+    response.reserve(32768); // Pre-allocate 32KB for typical responses
     DWORD bytesAvailable = 0;
     DWORD bytesRead = 0;
     char buffer[8192];
@@ -322,7 +376,12 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
     {
         if (!WinHttpQueryDataAvailable(hRequest, &bytesAvailable))
         {
-            std::cerr << "[OllamaClient] WinHttpQueryDataAvailable failed. Error: " << GetLastError() << "\n";
+            DWORD error = GetLastError();
+            // Only log error if it's not a normal completion (ERROR_NO_MORE_FILES = 18)
+            if (error != ERROR_NO_MORE_FILES)
+            {
+                std::cerr << "[OllamaClient] WinHttpQueryDataAvailable failed. Error code: " << error << "\n";
+            }
             break;
         }
         
@@ -331,21 +390,25 @@ std::string OllamaClient::RunSimple(const std::string& modelName,
         
         if (!WinHttpReadData(hRequest, buffer, sizeof(buffer) - 1, &bytesRead))
         {
-            std::cerr << "[OllamaClient] WinHttpReadData failed. Error: " << GetLastError() << "\n";
+            DWORD error = GetLastError();
+            // Only log error if it's not a normal completion
+            if (error != ERROR_NO_MORE_FILES)
+            {
+                std::cerr << "[OllamaClient] WinHttpReadData failed. Error code: " << error << "\n";
+            }
             break;
         }
         
         if (bytesRead > 0)
         {
-            buffer[bytesRead] = '\0';
             response.append(buffer, bytesRead);
         }
     } while (bytesRead > 0);
     
-    // Clean up
-    WinHttpCloseHandle(hRequest);
-    WinHttpCloseHandle(hConnect);
-    WinHttpCloseHandle(hSession);
+    // Clean up handles (always executed, even if errors occurred during reading)
+    SafeCloseHandle(hRequest);
+    SafeCloseHandle(hConnect);
+    SafeCloseHandle(hSession);
     
     if (response.empty())
     {
@@ -462,11 +525,20 @@ std::string OllamaClient::RunWithRetry(const std::string& modelName,
             std::cout << "[OllamaClient] Response was empty.\n";
         }
         
-        // If this is not the last attempt, wait before retrying
+        // If this is not the last attempt, wait before retrying with exponential backoff
         if (attempt < effective.maxRetries)
         {
-            int waitSeconds = 2 * attempt; // Exponential backoff: 2, 4, 6 seconds
-            std::cout << "[OllamaClient] Response invalid or empty. Retrying in " << waitSeconds << " seconds...\n";
+            // True exponential backoff: baseDelay * (2^(attempt-1))
+            // attempt 1: 1 * 2^0 = 1 second
+            // attempt 2: 1 * 2^1 = 2 seconds  
+            // attempt 3: 1 * 2^2 = 4 seconds
+            // attempt 4: 1 * 2^3 = 8 seconds
+            // Maximum cap at 60 seconds to avoid excessive delays
+            const int baseDelay = 1;
+            int waitSeconds = baseDelay * (1 << (attempt - 1)); // 2^(attempt-1)
+            if (waitSeconds > 60)
+                waitSeconds = 60; // Cap at 60 seconds
+            std::cout << "[OllamaClient] Response invalid or empty. Retrying in " << waitSeconds << " seconds... (attempt " << attempt << "/" << effective.maxRetries << ")\n";
             std::this_thread::sleep_for(std::chrono::seconds(waitSeconds));
         }
         else
@@ -477,5 +549,3 @@ std::string OllamaClient::RunWithRetry(const std::string& modelName,
     
     return {}; // Return empty string if all attempts failed
 }
-
-

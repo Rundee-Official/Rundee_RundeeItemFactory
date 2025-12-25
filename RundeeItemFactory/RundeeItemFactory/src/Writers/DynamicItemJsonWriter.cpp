@@ -164,10 +164,3 @@ bool DynamicItemJsonWriter::MergeItemsWithFile(
 {
     return WriteItemsToFile(newItems, path, true);
 }
-
-
-
-
-
-
-

@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_player_profile" kind="struct" language="C++" prot="public">
+    <compoundname>PlayerProfile</compoundname>
+    <includes refid="_player_profile_8h" local="no">PlayerProfile.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_player_profile_1a4dac76131f98829556441655ac0a358c" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string PlayerProfile::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <qualifiedname>PlayerProfile::id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="63" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="63" bodyend="-1"/>
+        <referencedby refid="class_dynamic_prompt_builder_1a02ca1175918dd4bc9dbcbc91e66f6e2d" compoundref="_dynamic_prompt_builder_8cpp" startline="15" endline="357">DynamicPromptBuilder::BuildPromptFromProfile</referencedby>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1ab5eacc80b6fc93a04f2c28df50097f3f" compoundref="_player_profile_manager_8cpp" startline="108" endline="142">PlayerProfileManager::GetDefaultProfile</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_profile_1ab5e50a9d6226eb07cbf4a4372db0c14c" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string PlayerProfile::displayName</definition>
+        <argsstring></argsstring>
+        <name>displayName</name>
+        <qualifiedname>PlayerProfile::displayName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="64" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="64" bodyend="-1"/>
+        <referencedby refid="class_dynamic_prompt_builder_1a02ca1175918dd4bc9dbcbc91e66f6e2d" compoundref="_dynamic_prompt_builder_8cpp" startline="15" endline="357">DynamicPromptBuilder::BuildPromptFromProfile</referencedby>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_profile_1af17c8f157363b35ed3c5b3ff7ea5a3ee" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string PlayerProfile::description</definition>
+        <argsstring></argsstring>
+        <name>description</name>
+        <qualifiedname>PlayerProfile::description</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="65" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="65" bodyend="-1"/>
+        <referencedby refid="class_dynamic_prompt_builder_1a02ca1175918dd4bc9dbcbc91e66f6e2d" compoundref="_dynamic_prompt_builder_8cpp" startline="15" endline="357">DynamicPromptBuilder::BuildPromptFromProfile</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_profile_1a505e48906de98919372491fc6e11a938" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerProfile::version</definition>
+        <argsstring></argsstring>
+        <name>version</name>
+        <qualifiedname>PlayerProfile::version</qualifiedname>
+        <initializer>= 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="66" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="66" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_profile_1a69e7efcaacf91a21ad6455c8300f0734" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool PlayerProfile::isDefault</definition>
+        <argsstring></argsstring>
+        <name>isDefault</name>
+        <qualifiedname>PlayerProfile::isDefault</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="67" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="67" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1ab5eacc80b6fc93a04f2c28df50097f3f" compoundref="_player_profile_manager_8cpp" startline="108" endline="142">PlayerProfileManager::GetDefaultProfile</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_profile_1abd1817f9857a363821c91c482763ce3f" prot="public" static="no" mutable="no">
+        <type><ref refid="struct_player_settings" kindref="compound">PlayerSettings</ref></type>
+        <definition>PlayerSettings PlayerProfile::playerSettings</definition>
+        <argsstring></argsstring>
+        <name>playerSettings</name>
+        <qualifiedname>PlayerProfile::playerSettings</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="68" column="20" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="68" bodyend="-1"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_profile_1ad629c39bb2a9cb7f379901ced64222de" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="struct_player_stat_section" kindref="compound">PlayerStatSection</ref> &gt;</type>
+        <definition>std::vector&lt;PlayerStatSection&gt; PlayerProfile::statSections</definition>
+        <argsstring></argsstring>
+        <name>statSections</name>
+        <qualifiedname>PlayerProfile::statSections</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="69" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="69" bodyend="-1"/>
+        <referencedby refid="class_dynamic_prompt_builder_1a02ca1175918dd4bc9dbcbc91e66f6e2d" compoundref="_dynamic_prompt_builder_8cpp" startline="15" endline="357">DynamicPromptBuilder::BuildPromptFromProfile</referencedby>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Complete player profile defining player stat settings. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>PlayerProfile</label>
+        <link refid="struct_player_profile"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>playerSettings</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>PlayerSettings</label>
+        <link refid="struct_player_settings"/>
+      </node>
+    </collaborationgraph>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="61" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="62" bodyend="70"/>
+    <listofallmembers>
+      <member refid="struct_player_profile_1af17c8f157363b35ed3c5b3ff7ea5a3ee" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>description</name></member>
+      <member refid="struct_player_profile_1ab5e50a9d6226eb07cbf4a4372db0c14c" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>displayName</name></member>
+      <member refid="struct_player_profile_1a4dac76131f98829556441655ac0a358c" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>id</name></member>
+      <member refid="struct_player_profile_1a69e7efcaacf91a21ad6455c8300f0734" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>isDefault</name></member>
+      <member refid="struct_player_profile_1abd1817f9857a363821c91c482763ce3f" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>playerSettings</name></member>
+      <member refid="struct_player_profile_1ad629c39bb2a9cb7f379901ced64222de" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>statSections</name></member>
+      <member refid="struct_player_profile_1a505e48906de98919372491fc6e11a938" prot="public" virt="non-virtual"><scope>PlayerProfile</scope><name>version</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

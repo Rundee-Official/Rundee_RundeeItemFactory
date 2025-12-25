@@ -49,5 +49,3 @@ namespace JsonUtils
         return std::max(minV, std::min(maxV, v));
     }
 }
-
-

@@ -181,4 +181,3 @@ private:
      */
     static void EnsureRequiredFields(ItemProfile& profile);
 };
-

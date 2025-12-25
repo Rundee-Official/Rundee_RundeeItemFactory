@@ -131,4 +131,3 @@ private:
      */
     static void ApplyJson(const std::string& jsonText, const std::string& sourceLabel);
 };
-

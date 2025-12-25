@@ -371,5 +371,3 @@ namespace StringUtils
         return out;
     }
 }
-
-

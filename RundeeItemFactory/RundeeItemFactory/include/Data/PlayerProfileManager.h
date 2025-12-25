@@ -41,5 +41,3 @@ namespace PlayerProfileManager
      */
     PlayerProfile GetDefaultProfile(const std::string& profilesDir);
 }
-
-

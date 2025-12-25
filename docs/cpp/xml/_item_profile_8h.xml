@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_item_profile_8h" kind="file" language="C++">
+    <compoundname>ItemProfile.h</compoundname>
+    <includes local="no">string</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">map</includes>
+    <includes local="no">json.hpp</includes>
+    <includedby refid="_item_profile_manager_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h</includedby>
+    <includedby refid="_dynamic_item_json_parser_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h</includedby>
+    <includedby refid="_dynamic_prompt_builder_8h" local="yes">RundeeItemFactory/RundeeItemFactory/include/Prompts/DynamicPromptBuilder.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h</label>
+        <link refid="_item_profile_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>json.hpp</label>
+      </node>
+      <node id="4">
+        <label>map</label>
+      </node>
+      <node id="2">
+        <label>string</label>
+      </node>
+      <node id="3">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h</label>
+        <link refid="_item_profile_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h</label>
+        <link refid="_item_profile_manager_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Parsers/DynamicItemJsonParser.h</label>
+        <link refid="_dynamic_item_json_parser_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Prompts/DynamicPromptBuilder.h</label>
+        <link refid="_dynamic_prompt_builder_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp</label>
+        <link refid="_item_profile_manager_8cpp"/>
+      </node>
+      <node id="4">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</label>
+        <link refid="_item_generator_8cpp"/>
+      </node>
+      <node id="6">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Parsers/DynamicItemJsonParser.cpp</label>
+        <link refid="_dynamic_item_json_parser_8cpp"/>
+      </node>
+      <node id="8">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Prompts/DynamicPromptBuilder.cpp</label>
+        <link refid="_dynamic_prompt_builder_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="struct_relationship_constraint" prot="public">RelationshipConstraint</innerclass>
+    <innerclass refid="struct_profile_field_validation" prot="public">ProfileFieldValidation</innerclass>
+    <innerclass refid="struct_profile_field" prot="public">ProfileField</innerclass>
+    <innerclass refid="struct_item_profile" prot="public">ItemProfile</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>ProfileFieldType</name>
+        <enumvalue id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27118326006d3829667a400ad23d5d98" prot="public">
+          <name>String</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853aa0faef0851b4294c06f2b94bb1cb2044" prot="public">
+          <name>Integer</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a22ae0e2b89e5e3d477f988cc36d3272b" prot="public">
+          <name>Float</name>
+          <initializer>= 2</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27226c864bac7454a8504f8edb15d95b" prot="public">
+          <name>Boolean</name>
+          <initializer>= 3</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a4410ec34d9e6c1a68100ca0ce033fb17" prot="public">
+          <name>Array</name>
+          <initializer>= 4</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a497031794414a552435f90151ac3b54b" prot="public">
+          <name>Object</name>
+          <initializer>= 5</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Type of a profile field. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="23" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="24" bodyend="31"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Item profile data structures for dynamic item generation. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>Haneul Lee (Rundee) </para>
+</simplesect>
+<simplesect kind="date"><para>2025-12-21 </para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright (c) 2025 Haneul Lee. All rights reserved.</para>
+</simplesect>
+Defines data structures for item profiles that describe the structure and validation rules for dynamically generated items. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>@file<sp/>ItemProfile.h</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Item<sp/>profile<sp/>data<sp/>structures<sp/>for<sp/>dynamic<sp/>item<sp/>generation</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>@author<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>@date<sp/>2025-12-21</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>@copyright<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>Defines<sp/>data<sp/>structures<sp/>for<sp/>item<sp/>profiles<sp/>that<sp/>describe<sp/>the<sp/>structure</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>and<sp/>validation<sp/>rules<sp/>for<sp/>dynamically<sp/>generated<sp/>items.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;map&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;json.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="19"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/>*<sp/>@enum<sp/>ProfileFieldType</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Type<sp/>of<sp/>a<sp/>profile<sp/>field</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">enum<sp/>class</highlight><highlight class="normal"><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853" kindref="member">ProfileFieldType</ref></highlight></codeline>
+<codeline lineno="24"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="25" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27118326006d3829667a400ad23d5d98" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27118326006d3829667a400ad23d5d98" kindref="member">String</ref><sp/>=<sp/>0,</highlight></codeline>
+<codeline lineno="26" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853aa0faef0851b4294c06f2b94bb1cb2044" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853aa0faef0851b4294c06f2b94bb1cb2044" kindref="member">Integer</ref><sp/>=<sp/>1,</highlight></codeline>
+<codeline lineno="27" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a22ae0e2b89e5e3d477f988cc36d3272b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a22ae0e2b89e5e3d477f988cc36d3272b" kindref="member">Float</ref><sp/>=<sp/>2,</highlight></codeline>
+<codeline lineno="28" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27226c864bac7454a8504f8edb15d95b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27226c864bac7454a8504f8edb15d95b" kindref="member">Boolean</ref><sp/>=<sp/>3,</highlight></codeline>
+<codeline lineno="29" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a4410ec34d9e6c1a68100ca0ce033fb17" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a4410ec34d9e6c1a68100ca0ce033fb17" kindref="member">Array</ref><sp/>=<sp/>4,</highlight></codeline>
+<codeline lineno="30" refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a497031794414a552435f90151ac3b54b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a497031794414a552435f90151ac3b54b" kindref="member">Object</ref><sp/>=<sp/>5</highlight></codeline>
+<codeline lineno="31"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="33"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/>*<sp/>@struct<sp/>RelationshipConstraint</highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Constraint<sp/>between<sp/>two<sp/>fields</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="struct_relationship_constraint" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_relationship_constraint" kindref="compound">RelationshipConstraint</ref></highlight></codeline>
+<codeline lineno="38"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="39" refid="struct_relationship_constraint_1a8d18814154f188d6890d0b2ca193cfb1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_relationship_constraint_1a8d18814154f188d6890d0b2ca193cfb1" kindref="member">description</ref>;</highlight></codeline>
+<codeline lineno="40" refid="struct_relationship_constraint_1a6ebed9bcaaad59ce9fce9e6e3214bad8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_relationship_constraint_1a6ebed9bcaaad59ce9fce9e6e3214bad8" kindref="member">operator_</ref>;<sp/></highlight><highlight class="comment">//<sp/>&quot;&gt;=&quot;,<sp/>&quot;&lt;=&quot;,<sp/>&quot;==&quot;,<sp/>etc.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41" refid="struct_relationship_constraint_1a58b0ed2f9d329ecc76a3381d7fd692b7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_relationship_constraint_1a58b0ed2f9d329ecc76a3381d7fd692b7" kindref="member">targetField</ref>;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/>*<sp/>@struct<sp/>ProfileFieldValidation</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Validation<sp/>rules<sp/>for<sp/>a<sp/>profile<sp/>field</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="struct_profile_field_validation" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_profile_field_validation" kindref="compound">ProfileFieldValidation</ref></highlight></codeline>
+<codeline lineno="49"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="50" refid="struct_profile_field_validation_1af490a82c23d62a2f1c509ee330b284c9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="struct_profile_field_validation_1af490a82c23d62a2f1c509ee330b284c9" kindref="member">isRequired</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="51" refid="struct_profile_field_validation_1ac8d75d6b72fca0f6dff7ab44b8ebd2c1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_profile_field_validation_1ac8d75d6b72fca0f6dff7ab44b8ebd2c1" kindref="member">minLength</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="52" refid="struct_profile_field_validation_1a917b91dc57822f97bdc6338298fd1197" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_profile_field_validation_1a917b91dc57822f97bdc6338298fd1197" kindref="member">maxLength</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="53" refid="struct_profile_field_validation_1afec75c8cfe795aec9a91c04253e8d30b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="struct_profile_field_validation_1afec75c8cfe795aec9a91c04253e8d30b" kindref="member">minValue</ref><sp/>=<sp/>0.0;</highlight></codeline>
+<codeline lineno="54" refid="struct_profile_field_validation_1a818577a272be009d1ce2c8d0cc978190" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="struct_profile_field_validation_1a818577a272be009d1ce2c8d0cc978190" kindref="member">maxValue</ref><sp/>=<sp/>0.0;</highlight></codeline>
+<codeline lineno="55" refid="struct_profile_field_validation_1a145c32c1364a1e848c3109db8270c983" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;std::string&gt;<sp/><ref refid="struct_profile_field_validation_1a145c32c1364a1e848c3109db8270c983" kindref="member">allowedValues</ref>;</highlight></codeline>
+<codeline lineno="56" refid="struct_profile_field_validation_1a0fc17af148821b4f67f66958086255c1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;RelationshipConstraint&gt;<sp/><ref refid="struct_profile_field_validation_1a0fc17af148821b4f67f66958086255c1" kindref="member">relationshipConstraints</ref>;</highlight></codeline>
+<codeline lineno="57" refid="struct_profile_field_validation_1ae7cc5a70768032fa250f8679ee206eac" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_profile_field_validation_1ae7cc5a70768032fa250f8679ee206eac" kindref="member">customConstraint</ref>;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="60"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/>*<sp/>@struct<sp/>ProfileField</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Definition<sp/>of<sp/>a<sp/>single<sp/>field<sp/>in<sp/>an<sp/>item<sp/>profile</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="struct_profile_field" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_profile_field" kindref="compound">ProfileField</ref></highlight></codeline>
+<codeline lineno="65"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="66" refid="struct_profile_field_1a36954699e56b4aa6c96c41d34c9db180" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_profile_field_1a36954699e56b4aa6c96c41d34c9db180" kindref="member">name</ref>;</highlight></codeline>
+<codeline lineno="67" refid="struct_profile_field_1a1f2e5ec511493272c5d05d69840feacd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853" kindref="member">ProfileFieldType</ref><sp/><ref refid="struct_profile_field_1a1f2e5ec511493272c5d05d69840feacd" kindref="member">type</ref>;</highlight></codeline>
+<codeline lineno="68" refid="struct_profile_field_1a8b603b6bf47a9fc954ffa7feb919a044" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_profile_field_1a8b603b6bf47a9fc954ffa7feb919a044" kindref="member">displayName</ref>;</highlight></codeline>
+<codeline lineno="69" refid="struct_profile_field_1aa354292b84780d958f20d02ad74012e3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_profile_field_1aa354292b84780d958f20d02ad74012e3" kindref="member">description</ref>;</highlight></codeline>
+<codeline lineno="70" refid="struct_profile_field_1ae865990d464ba02e3064dda14917a2d6" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_profile_field_1ae865990d464ba02e3064dda14917a2d6" kindref="member">category</ref>;</highlight></codeline>
+<codeline lineno="71" refid="struct_profile_field_1a5ed6075e9dadfb3774e5782f2107f0e3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_profile_field_1a5ed6075e9dadfb3774e5782f2107f0e3" kindref="member">displayOrder</ref>;</highlight></codeline>
+<codeline lineno="72" refid="struct_profile_field_1a8e63f877c14ea7b0b12845c0b8e7e03c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>nlohmann::json<sp/><ref refid="struct_profile_field_1a8e63f877c14ea7b0b12845c0b8e7e03c" kindref="member">defaultValue</ref>;</highlight></codeline>
+<codeline lineno="73" refid="struct_profile_field_1aec90320f89676b55c48a68c95576cb46" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_profile_field_validation" kindref="compound">ProfileFieldValidation</ref><sp/><ref refid="struct_profile_field_1aec90320f89676b55c48a68c95576cb46" kindref="member">validation</ref>;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="76"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/>*<sp/>@struct<sp/>ItemProfile</highlight></codeline>
+<codeline lineno="78"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Complete<sp/>item<sp/>profile<sp/>defining<sp/>structure<sp/>and<sp/>validation</highlight></codeline>
+<codeline lineno="79"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="struct_item_profile" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_item_profile" kindref="compound">ItemProfile</ref></highlight></codeline>
+<codeline lineno="81"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="82" refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" kindref="member">id</ref>;</highlight></codeline>
+<codeline lineno="83" refid="struct_item_profile_1acfd8cee752e2c993d572983696bb1333" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_item_profile_1acfd8cee752e2c993d572983696bb1333" kindref="member">displayName</ref>;</highlight></codeline>
+<codeline lineno="84" refid="struct_item_profile_1a7bc6624aa0dcf5627862982eac4279b4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_item_profile_1a7bc6624aa0dcf5627862982eac4279b4" kindref="member">description</ref>;</highlight></codeline>
+<codeline lineno="85" refid="struct_item_profile_1a820d8c0582b79575b1fb459d42e5966c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_item_profile_1a820d8c0582b79575b1fb459d42e5966c" kindref="member">itemTypeName</ref>;</highlight></codeline>
+<codeline lineno="86" refid="struct_item_profile_1ab3b8c18b0ae56da1a57f3ba73611fdbb" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct_item_profile_1ab3b8c18b0ae56da1a57f3ba73611fdbb" kindref="member">version</ref><sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="87" refid="struct_item_profile_1afbe4d875ec1dc5d72cfa71263955d9bd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="struct_item_profile_1afbe4d875ec1dc5d72cfa71263955d9bd" kindref="member">isDefault</ref><sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="88" refid="struct_item_profile_1ab82239582bba59748d3279f4c8b2427d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="struct_item_profile_1ab82239582bba59748d3279f4c8b2427d" kindref="member">customContext</ref>;</highlight></codeline>
+<codeline lineno="89" refid="struct_item_profile_1af0d9eb9e0cff4129a67c76a2197f1847" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;ProfileField&gt;<sp/><ref refid="struct_item_profile_1af0d9eb9e0cff4129a67c76a2197f1847" kindref="member">fields</ref>;</highlight></codeline>
+<codeline lineno="90" refid="struct_item_profile_1af61d88dd47eca8ebab1523a7774c9d90" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::map&lt;std::string,<sp/>nlohmann::json&gt;<sp/><ref refid="struct_item_profile_1af61d88dd47eca8ebab1523a7774c9d90" kindref="member">metadata</ref>;</highlight></codeline>
+<codeline lineno="91" refid="struct_item_profile_1a866aebda84927f3308b793b857baddc2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::map&lt;std::string,<sp/>int&gt;<sp/><ref refid="struct_item_profile_1a866aebda84927f3308b793b857baddc2" kindref="member">playerSettings</ref>;</highlight></codeline>
+<codeline lineno="92"><highlight class="normal">};</highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h"/>
+  </compounddef>
+</doxygen>

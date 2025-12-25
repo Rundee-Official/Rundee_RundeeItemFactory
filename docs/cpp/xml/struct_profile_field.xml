@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_profile_field" kind="struct" language="C++" prot="public">
+    <compoundname>ProfileField</compoundname>
+    <includes refid="_item_profile_8h" local="no">ItemProfile.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_profile_field_1a36954699e56b4aa6c96c41d34c9db180" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ProfileField::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <qualifiedname>ProfileField::name</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="66" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="66" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1a1f2e5ec511493272c5d05d69840feacd" prot="public" static="no" mutable="no">
+        <type><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853" kindref="member">ProfileFieldType</ref></type>
+        <definition>ProfileFieldType ProfileField::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>ProfileField::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="67" column="22" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="67" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1a8b603b6bf47a9fc954ffa7feb919a044" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ProfileField::displayName</definition>
+        <argsstring></argsstring>
+        <name>displayName</name>
+        <qualifiedname>ProfileField::displayName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="68" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="68" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1aa354292b84780d958f20d02ad74012e3" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ProfileField::description</definition>
+        <argsstring></argsstring>
+        <name>description</name>
+        <qualifiedname>ProfileField::description</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="69" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="69" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1ae865990d464ba02e3064dda14917a2d6" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ProfileField::category</definition>
+        <argsstring></argsstring>
+        <name>category</name>
+        <qualifiedname>ProfileField::category</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="70" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="70" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1a5ed6075e9dadfb3774e5782f2107f0e3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ProfileField::displayOrder</definition>
+        <argsstring></argsstring>
+        <name>displayOrder</name>
+        <qualifiedname>ProfileField::displayOrder</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="71" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="71" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1a8e63f877c14ea7b0b12845c0b8e7e03c" prot="public" static="no" mutable="no">
+        <type>nlohmann::json</type>
+        <definition>nlohmann::json ProfileField::defaultValue</definition>
+        <argsstring></argsstring>
+        <name>defaultValue</name>
+        <qualifiedname>ProfileField::defaultValue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="72" column="20" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="72" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_1aec90320f89676b55c48a68c95576cb46" prot="public" static="no" mutable="no">
+        <type><ref refid="struct_profile_field_validation" kindref="compound">ProfileFieldValidation</ref></type>
+        <definition>ProfileFieldValidation ProfileField::validation</definition>
+        <argsstring></argsstring>
+        <name>validation</name>
+        <qualifiedname>ProfileField::validation</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="73" column="28" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="73" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Definition of a single field in an item profile. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>ProfileField</label>
+        <link refid="struct_profile_field"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>validation</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>ProfileFieldValidation</label>
+        <link refid="struct_profile_field_validation"/>
+      </node>
+    </collaborationgraph>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="64" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="65" bodyend="74"/>
+    <listofallmembers>
+      <member refid="struct_profile_field_1ae865990d464ba02e3064dda14917a2d6" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>category</name></member>
+      <member refid="struct_profile_field_1a8e63f877c14ea7b0b12845c0b8e7e03c" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>defaultValue</name></member>
+      <member refid="struct_profile_field_1aa354292b84780d958f20d02ad74012e3" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>description</name></member>
+      <member refid="struct_profile_field_1a8b603b6bf47a9fc954ffa7feb919a044" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>displayName</name></member>
+      <member refid="struct_profile_field_1a5ed6075e9dadfb3774e5782f2107f0e3" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>displayOrder</name></member>
+      <member refid="struct_profile_field_1a36954699e56b4aa6c96c41d34c9db180" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>name</name></member>
+      <member refid="struct_profile_field_1a1f2e5ec511493272c5d05d69840feacd" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>type</name></member>
+      <member refid="struct_profile_field_1aec90320f89676b55c48a68c95576cb46" prot="public" virt="non-virtual"><scope>ProfileField</scope><name>validation</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

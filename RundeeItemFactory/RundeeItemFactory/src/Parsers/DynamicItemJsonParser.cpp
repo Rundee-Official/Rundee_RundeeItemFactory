@@ -491,4 +491,3 @@ std::string DynamicItemJsonParser::GenerateShortIdFromDisplayName(const std::str
     
     return result;
 }
-

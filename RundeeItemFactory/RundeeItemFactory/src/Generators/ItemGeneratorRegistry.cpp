@@ -92,10 +92,3 @@ namespace ItemGeneratorRegistry
         // Can be re-enabled for debugging if needed
     }
 }
-
-
-
-
-
-
-

@@ -65,5 +65,3 @@ public:
                                     int maxRetries = 3,
                                     int timeoutSeconds = 120);
 };
-
-

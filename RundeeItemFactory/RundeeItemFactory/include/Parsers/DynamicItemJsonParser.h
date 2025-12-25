@@ -108,4 +108,3 @@ private:
         const ItemProfile& profile,
         size_t index);
 };
-

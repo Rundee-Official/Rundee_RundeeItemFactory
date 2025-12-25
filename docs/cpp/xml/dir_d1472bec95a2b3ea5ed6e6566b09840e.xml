@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="dir_d1472bec95a2b3ea5ed6e6566b09840e" kind="dir">
+    <compoundname>RundeeItemFactory/RundeeItemFactory/src/Generators</compoundname>
+    <innerfile refid="_item_generator_8cpp">ItemGenerator.cpp</innerfile>
+    <innerfile refid="_item_generator_registry_8cpp">ItemGeneratorRegistry.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/Generators/"/>
+  </compounddef>
+</doxygen>

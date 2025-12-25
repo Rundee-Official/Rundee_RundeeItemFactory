@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="_item_generator_registry_8h" kind="file" language="C++">
+    <compoundname>ItemGeneratorRegistry.h</compoundname>
+    <includes local="no">set</includes>
+    <includes local="no">string</includes>
+    <includes local="no">vector</includes>
+    <includedby refid="_item_generator_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</includedby>
+    <includedby refid="_item_generator_registry_8cpp" local="yes">RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGeneratorRegistry.cpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGeneratorRegistry.h</label>
+        <link refid="_item_generator_registry_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>set</label>
+      </node>
+      <node id="3">
+        <label>string</label>
+      </node>
+      <node id="4">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGeneratorRegistry.h</label>
+        <link refid="_item_generator_registry_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGenerator.cpp</label>
+        <link refid="_item_generator_8cpp"/>
+      </node>
+      <node id="3">
+        <label>RundeeItemFactory/RundeeItemFactory/src/Generators/ItemGeneratorRegistry.cpp</label>
+        <link refid="_item_generator_registry_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespace_item_generator_registry">ItemGeneratorRegistry</innernamespace>
+    <briefdescription>
+<para>Registry management for item ID tracking. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>Haneul Lee (Rundee) </para>
+</simplesect>
+<simplesect kind="date"><para>2025-12-21 </para>
+</simplesect>
+<simplesect kind="copyright"><para>Copyright (c) 2025 Haneul Lee. All rights reserved.</para>
+</simplesect>
+Provides functions to load, save, and manage item ID registries. Registries track all generated item IDs to prevent duplicates. </para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>@file<sp/>ItemGeneratorRegistry.h</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Registry<sp/>management<sp/>for<sp/>item<sp/>ID<sp/>tracking</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*<sp/>@author<sp/>Haneul<sp/>Lee<sp/>(Rundee)</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>@date<sp/>2025-12-21</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>@copyright<sp/>Copyright<sp/>(c)<sp/>2025<sp/>Haneul<sp/>Lee.<sp/>All<sp/>rights<sp/>reserved.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>Provides<sp/>functions<sp/>to<sp/>load,<sp/>save,<sp/>and<sp/>manage<sp/>item<sp/>ID<sp/>registries.</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>Registries<sp/>track<sp/>all<sp/>generated<sp/>item<sp/>IDs<sp/>to<sp/>prevent<sp/>duplicates.</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;set&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="namespace_item_generator_registry" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_item_generator_registry" kindref="compound">ItemGeneratorRegistry</ref></highlight></codeline>
+<codeline lineno="19"><highlight class="normal">{</highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Load<sp/>item<sp/>IDs<sp/>from<sp/>registry<sp/>file</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>typeName<sp/>Item<sp/>type<sp/>name<sp/>(e.g.,<sp/>&quot;Food&quot;,<sp/>&quot;Weapon&quot;)</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>Set<sp/>of<sp/>item<sp/>IDs<sp/>from<sp/>registry</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/>std::set&lt;std::string&gt;<sp/><ref refid="namespace_item_generator_registry_1a5de55666dc05a3ffb923429afb0cc4e2" kindref="member">LoadRegistryIds</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>typeName);</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Save<sp/>item<sp/>IDs<sp/>to<sp/>registry<sp/>file</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>typeName<sp/>Item<sp/>type<sp/>name</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>ids<sp/>Set<sp/>of<sp/>item<sp/>IDs<sp/>to<sp/>save</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>True<sp/>on<sp/>success,<sp/>false<sp/>on<sp/>failure</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespace_item_generator_registry_1a6162d4b9822cdc8f850cf734b3a6fd71" kindref="member">SaveRegistryIds</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>typeName,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::set&lt;std::string&gt;&amp;<sp/>ids);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="35"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="36"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Append<sp/>item<sp/>IDs<sp/>to<sp/>registry<sp/>(loads<sp/>existing,<sp/>adds<sp/>new,<sp/>saves<sp/>back)</highlight></codeline>
+<codeline lineno="37"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@tparam<sp/>T<sp/>Item<sp/>type<sp/>with<sp/>an<sp/>&apos;id&apos;<sp/>member</highlight></codeline>
+<codeline lineno="38"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>typeName<sp/>Item<sp/>type<sp/>name</highlight></codeline>
+<codeline lineno="39"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>items<sp/>Vector<sp/>of<sp/>items<sp/>to<sp/>extract<sp/>IDs<sp/>from</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespace_item_generator_registry_1af5adfbf629c734071481414b3bbf1f10" kindref="member">AppendIdsToRegistry</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>typeName,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;T&gt;&amp;<sp/>items);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="44"><highlight class="comment"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline lineno="45"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Log<sp/>registry<sp/>event<sp/>(for<sp/>debugging)</highlight></codeline>
+<codeline lineno="46"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>typeName<sp/>Item<sp/>type<sp/>name</highlight></codeline>
+<codeline lineno="47"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>beforeCount<sp/>Count<sp/>before<sp/>update</highlight></codeline>
+<codeline lineno="48"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>addedCount<sp/>Number<sp/>of<sp/>IDs<sp/>added</highlight></codeline>
+<codeline lineno="49"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>afterCount<sp/>Count<sp/>after<sp/>update</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespace_item_generator_registry_1a77489832794c5ca915f0b378ddaa3070" kindref="member">LogRegistryEvent</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>typeName,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>beforeCount,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>addedCount,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>afterCount);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="54"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/>*<sp/>@brief<sp/>Template<sp/>implementation<sp/>for<sp/>AppendIdsToRegistry</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/>*<sp/>Loads<sp/>existing<sp/>IDs<sp/>from<sp/>registry,<sp/>adds<sp/>new<sp/>IDs<sp/>from<sp/>items,</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/>*<sp/>saves<sp/>back<sp/>to<sp/>registry,<sp/>and<sp/>logs<sp/>the<sp/>event.</highlight></codeline>
+<codeline lineno="59"><highlight class="comment"><sp/>*<sp/></highlight></codeline>
+<codeline lineno="60"><highlight class="comment"><sp/>*<sp/>@tparam<sp/>T<sp/>Item<sp/>type<sp/>with<sp/>an<sp/>&apos;id&apos;<sp/>member<sp/>(e.g.,<sp/>ItemData,<sp/>nlohmann::json)</highlight></codeline>
+<codeline lineno="61"><highlight class="comment"><sp/>*<sp/>@param<sp/>typeName<sp/>Item<sp/>type<sp/>name<sp/>(e.g.,<sp/>&quot;Food&quot;,<sp/>&quot;Weapon&quot;)</highlight></codeline>
+<codeline lineno="62"><highlight class="comment"><sp/>*<sp/>@param<sp/>items<sp/>Vector<sp/>of<sp/>items<sp/>to<sp/>extract<sp/>IDs<sp/>from</highlight></codeline>
+<codeline lineno="63"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="65" refid="namespace_item_generator_registry_1af5adfbf629c734071481414b3bbf1f10" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespace_item_generator_registry_1af5adfbf629c734071481414b3bbf1f10" kindref="member">ItemGeneratorRegistry::AppendIdsToRegistry</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>typeName,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;T&gt;&amp;<sp/>items)</highlight></codeline>
+<codeline lineno="66"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(items.empty())</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>std::set&lt;std::string&gt;<sp/>ids<sp/>=<sp/><ref refid="namespace_item_generator_registry_1a5de55666dc05a3ffb923429afb0cc4e2" kindref="member">LoadRegistryIds</ref>(typeName);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>before<sp/>=<sp/>ids.size();</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>item<sp/>:<sp/>items)</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ids.insert(item.id);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>after<sp/>=<sp/>ids.size();</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>added<sp/>=<sp/>(after<sp/>&gt;=<sp/>before)<sp/>?<sp/>(after<sp/>-<sp/>before)<sp/>:<sp/>0;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespace_item_generator_registry_1a6162d4b9822cdc8f850cf734b3a6fd71" kindref="member">SaveRegistryIds</ref>(typeName,<sp/>ids))</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespace_item_generator_registry_1a77489832794c5ca915f0b378ddaa3070" kindref="member">LogRegistryEvent</ref>(typeName,<sp/>before,<sp/>added,<sp/>after);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="82"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Generators/ItemGeneratorRegistry.h"/>
+  </compounddef>
+</doxygen>

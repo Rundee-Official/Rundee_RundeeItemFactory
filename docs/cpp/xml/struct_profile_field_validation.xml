@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_profile_field_validation" kind="struct" language="C++" prot="public">
+    <compoundname>ProfileFieldValidation</compoundname>
+    <includes refid="_item_profile_8h" local="no">ItemProfile.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_profile_field_validation_1af490a82c23d62a2f1c509ee330b284c9" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool ProfileFieldValidation::isRequired</definition>
+        <argsstring></argsstring>
+        <name>isRequired</name>
+        <qualifiedname>ProfileFieldValidation::isRequired</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="50" column="10" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="50" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1ac8d75d6b72fca0f6dff7ab44b8ebd2c1" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ProfileFieldValidation::minLength</definition>
+        <argsstring></argsstring>
+        <name>minLength</name>
+        <qualifiedname>ProfileFieldValidation::minLength</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="51" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1a917b91dc57822f97bdc6338298fd1197" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int ProfileFieldValidation::maxLength</definition>
+        <argsstring></argsstring>
+        <name>maxLength</name>
+        <qualifiedname>ProfileFieldValidation::maxLength</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="52" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1afec75c8cfe795aec9a91c04253e8d30b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ProfileFieldValidation::minValue</definition>
+        <argsstring></argsstring>
+        <name>minValue</name>
+        <qualifiedname>ProfileFieldValidation::minValue</qualifiedname>
+        <initializer>= 0.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="53" column="12" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="53" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1a818577a272be009d1ce2c8d0cc978190" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double ProfileFieldValidation::maxValue</definition>
+        <argsstring></argsstring>
+        <name>maxValue</name>
+        <qualifiedname>ProfileFieldValidation::maxValue</qualifiedname>
+        <initializer>= 0.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="54" column="12" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="54" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1a145c32c1364a1e848c3109db8270c983" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; ProfileFieldValidation::allowedValues</definition>
+        <argsstring></argsstring>
+        <name>allowedValues</name>
+        <qualifiedname>ProfileFieldValidation::allowedValues</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="55" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="55" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1a0fc17af148821b4f67f66958086255c1" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="struct_relationship_constraint" kindref="compound">RelationshipConstraint</ref> &gt;</type>
+        <definition>std::vector&lt;RelationshipConstraint&gt; ProfileFieldValidation::relationshipConstraints</definition>
+        <argsstring></argsstring>
+        <name>relationshipConstraints</name>
+        <qualifiedname>ProfileFieldValidation::relationshipConstraints</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="56" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="56" bodyend="-1"/>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">ItemProfileManager::CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_profile_field_validation_1ae7cc5a70768032fa250f8679ee206eac" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ProfileFieldValidation::customConstraint</definition>
+        <argsstring></argsstring>
+        <name>customConstraint</name>
+        <qualifiedname>ProfileFieldValidation::customConstraint</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="57" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Validation rules for a profile field. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" line="48" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfile.h" bodystart="49" bodyend="58"/>
+    <listofallmembers>
+      <member refid="struct_profile_field_validation_1a145c32c1364a1e848c3109db8270c983" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>allowedValues</name></member>
+      <member refid="struct_profile_field_validation_1ae7cc5a70768032fa250f8679ee206eac" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>customConstraint</name></member>
+      <member refid="struct_profile_field_validation_1af490a82c23d62a2f1c509ee330b284c9" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>isRequired</name></member>
+      <member refid="struct_profile_field_validation_1a917b91dc57822f97bdc6338298fd1197" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>maxLength</name></member>
+      <member refid="struct_profile_field_validation_1a818577a272be009d1ce2c8d0cc978190" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>maxValue</name></member>
+      <member refid="struct_profile_field_validation_1ac8d75d6b72fca0f6dff7ab44b8ebd2c1" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>minLength</name></member>
+      <member refid="struct_profile_field_validation_1afec75c8cfe795aec9a91c04253e8d30b" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>minValue</name></member>
+      <member refid="struct_profile_field_validation_1a0fc17af148821b4f67f66958086255c1" prot="public" virt="non-virtual"><scope>ProfileFieldValidation</scope><name>relationshipConstraints</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

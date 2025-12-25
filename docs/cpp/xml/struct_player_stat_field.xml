@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="struct_player_stat_field" kind="struct" language="C++" prot="public">
+    <compoundname>PlayerStatField</compoundname>
+    <includes refid="_player_profile_8h" local="no">PlayerProfile.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_player_stat_field_1adb70db51cfcd8458829d5a0b8070f0e7" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string PlayerStatField::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <qualifiedname>PlayerStatField::name</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="37" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="37" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_stat_field_1aef23ee17abffe487a3180fcc9b7831be" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string PlayerStatField::displayName</definition>
+        <argsstring></argsstring>
+        <name>displayName</name>
+        <qualifiedname>PlayerStatField::displayName</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="38" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="38" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_stat_field_1a3d23bd9101bae485c66ad9e488b292e0" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string PlayerStatField::description</definition>
+        <argsstring></argsstring>
+        <name>description</name>
+        <qualifiedname>PlayerStatField::description</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="39" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="39" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_stat_field_1a949dc30f70fcdd9d5bbfb36313198cfb" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerStatField::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>PlayerStatField::value</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="40" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="40" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+      <memberdef kind="variable" id="struct_player_stat_field_1acbd462d1b2bdc0da2ce4a7293028273b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int PlayerStatField::displayOrder</definition>
+        <argsstring></argsstring>
+        <name>displayOrder</name>
+        <qualifiedname>PlayerStatField::displayOrder</qualifiedname>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="41" column="9" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="41" bodyend="-1"/>
+        <referencedby refid="namespace_player_profile_manager_1a6821dd8d68d99ef4d4210b6f5143021b" compoundref="_player_profile_manager_8cpp" startline="19" endline="93">PlayerProfileManager::LoadProfileFromPath</referencedby>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Player stat field definition. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" line="35" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/PlayerProfile.h" bodystart="36" bodyend="42"/>
+    <listofallmembers>
+      <member refid="struct_player_stat_field_1a3d23bd9101bae485c66ad9e488b292e0" prot="public" virt="non-virtual"><scope>PlayerStatField</scope><name>description</name></member>
+      <member refid="struct_player_stat_field_1aef23ee17abffe487a3180fcc9b7831be" prot="public" virt="non-virtual"><scope>PlayerStatField</scope><name>displayName</name></member>
+      <member refid="struct_player_stat_field_1acbd462d1b2bdc0da2ce4a7293028273b" prot="public" virt="non-virtual"><scope>PlayerStatField</scope><name>displayOrder</name></member>
+      <member refid="struct_player_stat_field_1adb70db51cfcd8458829d5a0b8070f0e7" prot="public" virt="non-virtual"><scope>PlayerStatField</scope><name>name</name></member>
+      <member refid="struct_player_stat_field_1a949dc30f70fcdd9d5bbfb36313198cfb" prot="public" virt="non-virtual"><scope>PlayerStatField</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

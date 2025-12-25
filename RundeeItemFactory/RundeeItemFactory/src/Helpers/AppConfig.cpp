@@ -153,4 +153,3 @@ const OllamaSettings& AppConfig::GetOllamaSettings()
     EnsureLoaded();
     return g_settings;
 }
-

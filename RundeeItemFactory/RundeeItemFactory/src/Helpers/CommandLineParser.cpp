@@ -121,6 +121,22 @@ namespace CommandLineParser
             {
                 args.params.maxThirst = std::atoi(argv[++i]);
             }
+            else if (arg == "--maxHealth" && i + 1 < argc)
+            {
+                args.params.maxHealth = std::atoi(argv[++i]);
+            }
+            else if (arg == "--maxStamina" && i + 1 < argc)
+            {
+                args.params.maxStamina = std::atoi(argv[++i]);
+            }
+            else if (arg == "--maxWeight" && i + 1 < argc)
+            {
+                args.params.maxWeight = std::atoi(argv[++i]);
+            }
+            else if (arg == "--maxEnergy" && i + 1 < argc)
+            {
+                args.params.maxEnergy = std::atoi(argv[++i]);
+            }
             else if (arg == "--out" && i + 1 < argc)
             {
                 std::string outPath = argv[++i];
@@ -226,5 +242,3 @@ namespace CommandLineParser
     }
 
 }
-
-

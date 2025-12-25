@@ -1,0 +1,818 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="class_item_profile_manager" kind="class" language="C++" prot="public">
+    <compoundname>ItemProfileManager</compoundname>
+    <includes refid="_item_profile_manager_8h" local="no">ItemProfileManager.h</includes>
+    <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="class_item_profile_manager_1a3a942410e978ea7fcb3456524873a562" prot="private" static="yes" mutable="no">
+        <type>std::string</type>
+        <definition>std::string ItemProfileManager::s_profilesDir</definition>
+        <argsstring></argsstring>
+        <name>s_profilesDir</name>
+        <qualifiedname>ItemProfileManager::s_profilesDir</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="127" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" bodystart="127" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_item_profile_manager_1a68455d732fcd3901d768cd7c9f619295" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ItemProfileManager::Initialize</definition>
+        <argsstring>(const std::string &amp;profilesDir)</argsstring>
+        <name>Initialize</name>
+        <qualifiedname>ItemProfileManager::Initialize</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>profilesDir</declname>
+        </param>
+        <briefdescription>
+<para>Initialize the profile manager. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profilesDir</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Directory containing profile files </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if initialization succeeded </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="34" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="21" bodyend="38"/>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1af57155af7e27964ed8ad13c28039fe9d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_item_profile" kindref="compound">ItemProfile</ref></type>
+        <definition>ItemProfile ItemProfileManager::LoadProfile</definition>
+        <argsstring>(const std::string &amp;profileId)</argsstring>
+        <name>LoadProfile</name>
+        <qualifiedname>ItemProfileManager::LoadProfile</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>profileId</declname>
+        </param>
+        <briefdescription>
+<para>Load a profile from file. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profileId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile ID (filename without extension) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Loaded profile, or empty profile if not found </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="41" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="40" bodyend="44"/>
+        <references refid="class_item_profile_manager_1a3a7f710ee185d345ada2a32e0b44d263" compoundref="_item_profile_manager_8cpp" startline="46" endline="73">LoadProfileFromPath</references>
+        <referencedby refid="class_item_generator_1abb54b6f4cdbe5d5b11c45374f5ae2f11" compoundref="_item_generator_8cpp" startline="179" endline="468">ItemGenerator::GenerateWithLLM</referencedby>
+        <referencedby refid="class_item_profile_manager_1aa666103914b56e801d8d852f744dbf32" compoundref="_item_profile_manager_8cpp" startline="104" endline="109">GetDefaultProfile</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a3a7f710ee185d345ada2a32e0b44d263" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_item_profile" kindref="compound">ItemProfile</ref></type>
+        <definition>ItemProfile ItemProfileManager::LoadProfileFromPath</definition>
+        <argsstring>(const std::string &amp;filePath)</argsstring>
+        <name>LoadProfileFromPath</name>
+        <qualifiedname>ItemProfileManager::LoadProfileFromPath</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>filePath</declname>
+        </param>
+        <briefdescription>
+<para>Load a profile from file path. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filePath</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Full path to profile file </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Loaded profile, or empty profile if failed </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="48" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="46" bodyend="73"/>
+        <referencedby refid="class_item_profile_manager_1a3cd69c5942ec67f5924b011eaa7bfd66" compoundref="_item_profile_manager_8cpp" startline="125" endline="148">GetAllProfiles</referencedby>
+        <referencedby refid="class_item_profile_manager_1af57155af7e27964ed8ad13c28039fe9d" compoundref="_item_profile_manager_8cpp" startline="40" endline="44">LoadProfile</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a1ffa497f48af00836738a71a0335e9f9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ItemProfileManager::SaveProfile</definition>
+        <argsstring>(const ItemProfile &amp;profile)</argsstring>
+        <name>SaveProfile</name>
+        <qualifiedname>ItemProfileManager::SaveProfile</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <briefdescription>
+<para>Save a profile to file. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile to save </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if save succeeded </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="55" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="75" bodyend="102"/>
+        <references refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" compoundref="_item_profile_8h" startline="82">ItemProfile::id</references>
+        <referencedby refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" compoundref="_item_profile_manager_8cpp" startline="204" endline="347">CreateDefaultProfiles</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1aa666103914b56e801d8d852f744dbf32" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_item_profile" kindref="compound">ItemProfile</ref></type>
+        <definition>ItemProfile ItemProfileManager::GetDefaultProfile</definition>
+        <argsstring>(const std::string &amp;itemTypeName)</argsstring>
+        <name>GetDefaultProfile</name>
+        <qualifiedname>ItemProfileManager::GetDefaultProfile</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>itemTypeName</declname>
+        </param>
+        <briefdescription>
+<para>Get default profile for an item type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>itemTypeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Item type name (e.g., &quot;Food&quot;, &quot;Weapon&quot;) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Default profile for the type, or empty profile if not found </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="62" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="104" bodyend="109"/>
+        <references refid="class_item_profile_manager_1af57155af7e27964ed8ad13c28039fe9d" compoundref="_item_profile_manager_8cpp" startline="40" endline="44">LoadProfile</references>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1ae0b24674a3d7ee25fe58074071ff80a9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &gt;</type>
+        <definition>std::vector&lt; ItemProfile &gt; ItemProfileManager::GetProfilesForType</definition>
+        <argsstring>(const std::string &amp;itemTypeName)</argsstring>
+        <name>GetProfilesForType</name>
+        <qualifiedname>ItemProfileManager::GetProfilesForType</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>itemTypeName</declname>
+        </param>
+        <briefdescription>
+<para>Get all profiles for an item type. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>itemTypeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Item type name </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Vector of profiles for the type </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="69" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="111" bodyend="123"/>
+        <references refid="class_item_profile_manager_1a3cd69c5942ec67f5924b011eaa7bfd66" compoundref="_item_profile_manager_8cpp" startline="125" endline="148">GetAllProfiles</references>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a3cd69c5942ec67f5924b011eaa7bfd66" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::map&lt; std::string, <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &gt;</type>
+        <definition>std::map&lt; std::string, ItemProfile &gt; ItemProfileManager::GetAllProfiles</definition>
+        <argsstring>()</argsstring>
+        <name>GetAllProfiles</name>
+        <qualifiedname>ItemProfileManager::GetAllProfiles</qualifiedname>
+        <briefdescription>
+<para>Get all available profiles. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Map of profile ID to profile </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="75" column="21" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="125" bodyend="148"/>
+        <references refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" compoundref="_item_profile_8h" startline="82">ItemProfile::id</references>
+        <references refid="class_item_profile_manager_1a3a7f710ee185d345ada2a32e0b44d263" compoundref="_item_profile_manager_8cpp" startline="46" endline="73">LoadProfileFromPath</references>
+        <referencedby refid="class_item_profile_manager_1ae0b24674a3d7ee25fe58074071ff80a9" compoundref="_item_profile_manager_8cpp" startline="111" endline="123">GetProfilesForType</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1adb86e1ed0630618eab8a3ddb10de3c27" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ItemProfileManager::ProfileExists</definition>
+        <argsstring>(const std::string &amp;profileId)</argsstring>
+        <name>ProfileExists</name>
+        <qualifiedname>ItemProfileManager::ProfileExists</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>profileId</declname>
+        </param>
+        <briefdescription>
+<para>Check if a profile exists. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profileId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile ID </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if profile exists </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="82" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="150" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a7a74a1e9fe9ff55b1383cc98fc04c1df" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ItemProfileManager::DeleteProfile</definition>
+        <argsstring>(const std::string &amp;profileId)</argsstring>
+        <name>DeleteProfile</name>
+        <qualifiedname>ItemProfileManager::DeleteProfile</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>profileId</declname>
+        </param>
+        <briefdescription>
+<para>Delete a profile. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profileId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile ID </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if deletion succeeded </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="89" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="156" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a5ae44192fe35d0e4a4b6e68e73d6ec45" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ItemProfileManager::ValidateProfile</definition>
+        <argsstring>(const ItemProfile &amp;profile, std::vector&lt; std::string &gt; &amp;errors)</argsstring>
+        <name>ValidateProfile</name>
+        <qualifiedname>ItemProfileManager::ValidateProfile</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>errors</declname>
+        </param>
+        <briefdescription>
+<para>Validate a profile structure. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile to validate </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>errors</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Output vector of error messages </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if profile is valid </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="97" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="166" bodyend="197"/>
+        <references refid="struct_item_profile_1af0d9eb9e0cff4129a67c76a2197f1847" compoundref="_item_profile_8h" startline="89">ItemProfile::fields</references>
+        <references refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" compoundref="_item_profile_8h" startline="82">ItemProfile::id</references>
+        <references refid="struct_item_profile_1a820d8c0582b79575b1fb459d42e5966c" compoundref="_item_profile_8h" startline="85">ItemProfile::itemTypeName</references>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a8ac77af97e6671bb9fe6d3c69c7567e9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string ItemProfileManager::GetProfilesDirectory</definition>
+        <argsstring>()</argsstring>
+        <name>GetProfilesDirectory</name>
+        <qualifiedname>ItemProfileManager::GetProfilesDirectory</qualifiedname>
+        <briefdescription>
+<para>Get profiles directory. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>Profiles directory path </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="103" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="199" bodyend="202"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool ItemProfileManager::CreateDefaultProfiles</definition>
+        <argsstring>(const std::string &amp;profilesDir)</argsstring>
+        <name>CreateDefaultProfiles</name>
+        <qualifiedname>ItemProfileManager::CreateDefaultProfiles</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>profilesDir</declname>
+        </param>
+        <briefdescription>
+<para>Create default profiles for built-in item types. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profilesDir</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Directory to create profiles in </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if creation succeeded </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="110" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="204" bodyend="347"/>
+        <references refid="struct_profile_field_validation_1a145c32c1364a1e848c3109db8270c983" compoundref="_item_profile_8h" startline="55">ProfileFieldValidation::allowedValues</references>
+        <references refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27226c864bac7454a8504f8edb15d95b" compoundref="_item_profile_8h" startline="28">Boolean</references>
+        <references refid="struct_profile_field_1ae865990d464ba02e3064dda14917a2d6" compoundref="_item_profile_8h" startline="70">ProfileField::category</references>
+        <references refid="struct_profile_field_1a8e63f877c14ea7b0b12845c0b8e7e03c" compoundref="_item_profile_8h" startline="72">ProfileField::defaultValue</references>
+        <references refid="struct_item_profile_1a7bc6624aa0dcf5627862982eac4279b4" compoundref="_item_profile_8h" startline="84">ItemProfile::description</references>
+        <references refid="struct_profile_field_1aa354292b84780d958f20d02ad74012e3" compoundref="_item_profile_8h" startline="69">ProfileField::description</references>
+        <references refid="struct_relationship_constraint_1a8d18814154f188d6890d0b2ca193cfb1" compoundref="_item_profile_8h" startline="39">RelationshipConstraint::description</references>
+        <references refid="struct_item_profile_1acfd8cee752e2c993d572983696bb1333" compoundref="_item_profile_8h" startline="83">ItemProfile::displayName</references>
+        <references refid="struct_profile_field_1a8b603b6bf47a9fc954ffa7feb919a044" compoundref="_item_profile_8h" startline="68">ProfileField::displayName</references>
+        <references refid="struct_profile_field_1a5ed6075e9dadfb3774e5782f2107f0e3" compoundref="_item_profile_8h" startline="71">ProfileField::displayOrder</references>
+        <references refid="struct_item_profile_1af0d9eb9e0cff4129a67c76a2197f1847" compoundref="_item_profile_8h" startline="89">ItemProfile::fields</references>
+        <references refid="struct_item_profile_1ac79b65a449108835b66139a8cbf52414" compoundref="_item_profile_8h" startline="82">ItemProfile::id</references>
+        <references refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853aa0faef0851b4294c06f2b94bb1cb2044" compoundref="_item_profile_8h" startline="26">Integer</references>
+        <references refid="struct_item_profile_1afbe4d875ec1dc5d72cfa71263955d9bd" compoundref="_item_profile_8h" startline="87">ItemProfile::isDefault</references>
+        <references refid="struct_profile_field_validation_1af490a82c23d62a2f1c509ee330b284c9" compoundref="_item_profile_8h" startline="50">ProfileFieldValidation::isRequired</references>
+        <references refid="struct_item_profile_1a820d8c0582b79575b1fb459d42e5966c" compoundref="_item_profile_8h" startline="85">ItemProfile::itemTypeName</references>
+        <references refid="struct_profile_field_validation_1a818577a272be009d1ce2c8d0cc978190" compoundref="_item_profile_8h" startline="54">ProfileFieldValidation::maxValue</references>
+        <references refid="struct_profile_field_validation_1afec75c8cfe795aec9a91c04253e8d30b" compoundref="_item_profile_8h" startline="53">ProfileFieldValidation::minValue</references>
+        <references refid="struct_profile_field_1a36954699e56b4aa6c96c41d34c9db180" compoundref="_item_profile_8h" startline="66">ProfileField::name</references>
+        <references refid="struct_relationship_constraint_1a6ebed9bcaaad59ce9fce9e6e3214bad8" compoundref="_item_profile_8h" startline="40">RelationshipConstraint::operator_</references>
+        <references refid="struct_profile_field_validation_1a0fc17af148821b4f67f66958086255c1" compoundref="_item_profile_8h" startline="56">ProfileFieldValidation::relationshipConstraints</references>
+        <references refid="class_item_profile_manager_1a1ffa497f48af00836738a71a0335e9f9" compoundref="_item_profile_manager_8cpp" startline="75" endline="102">SaveProfile</references>
+        <references refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853a27118326006d3829667a400ad23d5d98" compoundref="_item_profile_8h" startline="25">String</references>
+        <references refid="struct_relationship_constraint_1a58b0ed2f9d329ecc76a3381d7fd692b7" compoundref="_item_profile_8h" startline="41">RelationshipConstraint::targetField</references>
+        <references refid="struct_profile_field_1a1f2e5ec511493272c5d05d69840feacd" compoundref="_item_profile_8h" startline="67">ProfileField::type</references>
+        <references refid="struct_profile_field_1aec90320f89676b55c48a68c95576cb46" compoundref="_item_profile_8h" startline="73">ProfileField::validation</references>
+        <references refid="struct_item_profile_1ab3b8c18b0ae56da1a57f3ba73611fdbb" compoundref="_item_profile_8h" startline="86">ItemProfile::version</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_item_profile_manager_1a7fd70905fe337db1fb3faddd68852a82" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_profile_field" kindref="compound">ProfileField</ref></type>
+        <definition>ProfileField ItemProfileManager::CreateBaseField</definition>
+        <argsstring>(const std::string &amp;name, const std::string &amp;displayName, const std::string &amp;description, const std::string &amp;category, int order, bool required, const std::vector&lt; std::string &gt; &amp;allowedValues={}, int defaultValue=0, int minValue=0, int maxValue=0)</argsstring>
+        <name>CreateBaseField</name>
+        <qualifiedname>ItemProfileManager::CreateBaseField</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>category</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>required</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>allowedValues</declname>
+          <defval>{}</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>defaultValue</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>minValue</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>maxValue</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+<para>Helper to create base field (id, displayName, etc.). </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="116" column="25" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="675" bodyend="691"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a6d6f7f5e0b237d574267d4241f29cbb5" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_profile_field" kindref="compound">ProfileField</ref></type>
+        <definition>ProfileField ItemProfileManager::CreateField</definition>
+        <argsstring>(const std::string &amp;name, ProfileFieldType type, const std::string &amp;displayName, const std::string &amp;description, const std::string &amp;category, int order, bool required, double minValue=0.0, double maxValue=0.0)</argsstring>
+        <name>CreateField</name>
+        <qualifiedname>ItemProfileManager::CreateField</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type><ref refid="_item_profile_8h_1afa3425ba51acd687d290b544a2bc1853" kindref="member">ProfileFieldType</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>displayName</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>category</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>order</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>required</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>minValue</declname>
+          <defval>0.0</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>maxValue</declname>
+          <defval>0.0</defval>
+        </param>
+        <briefdescription>
+<para>Helper to create field with validation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="124" column="25" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="693" bodyend="708"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1af850332c3aa1bc8a6d036c3882567a86" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_item_profile" kindref="compound">ItemProfile</ref></type>
+        <definition>ItemProfile ItemProfileManager::ParseProfileFromJson</definition>
+        <argsstring>(const nlohmann::json &amp;json)</argsstring>
+        <name>ParseProfileFromJson</name>
+        <qualifiedname>ItemProfileManager::ParseProfileFromJson</qualifiedname>
+        <param>
+          <type>const nlohmann::json &amp;</type>
+          <declname>json</declname>
+        </param>
+        <briefdescription>
+<para>Parse profile from JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>json</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Parsed profile </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="134" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="469" bodyend="503"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a90cc966ab611b218f1b241946183ffcb" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nlohmann::json</type>
+        <definition>nlohmann::json ItemProfileManager::ProfileToJson</definition>
+        <argsstring>(const ItemProfile &amp;profile)</argsstring>
+        <name>ProfileToJson</name>
+        <qualifiedname>ItemProfileManager::ProfileToJson</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <briefdescription>
+<para>Convert profile to JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile to convert </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>JSON object </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="141" column="27" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="505" bodyend="529"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1acaf2cf40294980fc0faa5ee59161b2ba" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_profile_field" kindref="compound">ProfileField</ref></type>
+        <definition>ProfileField ItemProfileManager::ParseFieldFromJson</definition>
+        <argsstring>(const nlohmann::json &amp;json)</argsstring>
+        <name>ParseFieldFromJson</name>
+        <qualifiedname>ItemProfileManager::ParseFieldFromJson</qualifiedname>
+        <param>
+          <type>const nlohmann::json &amp;</type>
+          <declname>json</declname>
+        </param>
+        <briefdescription>
+<para>Parse field from JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>json</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Parsed field </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="148" column="25" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="531" bodyend="572"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a505f373bf023c29a8f1176c74f799492" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nlohmann::json</type>
+        <definition>nlohmann::json ItemProfileManager::FieldToJson</definition>
+        <argsstring>(const ProfileField &amp;field)</argsstring>
+        <name>FieldToJson</name>
+        <qualifiedname>ItemProfileManager::FieldToJson</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_profile_field" kindref="compound">ProfileField</ref> &amp;</type>
+          <declname>field</declname>
+        </param>
+        <briefdescription>
+<para>Convert field to JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>field</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Field to convert </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>JSON object </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="155" column="27" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="574" bodyend="599"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a89cc33c415299cb3e33139dac098c853" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_profile_field_validation" kindref="compound">ProfileFieldValidation</ref></type>
+        <definition>ProfileFieldValidation ItemProfileManager::ParseValidationFromJson</definition>
+        <argsstring>(const nlohmann::json &amp;json)</argsstring>
+        <name>ParseValidationFromJson</name>
+        <qualifiedname>ItemProfileManager::ParseValidationFromJson</qualifiedname>
+        <param>
+          <type>const nlohmann::json &amp;</type>
+          <declname>json</declname>
+        </param>
+        <briefdescription>
+<para>Parse validation from JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>json</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>JSON object </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Parsed validation </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="162" column="35" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="601" bodyend="643"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a40d0fad765edf6ba22bc75b5bc7ef4f7" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nlohmann::json</type>
+        <definition>nlohmann::json ItemProfileManager::ValidationToJson</definition>
+        <argsstring>(const ProfileFieldValidation &amp;validation)</argsstring>
+        <name>ValidationToJson</name>
+        <qualifiedname>ItemProfileManager::ValidationToJson</qualifiedname>
+        <param>
+          <type>const <ref refid="struct_profile_field_validation" kindref="compound">ProfileFieldValidation</ref> &amp;</type>
+          <declname>validation</declname>
+        </param>
+        <briefdescription>
+<para>Convert validation to JSON. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>validation</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Validation to convert </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>JSON object </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="169" column="27" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="645" bodyend="673"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1af5cbed8de42028c91d407f03c226001c" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string ItemProfileManager::GetProfileFilePath</definition>
+        <argsstring>(const std::string &amp;profileId)</argsstring>
+        <name>GetProfileFilePath</name>
+        <qualifiedname>ItemProfileManager::GetProfileFilePath</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>profileId</declname>
+        </param>
+        <briefdescription>
+<para>Get profile file path. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profileId</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile ID </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Full file path </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="176" column="24" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="349" bodyend="355"/>
+      </memberdef>
+      <memberdef kind="function" id="class_item_profile_manager_1a37d3c95271723917cb9e85a383495690" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ItemProfileManager::EnsureRequiredFields</definition>
+        <argsstring>(ItemProfile &amp;profile)</argsstring>
+        <name>EnsureRequiredFields</name>
+        <qualifiedname>ItemProfileManager::EnsureRequiredFields</qualifiedname>
+        <param>
+          <type><ref refid="struct_item_profile" kindref="compound">ItemProfile</ref> &amp;</type>
+          <declname>profile</declname>
+        </param>
+        <briefdescription>
+<para>Ensure id and displayName fields are always present at the top. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>profile</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Profile to modify </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="182" column="17" bodyfile="RundeeItemFactory/RundeeItemFactory/src/Data/ItemProfileManager.cpp" bodystart="357" bodyend="467"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Static manager class for item profiles. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Handles loading, saving, validation, and lookup of item profiles. Profiles are stored as JSON files in a profiles directory. </para>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" line="26" column="1" bodyfile="RundeeItemFactory/RundeeItemFactory/include/Data/ItemProfileManager.h" bodystart="27" bodyend="183"/>
+    <listofallmembers>
+      <member refid="class_item_profile_manager_1a7fd70905fe337db1fb3faddd68852a82" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>CreateBaseField</name></member>
+      <member refid="class_item_profile_manager_1ab9bcdbd59467895a27a7600e5e5e6441" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>CreateDefaultProfiles</name></member>
+      <member refid="class_item_profile_manager_1a6d6f7f5e0b237d574267d4241f29cbb5" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>CreateField</name></member>
+      <member refid="class_item_profile_manager_1a7a74a1e9fe9ff55b1383cc98fc04c1df" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>DeleteProfile</name></member>
+      <member refid="class_item_profile_manager_1a37d3c95271723917cb9e85a383495690" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>EnsureRequiredFields</name></member>
+      <member refid="class_item_profile_manager_1a505f373bf023c29a8f1176c74f799492" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>FieldToJson</name></member>
+      <member refid="class_item_profile_manager_1a3cd69c5942ec67f5924b011eaa7bfd66" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>GetAllProfiles</name></member>
+      <member refid="class_item_profile_manager_1aa666103914b56e801d8d852f744dbf32" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>GetDefaultProfile</name></member>
+      <member refid="class_item_profile_manager_1af5cbed8de42028c91d407f03c226001c" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>GetProfileFilePath</name></member>
+      <member refid="class_item_profile_manager_1a8ac77af97e6671bb9fe6d3c69c7567e9" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>GetProfilesDirectory</name></member>
+      <member refid="class_item_profile_manager_1ae0b24674a3d7ee25fe58074071ff80a9" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>GetProfilesForType</name></member>
+      <member refid="class_item_profile_manager_1a68455d732fcd3901d768cd7c9f619295" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>Initialize</name></member>
+      <member refid="class_item_profile_manager_1af57155af7e27964ed8ad13c28039fe9d" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>LoadProfile</name></member>
+      <member refid="class_item_profile_manager_1a3a7f710ee185d345ada2a32e0b44d263" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>LoadProfileFromPath</name></member>
+      <member refid="class_item_profile_manager_1acaf2cf40294980fc0faa5ee59161b2ba" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>ParseFieldFromJson</name></member>
+      <member refid="class_item_profile_manager_1af850332c3aa1bc8a6d036c3882567a86" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>ParseProfileFromJson</name></member>
+      <member refid="class_item_profile_manager_1a89cc33c415299cb3e33139dac098c853" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>ParseValidationFromJson</name></member>
+      <member refid="class_item_profile_manager_1adb86e1ed0630618eab8a3ddb10de3c27" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>ProfileExists</name></member>
+      <member refid="class_item_profile_manager_1a90cc966ab611b218f1b241946183ffcb" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>ProfileToJson</name></member>
+      <member refid="class_item_profile_manager_1a3a942410e978ea7fcb3456524873a562" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>s_profilesDir</name></member>
+      <member refid="class_item_profile_manager_1a1ffa497f48af00836738a71a0335e9f9" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>SaveProfile</name></member>
+      <member refid="class_item_profile_manager_1a5ae44192fe35d0e4a4b6e68e73d6ec45" prot="public" virt="non-virtual"><scope>ItemProfileManager</scope><name>ValidateProfile</name></member>
+      <member refid="class_item_profile_manager_1a40d0fad765edf6ba22bc75b5bc7ef4f7" prot="private" virt="non-virtual"><scope>ItemProfileManager</scope><name>ValidationToJson</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

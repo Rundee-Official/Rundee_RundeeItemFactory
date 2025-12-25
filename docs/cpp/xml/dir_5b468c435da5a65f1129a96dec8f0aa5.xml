@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="dir_5b468c435da5a65f1129a96dec8f0aa5" kind="dir">
+    <compoundname>RundeeItemFactory/RundeeItemFactory/src</compoundname>
+    <innerdir refid="dir_39d318e2a9c06a17122d7c2a06b05a87">RundeeItemFactory/RundeeItemFactory/src/Clients</innerdir>
+    <innerdir refid="dir_d4f95b2733efa08477f3ec0660698b4c">RundeeItemFactory/RundeeItemFactory/src/Data</innerdir>
+    <innerdir refid="dir_d1472bec95a2b3ea5ed6e6566b09840e">RundeeItemFactory/RundeeItemFactory/src/Generators</innerdir>
+    <innerdir refid="dir_779e1f6b9c8dec574792adb16e3f7a5e">RundeeItemFactory/RundeeItemFactory/src/Helpers</innerdir>
+    <innerdir refid="dir_e2c9f13e126183cd4b98cd6855d1b1e5">RundeeItemFactory/RundeeItemFactory/src/Parsers</innerdir>
+    <innerdir refid="dir_420f34316f689232f2ac22155a6fb191">RundeeItemFactory/RundeeItemFactory/src/Prompts</innerdir>
+    <innerdir refid="dir_d5bacd090b108877bd487228274f7332">RundeeItemFactory/RundeeItemFactory/src/Utils</innerdir>
+    <innerdir refid="dir_bfc934f00b19fbbe42d00a664e6a5ac8">RundeeItemFactory/RundeeItemFactory/src/Writers</innerdir>
+    <innerfile refid="_rundee_item_factory_8cpp">RundeeItemFactory.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="RundeeItemFactory/RundeeItemFactory/src/"/>
+  </compounddef>
+</doxygen>
