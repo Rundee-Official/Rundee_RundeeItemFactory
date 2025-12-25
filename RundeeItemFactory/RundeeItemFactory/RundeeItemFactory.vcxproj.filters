@@ -16,8 +16,11 @@
     <Filter Include="Header Files\Data">
       <UniqueIdentifier>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Validators">
-      <UniqueIdentifier>{B2C3D4E5-F6A7-8901-BCDE-F12345678901}</UniqueIdentifier>
+    <Filter Include="Header Files\Generators">
+      <UniqueIdentifier>{B0C1D2E3-F4A5-6789-3456-890123456789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{F8A9B0C1-D2E3-4567-1234-678901234567}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Parsers">
       <UniqueIdentifier>{C3D4E5F6-A7B8-9012-CDEF-123456789012}</UniqueIdentifier>
@@ -34,8 +37,14 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{B8C9D0E1-F2A3-4567-1234-678901234567}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Validators">
-      <UniqueIdentifier>{C9D0E1F2-A3B4-5678-2345-789012345678}</UniqueIdentifier>
+    <Filter Include="Source Files\Data">
+      <UniqueIdentifier>{D6E7F8A9-B0C1-2345-9012-456789012345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generators">
+      <UniqueIdentifier>{E7F8A9B0-C1D2-3456-0123-567890123456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{A9B0C1D2-E3F4-5678-2345-789012345678}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Parsers">
       <UniqueIdentifier>{D0E1F2A3-B4C5-6789-3456-890123456789}</UniqueIdentifier>
@@ -52,25 +61,40 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{C5D6E7F8-A9B0-1234-8901-345678901234}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Data">
-      <UniqueIdentifier>{D6E7F8A9-B0C1-2345-9012-456789012345}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Generators">
-      <UniqueIdentifier>{E7F8A9B0-C1D2-3456-0123-567890123456}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Helpers">
-      <UniqueIdentifier>{F8A9B0C1-D2E3-4567-1234-678901234567}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Helpers">
-      <UniqueIdentifier>{A9B0C1D2-E3F4-5678-2345-789012345678}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Generators">
-      <UniqueIdentifier>{B0C1D2E3-F4A5-6789-3456-890123456789}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RundeeItemFactory.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helpers\AppConfig.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helpers\CommandLineParser.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Data\ItemProfileManager.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Data\PlayerProfileManager.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\ItemGenerator.cpp">
+      <Filter>Source Files\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Generators\ItemGeneratorRegistry.cpp">
+      <Filter>Source Files\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Parsers\DynamicItemJsonParser.cpp">
+      <Filter>Source Files\Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Prompts\CustomPreset.cpp">
+      <Filter>Source Files\Prompts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Prompts\DynamicPromptBuilder.cpp">
+      <Filter>Source Files\Prompts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Prompts\PromptTemplateLoader.cpp">
+      <Filter>Source Files\Prompts</Filter>
     </ClCompile>
     <ClCompile Include="src\Writers\DynamicItemJsonWriter.cpp">
       <Filter>Source Files\Writers</Filter>
@@ -78,35 +102,11 @@
     <ClCompile Include="src\Clients\OllamaClient.cpp">
       <Filter>Source Files\Clients</Filter>
     </ClCompile>
-    <ClCompile Include="src\Prompts\CustomPreset.cpp">
-      <Filter>Source Files\Prompts</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils\StringUtils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils\JsonUtils.cpp">
       <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Helpers\CommandLineParser.cpp">
-      <Filter>Source Files\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Prompts\PromptTemplateLoader.cpp">
-      <Filter>Source Files\Prompts</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Data\ItemProfileManager.cpp">
-      <Filter>Source Files\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Prompts\DynamicPromptBuilder.cpp">
-      <Filter>Source Files\Prompts</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Parsers\DynamicItemJsonParser.cpp">
-      <Filter>Source Files\Parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Generators\ItemGenerator.cpp">
-      <Filter>Source Files\Generators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Generators\ItemGeneratorRegistry.cpp">
-      <Filter>Source Files\Generators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,20 +116,26 @@
     <ClInclude Include="include\Data\ItemDataBase.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\Writers\DynamicItemJsonWriter.h">
-      <Filter>Header Files\Writers</Filter>
+    <ClInclude Include="include\Data\ItemProfile.h">
+      <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\Clients\OllamaClient.h">
-      <Filter>Header Files\Clients</Filter>
+    <ClInclude Include="include\Data\ItemProfileManager.h">
+      <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\Prompts\CustomPreset.h">
-      <Filter>Header Files\Prompts</Filter>
+    <ClInclude Include="include\Data\PlayerProfile.h">
+      <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\Utils\StringUtils.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="include\Data\PlayerProfileManager.h">
+      <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="include\Utils\JsonUtils.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="include\Generators\ItemGenerator.h">
+      <Filter>Header Files\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Generators\ItemGeneratorRegistry.h">
+      <Filter>Header Files\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Helpers\AppConfig.h">
+      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="include\Helpers\CommandLineParser.h">
       <Filter>Header Files\Helpers</Filter>
@@ -137,29 +143,29 @@
     <ClInclude Include="include\Helpers\ItemGenerateParams.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Helpers\QualityChecker.h">
-      <Filter>Header Files\Helpers</Filter>
+    <ClInclude Include="include\Parsers\DynamicItemJsonParser.h">
+      <Filter>Header Files\Parsers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Prompts\PromptTemplateLoader.h">
+    <ClInclude Include="include\Prompts\CustomPreset.h">
       <Filter>Header Files\Prompts</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Data\ItemProfile.h">
-      <Filter>Header Files\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Data\ItemProfileManager.h">
-      <Filter>Header Files\Data</Filter>
     </ClInclude>
     <ClInclude Include="include\Prompts\DynamicPromptBuilder.h">
       <Filter>Header Files\Prompts</Filter>
     </ClInclude>
-    <ClInclude Include="include\Parsers\DynamicItemJsonParser.h">
-      <Filter>Header Files\Parsers</Filter>
+    <ClInclude Include="include\Prompts\PromptTemplateLoader.h">
+      <Filter>Header Files\Prompts</Filter>
     </ClInclude>
-    <ClInclude Include="include\Generators\ItemGenerator.h">
-      <Filter>Header Files\Generators</Filter>
+    <ClInclude Include="include\Writers\DynamicItemJsonWriter.h">
+      <Filter>Header Files\Writers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Generators\ItemGeneratorRegistry.h">
-      <Filter>Header Files\Generators</Filter>
+    <ClInclude Include="include\Clients\OllamaClient.h">
+      <Filter>Header Files\Clients</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utils\StringUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utils\JsonUtils.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

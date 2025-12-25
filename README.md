@@ -70,49 +70,56 @@ Example:
 
 ### Command Line
 
-#### Generate Food Items
+#### Basic Usage
+
+Generate items using a custom item profile:
 ```bash
-RundeeItemFactory.exe --mode llm --itemType food --model llama3 --count 10 --profile realistic_food --playerProfile default_player --out ItemJson/items_food.json
+RundeeItemFactory.exe --mode llm --model llama3 --count 10 --profile your_profile_id --playerProfile your_player_profile_id --out items.json
 ```
 
-#### Generate Drink Items
+**Note:** Item types and structures are defined in Item Profiles, not hardcoded. Create your own Item Profile to define custom item types and fields.
+
+#### Using Default Profiles
+
+If you have default profiles set up, you can use `--itemType` to select a default profile:
 ```bash
-RundeeItemFactory.exe --mode llm --itemType drink --model llama3 --count 10 --out items_drink.json
+RundeeItemFactory.exe --mode llm --itemType food --model llama3 --count 10 --out items_food.json
 ```
 
-#### Generate Material Items
+**Note:** The `--itemType` argument is only used to find default profiles. The actual item structure is defined in the Item Profile's `itemTypeName` field and field definitions.
+
+#### Example with Custom Profile
+
 ```bash
-RundeeItemFactory.exe --mode llm --itemType material --model llama3 --count 10 --out items_material.json
+RundeeItemFactory.exe --mode llm --model llama3 --count 10 --profile realistic_firearms --playerProfile default_player --out items_weapon.json
 ```
 
-#### Generate Weapon Items
-```bash
-RundeeItemFactory.exe --mode llm --itemType weapon --model llama3 --count 10 --profile realistic_firearms --out items_weapon.json
-```
-
-#### Generate Weapon Component Items
-```bash
-RundeeItemFactory.exe --mode llm --itemType weaponcomponent --model llama3 --count 10 --out items_weapon_component.json
-```
-
-#### Generate Ammo Items
-```bash
-RundeeItemFactory.exe --mode llm --itemType ammo --model llama3 --count 10 --out items_ammo.json
-```
+This example uses:
+- `realistic_firearms` - A custom Item Profile that defines weapon structure and fields
+- `default_player` - A Player Profile that defines player stat settings
+- The Item Profile's `itemTypeName` field determines the item type (e.g., "Weapon", "Food", or any custom type you define)
 
 ### Command Line Arguments
 
 | Argument | Description | Default |
 |----------|-------------|---------|
 | `--mode` | Generation mode: `llm` | `llm` |
-| `--itemType` | Item type: `food`, `drink`, `material`, `weapon`, `weaponcomponent`, or `ammo` | `food` |
 | `--model` | Ollama model name | `llama3` |
 | `--count` | Number of items to generate | `5` |
-| `--profile` | Item profile ID to use (empty = use default for item type) | - |
-| `--playerProfile` | Player profile ID to use (empty = use default player profile) | - |
-| `--out` | Output JSON file path (relative to .exe location) | `ItemJson/items_food.json` |
+| `--profile` | Item profile ID to use (from `ItemProfiles/` directory). **Required for custom item types.** | Uses default for `--itemType` if specified |
+| `--playerProfile` | Player profile ID to use (from `PlayerProfiles/` directory) | Uses default player profile |
+| `--itemType` | Legacy argument: Used to find default profiles. Item structure is actually defined in the Item Profile. | `food` |
+| `--out` | Output JSON filename (saved to `ItemJson/` directory) | `items_food.json` |
+| `--maxHunger` | Maximum hunger value for player stats | From player profile |
+| `--maxThirst` | Maximum thirst value for player stats | From player profile |
+| `--additionalPrompt` | Additional prompt text to append to LLM request | - |
+| `--test` or `--testMode` | Enable test mode | `false` |
 
-**Note:** World context is defined in Item Profiles using the "World Context / Background" field.
+**Important Notes:**
+- **Item types are user-defined**: Create Item Profiles to define your own item types and structures. The `--itemType` argument is only a legacy way to find default profiles.
+- The `--out` argument specifies only the filename. All output files are automatically saved to the `ItemJson/` directory relative to the executable.
+- World context is defined in Item Profiles using the "World Context / Background" field.
+- The `--preset` argument is deprecated. Use Item Profile's custom context instead.
 
 ## Dynamic Profile System
 
@@ -205,7 +212,7 @@ RundeeItemFactory.exe location/
 }
 ```
 
-### Material Items
+### Example: Material Items
 ```json
 {
   "id": "Material_wood_plank",
@@ -221,7 +228,7 @@ RundeeItemFactory.exe location/
 }
 ```
 
-### Weapon Items
+### Example: Weapon Items
 Weapons are categorized as either "Ranged" or "Melee". Ranged weapons use ammo and have caliber, while Melee weapons have inherent damage and melee-specific stats.
 
 ```json
@@ -287,7 +294,7 @@ Weapons are categorized as either "Ranged" or "Melee". Ranged weapons use ammo a
 }
 ```
 
-### Weapon Component Items
+### Example: Weapon Component Items
 Weapon components modify weapon stats when attached. Magazines can describe their exact load order with mixed ammo types. All magazines of the same caliber support mixed ammo by default.
 
 ```json
@@ -336,7 +343,7 @@ Weapon components modify weapon stats when attached. Magazines can describe thei
 }
 ```
 
-### Ammo Items
+### Example: Ammo Items
 ```json
 {
   "id": "Ammo_9mm",
