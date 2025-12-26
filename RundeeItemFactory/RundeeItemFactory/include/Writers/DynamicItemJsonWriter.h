@@ -51,3 +51,4 @@ public:
         const std::vector<nlohmann::json>& newItems,
         const std::string& path);
 };
+
