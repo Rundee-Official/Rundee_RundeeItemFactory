@@ -413,6 +413,125 @@ int ItemGenerator::GenerateWithLLM(CommandLineArgs& args)
 
     std::cout << "[ItemGenerator] " << newItems.size() << " new items (after filtering duplicates)\n";
 
+    // Limit to requested count if we got more than requested
+    if (static_cast<int>(newItems.size()) > args.params.count)
+    {
+        newItems.resize(args.params.count);
+        std::cout << "[ItemGenerator] Limited to " << args.params.count << " items (requested count)\n";
+    }
+
+    // Retry if we don't have enough items (due to duplicates)
+    int requestedCount = args.params.count;
+    int maxRetries = 5; // Maximum retry attempts
+    int retryCount = 0;
+    
+    while (static_cast<int>(newItems.size()) < requestedCount && retryCount < maxRetries)
+    {
+        int needed = requestedCount - static_cast<int>(newItems.size());
+        std::cout << "[ItemGenerator] Need " << needed << " more items. Retrying generation (attempt " << (retryCount + 1) << "/" << maxRetries << ")...\n";
+        
+        // Temporarily modify params.count for retry
+        int originalCount = args.params.count;
+        args.params.count = needed;
+        
+        // Build prompt for additional items
+        std::string retryPrompt = DynamicPromptBuilder::BuildPromptFromProfile(
+            itemProfile,
+            playerProfile,
+            args.params,
+            existingIds,
+            args.modelName,
+            generationTimestamp,
+            static_cast<int>(existingIds.size()));
+        
+        // Restore original count
+        args.params.count = originalCount;
+        
+        // Call LLM again
+        std::string retryResponse = OllamaClient::RunWithRetry(args.modelName, retryPrompt);
+        if (retryResponse.empty())
+        {
+            std::cerr << "[ItemGenerator] LLM retry generation failed\n";
+            break;
+        }
+        
+        // Parse retry response
+        std::vector<nlohmann::json> retryItems;
+        if (!DynamicItemJsonParser::ParseItemsFromJsonText(retryResponse, itemProfile, retryItems))
+        {
+            std::cerr << "[ItemGenerator] Failed to parse LLM retry response\n";
+            retryCount++;
+            continue;
+        }
+        
+        std::cout << "[ItemGenerator] Parsed " << retryItems.size() << " items from retry response\n";
+        
+        // Filter duplicates from retry items
+        for (size_t i = 0; i < retryItems.size() && static_cast<int>(newItems.size()) < requestedCount; ++i)
+        {
+            nlohmann::json item = retryItems[i];
+            
+            // Ensure displayName is present
+            if (!item.contains("displayName") || item["displayName"].is_null() ||
+                (item["displayName"].is_string() && item["displayName"].get<std::string>().empty()))
+            {
+                item["displayName"] = itemProfile.itemTypeName + " Item " + std::to_string(newItems.size() + 1);
+            }
+            
+            // Ensure id is present
+            if (!item.contains("id") || item["id"].is_null() || 
+                (item["id"].is_string() && item["id"].get<std::string>().empty()))
+            {
+                std::string itemTypePrefix = itemProfile.itemTypeName;
+                std::transform(itemTypePrefix.begin(), itemTypePrefix.end(), itemTypePrefix.begin(), ::tolower);
+                itemTypePrefix.erase(std::remove_if(itemTypePrefix.begin(), itemTypePrefix.end(),
+                    [](char c) { return !std::isalnum(c); }), itemTypePrefix.end());
+                
+                std::string displayName = item["displayName"].get<std::string>();
+                std::string idSuffix = DynamicItemJsonParser::GenerateShortIdFromDisplayName(displayName);
+                
+                if (idSuffix.length() > 30)
+                    idSuffix = idSuffix.substr(0, 30);
+                
+                if (idSuffix.empty())
+                    idSuffix = std::to_string(newItems.size() + 1);
+                
+                std::ostringstream idStream;
+                idStream << itemTypePrefix << "_" << idSuffix;
+                item["id"] = idStream.str();
+            }
+            
+            // Check for duplicates
+            if (item.contains("id") && item["id"].is_string())
+            {
+                std::string id = item["id"].get<std::string>();
+                if (existingIds.find(id) == existingIds.end())
+                {
+                    newItems.push_back(item);
+                    existingIds.insert(id);
+                }
+            }
+        }
+        
+        std::cout << "[ItemGenerator] After retry: " << newItems.size() << " total new items\n";
+        
+        // Limit to requested count if we got more than requested after retry
+        if (static_cast<int>(newItems.size()) > requestedCount)
+        {
+            newItems.resize(requestedCount);
+            std::cout << "[ItemGenerator] Limited to " << requestedCount << " items (requested count) after retry\n";
+        }
+        
+        retryCount++;
+    }
+    
+    // Final check: ensure we don't exceed requested count
+    if (static_cast<int>(newItems.size()) > requestedCount)
+    {
+        newItems.resize(requestedCount);
+        std::cout << "[ItemGenerator] Final limit: " << requestedCount << " items (requested count)\n";
+    }
+    
     if (newItems.empty())
     {
         std::cout << "[ItemGenerator] No new items to write\n";
